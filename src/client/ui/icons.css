@@ -72,12 +72,6 @@
     left: 1px;
     top: 1px;
 }
-#footmanIcon { background: url("icons/bigIcons.png") 0 0 }
-#clericIcon { background: url("icons/bigIcons.png") 200px 0 }
-#commanderIcon { background: url("icons/bigIcons.png") 160px 0 }
-#mageIcon { background: url("icons/bigIcons.png") 120px 0 }
-#assassinIcon { background: url("icons/bigIcons.png") 80px 0 }
-#warlockIcon { background: url("icons/bigIcons.png") 40px 0 }
 
 #characterIconArea {
     position: absolute;
@@ -94,8 +88,15 @@
     left: 3px;
     top: 3px;
 }
-.statIcon { background: url("icons/bigIcons.png") 0 40px; }
 
+#footmanIcon { background: url("icons/bigIcons.png") 0 0 }
+#clericIcon { background: url("icons/bigIcons.png") 200px 0 }
+#commanderIcon { background: url("icons/bigIcons.png") 160px 0 }
+#mageIcon { background: url("icons/bigIcons.png") 120px 0 }
+#assassinIcon { background: url("icons/bigIcons.png") 80px 0 }
+#warlockIcon { background: url("icons/bigIcons.png") 40px 0 }
+
+.statIcon { background: url("icons/bigIcons.png") 0 40px; }
 .rendIcon { background: url("icons/bigIcons.png") 0 120px; }
 .rejuvenatingStrikesIcon { background: url("icons/bigIcons.png") 200px 120px; }
 .iceBladeIcon { background: url("icons/bigIcons.png") 160px 120px; }

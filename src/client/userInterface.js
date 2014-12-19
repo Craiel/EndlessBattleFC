@@ -1,6 +1,6 @@
-declare("Static", function () {
+declare("UserInterface", function () {
 
-    function Static() {
+    function UserInterface() {
 
         this.mouseX = 0;
         this.mouseY = 0;
@@ -17,6 +17,11 @@ declare("Static", function () {
         this.questsWindowShown = false;
         this.inventoryWindowShown = false;
         this.inventoryWindowVisible = false;
+        this.updatesWindowShown = false;
+        this.statsWindowShown = false;
+        this.optionsWindowShown = false;
+
+        this.fullReset = false;
 
         this.WindowOrder = new Array("characterWindow", "mercenariesWindow", "upgradesWindow", "questsWindow", "inventoryWindow");
         this.WindowIds = new Array("characterWindow", "mercenariesWindow", "upgradesWindow", "questsWindow", "inventoryWindow");
@@ -34,6 +39,7 @@ declare("Static", function () {
                 }
             })();
 
+            this.setupWindowState();
         };
 
         // When one of the sell all checkboxes are clicked, update the player's auto sell preferance
@@ -896,6 +902,764 @@ declare("Static", function () {
         this.warlockBuyButtonMouseOut = function(obj) {
             $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
             $("#otherTooltip").hide();
+        }
+
+        this.statUpgradeButtonHover = function(obj, index) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+
+            // Show a tooltip describing what the hovered stat does if neccessary
+            var upgrade = game.statUpgradesManager.upgrades[0][index - 1];
+
+            switch (upgrade.type) {
+                case StatUpgradeType.DAMAGE:
+                    $("#otherTooltipTitle").html("Damage");
+                    $("#otherTooltipDescription").html("Increases the damage you deal with basic attacks.");
+                    break;
+                case StatUpgradeType.STRENGTH:
+                    $("#otherTooltipTitle").html("Strength");
+                    $("#otherTooltipDescription").html("Increases your Health by 5 and Damage by 1%.");
+                    break;
+                case StatUpgradeType.AGILITY:
+                    $("#otherTooltipTitle").html("Agility");
+                    $("#otherTooltipDescription").html("Increases your Crit Damage by 0.2% and Evasion by 1%.");
+                    break;
+                case StatUpgradeType.STAMINA:
+                    $("#otherTooltipTitle").html("Stamina");
+                    $("#otherTooltipDescription").html("Increases your Hp5 by 1 and your Armour by 1%.");
+                    break;
+                case StatUpgradeType.ARMOUR:
+                    $("#otherTooltipTitle").html("Armour");
+                    $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
+                    break;
+                case StatUpgradeType.EVASION:
+                    $("#otherTooltipTitle").html("Evasion");
+                    $("#otherTooltipDescription").html("Increases your chance to dodge a monster's attack.");
+                    break;
+                case StatUpgradeType.HP5:
+                    $("#otherTooltipTitle").html("Hp5");
+                    $("#otherTooltipDescription").html("The amount of health you regenerate over 5 seconds.");
+                    break;
+                case StatUpgradeType.CRIT_DAMAGE:
+                    $("#otherTooltipTitle").html("Crit Damage");
+                    $("#otherTooltipDescription").html("The amount of damage your critical strikes will cause");
+                    break;
+                case StatUpgradeType.ITEM_RARITY:
+                    $("#otherTooltipTitle").html("Item Rarity");
+                    $("#otherTooltipDescription").html("Increases the chance that rarer items will drop from monsters");
+                    break;
+                case StatUpgradeType.EXPERIENCE_GAIN:
+                    $("#otherTooltipTitle").html("Experience Gain");
+                    $("#otherTooltipDescription").html("Increases the experience earned from killing monsters");
+                    break;
+                case StatUpgradeType.GOLD_GAIN:
+                    $("#otherTooltipTitle").html("Gold Gain");
+                    $("#otherTooltipDescription").html("Increases the gold gained from monsters and mercenaries");
+                    break;
+            }
+
+            // Set the item tooltip's location
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltip").show();
+            var rect = obj.getBoundingClientRect();
+            $("#otherTooltip").css('top', rect.top - 70);
+            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
+            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
+        }
+
+        this.statUpgradeButtonClick = function(obj, index) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            $("#statUpgradesWindow").hide();
+
+            // Upgrade a player's stat depending on which button was clicked
+            var upgrade = game.statUpgradesManager.upgrades[0][index - 1];
+            switch (upgrade.type) {
+                case StatUpgradeType.DAMAGE:
+                    game.player.chosenLevelUpBonuses.damageBonus += upgrade.amount;
+                    break;
+                case StatUpgradeType.STRENGTH:
+                    game.player.chosenLevelUpBonuses.strength += upgrade.amount;
+                    break;
+                case StatUpgradeType.AGILITY:
+                    game.player.chosenLevelUpBonuses.agility += upgrade.amount;
+                    break;
+                case StatUpgradeType.STAMINA:
+                    game.player.chosenLevelUpBonuses.stamina += upgrade.amount;
+                    break;
+                case StatUpgradeType.ARMOUR:
+                    game.player.chosenLevelUpBonuses.armour += upgrade.amount;
+                    break;
+                case StatUpgradeType.EVASION:
+                    game.player.chosenLevelUpBonuses.evasion += upgrade.amount;
+                    break;
+                case StatUpgradeType.HP5:
+                    game.player.chosenLevelUpBonuses.hp5 += upgrade.amount;
+                    break;
+                case StatUpgradeType.CRIT_DAMAGE:
+                    game.player.chosenLevelUpBonuses.critDamage += upgrade.amount;
+                    break;
+                case StatUpgradeType.ITEM_RARITY:
+                    game.player.chosenLevelUpBonuses.itemRarity += upgrade.amount;
+                    break;
+                case StatUpgradeType.EXPERIENCE_GAIN:
+                    game.player.chosenLevelUpBonuses.experienceGain += upgrade.amount;
+                    break;
+                case StatUpgradeType.GOLD_GAIN:
+                    game.player.chosenLevelUpBonuses.goldGain += upgrade.amount;
+                    break;
+            }
+
+            // Remove the upgrade
+            game.statUpgradesManager.upgrades.splice(0, 1);
+
+            // Alter the player's skill points
+            game.player.skillPoints--;
+            game.player.skillPointsSpent++;
+
+            // Show the Level Up button if there are still skill points remaining
+            if (game.player.skillPoints > 0) {
+                $("#levelUpButton").show();
+            }
+
+            // Update the 4th tutorial
+            game.tutorialManager.statUpgradeChosen = true;
+        }
+
+        this.statUpgradeButtonReset = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            $("#otherTooltip").hide();
+        }
+
+        this.rendUpgradeButtonHover = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+
+            $("#abilityUpgradeTooltipTitle").html('Rend');
+            $("#abilityUpgradeTooltipCooldown").html('');
+            // If there is already a level in this ability then show the current version as well
+            if (game.player.abilities.getRendLevel() > 0) {
+                $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getRendLevel());
+                $("#abilityUpgradeTooltipDescription").html('Your attacks cause your opponent to bleed for <span class="yellowText">' + game.player.abilities.getRendDamage(0) +
+                '</span> damage after every round for ' + game.player.abilities.rendDuration + ' rounds. Stacks up to 5 times.');
+                $("#abilityUpgradeTooltipLevel2").html('Next Level');
+            }
+            else {
+                $("#abilityUpgradeTooltipLevel").html('');
+                $("#abilityUpgradeTooltipDescription").html('');
+                $("#abilityUpgradeTooltipLevel2").html('Level 1');
+            }
+            $("#abilityUpgradeTooltipDescription2").html('Your attacks cause your opponent to bleed for <span class="yellowText">' + game.player.abilities.getRendDamage(1) +
+            '</span> damage after every round for ' + game.player.abilities.rendDuration + ' rounds. Stacks up to 5 times.');
+            $("#abilityUpgradeTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#abilityUpgradeTooltip").css('top', rect.top - 70);
+            var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
+            $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 40));
+        }
+
+        this.rendUpgradeButtonClick = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            $("#abilityUpgradesWindow").hide();
+            game.player.increaseAbilityPower(AbilityName.REND);
+        }
+
+        this.rendUpgradeButtonReset = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            $("#abilityUpgradeTooltip").hide();
+        }
+
+        this.rejuvenatingStrikesUpgradeButtonHover = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+
+            $("#abilityUpgradeTooltipTitle").html('Rejuvenating Strikes');
+            $("#abilityUpgradeTooltipCooldown").html('');
+            // If there is already a level in this ability then show the current version as well
+            if (game.player.abilities.getRejuvenatingStrikesLevel() > 0) {
+                $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getRejuvenatingStrikesLevel());
+                $("#abilityUpgradeTooltipDescription").html('Your attacks heal you for <span class="greenText">' + game.player.abilities.getRejuvenatingStrikesHealAmount(0) +
+                '</span> health.');
+                $("#abilityUpgradeTooltipLevel2").html('Next Level');
+            }
+            else {
+                $("#abilityUpgradeTooltipLevel").html('');
+                $("#abilityUpgradeTooltipDescription").html('');
+                $("#abilityUpgradeTooltipLevel2").html('Level 1');
+            }
+            $("#abilityUpgradeTooltipDescription2").html('Your attacks heal you for <span class="greenText">' + game.player.abilities.getRejuvenatingStrikesHealAmount(1) +
+            '</span> health.');
+            $("#abilityUpgradeTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#abilityUpgradeTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
+            $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.rejuvenatingStrikesUpgradeButtonClick = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            $("#abilityUpgradesWindow").hide();
+            game.player.increaseAbilityPower(AbilityName.REJUVENATING_STRIKES);
+        }
+
+        this.rejuvenatingStrikesUpgradeButtonReset = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            $("#abilityUpgradeTooltip").hide();
+        }
+
+        this.iceBladeUpgradeButtonHover = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+
+            $("#abilityUpgradeTooltipTitle").html('Ice Blade');
+            $("#abilityUpgradeTooltipCooldown").html('');
+            // If there is already a level in this ability then show the current version as well
+            if (game.player.abilities.getIceBladeLevel() > 0) {
+                $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getIceBladeLevel());
+                $("#abilityUpgradeTooltipDescription").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getIceBladeDamage(0) +
+                '</span> bonus damage and chill them for ' + game.player.abilities.iceBladeChillDuration + ' rounds.');
+                $("#abilityUpgradeTooltipLevel2").html('Next Level');
+            }
+            else {
+                $("#abilityUpgradeTooltipLevel").html('');
+                $("#abilityUpgradeTooltipDescription").html('');
+                $("#abilityUpgradeTooltipLevel2").html('Level 1');
+            }
+            $("#abilityUpgradeTooltipDescription2").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getIceBladeDamage(1) +
+            '</span> damage and chill them for ' + game.player.abilities.iceBladeChillDuration + ' rounds.');
+            $("#abilityUpgradeTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#abilityUpgradeTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
+            $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.iceBladeUpgradeButtonClick = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            $("#abilityUpgradesWindow").hide();
+            game.player.increaseAbilityPower(AbilityName.ICE_BLADE);
+        }
+
+        this.iceBladeUpgradeButtonReset = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            $("#abilityUpgradeTooltip").hide();
+        }
+
+        this.fireBladeUpgradeButtonHover = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+
+            $("#abilityUpgradeTooltipTitle").html('Fire Blade');
+            $("#abilityUpgradeTooltipCooldown").html('');
+            // If there is already a level in this ability then show the current version as well
+            if (game.player.abilities.getFireBladeLevel() > 0) {
+                $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getFireBladeLevel());
+                $("#abilityUpgradeTooltipDescription").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getFireBladeDamage(0) +
+                '</span> bonus damage and burn them for <span class="yellowText">' + game.player.abilities.getFireBladeBurnDamage(0) +
+                '</span> damage after every round for ' + game.player.abilities.fireBladeBurnDuration + ' rounds.');
+                $("#abilityUpgradeTooltipLevel2").html('Next Level');
+            }
+            else {
+                $("#abilityUpgradeTooltipLevel").html('');
+                $("#abilityUpgradeTooltipDescription").html('');
+                $("#abilityUpgradeTooltipLevel2").html('Level 1');
+            }
+            $("#abilityUpgradeTooltipDescription2").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getFireBladeDamage(1) +
+            '</span> bonus damage and burn them for <span class="yellowText">' + game.player.abilities.getFireBladeBurnDamage(1) +
+            '</span> damage after every round for ' + game.player.abilities.fireBladeBurnDuration + ' rounds.');
+            $("#abilityUpgradeTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#abilityUpgradeTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
+            $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.fireBladeUpgradeButtonClick = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            $("#abilityUpgradesWindow").hide();
+            game.player.increaseAbilityPower(AbilityName.FIRE_BLADE);
+        }
+
+        this.fireBladeUpgradeButtonReset = function(obj) {
+            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            $("#abilityUpgradeTooltip").hide();
+        }
+
+        this.expBarAreaMouseOver = function() {
+            $("#expBarText").show();
+        }
+
+        this.expBarAreaMouseOut = function() {
+            if (!game.options.alwaysDisplayExp) {
+                $("#expBarText").hide();
+            }
+        }
+
+        this.playerHealthBarAreaMouseOver = function() {
+            $("#playerHealthBarText").show();
+        }
+
+        this.playerHealthBarAreaMouseOut = function() {
+            if (!game.options.alwaysDisplayPlayerHealth) {
+                $("#playerHealthBarText").hide();
+            }
+        }
+
+        this.monsterHealthBarAreaMouseOver = function() {
+            game.displayMonsterHealth = true;
+        }
+
+        this.monsterHealthBarAreaMouseOut = function() {
+            if (!game.options.alwaysDisplayMonsterHealth) {
+                game.displayMonsterHealth = false;
+            }
+        }
+
+        this.bleedingIconMouseOver = function(obj) {
+            $("#otherTooltipTitle").html("Bleeding");
+            $("#otherTooltipCooldown").html((game.monster.debuffs.bleedMaxDuration - game.monster.debuffs.bleedDuration) + ' rounds remaining');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html('This monster is bleeding, causing damage at the end of every round');
+            $("#otherTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#otherTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
+            $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.bleedingIconMouseOut = function() {
+            $("#otherTooltip").hide();
+        }
+
+        this.burningIconMouseOver = function(obj) {
+            $("#otherTooltipTitle").html("Burning");
+            $("#otherTooltipCooldown").html((game.monster.debuffs.burningMaxDuration - game.monster.debuffs.burningDuration) + ' rounds remaining');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html('This monster is burning, causing damage at the end of every round');
+            $("#otherTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#otherTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
+            $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.burningIconMouseOut = function() {
+            $("#otherTooltip").hide();
+        }
+
+        this.chilledIconMouseOver = function(obj) {
+            $("#otherTooltipTitle").html("Chilled");
+            $("#otherTooltipCooldown").html((game.monster.debuffs.chillMaxDuration - game.monster.debuffs.chillDuration) + ' rounds remaining');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html('This monster is chilled, causing it to attack twice as slow');
+            $("#otherTooltip").show();
+
+            // Set the item tooltip's location
+            var rect = obj.getBoundingClientRect();
+            $("#otherTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
+            $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.chilledIconMouseOut = function() {
+            $("#otherTooltip").hide();
+        }
+
+        this.damageBonusStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Damage Bonus");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases the damage you deal with basic attacks.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.hp5StatHover = function(obj) {
+            $("#otherTooltipTitle").html("Hp5");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("The amount of health you regenerate over 5 seconds.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.armourStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Armour");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.evasionStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Evasion");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases your chance to dodge a monster's attack.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.strengthStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Strength");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases your Health by 5 and Damage by 1%.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.agilityStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Agility");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases your Crit Damage by 0.2% and Evasion by 1%.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.staminaStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Stamina");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases your Hp5 by 1 and Armour by 1%.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.critChanceStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Crit Chance");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases your chance to get a critical strike.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.critDamageStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Crit Damage");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("The amount of damage your critical strikes will cause.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.itemRarityStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Item Rarity");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases the chance that rarer items will drop from monsters.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.goldGainStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Gold Gain");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases the gold gained from monsters and mercenaries.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.expGainStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Experience Gain");
+            $("#otherTooltipCooldown").html('');
+            $("#otherTooltipLevel").html('');
+            $("#otherTooltipDescription").html("Increases the experience earned from killing monsters.");
+            $("#otherTooltip").show();
+            setTooltipLocation(obj);
+        }
+
+        this.setTooltipLocation = function(obj) {
+            var rect = obj.getBoundingClientRect();
+            $("#otherTooltip").css('top', rect.top + 10);
+            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
+            $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
+        }
+
+        this.statTooltipReset = function() {
+            $("#otherTooltip").hide();
+        }
+
+        this.tutorialContinueButtonClick = function() {
+            game.tutorialManager.continueTutorial();
+        }
+
+        this.updatesWindowButtonClick = function() {
+            if (!updatesWindowShown) {
+                updatesWindowShown = true;
+                statsWindowShown = false;
+                optionsWindowShown = false;
+                $("#updatesWindow").show();
+                $("#statsWindow").hide();
+                $("#optionsWindow").hide();
+            }
+            else {
+                updatesWindowShown = false;
+                $("#updatesWindow").hide();
+            }
+        }
+
+        this.statsWindowButtonClick = function() {
+            if (!statsWindowShown) {
+                updatesWindowShown = false;
+                statsWindowShown = true;
+                optionsWindowShown = false;
+                $("#updatesWindow").hide();
+                $("#statsWindow").show();
+                $("#optionsWindow").hide();
+            }
+            else {
+                statsWindowShown = false;
+                $("#statsWindow").hide();
+            }
+        }
+
+        this.optionsWindowButtonClick = function() {
+            if (!optionsWindowShown) {
+                updatesWindowShown = false;
+                statsWindowShown = false;
+                optionsWindowShown = true;
+                $("#updatesWindow").hide();
+                $("#statsWindow").hide();
+                $("#optionsWindow").show();
+            }
+            else {
+                optionsWindowShown = false;
+                $("#optionsWindow").hide();
+            }
+        }
+
+        this.saveButtonClick = function() {
+            game.save();
+        }
+
+        this.resetButtonClick = function() {
+            fullReset = false;
+            var powerShardsAvailable = game.calculatePowerShardReward();
+            document.getElementById('resetDescription').innerHTML = 'This will erase all progress and not be recoverable. Are you sure you want to reset?';
+            $("#resetConfirmWindowPowerShard").show();
+            document.getElementById('powerShardsDescription').innerHTML = "You will earn " + powerShardsAvailable + " Power Shards from resetting.";
+            $("#powerShardsDescription").show();
+            $("#resetConfirmWindow").show();
+        }
+
+        this.resetConfirmWindowYesButtonClick = function() {
+            $("#resetConfirmWindow").hide();
+            if (fullReset) {
+                game.reset();
+            }
+            else {
+                var powerShards = game.player.powerShards + game.calculatePowerShardReward();
+                game.reset();
+                game.player.powerShards = powerShards;
+            }
+        }
+
+        this.resetConfirmWindowNoButtonClick = function() {
+            $("#resetConfirmWindow").hide();
+        }
+
+        this.fullResetButtonClick = function() {
+            fullReset = true;
+            document.getElementById('resetDescription').innerHTML = 'This will erase all progress and not be recoverable, including Power Shards. Are you sure you want to reset?';
+            $("#resetConfirmWindowPowerShard").hide();
+            $("#powerShardsDescription").hide();
+
+            $("#resetConfirmWindow").show();
+        }
+
+        this.optionsWindowExitButtonClick = function() {
+            $("#optionsWindow").hide();
+        }
+
+        this.setupWindowState = function() {
+            $("#itemTooltip").hide();
+            $("#itemCompareTooltip").hide();
+            $("#itemCompareTooltip2").hide();
+            $("#otherTooltip").hide();
+            $("#abilityUpgradeTooltip").hide();
+            $("#basicTooltip").hide();
+            $("#mouseIcon").hide();
+            $("#mercenaryArea").hide();
+
+            $("#otherArea").hide();
+            $("#inventoryArea").hide();
+
+            $("#playerHealthBarText").hide();
+            $("#resurrectionBarArea").hide();
+            $("#monsterHealthBarArea").hide();
+            $("#inventoryWindow").hide();
+            $("#characterWindow").hide();
+            $("#mercenariesWindow").hide();
+            $("#upgradesWindow").hide();
+            $("#questsWindow").hide();
+            $("#questTextArea").hide();
+            $("#mapWindow").hide();
+            $("#leaveBattleButton").hide();
+            $("#battleLevelDownButton").hide();
+            $("#battleLevelUpButton").hide();
+            $("#actionButtonsContainer").hide();
+            $("#actionCooldownsArea").hide();
+            $("#levelUpButton").hide();
+            $("#expBarArea").hide();
+            $("#expBarText").hide();
+            $("#statUpgradesWindow").hide();
+            $("#abilityUpgradesWindow").hide();
+            $(".bleedingIcon").hide();
+            $(".burningIcon").hide();
+            $(".chilledIcon").hide();
+
+            $("#attackButton").hide();
+            $("#healButton").hide();
+            $("#iceboltButton").hide();
+            $("#fireballButton").hide();
+            $("#powerStrikeButton").hide();
+            $("#rendCooldownContainer").hide();
+            $("#healCooldownContainer").hide();
+            $("#iceboltCooldownContainer").hide();
+            $("#fireballCooldownContainer").hide();
+            $("#powerStrikeCooldownContainer").hide();
+
+            $(".characterWindowButton").hide();
+            $(".mercenariesWindowButton").hide();
+            $(".upgradesWindowButton").hide();
+            $("#upgradesWindowButtonGlow").hide();
+            $(".questsWindowButton").hide();
+            $("#questsWindowButtonGlow").hide();
+            $(".inventoryWindowButton").hide();
+            $("#checkboxWhite").hide();
+            $("#checkboxGreen").hide();
+            $("#checkboxBlue").hide();
+            $("#checkboxPurple").hide();
+            $("#checkboxOrange").hide();
+
+            $("#updatesWindow").hide();
+            $("#statsWindow").hide();
+            $("#optionsWindow").hide();
+            $("#resetConfirmWindow").hide();
+
+            $(".craftingWindowButton").hide();
+
+            // Make the equipment slots draggable
+            for (var x = 1; x < 11; x++) {
+                $(".equipItem" + x).draggable({
+                    // When an equip item is no longer being dragged
+                    stop: function (event, ui) {
+                        // Move the item to a different slot if it was dragged upon one
+                        var top = ui.offset.top;
+                        var left = ui.offset.left;
+
+                        // Check if the mouse is over a inventory slot
+                        var offset;
+                        var itemMoved = false;
+                        for (var y = 1; y < (game.inventory.maxSlots + 1); y++) {
+                            offset = $("#inventoryItem" + y).offset();
+                            // Check if the mouse is within the slot
+                            if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                                // If it is; move the item
+                                game.equipment.unequipItemToSlot(slotNumberSelected - 1, y - 1);
+                                itemMoved = true;
+                            }
+                        }
+
+                        // Check if the current slot is a trinket slot and the new slot is the other trinket slot
+                        if (!itemMoved && (slotNumberSelected == 8 || slotNumberSelected == 9)) {
+                            var otherSlot;
+                            if (slotNumberSelected == 9) {
+                                otherSlot = 8;
+                            }
+                            else {
+                                otherSlot = 9;
+                            }
+
+                            offset = $(".equipItem" + otherSlot).offset();
+                            // Check if the mouse is within the slot
+                            if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                                // If it is; swap the items
+                                game.equipment.swapTrinkets();
+                                itemMoved = true;
+                            }
+                        }
+                    },
+                    revert: true,
+                    scroll: false,
+                    revertDuration: 0,
+                    cursorAt: { top: 0, left: 0 }
+                });
+            }
+
+            // Make the inventory slots draggable
+            for (var x = 1; x < (game.inventory.maxSlots + 1); x++) {
+                $("#inventoryItem" + x).draggable({
+                    // When an inventory item is no longer being dragged
+                    stop: function (event, ui) {
+                        // Move the item to a different slot if it was dragged upon one
+                        var top = ui.offset.top;
+                        var left = ui.offset.left;
+
+                        // Check if the mouse is over a new inventory slot
+                        var offset;
+                        var itemMoved = false;
+                        for (var y = 1; y < (game.inventory.maxSlots + 1); y++) {
+                            // If this slot is not the one the item is already in
+                            if (y != slotNumberSelected) {
+                                offset = $("#inventoryItem" + y).offset();
+                                // Check if the mouse is within the slot
+                                if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                                    // If it is; move the item
+                                    game.inventory.swapItems(slotNumberSelected - 1, y - 1);
+                                    itemMoved = true;
+                                }
+                            }
+                        }
+
+                        // Check if the mouse is over a new equip slot
+                        if (!itemMoved) {
+                            for (var y = 1; y < 11; y++) {
+                                offset = $(".equipItem" + y).offset();
+                                // Check if the mouse is within the slot
+                                if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                                    // If it is; move the item
+                                    game.equipment.equipItemInSlot(game.inventory.slots[slotNumberSelected - 1], y - 1, slotNumberSelected - 1);
+                                    itemMoved = true;
+                                }
+                            }
+                        }
+
+                        // Check if the mouse is over the character icon area
+                        if (!itemMoved) {
+                            offset = $("#characterIconArea").offset();
+                            // Check if the mouse is within the area
+                            if (left >= offset.left && left < offset.left + 124 && mouseY >= top.top && mouseY < top.top + 204) {
+                                // If it is; move the item
+                                game.equipment.equipItem(game.inventory.slots[slotNumberSelected - 1], slotNumberSelected - 1);
+                                itemMoved = true;
+                            }
+                        }
+                    },
+                    revert: true,
+                    scroll: false,
+                    revertDuration: 0,
+                    cursorAt: { top: 0, left: 0 }
+                });
+            }
+
+            $("#characterWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("characterWindow")); }});
+            $("#mercenariesWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("mercenariesWindow")); }});
+            $("#upgradesWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("upgradesWindow")); }});
+            $("#questsWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("questsWindow")); }});
+            $("#inventoryWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("inventoryWindow")); }});
         }
     }
 

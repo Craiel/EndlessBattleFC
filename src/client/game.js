@@ -1,8 +1,8 @@
-declare("CoreGame", function() {
+declare("Game", function() {
 
     function Game() {
 
-        this.version = 0.2;
+        this.version = 0.3;
         this.loading = false;
         this.loadingTextInterval = 0;
         this.loadInterval = 0;

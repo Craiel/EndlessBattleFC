@@ -1,8 +1,9 @@
-Crystal.main = function() {
+Endless.main = function() {
 	include('Log');
 	include('Static');
-	include('BaseGame');
+	include('Game');
 	include('GameState');
+	include('UserInterface');
 
 	log.info("Initializing");
 	
@@ -17,7 +18,6 @@ Crystal.main = function() {
 	static.init();
     game.init();
     userInterface.init();
-    networkClient.init();
 
     // Set the update interval for the non-ui components
     var interval = 1000 / 60;
@@ -32,10 +32,9 @@ Crystal.main = function() {
 	function onUpdate() {
 		gameState.gameTime.update();
 	
-	    Crystal.resetFrame();
+	    Endless.resetFrame();
 	    static.update(gameState.gameTime);
 	    game.update(gameState.gameTime);
-	    networkClient.update(gameState.gameTime);
 	};
 	
 	function onUIUpdate() {        	
@@ -46,5 +45,5 @@ Crystal.main = function() {
 };
 
 $(document).ready(function() {
-	Crystal.main();
+	Endless.main();
 });

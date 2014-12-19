@@ -1,12 +1,12 @@
 // set the main namespace
-Crystal = {
+Endless = {
 		isDebug: false,
         componentUpdateList: [],
         componentUpdateCount: 0,
         componentInitCount: 0,
         resetFrame: function() {
-            Crystal.componentUpdateList = [];
-            Crystal.componentUpdateCount = 0;
+            Endless.componentUpdateList = [];
+            Endless.componentUpdateCount = 0;
         }
 };
 
@@ -15,7 +15,7 @@ var StrLoc = function(str) {
 };
 
 // #IfDebug
-Crystal.isDebug = true;
+Endless.isDebug = true;
 // #EndIf
 
 declare("$", jQuery);
