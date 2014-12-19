@@ -1,0 +1,102 @@
+.goldCoin {
+    background-image: url("icons/goldCoin.png");
+    background-size: 100%;
+    position: absolute;
+}
+
+.expOrb {
+    background-image: url("icons/expOrb.png");
+    background-size: 100%;
+    position: absolute;
+}
+
+.powerShard {
+    background: url("icons/powerShard.png");
+    background-size: 100%;
+    position: absolute;
+}
+
+.bleedingIcon {
+    background: url("icons/bleedingIcon.png");
+    position: absolute;
+    top: 0px;
+    left: 325px;
+    width: 25px;
+    height: 25px;
+    z-index: 1;
+}
+
+.burningIcon {
+    background: url("icons/burningIcon.png");
+    position: absolute;
+    top: 0px;
+    left: 325px;
+    width: 25px;
+    height: 25px;
+    z-index: 1;
+}
+
+.chilledIcon {
+    background: url("icons/chilledIcon.png");
+    position: absolute;
+    top: 0px;
+    left: 325px;
+    width: 25px;
+    height: 25px;
+    z-index: 1;
+}
+
+.buffIcon {
+    background: url("icons/buffIcons.png") 15px 0;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 15px;
+    height: 15px;
+}
+
+#attackButton {
+    background: url("icons/attackButtons.png") 0 0;
+    position: absolute;
+    left: 195px;
+    top: 90px;
+    width: 50px;
+    height: 50px;
+    z-index: 1;
+}
+
+.buyButtonIcon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    left: 1px;
+    top: 1px;
+}
+#footmanIcon { background: url("icons/bigIcons.png") 0 0 }
+#clericIcon { background: url("icons/bigIcons.png") 200px 0 }
+#commanderIcon { background: url("icons/bigIcons.png") 160px 0 }
+#mageIcon { background: url("icons/bigIcons.png") 120px 0 }
+#assassinIcon { background: url("icons/bigIcons.png") 80px 0 }
+#warlockIcon { background: url("icons/bigIcons.png") 40px 0 }
+
+#characterIconArea {
+    position: absolute;
+    left: 44px;
+    top: 29px;
+    width: 124px;
+    height: 204px;
+}
+
+.buttonIcon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    left: 3px;
+    top: 3px;
+}
+.statIcon { background: url("icons/bigIcons.png") 0 40px; }
+
+.rendIcon { background: url("icons/bigIcons.png") 0 120px; }
+.rejuvenatingStrikesIcon { background: url("icons/bigIcons.png") 200px 120px; }
+.iceBladeIcon { background: url("icons/bigIcons.png") 160px 120px; }
+.fireBladeIcon { background: url("icons/bigIcons.png") 120px 120px; }
