@@ -1,6 +1,13 @@
 declare("QuestManager", function () {
+    include('Component');
+
+    QuestManager.prototype = component.create();
+    QuestManager.prototype.$super = parent;
+    QuestManager.prototype.constructor = QuestManager;
 
     function QuestManager() {
+        this.id = "QuestManager";
+
         this.quests = new Array();
         this.selectedQuest = 0;
         this.questsButtonGlowing = false;

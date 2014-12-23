@@ -4,6 +4,7 @@ Endless.main = function() {
 	include('Game');
 	include('GameState');
 	include('UserInterface');
+	include('Resources');
 
 	log.info("Initializing");
 	
@@ -15,7 +16,7 @@ Endless.main = function() {
 	include('TemplateProvider').SetData(include('TemplateContent'));
 	
 	// Initialize components
-	static.init();
+    static.init();
     game.init();
     userInterface.init();
 

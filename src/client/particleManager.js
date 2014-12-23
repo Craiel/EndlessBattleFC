@@ -1,6 +1,13 @@
 declare("ParticleManager", function () {
+    include('Component');
+
+    ParticleManager.prototype = component.create();
+    ParticleManager.prototype.$super = parent;
+    ParticleManager.prototype.constructor = ParticleManager;
 
     function ParticleManager() {
+        this.id = "ParticleManager";
+
         this.maxParticles = 50;
         this.particles = new Array();
         this.particleSources = new Object();

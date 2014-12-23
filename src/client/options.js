@@ -1,6 +1,13 @@
 declare("Options", function () {
+    include('Component');
+
+    Options.prototype = component.create();
+    Options.prototype.$super = parent;
+    Options.prototype.constructor = Options;
 
     function Options() {
+        this.id = "Options";
+
         this.displaySkullParticles = true;
         this.displayGoldParticles = true;
         this.displayExpParticles = true;

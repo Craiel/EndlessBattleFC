@@ -1,6 +1,13 @@
 declare("MonsterCreator", function () {
+    include('Component');
+
+    MonsterCreator.prototype = component.create();
+    MonsterCreator.prototype.$super = parent;
+    MonsterCreator.prototype.constructor = MonsterCreator;
 
     function MonsterCreator() {
+        this.id = "MonsterCreator";
+
         this.names = ["Zombie", "Skeleton", "Goblin", "Spider", "Troll", "Lizardman", "Ogre", "Orc"];
         this.monsterBaseHealth = 5;
         this.monsterBaseDamage = 0;

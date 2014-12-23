@@ -1,6 +1,13 @@
 declare("TutorialManager", function () {
+    include('Component');
+
+    TutorialManager.prototype = component.create();
+    TutorialManager.prototype.$super = parent;
+    TutorialManager.prototype.constructor = TutorialManager;
 
     function TutorialManager() {
+        this.id = "TutorialManager";
+
         this.currentTutorial = 0;
         // If each of the tutorials have had the continue button pressed
         this.tutorialContinued = new Array();

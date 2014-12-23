@@ -1,6 +1,12 @@
 declare("GameState", function () {
+    include('Component');
+
+    GameState.prototype = component.create();
+    GameState.prototype.$super = parent;
+    GameState.prototype.constructor = GameState;
 
     function GameState() {
+        this.id = "GameState";
         this.health = 0;
         this.hp5 = 0;
         this.minDamage = 0;

@@ -1,6 +1,12 @@
 declare("Abilities", function () {
+    include('Component');
+
+    Abilities.prototype = component.create();
+    Abilities.prototype.$super = parent;
+    Abilities.prototype.constructor = Abilities;
 
     function Abilities() {
+        this.id = "Abilities";
 
         this.baseRendLevel = 0;
         this.rendDuration = 5;

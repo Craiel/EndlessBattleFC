@@ -1,6 +1,13 @@
 declare("StatUpgradeManager", function () {
+    include('Component');
+
+    StatUpgradeManager.prototype = component.create();
+    StatUpgradeManager.prototype.$super = parent;
+    StatUpgradeManager.prototype.constructor = StatUpgradeManager;
 
     function StatUpgradeManager() {
+        this.id = "StatUpgradeManager";
+
         // The current possible stat upgrades
         this.upgrades = new Array();
 

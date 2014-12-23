@@ -1,27 +1,30 @@
 declare("Game", function() {
+    include('Component');
+    include('Player');
+    include('Inventory');
+    include('Equipment');
+    include('Stats');
+    include('Options');
+
+    Game.prototype = component.create();
+    Game.prototype.$super = parent;
+    Game.prototype.constructor = Game;
 
     function Game() {
-
+        this.id = "Game";
         this.version = 0.3;
         this.loading = false;
         this.loadingTextInterval = 0;
         this.loadInterval = 0;
 
         // Player
-        this.player = new Player();
-        this.inventory = new Inventory();
-        this.equipment = new Equipment();
-        this.statGenerator = new StatGenerator();
-        this.nameGenerator = new NameGenerator();
-        this.statUpgradesManager = new StatUpgradesManager();
+        this.player = player.create();
+        this.inventory = inventory.create();
+        this.equipment = equipment.create();
 
         // Other
-        this.tooltipManager = new TooltipManager();
-        this.questsManager = new QuestsManager();
-        this.eventManager = new EventManager();
-        this.tutorialManager = new TutorialManager();
-        this.stats = new Stats();
-        this.options = new Options();
+        this.stats = stats.create();
+        this.options = options.create();
 
         // Combat
         this.inBattle = false;
@@ -838,5 +841,6 @@ declare("Game", function() {
         }
     }
 
+    return new Game();
 
 });

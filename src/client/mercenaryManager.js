@@ -1,6 +1,13 @@
 declare("MercenaryManager", function () {
+    include('Component');
+
+    MercenaryManager.prototype = component.create();
+    MercenaryManager.prototype.$super = parent;
+    MercenaryManager.prototype.constructor = MercenaryManager;
 
     function MercenaryManager() {
+        this.id = "MercenaryManager";
+
         // The interval at which mercenaries give gold, in miliseconds
         var gpsUpdateDelay = 100;
         var gpsUpdateTime = 0;

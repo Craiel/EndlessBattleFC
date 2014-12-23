@@ -1,6 +1,13 @@
 declare("StatGenerator", function () {
+    include('Component');
+
+    StatGenerator.prototype = component.create();
+    StatGenerator.prototype.$super = parent;
+    StatGenerator.prototype.constructor = StatGenerator;
 
     function StatGenerator() {
+        this.id = "StatGenerator";
+
         var rand;
         // Random min damage
         this.getRandomMinDamage = function getRandomMinDamage(level) {

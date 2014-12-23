@@ -1,6 +1,12 @@
 declare("TooltipManager", function () {
+    include('Component');
+
+    TooltipManager.prototype = component.create();
+    TooltipManager.prototype.$super = parent;
+    TooltipManager.prototype.constructor = TooltipManager;
 
     function TooltipManager() {
+        this.id = "TooltipManager";
 
         this.displayItemTooltip = function displayItemTooltip(item1, item2, item3, left, top, canSell) {
             // Get the item type

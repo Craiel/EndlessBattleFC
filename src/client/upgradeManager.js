@@ -1,6 +1,13 @@
 declare("UpgradeManager", function () {
+    include('Component');
+
+    UpgradeManager.prototype = component.create();
+    UpgradeManager.prototype.$super = parent;
+    UpgradeManager.prototype.constructor = UpgradeManager;
 
     function UpgradeManager() {
+        this.id = "UpgradeManager";
+
         this.upgradesButtonGlowing = false;
 
         this.upgradesAvailable = 0;

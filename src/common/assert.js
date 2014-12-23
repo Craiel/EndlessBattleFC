@@ -2,7 +2,7 @@ declare("Assert", function() {
 
     function Assert() {
         this.isDefined = function(arg, msg) {
-            if(Crystal.isDebug === false){
+            if(Endless.isDebug === false){
                 return;
             }
             
@@ -10,7 +10,7 @@ declare("Assert", function() {
         };
         
         this.isUndefined = function(arg, msg) {
-            if(Crystal.isDebug === false){
+            if(Endless.isDebug === false){
                 return;
             }
             
@@ -18,7 +18,7 @@ declare("Assert", function() {
         };
         
         this.isTrue = function(eval, msg) {
-            if(Crystal.isDebug === false){
+            if(Endless.isDebug === false){
                 return;
             }
             
@@ -26,7 +26,7 @@ declare("Assert", function() {
         };
         
         this.isFalse = function(eval, msg) {
-            if(Crystal.isDebug === false){
+            if(Endless.isDebug === false){
                 return;
             }
             

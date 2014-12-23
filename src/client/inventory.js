@@ -1,6 +1,12 @@
 declare("Inventory", function () {
+    include('Component');
+
+    Inventory.prototype = component.create();
+    Inventory.prototype.$super = parent;
+    Inventory.prototype.constructor = Inventory;
 
     function Inventory() {
+        this.id = "Inventory";
         this.slots = new Array();
         this.maxSlots = 25;
         this.autoSellCommons = false;

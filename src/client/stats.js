@@ -1,6 +1,12 @@
 declare("Stats", function () {
+    include('Component');
+
+    Stats.prototype = component.create();
+    Stats.prototype.$super = parent;
+    Stats.prototype.constructor = Stats;
 
     function Stats() {
+        this.id = "Stats";
 
         this.goldEarned = 0;
         this.startDate = new Date();

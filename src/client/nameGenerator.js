@@ -1,6 +1,13 @@
 declare("NameGenerator", function () {
+    include('Component');
+
+    NameGenerator.prototype = component.create();
+    NameGenerator.prototype.$super = parent;
+    NameGenerator.prototype.constructor = NameGenerator;
 
     function NameGenerator() {
+        this.id = "NameGenerator";
+
         var rand;
         // ----- Prefixes -----
         // Damage Bonus

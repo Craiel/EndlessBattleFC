@@ -1,6 +1,13 @@
 declare("BuffManager", function () {
+    include('Component');
+
+    BuffManager.prototype = component.create();
+    BuffManager.prototype.$super = parent;
+    BuffManager.prototype.constructor = BuffManager;
 
     function BuffManager() {
+        this.id = "BuffManager";
+
         this.buffs = new Array();
 
         this.addBuff = function addBuff(buff) {

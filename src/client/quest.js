@@ -1,6 +1,13 @@
 declare("Quest", function () {
+    include('Component');
+
+    Quest.prototype = component.create();
+    Quest.prototype.$super = parent;
+    Quest.prototype.constructor = Quest;
 
     function Quest(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward) {
+        this.id = "Quest";
+
         this.name = name;
         this.description = description;
         this.type = type;

@@ -1,6 +1,12 @@
 declare("Static", function () {
+    include('Component');
+
+    Static.prototype = component.create();
+    Static.prototype.$super = parent;
+    Static.prototype.constructor = Static;
 
     function Static() {
+        this.id = "Static";
 
         this.AttackType = new Object();
         this.AttackType.BASIC_ATTACK = "BASIC_ATTACK";
@@ -174,6 +180,10 @@ declare("Static", function () {
         this.SLOT_TYPE.EQUIP = "EQUIP";
         this.SLOT_TYPE.INVENTORY = "INVENTORY";
         this.SLOT_TYPE.SELL = "SELL";
+
+        this.setRoot = function(value) {
+
+        };
     }
 
     return new Static();

@@ -1,6 +1,12 @@
 declare("UserInterface", function () {
+    include('Component');
+
+    UserInterface.prototype = component.create();
+    UserInterface.prototype.$super = parent;
+    UserInterface.prototype.constructor = UserInterface;
 
     function UserInterface() {
+        this.id = "UserInterface";
 
         this.mouseX = 0;
         this.mouseY = 0;
@@ -1663,5 +1669,5 @@ declare("UserInterface", function () {
         }
     }
 
-    return new Static();
+    return new UserInterface();
 });

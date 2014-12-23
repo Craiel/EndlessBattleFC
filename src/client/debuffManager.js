@@ -1,6 +1,13 @@
 declare("DebuffManager", function () {
+    include('Component');
+
+    DebuffManager.prototype = component.create();
+    DebuffManager.prototype.$super = parent;
+    DebuffManager.prototype.constructor = DebuffManager;
 
     function DebuffManager() {
+        this.id = "DebuffManager";
+
         this.bleeding = false;
         this.bleedStacks = 0;
         this.bleedDamage = 0;

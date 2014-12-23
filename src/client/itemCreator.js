@@ -1,6 +1,13 @@
 declare("ItemCreator", function () {
+    include('Component');
+
+    ItemCreator.prototype = component.create();
+    ItemCreator.prototype.$super = parent;
+    ItemCreator.prototype.constructor = ItemCreator;
 
     function ItemCreator() {
+        this.id = "ItemCreator";
+
         this.getRandomItemRarity = function getRandomItemRarity(monsterRarity) {
             var rand = Math.random();
             switch (monsterRarity) {

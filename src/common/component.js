@@ -1,7 +1,7 @@
 declare("Component", function() {
     include("Assert");
     
-    if(Crystal.isDebug === true) {
+    if(Endless.isDebug === true) {
         idCheck = {};
     }
     
@@ -20,12 +20,12 @@ declare("Component", function() {
         this.init = function() {
             assert.isDefined(this.id, StrLoc("Component needs valid Id"));
             
-            if(Crystal.isDebug === true) {
+            if(Endless.isDebug === true) {
                 assert.isUndefined(idCheck[this.id], StrLoc("Duplicate ID: {0}").format(this.id));
                 idCheck[this.id] = true;
             }
-            
-            Crystal.componentInitCount++;
+
+            Endless.componentInitCount++;
             
             this.initDone = true;
         };
@@ -46,9 +46,9 @@ declare("Component", function() {
             if(this.invalidated === false && this.updateInterval > 0 && currentTime.getElapsed() < this.updateInterval) {
                 return false;
             }
-            
-            Crystal.componentUpdateList.push(this.id);
-            Crystal.componentUpdateCount++;
+
+            Endless.componentUpdateList.push(this.id);
+            Endless.componentUpdateCount++;
             
             this.updateTime = currentTime.getTime();
             this.invalidated = false;
@@ -56,7 +56,7 @@ declare("Component", function() {
         };
         
         this.remove = function() {
-            if(Crystal.isDebug) {
+            if(Endless.isDebug) {
                 delete idCheck[this.id];
             }
         };

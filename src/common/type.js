@@ -121,7 +121,7 @@ declare("Type", function() {
                 default: throw new Error(StrLoc("getReadValueByType not implemented for {0}").format(type));
             }
             
-            if(Crystal.isDebug) {
+            if(Endless.isDebug) {
             	// Debug only check if the value we got matches the type
             	var determinedType = this.determineDataType(result);
             	

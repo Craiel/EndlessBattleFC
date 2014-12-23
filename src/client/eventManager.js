@@ -1,6 +1,12 @@
 declare("EventManager", function () {
+    include('Component');
+
+    EventManager.prototype = component.create();
+    EventManager.prototype.$super = parent;
+    EventManager.prototype.constructor = EventManager;
 
     function EventManager() {
+        this.id = "EventManager";
         this.eventSpawnTime = 3600000;
         this.eventSpawnTimeRemaining = this.eventSpawnTime;
         this.events = new Array();

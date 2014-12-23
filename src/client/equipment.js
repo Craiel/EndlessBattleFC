@@ -1,6 +1,13 @@
 declare("Equipment", function () {
+    include('Component');
+
+    Equipment.prototype = component.create();
+    Equipment.prototype.$super = parent;
+    Equipment.prototype.constructor = Equipment;
 
     function Equipment() {
+        this.id = "Equipment";
+
         this.slots = new Array();
 
         for (var x = 0; x < 10; x++) {

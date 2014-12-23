@@ -1,6 +1,13 @@
 declare("Player", function () {
+    include('Component');
+
+    Player.prototype = component.create();
+    Player.prototype.$super = parent;
+    Player.prototype.constructor = Player;
 
     function Player() {
+        this.id = "Player";
+
         this.level = 1;
         this.health = 100;
 

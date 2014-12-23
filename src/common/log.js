@@ -71,7 +71,7 @@ declare("Log", function() {
         };
         
         this.debug = function(message) {
-            if(Crystal.isDebug === false) {
+            if(Endless.isDebug === false) {
                 return;
             }
             
