@@ -1,5 +1,6 @@
 declare("UpgradeManager", function () {
     include('Component');
+    include('Static');
 
     UpgradeManager.prototype = component.create();
     UpgradeManager.prototype.$super = parent;
@@ -112,15 +113,15 @@ declare("UpgradeManager", function () {
             this.upgrades.push(new Upgrade("Corruption IV", Math.floor((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 200, "Increases the crit damage bonus from Warlocks by 2.5%.", 40, 0));
 
             // Attack Upgrades
-            this.upgrades.push(new Upgrade("Power Strike", game.monsterCreator.calculateMonsterGoldWorth(50, MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
-            this.upgrades.push(new Upgrade("Double Strike", game.monsterCreator.calculateMonsterGoldWorth(100, MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
+            this.upgrades.push(new Upgrade("Power Strike", game.monsterCreator.calculateMonsterGoldWorth(50, static.MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
+            this.upgrades.push(new Upgrade("Double Strike", game.monsterCreator.calculateMonsterGoldWorth(100, static.MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
 
             // Auto Loot Upgrades
-            this.upgrades.push(new Upgrade("Vendor", game.monsterCreator.calculateMonsterGoldWorth(25, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 100, "Doubles the amount of gold items are worth and allows you to automatically sell common items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(new Upgrade("Trader", game.monsterCreator.calculateMonsterGoldWorth(50, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 200, "Doubles the amount of gold items are worth and allows you to automatically sell uncommon items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(new Upgrade("Merchant", game.monsterCreator.calculateMonsterGoldWorth(100, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 400, "Doubles the amount of gold items are worth and allows you to automatically sell rare items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(new Upgrade("Storekeeper", game.monsterCreator.calculateMonsterGoldWorth(150, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 800, "Doubles the amount of gold items are worth and allows you to automatically sell epic items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(new Upgrade("Operator", game.monsterCreator.calculateMonsterGoldWorth(250, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 1600, "Doubles the amount of gold items are worth and allows you to automatically sell legendary items. This can be set in your inventory.", 200, 40));
+            this.upgrades.push(new Upgrade("Vendor", game.monsterCreator.calculateMonsterGoldWorth(25, static.MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 100, "Doubles the amount of gold items are worth and allows you to automatically sell common items. This can be set in your inventory.", 200, 40));
+            this.upgrades.push(new Upgrade("Trader", game.monsterCreator.calculateMonsterGoldWorth(50, static.MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 200, "Doubles the amount of gold items are worth and allows you to automatically sell uncommon items. This can be set in your inventory.", 200, 40));
+            this.upgrades.push(new Upgrade("Merchant", game.monsterCreator.calculateMonsterGoldWorth(100, static.MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 400, "Doubles the amount of gold items are worth and allows you to automatically sell rare items. This can be set in your inventory.", 200, 40));
+            this.upgrades.push(new Upgrade("Storekeeper", game.monsterCreator.calculateMonsterGoldWorth(150, static.MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 800, "Doubles the amount of gold items are worth and allows you to automatically sell epic items. This can be set in your inventory.", 200, 40));
+            this.upgrades.push(new Upgrade("Operator", game.monsterCreator.calculateMonsterGoldWorth(250, static.MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 1600, "Doubles the amount of gold items are worth and allows you to automatically sell legendary items. This can be set in your inventory.", 200, 40));
         }
 
         this.update = function update() {
@@ -340,11 +341,11 @@ declare("UpgradeManager", function () {
                         switch (upgrade.name) {
                             case "Power Strike":
                                 if (!this.upgrades[56].purchased) {
-                                    game.player.changeAttack(AttackType.POWER_STRIKE);
+                                    game.player.changeAttack(static.AttackType.POWER_STRIKE);
                                 }
                                 break;
                             case "Double Strike":
-                                game.player.changeAttack(AttackType.DOUBLE_STRIKE);
+                                game.player.changeAttack(static.AttackType.DOUBLE_STRIKE);
                                 break;
                         }
                 }
@@ -580,6 +581,8 @@ declare("UpgradeManager", function () {
         }
     }
 
-    return new UpgradeManager();
+    return {
+        create: function() { return new UpgradeManager(); }
+    };
 
 });

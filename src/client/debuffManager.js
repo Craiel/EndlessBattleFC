@@ -25,5 +25,7 @@ declare("DebuffManager", function () {
         this.burningMaxDuration = 0;
     }
 
-    return new DebuffManager();
+    return {
+        create: function() { return new DebuffManager(); }
+    };
 });

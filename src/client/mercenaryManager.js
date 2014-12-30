@@ -401,5 +401,7 @@ declare("MercenaryManager", function () {
         }
     }
 
-    return new MercenaryManager();
+    return {
+      create: function() { return new MercenaryManager(); }
+    };
 });

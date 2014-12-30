@@ -1,12 +1,16 @@
 Endless.main = function() {
+	include('Assert');
 	include('Log');
 	include('Static');
 	include('Game');
-	include('GameState');
+	include('GameTime');
 	include('UserInterface');
 	include('Resources');
 
 	log.info("Initializing");
+
+	// Todo: this sets game as a global for now until we upgrade the code to not do so
+	window.game = game;
 	
 	// override our data root if we have it stored somewhere else
 	static.setRoot("");
@@ -22,24 +26,36 @@ Endless.main = function() {
 
     // Set the update interval for the non-ui components
     var interval = 1000 / 60;
-    setInterval(function() {
+    var intervalHook = setInterval(function() {
         onUpdate();
     }, interval);
     
     // Set the update for the ui, we use animation frame which usually is around 60 fps but is tied to refresh rate
     //  this is generally nicer than using setInterval for animations and UI
     requestAnimationFrame(onUIUpdate);
-	
+
+	var gameTime = gameTime.create();
 	function onUpdate() {
-		gameState.gameTime.update();
+		if(assert.hasAsserted() === true) {
+			clearInterval(intervalHook);
+			log("Aborting update cycle, asserts occured!");
+			return;
+		}
+
+		gameTime.update();
 	
 	    Endless.resetFrame();
-	    static.update(gameState.gameTime);
-	    game.update(gameState.gameTime);
+	    static.update(gameTime);
+	    game.update(gameTime);
 	};
 	
-	function onUIUpdate() {        	
-		userInterface.update(gameState.gameTime);
+	function onUIUpdate() {
+		if(assert.hasAsserted() === true) {
+			log("Aborting UI update cycle, asserts occured!");
+			return;
+		}
+
+		userInterface.update(gameTime);
 	    
 	    requestAnimationFrame(onUIUpdate);
 	};

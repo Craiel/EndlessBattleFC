@@ -75,5 +75,7 @@ declare("Options", function () {
         }
     }
 
-    return new Options();
+    return {
+      create: function() { return new Options(); }
+    };
 });

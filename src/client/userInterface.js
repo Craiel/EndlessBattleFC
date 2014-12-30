@@ -1,5 +1,6 @@
 declare("UserInterface", function () {
     include('Component');
+    include('Static');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -212,7 +213,7 @@ declare("UserInterface", function () {
         this.attackButtonHover = function(obj) {
             // Display a different tooltip depending on the player's attack
             switch (game.player.attackType) {
-                case AttackType.BASIC_ATTACK:
+                case static.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 0');
                     $("#otherTooltipTitle").html('Attack');
                     $("#otherTooltipCooldown").html('');
@@ -220,7 +221,7 @@ declare("UserInterface", function () {
                     $("#otherTooltipDescription").html('A basic attack.');
                     $("#otherTooltip").show();
                     break;
-                case AttackType.POWER_STRIKE:
+                case static.AttackType.POWER_STRIKE:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 100px');
                     $("#otherTooltipTitle").html('Power Strike');
                     $("#otherTooltipCooldown").html('');
@@ -228,7 +229,7 @@ declare("UserInterface", function () {
                     $("#otherTooltipDescription").html('Strike your target with a powerful blow, dealing 1.5x normal damage.');
                     $("#otherTooltip").show();
                     break;
-                case AttackType.DOUBLE_STRIKE:
+                case static.AttackType.DOUBLE_STRIKE:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 50px');
                     $("#otherTooltipTitle").html('Double Strike');
                     $("#otherTooltipCooldown").html('');
@@ -247,13 +248,13 @@ declare("UserInterface", function () {
 
         this.attackButtonReset = function() {
             switch (game.player.attackType) {
-                case AttackType.BASIC_ATTACK:
+                case static.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 0');
                     break;
-                case AttackType.POWER_STRIKE:
+                case static.AttackType.POWER_STRIKE:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 100px');
                     break;
-                case AttackType.DOUBLE_STRIKE:
+                case static.AttackType.DOUBLE_STRIKE:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 50px');
                     break;
             }
@@ -262,13 +263,13 @@ declare("UserInterface", function () {
 
         this.attackButtonClick = function() {
             switch (game.player.attackType) {
-                case AttackType.BASIC_ATTACK:
+                case static.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 0');
                     break;
-                case AttackType.POWER_STRIKE:
+                case static.AttackType.POWER_STRIKE:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 100px');
                     break;
-                case AttackType.DOUBLE_STRIKE:
+                case static.AttackType.DOUBLE_STRIKE:
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 50px');
                     break;
             }

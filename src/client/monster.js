@@ -1,18 +1,20 @@
 declare("Monster", function () {
+    include('DebuffManager');
+    include('Static');
 
-    this.Monster = function(name, level, rarity, health, damage, armour, goldWorth, experienceWorth) {
-        this.name = name;
-        this.level = level;
-        this.rarity = rarity;
-        this.health = health;
-        this.maxHealth = health;
+    function Monster() {
+        this.name = '#ERR';
+        this.level = 0;
+        this.rarity = static.MonsterRarity.COMMON;
+        this.health = 0;
+        this.maxHealth = 0;
         this.canAttack = true;
-        this.damage = damage;
-        this.armour = armour;
-        this.goldWorth = goldWorth;
-        this.experienceWorth = experienceWorth;
+        this.damage = 0;
+        this.armour = 0;
+        this.goldWorth = 0;
+        this.experienceWorth = 0;
 
-        this.debuffs = new DebuffManager();
+        this.debuffs = debuffManager.create();
         this.debuffIconLeftPositionBase = 325;
         this.debuffIconTopPosition = 0;
         this.debuffLeftPositionIncrement = 30;

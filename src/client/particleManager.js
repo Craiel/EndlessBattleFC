@@ -146,6 +146,8 @@ declare("ParticleManager", function () {
         }
     }
 
-    return new ParticleManager();
+    return {
+        create: function() { return new ParticleManager(); }
+    };
 
 });

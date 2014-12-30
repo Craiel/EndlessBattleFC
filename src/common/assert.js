@@ -1,44 +1,63 @@
 declare("Assert", function() {
 
     function Assert() {
+        this.assertCount = 0;
+
         this.isDefined = function(arg, msg) {
             if(Endless.isDebug === false){
                 return;
             }
-            
-            console.assert(arg !== undefined, msg);
+
+            if(arg === undefined) {
+                this.assertCount++;
+                console.assert(false, msg);
+            }
         };
         
         this.isUndefined = function(arg, msg) {
             if(Endless.isDebug === false){
                 return;
             }
-            
-            console.assert(arg === undefined, msg);
+
+            if(arg !== undefined) {
+                this.assertCount++;
+                console.assert(false, msg);
+            }
         };
         
         this.isTrue = function(eval, msg) {
             if(Endless.isDebug === false){
                 return;
             }
-            
-            console.assert(eval === true, msg);
+
+            if(eval === false) {
+                this.assertCount++;
+                console.assert(false, msg);
+            }
         };
         
         this.isFalse = function(eval, msg) {
             if(Endless.isDebug === false){
                 return;
             }
-            
-            console.assert(eval === false, msg);
+
+            if(eval === true) {
+                this.assertCount++;
+                console.assert(false, msg);
+            }
         };
         
         this.isNumber = function(arg, msg) {
             if($.isNumeric(arg)) {
                 return;
             }
-            
+
+            this.assertCount++;
             console.assert(false, msg);
+        };
+
+        this.hasAsserted = function() {
+            return this.assertCount > 0;
         };
     }
     

@@ -111,5 +111,7 @@ declare("Stats", function () {
         }
     }
 
-    return new Stats();
+    return {
+      create: function() { return new Stats(); }
+    };
 });

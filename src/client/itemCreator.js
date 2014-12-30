@@ -1,5 +1,7 @@
 declare("ItemCreator", function () {
     include('Component');
+    include('Utils');
+    include('Static');
 
     ItemCreator.prototype = component.create();
     ItemCreator.prototype.$super = parent;
@@ -11,7 +13,7 @@ declare("ItemCreator", function () {
         this.getRandomItemRarity = function getRandomItemRarity(monsterRarity) {
             var rand = Math.random();
             switch (monsterRarity) {
-                case MonsterRarity.COMMON:
+                case static.MonsterRarity.COMMON:
                     if (rand < 0.20) {
                         rand = Math.random();
                         if (rand < (0.00001 * ((game.player.getItemRarity() / 100) + 1))) {
@@ -31,7 +33,7 @@ declare("ItemCreator", function () {
                         }
                     }
                     break;
-                case MonsterRarity.RARE:
+                case static.MonsterRarity.RARE:
                     if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) {
                         return ItemRarity.LEGENDARY;
                     }
@@ -45,7 +47,7 @@ declare("ItemCreator", function () {
                         return ItemRarity.UNCOMMON;
                     }
                     break;
-                case MonsterRarity.ELITE:
+                case static.MonsterRarity.ELITE:
                     if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
                         return ItemRarity.LEGENDARY;
                     }
@@ -56,7 +58,7 @@ declare("ItemCreator", function () {
                         return ItemRarity.RARE;
                     }
                     break;
-                case MonsterRarity.BOSS:
+                case static.MonsterRarity.BOSS:
                     if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
                         return ItemRarity.LEGENDARY;
                     }
@@ -460,7 +462,7 @@ declare("ItemCreator", function () {
                                 newEffect = new Effect(EffectType.SWIFTNESS, 10, 0);
                                 break;
                             case 1:
-                                newEffect = new Effect(EffectType.PILLAGING, 10, Math.floor(((Sigma(level) * Math.pow(1.01, level)) / 4 + 1) * 15));
+                                newEffect = new Effect(EffectType.PILLAGING, 10, Math.floor(((utils.Sigma(level) * Math.pow(1.01, level)) / 4 + 1) * 15));
                                 break;
                             case 2:
                                 newEffect = new Effect(EffectType.NOURISHMENT, 10, Math.floor((10 * level) * Math.pow(1.001, level) * 0.75));
@@ -509,5 +511,7 @@ declare("ItemCreator", function () {
         }
     }
 
-    return new ItemCreator();
+    return {
+        create: function() { return new ItemCreator(); }
+    };
 });

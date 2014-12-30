@@ -125,5 +125,7 @@ declare("BuffManager", function () {
         }
     }
 
-    return new BuffManager();
+    return {
+        create: function() { return new BuffManager(); }
+    };
 });

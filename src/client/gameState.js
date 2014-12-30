@@ -25,6 +25,6 @@ declare("GameState", function () {
     }
 
     return {
-        create: function() { return new State(); }
+        create: function() { return new GameState(); }
     }
 });

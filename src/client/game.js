@@ -5,6 +5,12 @@ declare("Game", function() {
     include('Equipment');
     include('Stats');
     include('Options');
+    include('Static');
+    include('MercenaryManager');
+    include('UpgradeManager');
+    include('ParticleManager');
+    include('MonsterCreator');
+    include('ItemCreator');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -16,6 +22,7 @@ declare("Game", function() {
         this.loading = false;
         this.loadingTextInterval = 0;
         this.loadInterval = 0;
+        this.oldDate = new Date();
 
         // Player
         this.player = player.create();
@@ -32,23 +39,23 @@ declare("Game", function() {
         this.battleDepth = 1;
 
         // Mercenaries
-        this.mercenaryManager = new mercenaryManager();
+        this.mercenaryManager = mercenaryManager.create();
 
         // Upgrades
-        this.upgradeManager = new UpgradeManager();
+        this.upgradeManager = upgradeManager.create();
 
         // Particles
-        this.particleManager = new ParticleManager();
+        this.particleManager = particleManager.create();
 
         // Monsters
-        this.monsterCreator = new MonsterCreator();
+        this.monsterCreator = monsterCreator.create();
         this.monster = this.monsterCreator.createRandomMonster(
             this.battleLevel,
             this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
         this.displayMonsterHealth = false;
 
         // Items
-        this.itemCreator = new ItemCreator();
+        this.itemCreator = itemCreator.create();
 
         // Saving/Loading
         this.saveDelay = 10000;
@@ -156,7 +163,7 @@ declare("Game", function() {
                 // Calculate how many attacks the player will do
                 var attackAmount = 1;
                 var successfulAttacks = 0;
-                if (this.player.attackType == AttackType.DOUBLE_STRIKE) {
+                if (this.player.attackType == static.AttackType.DOUBLE_STRIKE) {
                     attackAmount++;
                 }
 
@@ -167,7 +174,7 @@ declare("Game", function() {
                     var playerDamage = playerMinDamage + (Math.random() * (playerMaxDamage - playerMinDamage));
 
                     // If the player is using power strike, multiply the damage
-                    if (this.player.attackType == AttackType.POWER_STRIKE) {
+                    if (this.player.attackType == static.AttackType.POWER_STRIKE) {
                         playerDamage *= 1.5;
                     }
 
@@ -204,7 +211,7 @@ declare("Game", function() {
                             playerDamage = playerMinDamage + (Math.random() * (playerMaxDamage - playerMinDamage));
 
                             // If the player is using power strike, multiply the damage
-                            if (this.player.attackType == AttackType.POWER_STRIKE) {
+                            if (this.player.attackType == static.AttackType.POWER_STRIKE) {
                                 playerDamage *= 1.5;
                             }
 
@@ -519,18 +526,18 @@ declare("Game", function() {
         this.reset = function reset() {
             localStorage.clear();
             // Player
-            this.player = new Player();
-            this.inventory = new Inventory();
-            this.equipment = new Equipment();
-            this.statGenerator = new StatGenerator();
-            this.nameGenerator = new NameGenerator();
-            this.statUpgradesManager = new StatUpgradesManager();
+            this.player = player.create();
+            this.inventory = inventory.create();
+            this.equipment = equipment.create();
+            this.statGenerator = statGenerator.create();
+            this.nameGenerator = nameGenerator.create();
+            this.statUpgradesManager = statUpgradeManager.create();
 
             // Other
-            this.questsManager = new QuestsManager();
-            this.eventManager = new EventManager();
-            this.tutorialManager = new TutorialManager();
-            this.stats = new Stats();
+            this.questsManager = questManager.create();
+            this.eventManager = eventManager.create();
+            this.tutorialManager = tutorialManager.create();
+            this.stats = stats.create();
 
             // Combat
             this.inBattle = false;
@@ -538,7 +545,7 @@ declare("Game", function() {
             this.battleDepth = 1;
 
             // Mercenaries
-            this.mercenaryManager = new mercenaryManager();
+            this.mercenaryManager = mercenaryManager.create();
 
             // Upgrades
             // Remove all the upgrade purchase buttons
@@ -547,19 +554,19 @@ declare("Game", function() {
                 currentElement = document.getElementById('upgradePurchaseButton' + (x + 1));
                 currentElement.parentNode.removeChild(currentElement);
             }
-            this.upgradeManager = new UpgradeManager();
+            this.upgradeManager = upgradeManager.create();
 
             // Particles
-            this.particleManager = new ParticleManager();
+            this.particleManager = particleManager.create();
 
             // Monsters
-            this.monsterCreator = new MonsterCreator();
+            this.monsterCreator = monsterCreator.create();
             this.monster = this.monsterCreator.createRandomMonster(
                 this.battleLevel,
                 this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
 
             // Items
-            this.itemCreator = new ItemCreator();
+            this.itemCreator = itemCreator.create();
             // Reset all the inventory and equipment slots
             for (var x = 0; x < this.inventory.slots.length; x++) {
                 $("#inventoryItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
@@ -619,9 +626,10 @@ declare("Game", function() {
             document.getElementById("warlocksOwned").innerHTML = this.mercenaryManager.warlocksOwned;
         }
 
-        this.update = function update() {
+        this.update = function update(gameTime) {
             var newDate = new Date();
-            var ms = (newDate.getTime() - oldDate.getTime());
+            var ms = (newDate.getTime() - this.oldDate.getTime());
+            this.oldDate = newDate;
 
             // Check if the player is dead
             if (!this.player.alive) {

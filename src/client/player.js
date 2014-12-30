@@ -1,5 +1,11 @@
 declare("Player", function () {
     include('Component');
+    include('GameState');
+    include('Static');
+    include('Utils');
+    include('Abilities');
+    include('BuffManager');
+    include('DebuffManager');
 
     Player.prototype = component.create();
     Player.prototype.$super = parent;
@@ -12,7 +18,7 @@ declare("Player", function () {
         this.health = 100;
 
         // Base values for all stats; these are static
-        this.baseStats = new StatsSet();
+        this.baseStats = gameState.create();
         this.baseStats.health = this.health;
         this.baseStats.hp5 = 10;
         this.baseStats.minDamage = 1;
@@ -30,18 +36,18 @@ declare("Player", function () {
         this.baseStats.experienceGain = 0;
 
         // Stat bonuses automatically gained when leveling up
-        this.baseLevelUpBonuses = new StatsSet();
+        this.baseLevelUpBonuses = gameState.create();
         this.baseLevelUpBonuses.health = 5;
         this.baseLevelUpBonuses.hp5 = 1;
 
         // The amount of stats the player has gained from leveling up
-        this.levelUpBonuses = new StatsSet();
+        this.levelUpBonuses = gameState.create();
 
         // Stat bonuses chosen when leveling up
-        this.chosenLevelUpBonuses = new StatsSet();
+        this.chosenLevelUpBonuses = gameState.create();
 
         // Item stat bonuses; this does not include increases to these stats
-        this.baseItemBonuses = new StatsSet();
+        this.baseItemBonuses = gameState.create();
 
         // All the special effects from items the player has
         this.effects = new Array();
@@ -50,14 +56,14 @@ declare("Player", function () {
         this.lastDamageTaken = 0;
         this.alive = true;
         this.canAttack = true;
-        this.attackType = AttackType.BASIC_ATTACK;
+        this.attackType = static.AttackType.BASIC_ATTACK;
 
         // Resources
         this.gold = 0;
         this.lastGoldGained = 0;
         this.experience = 0;
         this.baseExperienceRequired = 10;
-        this.experienceRequired = Math.ceil(Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
+        this.experienceRequired = Math.ceil(utils.Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
         this.lastExperienceGained = 0;
         this.powerShards = 0;
 
@@ -69,11 +75,11 @@ declare("Player", function () {
         // Abilities
         this.skillPointsSpent = 0;
         this.skillPoints = 0;
-        this.abilities = new Abilities();
+        this.abilities = abilities.create();
 
         // Buffs/Debuffs
-        this.buffs = new BuffManager();
-        this.debuffs = new DebuffManager();
+        this.buffs = buffManager.create();
+        this.debuffs = debuffManager.create();
 
         // Stat calculation functions
         this.getMaxHealth = function getMaxHealth() {
@@ -228,16 +234,16 @@ declare("Player", function () {
         // Change the player's attack
         this.changeAttack = function changeAttack(type) {
             switch (type) {
-                case AttackType.BASIC_ATTACK:
-                    this.attackType = AttackType.BASIC_ATTACK;
+                case static.AttackType.BASIC_ATTACK:
+                    this.attackType = static.AttackType.BASIC_ATTACK;
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 0');
                     break;
-                case AttackType.POWER_STRIKE:
-                    this.attackType = AttackType.POWER_STRIKE;
+                case static.AttackType.POWER_STRIKE:
+                    this.attackType = static.AttackType.POWER_STRIKE;
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 100px');
                     break;
-                case AttackType.DOUBLE_STRIKE:
-                    this.attackType = AttackType.DOUBLE_STRIKE;
+                case static.AttackType.DOUBLE_STRIKE:
+                    this.attackType = static.AttackType.DOUBLE_STRIKE;
                     $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 50px');
                     break;
             }
@@ -277,7 +283,7 @@ declare("Player", function () {
                 this.experience -= this.experienceRequired;
                 this.level++;
                 this.skillPoints++;
-                this.experienceRequired = Math.ceil(Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
+                this.experienceRequired = Math.ceil(utils.Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
                 $("#levelUpButton").show();
 
                 // If this number is not divisible by 5 then add a random stat upgrade
@@ -578,7 +584,7 @@ declare("Player", function () {
                 this.gold = parseFloat(localStorage.playerGold);
                 this.level = parseInt(localStorage.playerLevel);
                 this.experience = parseFloat(localStorage.playerExperience);
-                this.experienceRequired = Math.ceil(Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
+                this.experienceRequired = Math.ceil(utils.Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
 
                 this.skillPointsSpent = parseInt(localStorage.playerSkillPointsSpent);
                 this.skillPoints = parseInt(localStorage.playerSkillPoints);
