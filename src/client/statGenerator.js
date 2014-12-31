@@ -10,7 +10,7 @@ declare("StatGenerator", function () {
 
         var rand;
         // Random min damage
-        this.getRandomMinDamage = function getRandomMinDamage(level) {
+        this.getRandomMinDamage = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -27,12 +27,12 @@ declare("StatGenerator", function () {
         }
 
         // Random max damage
-        this.getRandomMaxDamage = function getRandomMaxDamage(level, minDamage) {
+        this.getRandomMaxDamage = function(level, minDamage) {
             return (minDamage + this.getRandomDamageBonus(level));
         }
 
         // Random damage bonus
-        this.getRandomDamageBonus = function getRandomDamageBonus(level) {
+        this.getRandomDamageBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -49,7 +49,7 @@ declare("StatGenerator", function () {
         }
 
         // Random strength bonus
-        this.getRandomStrengthBonus = function getRandomStrengthBonus(level) {
+        this.getRandomStrengthBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -66,7 +66,7 @@ declare("StatGenerator", function () {
         }
 
         // Random agility bonus
-        this.getRandomAgilityBonus = function getRandomAgilityBonus(level) {
+        this.getRandomAgilityBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -83,7 +83,7 @@ declare("StatGenerator", function () {
         }
 
         // Random stamina bonus
-        this.getRandomStaminaBonus = function getRandomStaminaBonus(level) {
+        this.getRandomStaminaBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -100,7 +100,7 @@ declare("StatGenerator", function () {
         }
 
         // Random health bonus
-        this.getRandomHealthBonus = function getRandomHealthBonus(level) {
+        this.getRandomHealthBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -117,7 +117,7 @@ declare("StatGenerator", function () {
         }
 
         // Random hp5 bonus
-        this.getRandomHp5Bonus = function getRandomHp5Bonus(level) {
+        this.getRandomHp5Bonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -134,7 +134,7 @@ declare("StatGenerator", function () {
         }
 
         // Random base armour
-        this.getRandomArmour = function getRandomArmour(level) {
+        this.getRandomArmour = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -151,7 +151,7 @@ declare("StatGenerator", function () {
         }
 
         // Random bonus armour
-        this.getRandomArmourBonus = function getRandomArmourBonus(level) {
+        this.getRandomArmourBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -168,7 +168,7 @@ declare("StatGenerator", function () {
         }
 
         // Random crit chance bonus
-        this.getRandomCritChanceBonus = function getRandomCritChanceBonus(level) {
+        this.getRandomCritChanceBonus = function(level) {
             var critChance = 0;
             rand = Math.random() * 3;
             rand = Math.floor(rand);
@@ -191,7 +191,7 @@ declare("StatGenerator", function () {
         }
 
         // Random crit damage bonus
-        this.getRandomCritDamageBonus = function getRandomCritDamageBonus(level) {
+        this.getRandomCritDamageBonus = function(level) {
             rand = Math.floor(Math.random() * 3);
             switch (rand) {
                 case 0:
@@ -207,7 +207,7 @@ declare("StatGenerator", function () {
         }
 
         // Random item rarity bonus
-        this.getRandomItemRarityBonus = function getRandomItemRarityBonus(level) {
+        this.getRandomItemRarityBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -224,7 +224,7 @@ declare("StatGenerator", function () {
         }
 
         // Random gold gain bonus
-        this.getRandomGoldGainBonus = function getRandomGoldGainBonus(level) {
+        this.getRandomGoldGainBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -241,7 +241,7 @@ declare("StatGenerator", function () {
         }
 
         // Random experience gain bonus
-        this.getRandomExperienceGainBonus = function getRandomExperienceGainBonus(level) {
+        this.getRandomExperienceGainBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -258,7 +258,7 @@ declare("StatGenerator", function () {
         }
 
         // Random evasion bonus
-        this.getRandomEvasionBonus = function getRandomEvasionBonus(level) {
+        this.getRandomEvasionBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {

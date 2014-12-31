@@ -18,7 +18,7 @@ declare("MonsterCreator", function () {
         this.monsterBaseExperienceWorth = 1;
 
         // Create a random monster of a specified level and rarity
-        this.createRandomMonster = function createRandomMonster(level, rarity) {
+        this.createRandomMonster = function(level, rarity) {
             var result = monster.create();
             result.name = this.names[Math.floor(Math.random() * this.names.length)];
             result.level = level;
@@ -31,7 +31,7 @@ declare("MonsterCreator", function () {
         }
 
         // Calculate how much health a monster would have of a certain level and rarity
-        this.calculateMonsterHealth = function calculateMonsterHealth(level, rarity) {
+        this.calculateMonsterHealth = function(level, rarity) {
             var health = utils.Sigma(level) * Math.pow(1.05, level) + this.monsterBaseHealth;
             health = Math.ceil(health);
             switch (rarity) {
@@ -51,7 +51,7 @@ declare("MonsterCreator", function () {
         }
 
         // Calculate how much damage a monster would have of a certain level and rarity
-        this.calculateMonsterDamage = function calculateMonsterDamage(level, rarity) {
+        this.calculateMonsterDamage = function(level, rarity) {
             var damage = (utils.Sigma(level) * Math.pow(1.01, level)) / 3 + this.monsterBaseDamage;
             damage = Math.ceil(damage);
             switch (rarity) {
@@ -71,7 +71,7 @@ declare("MonsterCreator", function () {
         }
 
         // Calculate how much gold a monster would give of a certain level and rarity
-        this.calculateMonsterGoldWorth = function calculateMonsterGoldWorth(level, rarity) {
+        this.calculateMonsterGoldWorth = function(level, rarity) {
             var goldWorth = (utils.Sigma(level) * Math.pow(1.01, level)) / 4 + this.monsterBaseGoldWorth;
             goldWorth = Math.ceil(goldWorth);
             switch (rarity) {
@@ -91,7 +91,7 @@ declare("MonsterCreator", function () {
         }
 
         // Calculate how much experience a monster would give of a certain level and rarity
-        this.calculateMonsterExperienceWorth = function calculateMonsterExperienceWorth(level, rarity) {
+        this.calculateMonsterExperienceWorth = function(level, rarity) {
             var experienceWorth = (utils.Sigma(level) * Math.pow(1.01, level)) / 5 + this.monsterBaseExperienceWorth;
             experienceWorth = Math.ceil(experienceWorth);
             switch (rarity) {
@@ -111,7 +111,7 @@ declare("MonsterCreator", function () {
         }
 
         // Calculate the rarity of a monster on a certain battle level at a certain battle depth
-        this.calculateMonsterRarity = function calculateMonsterRarity(battleLevel, battleDepth) {
+        this.calculateMonsterRarity = function(battleLevel, battleDepth) {
             // Calculate the chances for each monster rarity other than normal
             var rareChance = 0.001 + (battleLevel / 500);
             if (rareChance > 0.1) {
@@ -149,7 +149,7 @@ declare("MonsterCreator", function () {
         }
 
         // Get the name colour of a rarity
-        this.getRarityColour = function getRarityColour(rarity) {
+        this.getRarityColour = function(rarity) {
             switch (rarity) {
                 case static.MonsterRarity.COMMON:
                     return '#ffffff';
@@ -167,7 +167,5 @@ declare("MonsterCreator", function () {
         }
     }
 
-    return {
-        create: function() { return new MonsterCreator(); }
-    };
+    return new MonsterCreator();
 });

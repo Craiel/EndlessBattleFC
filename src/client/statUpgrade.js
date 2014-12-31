@@ -1,9 +1,14 @@
 declare("StatUpgrade", function () {
 
     // A random stat the player can choose when they level up
-    function StatUpgrade(type, amount) {
-        this.type = type;
-        this.amount = amount;
+    function StatUpgrade() {
+        this.type = undefined;
+        this.amount = 0;
+
+        this.init = function(type, amount) {
+            this.type = type;
+            this.amount = amount;
+        }
     }
 
     return {

@@ -23,7 +23,7 @@ declare("Inventory", function () {
         }
 
         // Loot an item if there is room
-        this.lootItem = function lootItem(item) {
+        this.lootItem = function(item) {
             for (var x = 0; x < this.maxSlots; x++) {
                 if (this.slots[x] == null) {
                     this.slots[x] = item;
@@ -35,7 +35,7 @@ declare("Inventory", function () {
         }
 
         // Swap the location of two items in the inventory
-        this.swapItems = function swapItems(index1, index2) {
+        this.swapItems = function(index1, index2) {
             var savedItem = this.slots[index1];
 
             this.slots[index1] = this.slots[index2];
@@ -56,19 +56,19 @@ declare("Inventory", function () {
         }
 
         // Remove an item from the inventory
-        this.removeItem = function removeItem(index) {
+        this.removeItem = function(index) {
             this.slots[index] = null;
             $("#inventoryItem" + (index + 1)).css('background', 'url("includes/images/NULL.png")');
         }
 
         // Add an item to a specified slot
-        this.addItemToSlot = function addItemToSlot(item, index) {
+        this.addItemToSlot = function(item, index) {
             this.slots[index] = item;
             $("#inventoryItem" + (index + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
         }
 
         // Sell an item in a specified slot
-        this.sellItem = function sellItem(slot) {
+        this.sellItem = function(slot) {
             if (this.slots[slot] != null) {
                 // Get the sell value and give the gold to the player; don't use the gainGold function as it will include gold gain bonuses
                 var value = this.slots[slot].sellValue;
@@ -82,14 +82,14 @@ declare("Inventory", function () {
         }
 
         // Sell every item in the player's inventory
-        this.sellAll = function sellAll() {
+        this.sellAll = function() {
             for (var x = 0; x < this.slots.length; x++) {
                 this.sellItem(x);
             }
         }
 
         // Unlock the ability to auto sell an item rarity
-        this.unlockAutoSell = function unlockAutoSell(rarity) {
+        this.unlockAutoSell = function(rarity) {
             switch (rarity) {
                 case ItemRarity.COMMON:
                     $("#checkboxWhite").show();
@@ -109,12 +109,12 @@ declare("Inventory", function () {
             }
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.inventorySaved = true;
             localStorage.inventorySlots = JSON.stringify(this.slots);
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.inventorySaved != null) {
                 this.slots = JSON.parse(localStorage.inventorySlots);
                 for (var x = 0; x < this.slots.length; x++) {
@@ -153,9 +153,14 @@ declare("Inventory", function () {
             }
         }
 
-        this.update = function update(ms) {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             // If enough time has passed ell any items the player wants auto selling
-            this.autoSellTimeRemaining -= ms;
+            this.autoSellTimeRemaining -= gameTime.elapsed;
             if (this.autoSellTimeRemaining <= 0) {
                 this.autoSellTimeRemaining = this.autoSellInterval;
                 for (var x = 0; x < this.slots.length; x++) {

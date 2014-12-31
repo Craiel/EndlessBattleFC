@@ -1,6 +1,13 @@
 declare("UserInterface", function () {
     include('Component');
     include('Static');
+    include('EventManager');
+    include('MercenaryManager');
+    include('QuestManager');
+    include('StatUpgradeManager');
+    include('TooltipManager');
+    include('GameState');
+    include('UpgradeManager');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -33,7 +40,10 @@ declare("UserInterface", function () {
         this.WindowOrder = new Array("characterWindow", "mercenariesWindow", "upgradesWindow", "questsWindow", "inventoryWindow");
         this.WindowIds = new Array("characterWindow", "mercenariesWindow", "upgradesWindow", "questsWindow", "inventoryWindow");
 
+        this.componentInit = this.init;
+
         this.init = function() {
+            this.componentInit();
 
             // setup Mouse position tracking
             (function () {
@@ -71,7 +81,7 @@ declare("UserInterface", function () {
         }
 
         this.clickEventButton = function(obj, id) {
-            game.eventManager.startEvent(obj, id);
+            eventManager.startEvent(obj, id);
         }
 
         this.skullParticlesOptionClick = function() {
@@ -179,8 +189,8 @@ declare("UserInterface", function () {
         }
 
         this.upgradeButtonMouseOver = function(obj, buttonId) {
-            var upgradeId = game.upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
-            var upgrade = game.upgradeManager.upgrades[upgradeId];
+            var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
+            var upgrade = upgradeManager.upgrades[upgradeId];
             $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
 
             $("#otherTooltipTitle").html(upgrade.name);
@@ -197,15 +207,15 @@ declare("UserInterface", function () {
         }
 
         this.upgradeButtonMouseDown = function(buttonId) {
-            var upgradeId = game.upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
-            var upgrade = game.upgradeManager.upgrades[upgradeId];
+            var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
+            var upgrade = upgradeManager.upgrades[upgradeId];
             $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.upgradeManager.purchaseUpgrade(buttonId - 1);
+            upgradeManager.purchaseUpgrade(buttonId - 1);
         }
 
         this.upgradeButtonMouseOut = function(buttonId) {
-            var upgradeId = game.upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
-            var upgrade = game.upgradeManager.upgrades[upgradeId];
+            var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
+            var upgrade = upgradeManager.upgrades[upgradeId];
             $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 0');
             $("#otherTooltip").hide();
         }
@@ -368,7 +378,7 @@ declare("UserInterface", function () {
             // If there is an item in this slot then show the item tooltip
             if (item != null) {
                 var rect = obj.getBoundingClientRect();
-                game.tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
+                tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
             }
         }
 
@@ -459,7 +469,7 @@ declare("UserInterface", function () {
                 var rect = obj.getBoundingClientRect();
 
                 // Display the tooltip
-                game.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
+                tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
             }
         }
 
@@ -547,7 +557,7 @@ declare("UserInterface", function () {
 
         this.characterWindowButtonHover = function(obj) {
             $(".characterWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 78px');
-            game.tooltipManager.displayBasicTooltip(obj, "Character");
+            tooltipManager.displayBasicTooltip(obj, "Character");
         }
 
         this.characterWindowButtonClick = function(obj) {
@@ -560,7 +570,7 @@ declare("UserInterface", function () {
                 $("#characterWindow").show();
                 characterWindowShown = true;
                 // Update the tutorial
-                game.tutorialManager.equipmentOpened = true;
+                gameState.equipmentOpened = true;
             }
         }
 
@@ -571,7 +581,7 @@ declare("UserInterface", function () {
 
         this.mercenariesWindowButtonHover = function(obj) {
             $(".mercenariesWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 117px');
-            game.tooltipManager.displayBasicTooltip(obj, "Mercenaries");
+            tooltipManager.displayBasicTooltip(obj, "Mercenaries");
         }
 
         this.mercenariesWindowButtonClick = function(obj) {
@@ -585,8 +595,8 @@ declare("UserInterface", function () {
                 updateWindowDepths(document.getElementById("mercenariesWindow"));
             }
 
-            if (game.tutorialManager.currentTutorial == 9) {
-                game.tutorialManager.hideTutorial();
+            if (tutorialManager.currentTutorial == 9) {
+                tutorialManager.hideTutorial();
             }
         }
 
@@ -598,11 +608,11 @@ declare("UserInterface", function () {
         this.upgradesWindowButtonHover = function(obj) {
             $("#upgradesWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 39px 0');
             $(".upgradesWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 0');
-            game.tooltipManager.displayBasicTooltip(obj, "Upgrades");
+            tooltipManager.displayBasicTooltip(obj, "Upgrades");
         }
 
         this.upgradesWindowButtonClick = function(obj) {
-            game.upgradeManager.stopGlowingUpgradesButton();
+            upgradeManager.stopGlowingUpgradesButton();
             if (upgradesWindowShown) {
                 $("#upgradesWindow").hide();
                 upgradesWindowShown = false;
@@ -613,8 +623,8 @@ declare("UserInterface", function () {
                 updateWindowDepths(document.getElementById("upgradesWindow"));
             }
 
-            if (game.tutorialManager.currentTutorial == 10) {
-                game.tutorialManager.hideTutorial();
+            if (tutorialManager.currentTutorial == 10) {
+                tutorialManager.hideTutorial();
             }
         }
 
@@ -627,11 +637,11 @@ declare("UserInterface", function () {
         this.questsWindowButtonHover = function(obj) {
             $("#questsWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 39px 195px');
             $(".questsWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 195px');
-            game.tooltipManager.displayBasicTooltip(obj, "Quests");
+            tooltipManager.displayBasicTooltip(obj, "Quests");
         }
 
         this.questsWindowButtonClick = function(obj) {
-            game.questsManager.stopGlowingQuestsButton();
+            questManager.stopGlowingQuestsButton();
             if (questsWindowShown) {
                 $("#questsWindow").hide();
                 questsWindowShown = false;
@@ -643,8 +653,8 @@ declare("UserInterface", function () {
             }
 
             // Hide the tutorial if this is the first quests tutorial
-            if (game.tutorialManager.currentTutorial == 6) {
-                game.tutorialManager.hideTutorial();
+            if (tutorialManager.currentTutorial == 6) {
+                tutorialManager.hideTutorial();
             }
         }
 
@@ -655,12 +665,12 @@ declare("UserInterface", function () {
         }
 
         this.questNameClick = function(id) {
-            game.questsManager.selectedQuest = id;
+            questManager.selectedQuest = id;
         }
 
         this.inventoryWindowButtonHover = function(obj) {
             $(".inventoryWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 39px');
-            game.tooltipManager.displayBasicTooltip(obj, "Inventory");
+            tooltipManager.displayBasicTooltip(obj, "Inventory");
         }
 
         this.inventoryWindowButtonClick = function(obj) {
@@ -673,7 +683,7 @@ declare("UserInterface", function () {
                 $("#inventoryWindow").show();
                 inventoryWindowShown = true;
                 // Update the 6th tutorial
-                game.tutorialManager.inventoryOpened = true;
+                gameState.inventoryOpened = true;
             }
         }
 
@@ -756,7 +766,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Footman');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.FOOTMAN));
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.FOOTMAN));
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -768,7 +778,7 @@ declare("UserInterface", function () {
 
         this.footmanBuyButtonMouseDown = function(obj) {
             $("#footmanBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.mercenaryManager.purchaseMercenary(MercenaryType.FOOTMAN);
+            mercenaryManager.purchaseMercenary(MercenaryType.FOOTMAN);
         }
 
         this.footmanBuyButtonMouseOut = function(obj) {
@@ -782,8 +792,8 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Cleric');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.CLERIC).formatMoney() +
-            '<br>Clerics increase your hp5 by ' + game.mercenaryManager.getClericHp5PercentBonus() + '%.');
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.CLERIC).formatMoney() +
+            '<br>Clerics increase your hp5 by ' + mercenaryManager.getClericHp5PercentBonus() + '%.');
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -795,7 +805,7 @@ declare("UserInterface", function () {
 
         this.clericBuyButtonMouseDown = function(obj) {
             $("#clericBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.mercenaryManager.purchaseMercenary(MercenaryType.CLERIC);
+            mercenaryManager.purchaseMercenary(MercenaryType.CLERIC);
         }
 
         this.clericBuyButtonMouseOut = function(obj) {
@@ -809,8 +819,8 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Commander');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.COMMANDER).formatMoney() +
-            '<br>Commanders increase your health by ' + game.mercenaryManager.getCommanderHealthPercentBonus() + '%.');
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.COMMANDER).formatMoney() +
+            '<br>Commanders increase your health by ' + mercenaryManager.getCommanderHealthPercentBonus() + '%.');
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -822,7 +832,7 @@ declare("UserInterface", function () {
 
         this.commanderBuyButtonMouseDown = function(obj) {
             $("#commanderBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.mercenaryManager.purchaseMercenary(MercenaryType.COMMANDER);
+            mercenaryManager.purchaseMercenary(MercenaryType.COMMANDER);
         }
 
         this.commanderBuyButtonMouseOut = function(obj) {
@@ -836,8 +846,8 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Mage');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.MAGE).formatMoney() +
-            '<br>Mages increase your damage by ' + game.mercenaryManager.getMageDamagePercentBonus() + '%.');
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.MAGE).formatMoney() +
+            '<br>Mages increase your damage by ' + mercenaryManager.getMageDamagePercentBonus() + '%.');
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -849,7 +859,7 @@ declare("UserInterface", function () {
 
         this.mageBuyButtonMouseDown = function(obj) {
             $("#mageBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.mercenaryManager.purchaseMercenary(MercenaryType.MAGE);
+            mercenaryManager.purchaseMercenary(MercenaryType.MAGE);
         }
 
         this.mageBuyButtonMouseOut = function(obj) {
@@ -863,8 +873,8 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Assassin');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.ASSASSIN).formatMoney() +
-            '<br>Assassins increase your evasion by ' + game.mercenaryManager.getAssassinEvasionPercentBonus() + '%.');
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.ASSASSIN).formatMoney() +
+            '<br>Assassins increase your evasion by ' + mercenaryManager.getAssassinEvasionPercentBonus() + '%.');
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -876,7 +886,7 @@ declare("UserInterface", function () {
 
         this.assassinBuyButtonMouseDown = function(obj) {
             $("#assassinBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.mercenaryManager.purchaseMercenary(MercenaryType.ASSASSIN);
+            mercenaryManager.purchaseMercenary(MercenaryType.ASSASSIN);
         }
 
         this.assassinBuyButtonMouseOut = function(obj) {
@@ -890,8 +900,8 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Warlock');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.WARLOCK).formatMoney() +
-            '<br>Warlocks increase your critical strike damage by ' + game.mercenaryManager.getWarlockCritDamageBonus() + '%.');
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.WARLOCK).formatMoney() +
+            '<br>Warlocks increase your critical strike damage by ' + mercenaryManager.getWarlockCritDamageBonus() + '%.');
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -903,7 +913,7 @@ declare("UserInterface", function () {
 
         this.warlockBuyButtonMouseDown = function(obj) {
             $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-            game.mercenaryManager.purchaseMercenary(MercenaryType.WARLOCK);
+            mercenaryManager.purchaseMercenary(MercenaryType.WARLOCK);
         }
 
         this.warlockBuyButtonMouseOut = function(obj) {
@@ -915,7 +925,7 @@ declare("UserInterface", function () {
             obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
 
             // Show a tooltip describing what the hovered stat does if neccessary
-            var upgrade = game.statUpgradesManager.upgrades[0][index - 1];
+            var upgrade = statUpgradeManager.upgrades[0][index - 1];
 
             switch (upgrade.type) {
                 case StatUpgradeType.DAMAGE:
@@ -979,7 +989,7 @@ declare("UserInterface", function () {
             $("#statUpgradesWindow").hide();
 
             // Upgrade a player's stat depending on which button was clicked
-            var upgrade = game.statUpgradesManager.upgrades[0][index - 1];
+            var upgrade = statUpgradeManager.upgrades[0][index - 1];
             switch (upgrade.type) {
                 case StatUpgradeType.DAMAGE:
                     game.player.chosenLevelUpBonuses.damageBonus += upgrade.amount;
@@ -1017,7 +1027,7 @@ declare("UserInterface", function () {
             }
 
             // Remove the upgrade
-            game.statUpgradesManager.upgrades.splice(0, 1);
+            statUpgradeManager.upgrades.splice(0, 1);
 
             // Alter the player's skill points
             game.player.skillPoints--;
@@ -1029,7 +1039,7 @@ declare("UserInterface", function () {
             }
 
             // Update the 4th tutorial
-            game.tutorialManager.statUpgradeChosen = true;
+            gameState.statUpgradeChosen = true;
         }
 
         this.statUpgradeButtonReset = function(obj) {
@@ -1399,7 +1409,7 @@ declare("UserInterface", function () {
         }
 
         this.tutorialContinueButtonClick = function() {
-            game.tutorialManager.continueTutorial();
+            tutorialManager.continueTutorial();
         }
 
         this.updatesWindowButtonClick = function() {

@@ -2,6 +2,8 @@ declare("ItemCreator", function () {
     include('Component');
     include('Utils');
     include('Static');
+    include('NameGenerator');
+    include('StatGenerator');
 
     ItemCreator.prototype = component.create();
     ItemCreator.prototype.$super = parent;
@@ -10,7 +12,7 @@ declare("ItemCreator", function () {
     function ItemCreator() {
         this.id = "ItemCreator";
 
-        this.getRandomItemRarity = function getRandomItemRarity(monsterRarity) {
+        this.getRandomItemRarity = function(monsterRarity) {
             var rand = Math.random();
             switch (monsterRarity) {
                 case static.MonsterRarity.COMMON:
@@ -69,7 +71,7 @@ declare("ItemCreator", function () {
             }
         }
 
-        this.createRandomItem = function createRandomItem(level, rarity) {
+        this.createRandomItem = function(level, rarity) {
             // If there is no rarity; do nothing
             if (rarity == null) {
                 return null;
@@ -146,8 +148,6 @@ declare("ItemCreator", function () {
             while (amount > 0) {
                 // Get the ID of the bonuses; randomly
                 randBonus = Math.floor(Math.random() * PREFIX_AMOUNT);
-                var statGenerator = new StatGenerator();
-                var nameGenerator = new NameGenerator();
 
                 // Add the bonus to the item bonuses
                 switch (randBonus) {
@@ -511,7 +511,5 @@ declare("ItemCreator", function () {
         }
     }
 
-    return {
-        create: function() { return new ItemCreator(); }
-    };
+    return new ItemCreator();
 });

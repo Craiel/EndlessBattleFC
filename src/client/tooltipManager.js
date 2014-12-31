@@ -8,7 +8,7 @@ declare("TooltipManager", function () {
     function TooltipManager() {
         this.id = "TooltipManager";
 
-        this.displayItemTooltip = function displayItemTooltip(item1, item2, item3, left, top, canSell) {
+        this.displayItemTooltip = function(item1, item2, item3, left, top, canSell) {
             // Get the item type
             var type = '';
             switch (item1.type) {
@@ -386,7 +386,7 @@ declare("TooltipManager", function () {
             }
         }
 
-        this.displayBasicTooltip = function displayBasicTooltip(obj, text) {
+        this.displayBasicTooltip = function(obj, text) {
             $("#basicTooltipText").html(text);
             $("#basicTooltip").show();
 

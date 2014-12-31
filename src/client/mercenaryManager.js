@@ -1,5 +1,7 @@
 declare("MercenaryManager", function () {
     include('Component');
+    include('Static');
+    include('GameState');
 
     MercenaryManager.prototype = component.create();
     MercenaryManager.prototype.$super = parent;
@@ -12,69 +14,14 @@ declare("MercenaryManager", function () {
         var gpsUpdateDelay = 100;
         var gpsUpdateTime = 0;
 
-        // The base Gps values for each mercenary, these are static
-        this.baseFootmanGps = 0.1;
-        this.baseClericGps = 0.94;
-        this.baseCommanderGps = 8.8;
-        this.baseMageGps = 83;
-        this.baseAssassinGps = 780;
-        this.baseWarlockGps = 7339;
-
-        // The amount of gps mercenaries will give without any buffs
-        this.footmanGps = this.baseFootmanGps;
-        this.clericGps = this.baseClericGps;
-        this.commanderGps = this.baseCommanderGps;
-        this.mageGps = this.baseMageGps;
-        this.assassinGps = this.baseAssassinGps;
-        this.warlockGps = this.baseWarlockGps;
-
-        // The base effect levels of each mercenaries special effects
-        this.baseClericHp5PercentBonus = 5;
-        this.baseCommanderHealthPercentBonus = 5;
-        this.baseMageDamagePercentBonus = 5;
-        this.baseAssassinEvasionPercentBonus = 5;
-        this.baseWarlockCritDamageBonus = 5;
-
-        // The amount an upgrade to a mercenary's special effect will do
-        this.clericHp5PercentUpgradeValue = 2.5;
-        this.commanderHealthPercentUpgradeValue = 2.5;
-        this.mageDamagePercentUpgradeValue = 2.5;
-        this.assassinEvasionPercentUpgradeValue = 2.5;
-        this.warlockCritDamageUpgradeValue = 2.5;
-
-        // Base prices for each mercenary
-        this.baseFootmanPrice = 10;
-        this.baseClericPrice = 200;
-        this.baseCommanderPrice = 4000;
-        this.baseMagePrice = 80000;
-        this.baseAssassinPrice = 1600000;
-        this.baseWarlockPrice = 32000000;
-
-        // Current prices of mercenaries and how many of each the player owns
-        this.footmanPrice = this.baseFootmanPrice;
-        this.footmenOwned = 0;
-        this.clericPrice = this.baseClericPrice;
-        this.clericsOwned = 0;
-        this.commanderPrice = this.baseCommanderPrice;
-        this.commandersOwned = 0;
-        this.magePrice = this.baseMagePrice;
-        this.magesOwned = 0;
-        this.assassinPrice = this.baseAssassinPrice;
-        this.assassinsOwned = 0;
-        this.warlockPrice = this.baseWarlockPrice;
-        this.warlocksOwned = 0;
-
-        // Gps reduction when dead
-        this.deathGpsReductionAmount = 50;
-        this.deathGpsReductionDuration = 60;
-        this.gpsReductionTimeRemaining = 0;
-        this.gpsReduction = 0;
-
         // All the mercenaries the player owns
         this.mercenaries = new Array();
 
-        this.initialize = function initialize() {
-            document.getElementById("footmanCost").innerHTML = this.footmanPrice.formatMoney(0);
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
+            document.getElementById("footmanCost").innerHTML = gameState.footmanPrice.formatMoney(0);
             document.getElementById("clericCost").innerHTML = this.clericPrice.formatMoney(0);
             document.getElementById("commanderCost").innerHTML = this.commanderPrice.formatMoney(0);
             document.getElementById("mageCost").innerHTML = this.magePrice.formatMoney(0);
@@ -83,7 +30,7 @@ declare("MercenaryManager", function () {
         }
 
         // Add a new mercenary of a specified type for the player
-        this.addMercenary = function addMercenary(type) {
+        this.addMercenary = function(type) {
             switch (type) {
                 case MercenaryType.FOOTMAN:
                     this.mercenaries.push(new mercenary(MercenaryType.FOOTMAN));
@@ -107,47 +54,47 @@ declare("MercenaryManager", function () {
         }
 
         // Get the amount that a mercenary's special effect gives
-        this.getClericHp5PercentBonus = function getClericHp5PercentBonus() {
-            return this.baseClericHp5PercentBonus + (this.clericHp5PercentUpgradeValue * game.upgradeManager.clericSpecialUpgradesPurchased);
+        this.getClericHp5PercentBonus = function() {
+            return static.baseClericHp5PercentBonus + (static.clericHp5PercentUpgradeValue * gameState.clericSpecialUpgradesPurchased);
         }
-        this.getCommanderHealthPercentBonus = function getCommanderHealthPercentBonus() {
-            return this.baseCommanderHealthPercentBonus + (this.commanderHealthPercentUpgradeValue * game.upgradeManager.commanderSpecialUpgradesPurchased);
+        this.getCommanderHealthPercentBonus = function() {
+            return static.baseCommanderHealthPercentBonus + (static.commanderHealthPercentUpgradeValue * gameState.commanderSpecialUpgradesPurchased);
         }
-        this.getMageDamagePercentBonus = function getMageDamagePercentBonus() {
-            return this.baseMageDamagePercentBonus + (this.mageDamagePercentUpgradeValue * game.upgradeManager.mageSpecialUpgradesPurchased);
+        this.getMageDamagePercentBonus = function() {
+            return static.baseMageDamagePercentBonus + (static.mageDamagePercentUpgradeValue * gameState.mageSpecialUpgradesPurchased);
         }
-        this.getAssassinEvasionPercentBonus = function getAssassinEvasionPercentBonus() {
-            return this.baseAssassinEvasionPercentBonus + (this.assassinEvasionPercentUpgradeValue * game.upgradeManager.assassinSpecialUpgradesPurchased);
+        this.getAssassinEvasionPercentBonus = function() {
+            return static.baseAssassinEvasionPercentBonus + (static.assassinEvasionPercentUpgradeValue * gameState.assassinSpecialUpgradesPurchased);
         }
-        this.getWarlockCritDamageBonus = function getWarlockCritDamageBonus() {
-            return this.baseWarlockCritDamageBonus + (this.warlockCritDamageUpgradeValue * game.upgradeManager.warlockSpecialUpgradesPurchased);
+        this.getWarlockCritDamageBonus = function() {
+            return static.baseWarlockCritDamageBonus + (static.warlockCritDamageUpgradeValue * gameState.warlockSpecialUpgradesPurchased);
         }
 
-        this.getMercenaryBaseGps = function getMercenaryBaseGps(type) {
+        this.getMercenaryBaseGps = function(type) {
             switch (type) {
                 case MercenaryType.FOOTMAN:
-                    return (this.baseFootmanGps * Math.pow(2, game.upgradeManager.footmanUpgradesPurchased));
+                    return (static.baseFootmanGps * Math.pow(2, gameState.footmanUpgradesPurchased));
                     break;
                 case MercenaryType.CLERIC:
-                    return (this.baseClericGps * Math.pow(2, game.upgradeManager.clericUpgradesPurchased));
+                    return (static.baseClericGps * Math.pow(2, gameState.clericUpgradesPurchased));
                     break;
                 case MercenaryType.COMMANDER:
-                    return (this.baseCommanderGps * Math.pow(2, game.upgradeManager.commanderUpgradesPurchased));
+                    return (static.baseCommanderGps * Math.pow(2, gameState.commanderUpgradesPurchased));
                     break;
                 case MercenaryType.MAGE:
-                    return (this.baseMageGps * Math.pow(2, game.upgradeManager.mageUpgradesPurchased));
+                    return (static.baseMageGps * Math.pow(2, gameState.mageUpgradesPurchased));
                     break;
                 case MercenaryType.ASSASSIN:
-                    return (this.baseAssassinGps * Math.pow(2, game.upgradeManager.assassinUpgradesPurchased));
+                    return (static.baseAssassinGps * Math.pow(2, gameState.assassinUpgradesPurchased));
                     break;
                 case MercenaryType.WARLOCK:
-                    return (this.baseWarlockGps * Math.pow(2, game.upgradeManager.warlockUpgradesPurchased));
+                    return (static.baseWarlockGps * Math.pow(2, gameState.warlockUpgradesPurchased));
                     break;
             }
         }
 
         // Get the amount of Gps a mercenary will grant
-        this.getMercenariesGps = function getMercenariesGps(type) {
+        this.getMercenariesGps = function(type) {
             switch (type) {
                 case MercenaryType.FOOTMAN:
                     return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
@@ -171,7 +118,7 @@ declare("MercenaryManager", function () {
         }
 
         // Get the Gps
-        this.getGps = function getGps() {
+        this.getGps = function() {
             var gps = 0;
             var gold = 0;
 
@@ -190,10 +137,15 @@ declare("MercenaryManager", function () {
             return gps.formatMoney(2);
         }
 
-        this.update = function update(ms) {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             // Update the gps reduction if there is a reduction active
             if (this.gpsReduction > 0) {
-                this.gpsReductionTimeRemaining -= ms;
+                this.gpsReductionTimeRemaining -= gameTime.elapsed;
 
                 if (this.gpsReductionTimeRemaining <= 0) {
                     this.gpsReduction = 0;
@@ -203,7 +155,7 @@ declare("MercenaryManager", function () {
             }
 
             // Give the player gold from each mercenary if enough time has passed
-            gpsUpdateTime += ms;
+            gpsUpdateTime += gameTime.elapsed;
             if (gpsUpdateTime >= gpsUpdateDelay) {
                 var gainTimes = 0;
                 while (gpsUpdateTime >= gpsUpdateDelay) {
@@ -227,11 +179,11 @@ declare("MercenaryManager", function () {
         }
 
         // Purchasing a new Footman
-        this.purchaseMercenary = function purchaseMercenary(type) {
+        this.purchaseMercenary = function(type) {
             var price;
             switch (type) {
                 case MercenaryType.FOOTMAN:
-                    price = this.footmanPrice;
+                    price = gameState.footmanPrice;
                     break;
                 case MercenaryType.CLERIC:
                     price = this.clericPrice;
@@ -258,44 +210,44 @@ declare("MercenaryManager", function () {
                 this.addMercenary(type);
                 switch (type) {
                     case MercenaryType.FOOTMAN:
-                        this.footmenOwned++;
+                        gameState.footmenOwned++;
                         break;
                     case MercenaryType.CLERIC:
-                        this.clericsOwned++;
+                        gameState.clericsOwned++;
                         break;
                     case MercenaryType.COMMANDER:
-                        this.commandersOwned++;
+                        gameState.commandersOwned++;
                         break;
                     case MercenaryType.MAGE:
-                        this.magesOwned++;
+                        gameState.magesOwned++;
                         break;
                     case MercenaryType.ASSASSIN:
-                        this.assassinsOwned++;
+                        gameState.assassinsOwned++;
                         break;
                     case MercenaryType.WARLOCK:
-                        this.warlocksOwned++;
+                        gameState.warlocksOwned++;
                         break;
                 }
 
                 // Increase the price of the mercenary
                 switch (type) {
                     case MercenaryType.FOOTMAN:
-                        this.footmanPrice = Math.floor(this.baseFootmanPrice * Math.pow(1.15, this.footmenOwned));
+                        gameState.footmanPrice = Math.floor(static.baseFootmanPrice * Math.pow(1.15, gameState.footmenOwned));
                         break;
                     case MercenaryType.CLERIC:
-                        this.clericPrice = Math.floor(this.baseClericPrice * Math.pow(1.15, this.clericsOwned));
+                        this.clericPrice = Math.floor(static.baseClericPrice * Math.pow(1.15, gameState.clericsOwned));
                         break;
                     case MercenaryType.COMMANDER:
-                        this.commanderPrice = Math.floor(this.baseCommanderPrice * Math.pow(1.15, this.commandersOwned));
+                        this.commanderPrice = Math.floor(static.baseCommanderPrice * Math.pow(1.15, gameState.commandersOwned));
                         break;
                     case MercenaryType.MAGE:
-                        this.magePrice = Math.floor(this.baseMagePrice * Math.pow(1.15, this.magesOwned));
+                        this.magePrice = Math.floor(static.baseMagePrice * Math.pow(1.15, gameState.magesOwned));
                         break;
                     case MercenaryType.ASSASSIN:
-                        this.assassinPrice = Math.floor(this.baseAssassinPrice * Math.pow(1.15, this.assassinsOwned));
+                        this.assassinPrice = Math.floor(static.baseAssassinPrice * Math.pow(1.15, gameState.assassinsOwned));
                         break;
                     case MercenaryType.WARLOCK:
-                        this.warlockPrice = Math.floor(this.baseWarlockPrice * Math.pow(1.15, this.warlocksOwned));
+                        this.warlockPrice = Math.floor(static.baseWarlockPrice * Math.pow(1.15, gameState.warlocksOwned));
                         break;
                 }
 
@@ -303,74 +255,52 @@ declare("MercenaryManager", function () {
                 var leftReduction;
                 switch (type) {
                     case MercenaryType.FOOTMAN:
-                        document.getElementById("footmanCost").innerHTML = this.footmanPrice.formatMoney(0);
-                        document.getElementById("footmenOwned").innerHTML = this.footmenOwned;
+                        document.getElementById("footmanCost").innerHTML = gameState.footmanPrice.formatMoney(0);
+                        document.getElementById("footmenOwned").innerHTML = gameState.footmenOwned;
                         break;
                     case MercenaryType.CLERIC:
-                        document.getElementById("clericCost").innerHTML = this.clericPrice.formatMoney(0);
-                        document.getElementById("clericsOwned").innerHTML = this.clericsOwned;
+                        document.getElementById("clericCost").innerHTML = gameState.clericPrice.formatMoney(0);
+                        document.getElementById("clericsOwned").innerHTML = gameState.clericsOwned;
                         break;
                     case MercenaryType.COMMANDER:
-                        document.getElementById("commanderCost").innerHTML = this.commanderPrice.formatMoney(0);
-                        document.getElementById("commandersOwned").innerHTML = this.commandersOwned;
+                        document.getElementById("commanderCost").innerHTML = gameState.commanderPrice.formatMoney(0);
+                        document.getElementById("commandersOwned").innerHTML = gameState.commandersOwned;
                         break;
                     case MercenaryType.MAGE:
-                        document.getElementById("mageCost").innerHTML = this.magePrice.formatMoney(0);
-                        document.getElementById("magesOwned").innerHTML = this.magesOwned;
+                        document.getElementById("mageCost").innerHTML = gameState.magePrice.formatMoney(0);
+                        document.getElementById("magesOwned").innerHTML = gameState.magesOwned;
                         break;
                     case MercenaryType.ASSASSIN:
-                        document.getElementById("assassinCost").innerHTML = this.assassinPrice.formatMoney(0);
-                        document.getElementById("assassinsOwned").innerHTML = this.assassinsOwned;
+                        document.getElementById("assassinCost").innerHTML = gameState.assassinPrice.formatMoney(0);
+                        document.getElementById("assassinsOwned").innerHTML = gameState.assassinsOwned;
                         break;
                     case MercenaryType.WARLOCK:
-                        document.getElementById("warlockCost").innerHTML = this.warlockPrice.formatMoney(0);
-                        document.getElementById("warlocksOwned").innerHTML = this.warlocksOwned;
+                        document.getElementById("warlockCost").innerHTML = gameState.warlockPrice.formatMoney(0);
+                        document.getElementById("warlocksOwned").innerHTML = gameState.warlocksOwned;
                         break;
                 }
             }
         }
 
         // Add a Gps reduction of a specified amount and duration
-        this.addGpsReduction = function addGpsReduction(percentage, duration) {
+        this.addGpsReduction = function(percentage, duration) {
             this.gpsReduction = percentage;
             this.gpsReductionTimeRemaining = (duration * 1000);
 
             $("#gps").css('color', '#ff0000');
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.mercenaryManagerSaved = true;
 
-            localStorage.footmenOwned = this.footmenOwned;
-            localStorage.clericsOwned = this.clericsOwned;
-            localStorage.commandersOwned = this.commandersOwned;
-            localStorage.magesOwned = this.magesOwned;
-            localStorage.assassinsOwned = this.assassinsOwned;
-            localStorage.warlocksOwned = this.warlocksOwned;
+
 
             localStorage.mercenaries = JSON.stringify(this.mercenaries);
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.mercenaryManagerSaved != null) {
-                this.footmenOwned = parseInt(localStorage.footmenOwned);
-                this.clericsOwned = parseInt(localStorage.clericsOwned);
-                this.commandersOwned = parseInt(localStorage.commandersOwned);
-                this.magesOwned = parseInt(localStorage.magesOwned);
-                if (localStorage.version == null) {
-                    this.assassinsOwned = parseInt(localStorage.thiefsOwned);
-                }
-                else {
-                    this.assassinsOwned = parseInt(localStorage.assassinsOwned);
-                }
-                this.warlocksOwned = parseInt(localStorage.warlocksOwned);
 
-                this.footmanPrice = Math.floor(this.baseFootmanPrice * Math.pow(1.15, this.footmenOwned));
-                this.clericPrice = Math.floor(this.baseClericPrice * Math.pow(1.15, this.clericsOwned));
-                this.commanderPrice = Math.floor(this.baseCommanderPrice * Math.pow(1.15, this.commandersOwned));
-                this.magePrice = Math.floor(this.baseMagePrice * Math.pow(1.15, this.magesOwned));
-                this.assassinPrice = Math.floor(this.baseAssassinPrice * Math.pow(1.15, this.assassinsOwned));
-                this.warlockPrice = Math.floor(this.baseWarlockPrice * Math.pow(1.15, this.warlocksOwned));
 
                 this.mercenaries = JSON.parse(localStorage.mercenaries);
                 for (var x = 0; x < this.mercenaries.length; x++) {
@@ -380,28 +310,23 @@ declare("MercenaryManager", function () {
                 }
 
                 // Update the mercenary purchase buttons
-                document.getElementById("footmanCost").innerHTML = this.footmanPrice.formatMoney(0);
-                document.getElementById("footmenOwned").innerHTML = this.footmenOwned;
+                document.getElementById("clericCost").innerHTML = gameState.clericPrice.formatMoney(0);
+                document.getElementById("clericsOwned").innerHTML = gameState.clericsOwned;
 
-                document.getElementById("clericCost").innerHTML = this.clericPrice.formatMoney(0);
-                document.getElementById("clericsOwned").innerHTML = this.clericsOwned;
+                document.getElementById("commanderCost").innerHTML = gameState.commanderPrice.formatMoney(0);
+                document.getElementById("commandersOwned").innerHTML = gameState.commandersOwned;
 
-                document.getElementById("commanderCost").innerHTML = this.commanderPrice.formatMoney(0);
-                document.getElementById("commandersOwned").innerHTML = this.commandersOwned;
+                document.getElementById("mageCost").innerHTML = gameState.magePrice.formatMoney(0);
+                document.getElementById("magesOwned").innerHTML = gameState.magesOwned;
 
-                document.getElementById("mageCost").innerHTML = this.magePrice.formatMoney(0);
-                document.getElementById("magesOwned").innerHTML = this.magesOwned;
+                document.getElementById("assassinCost").innerHTML = gameState.assassinPrice.formatMoney(0);
+                document.getElementById("assassinsOwned").innerHTML = gameState.assassinsOwned;
 
-                document.getElementById("assassinCost").innerHTML = this.assassinPrice.formatMoney(0);
-                document.getElementById("assassinsOwned").innerHTML = this.assassinsOwned;
-
-                document.getElementById("warlockCost").innerHTML = this.warlockPrice.formatMoney(0);
-                document.getElementById("warlocksOwned").innerHTML = this.warlocksOwned;
+                document.getElementById("warlockCost").innerHTML = gameState.warlockPrice.formatMoney(0);
+                document.getElementById("warlocksOwned").innerHTML = gameState.warlocksOwned;
             }
         }
     }
 
-    return {
-      create: function() { return new MercenaryManager(); }
-    };
+    return new MercenaryManager();
 });

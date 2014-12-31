@@ -1,5 +1,6 @@
 declare("Equipment", function () {
     include('Component');
+    include('TooltipManager');
 
     Equipment.prototype = component.create();
     Equipment.prototype.$super = parent;
@@ -14,38 +15,38 @@ declare("Equipment", function () {
             this.slots[x] = null;
         }
 
-        this.helm = function helm() {
+        this.helm = function() {
             return this.slots[0];
         };
-        this.shoulders = function shoulders() {
+        this.shoulders = function() {
             return this.slots[1];
         };
-        this.chest = function chest() {
+        this.chest = function() {
             return this.slots[2];
         };
-        this.legs = function legs() {
+        this.legs = function() {
             return this.slots[3];
         };
-        this.weapon = function weapon() {
+        this.weapon = function() {
             return this.slots[4];
         };
-        this.gloves = function gloves() {
+        this.gloves = function() {
             return this.slots[5];
         };
-        this.boots = function boots() {
+        this.boots = function() {
             return this.slots[6];
         };
-        this.trinket1 = function trinket1() {
+        this.trinket1 = function() {
             return this.slots[7];
         };
-        this.trinket2 = function trinket2() {
+        this.trinket2 = function() {
             return this.slots[8];
         };
-        this.off_hand = function off_hand() {
+        this.off_hand = function() {
             return this.slots[9];
         };
 
-        this.equipItem = function equipItem(item, currentSlotIndex) {
+        this.equipItem = function(item, currentSlotIndex) {
             if (item == null) {
                 return;
             }
@@ -195,7 +196,7 @@ declare("Equipment", function () {
                     var rect = slot.getBoundingClientRect();
 
                     // Display the tooltip
-                    game.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
+                    tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
                 }
                 // Else hide the tooltip
                 else {
@@ -207,7 +208,7 @@ declare("Equipment", function () {
         }
 
         // Equip a trinket into the second slot
-        this.equipSecondTrinket = function equipSecondTrinket(item, itemSlot) {
+        this.equipSecondTrinket = function(item, itemSlot) {
             if (item.type == ItemType.TRINKET) {
                 this.equipItemInSlot(item, 8, itemSlot);
 
@@ -281,7 +282,7 @@ declare("Equipment", function () {
                     var rect = slot.getBoundingClientRect();
 
                     // Display the tooltip
-                    game.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
+                    tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
                 }
                 // Else hide the tooltip
                 else {
@@ -292,7 +293,7 @@ declare("Equipment", function () {
             }
         }
 
-        this.equipItemInSlot = function equipItemInSlot(item, newSlotIndex, currentSlotIndex) {
+        this.equipItemInSlot = function(item, newSlotIndex, currentSlotIndex) {
             // Check that the item can be equipped in this slot
             var equippable = false;
             switch (newSlotIndex) {
@@ -375,14 +376,14 @@ declare("Equipment", function () {
             }
         }
 
-        this.removeItem = function removeItem(index) {
+        this.removeItem = function(index) {
             game.player.loseItemsStats(this.slots[index]);
             this.slots[index] = null;
             $(".equipItem" + (index + 1)).css('background', 'url("includes/images/NULL.png")');
         }
 
         // Unequip an item to the first available slot
-        this.unequipItem = function unequipItem(slot) {
+        this.unequipItem = function(slot) {
             // Find the first available slot
             var newSlot = -1;
             for (var x = 0; x < game.inventory.slots.length; x++) {
@@ -400,7 +401,7 @@ declare("Equipment", function () {
         }
 
         // Attempt to remove an item from the equipment into a designated inventory slot
-        this.unequipItemToSlot = function unequipItemToSlot(currentSlotIndex, newSlotIndex) {
+        this.unequipItemToSlot = function(currentSlotIndex, newSlotIndex) {
             var inventorySlotItem = game.inventory.slots[newSlotIndex];
 
             // If the inventory slot contains no item, just send the item to it
@@ -426,7 +427,7 @@ declare("Equipment", function () {
         }
 
         // Swap the two trinket items
-        this.swapTrinkets = function swapTrinkets() {
+        this.swapTrinkets = function() {
             // Save the first trinket
             var savedItem = this.slots[7];
 
@@ -449,12 +450,12 @@ declare("Equipment", function () {
             }
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.equipmentSaved = true;
             localStorage.equipmentSlots = JSON.stringify(this.slots);
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.equipmentSaved != null) {
                 this.slots = JSON.parse(localStorage.equipmentSlots);
                 for (var x = 0; x < this.slots.length; x++) {

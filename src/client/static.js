@@ -181,6 +181,39 @@ declare("Static", function () {
         this.SLOT_TYPE.INVENTORY = "INVENTORY";
         this.SLOT_TYPE.SELL = "SELL";
 
+        // The base Gps values for each mercenary, these are static
+        this.baseFootmanGps = 0.1;
+        this.baseClericGps = 0.94;
+        this.baseCommanderGps = 8.8;
+        this.baseMageGps = 83;
+        this.baseAssassinGps = 780;
+        this.baseWarlockGps = 7339;
+
+        // The base effect levels of each mercenaries special effects
+        this.baseClericHp5PercentBonus = 5;
+        this.baseCommanderHealthPercentBonus = 5;
+        this.baseMageDamagePercentBonus = 5;
+        this.baseAssassinEvasionPercentBonus = 5;
+        this.baseWarlockCritDamageBonus = 5;
+
+        // The amount an upgrade to a mercenary's special effect will do
+        this.clericHp5PercentUpgradeValue = 2.5;
+        this.commanderHealthPercentUpgradeValue = 2.5;
+        this.mageDamagePercentUpgradeValue = 2.5;
+        this.assassinEvasionPercentUpgradeValue = 2.5;
+        this.warlockCritDamageUpgradeValue = 2.5;
+
+        // Base prices for each mercenary
+        this.baseFootmanPrice = 10;
+        this.baseClericPrice = 200;
+        this.baseCommanderPrice = 4000;
+        this.baseMagePrice = 80000;
+        this.baseAssassinPrice = 1600000;
+        this.baseWarlockPrice = 32000000;
+
+        this.deathGpsReductionAmount = 50;
+        this.deathGpsReductionDuration = 60;
+
         this.setRoot = function(value) {
 
         };

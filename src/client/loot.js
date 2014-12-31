@@ -6,7 +6,7 @@ declare("Loot", function () {
     }
 
     return {
-        create: function() { return new Loot(); }
+        create: function(gold, item) { return new Loot(gold, item); }
     }
 
 });

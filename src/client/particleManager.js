@@ -17,14 +17,17 @@ declare("ParticleManager", function () {
         this.particleSources.PLAYER_DAMAGE = "includes/images/sword.png";
         this.particleSources.PLAYER_CRITICAL = "includes/images/sword.png";
 
-        this.initialize = function initialize() {
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
             var canvas = document.getElementById("particleCanvas");
             var context = canvas.getContext("2d");
             context.font = "20px Gentium Book Basic";
             context.textAlign = 'center';
         }
 
-        this.createParticle = function createParticle(text, imageType) {
+        this.createParticle = function(text, imageType) {
             // If the type should not be displayed, end this function
             switch (imageType) {
                 case ParticleType.SKULL:
@@ -129,7 +132,12 @@ declare("ParticleManager", function () {
             }
         }
 
-        this.update = function update(ms) {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             var canvas = document.getElementById("particleCanvas");
             var context = canvas.getContext("2d");
             var image;
@@ -137,7 +145,7 @@ declare("ParticleManager", function () {
             context.clearRect(0, 0, 675, 550);
             for (var x = this.particles.length - 1; x >= 0; x--) {
                 p = this.particles[x];
-                p.update(ms);
+                p.update(gameTime);
                 p.draw();
                 if (p.expired()) {
                     this.particles.splice(x, 1);
@@ -146,8 +154,6 @@ declare("ParticleManager", function () {
         }
     }
 
-    return {
-        create: function() { return new ParticleManager(); }
-    };
+    return new ParticleManager();
 
 });

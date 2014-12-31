@@ -1,5 +1,7 @@
 declare("Stats", function () {
     include('Component');
+    include('MercenaryManager');
+    include('UpgradeManager');
 
     Stats.prototype = component.create();
     Stats.prototype.$super = parent;
@@ -26,27 +28,32 @@ declare("Stats", function () {
         this.damageDealt = 0;
         this.damageTaken = 0;
 
-        this.getGold = function getGold() {
+        this.getGold = function() {
             return game.player.gold;
         }
 
-        this.getUpgradesUnlocked = function getUpgradesUnlocked() {
-            return game.upgradeManager.upgradesPurchased;
+        this.getUpgradesUnlocked = function() {
+            return upgradeManager.upgradesPurchased;
         }
 
-        this.getExperience = function getExperience() {
+        this.getExperience = function() {
             return game.player.experience;
         }
 
-        this.getMercenariesOwned = function getMercenariesOwned() {
-            return game.mercenaryManager.mercenaries.length;
+        this.getMercenariesOwned = function() {
+            return mercenaryManager.mercenaries.length;
         }
 
-        this.getGps = function getGps() {
-            return game.mercenaryManager.getGps();
+        this.getGps = function() {
+            return mercenaryManager.getGps();
         }
 
-        this.update = function update() {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return true;
+            }
+
             // Update the stats window
             document.getElementById("statsWindowPowerShardsValue").innerHTML = game.player.powerShards.formatMoney(2);
             document.getElementById("statsWindowGoldValue").innerHTML = this.getGold().formatMoney(2);
@@ -71,7 +78,7 @@ declare("Stats", function () {
             document.getElementById("statsWindowDamageTakenValue").innerHTML = (Math.floor(this.damageTaken)).formatMoney(0);
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.StatsSaved = true;
             localStorage.statsGoldEarned = this.goldEarned;
             localStorage.statsStartDate = this.startDate;
@@ -90,7 +97,7 @@ declare("Stats", function () {
             localStorage.statsDamageTaken = this.damageTaken;
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.StatsSaved != null) {
                 this.goldEarned = parseFloat(localStorage.statsGoldEarned);
                 this.startDate = new Date(localStorage.statsStartDate);

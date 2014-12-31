@@ -1,6 +1,9 @@
 declare("Monster", function () {
-    include('DebuffManager');
+    include('BuffSet');
     include('Static');
+    include('ItemCreator');
+    include('ParticleManager');
+    include('GameState');
 
     function Monster() {
         this.name = '#ERR';
@@ -14,22 +17,22 @@ declare("Monster", function () {
         this.goldWorth = 0;
         this.experienceWorth = 0;
 
-        this.debuffs = debuffManager.create();
-        this.debuffIconLeftPositionBase = 325;
-        this.debuffIconTopPosition = 0;
-        this.debuffLeftPositionIncrement = 30;
+        this.buffs = buffSet.create();
+        this.buffIconLeftPositionBase = 325;
+        this.buffIconTopPosition = 0;
+        this.buffLeftPositionIncrement = 30;
 
         this.lastDamageTaken = 0;
         this.alive = true;
 
-        this.getRandomLoot = function getRandomLoot() {
+        this.getRandomLoot = function() {
             var loot = new Loot();
             loot.gold = this.goldWorth;
-            loot.item = game.itemCreator.createRandomItem(this.level, game.itemCreator.getRandomItemRarity(this.rarity));
+            loot.item = itemCreator.createRandomItem(this.level, itemCreator.getRandomItemRarity(this.rarity));
             return loot;
         }
 
-        this.takeDamage = function takeDamage(damage, isCritical, displayParticle) {
+        this.takeDamage = function(damage, isCritical, displayParticle) {
             this.health -= damage;
             this.lastDamageTaken = damage;
             game.stats.damageDealt += damage;
@@ -37,10 +40,10 @@ declare("Monster", function () {
             // Create the player's damage particle
             if (displayParticle) {
                 if (isCritical) {
-                    game.particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_CRITICAL);
+                    particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_CRITICAL);
                 }
                 else {
-                    game.particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_DAMAGE);
+                    particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_DAMAGE);
                 }
             }
 
@@ -48,25 +51,25 @@ declare("Monster", function () {
                 this.alive = false;
                 game.stats.monstersKilled++;
                 // Update the 2nd tutorial
-                game.tutorialManager.monsterKilled = true;
+                gameState.monsterKilled = true;
             }
         }
 
         // Add a debuff to this monster of the specified type, damage and duration
-        this.addDebuff = function addDebuff(type, damage, duration) {
+        this.addDebuff = function(type, damage, duration) {
             switch (type) {
                 case DebuffType.BLEED:
                     // If the monster is not currently bleeding then show the bleeding icon
-                    if (this.debuffs.bleeding == false) {
+                    if (this.buffs.bleeding == false) {
                         $("#monsterBleedingIcon").show();
 
                         // Calculate the position of the icon depending on how many debuffs the monster has
-                        var left = this.debuffIconLeftPositionBase;
-                        if (this.debuffs.burning) {
-                            left += this.debuffLeftPositionIncrement;
+                        var left = this.buffIconLeftPositionBase;
+                        if (this.buffs.burning) {
+                            left += this.buffLeftPositionIncrement;
                         }
-                        if (this.debuffs.chilled) {
-                            left += this.debuffLeftPositionIncrement;
+                        if (this.buffs.chilled) {
+                            left += this.buffLeftPositionIncrement;
                         }
 
                         // Set the position
@@ -80,37 +83,37 @@ declare("Monster", function () {
                             maxStacks += effects[x].value;
                         }
                     }
-                    this.debuffs.bleeding = true;
-                    this.debuffs.bleedDamage = damage;
-                    this.debuffs.bleedDuration = 0;
-                    this.debuffs.bleedMaxDuration = duration;
-                    this.debuffs.bleedStacks += effects.length + 1
-                    if (this.debuffs.bleedStacks > maxStacks) {
-                        this.debuffs.bleedStacks = maxStacks;
+                    this.buffs.bleeding = true;
+                    this.buffs.bleedDamage = damage;
+                    this.buffs.bleedDuration = 0;
+                    this.buffs.bleedMaxDuration = duration;
+                    this.buffs.bleedStacks += effects.length + 1
+                    if (this.buffs.bleedStacks > maxStacks) {
+                        this.buffs.bleedStacks = maxStacks;
                     }
-                    document.getElementById("monsterBleedingStacks").innerHTML = this.debuffs.bleedStacks;
+                    document.getElementById("monsterBleedingStacks").innerHTML = this.buffs.bleedStacks;
                     break;
                 case DebuffType.BURN:
                     // If the monster is not currently burning then show the burning icon
-                    if (this.debuffs.burning == false) {
+                    if (this.buffs.burning == false) {
                         $("#monsterBurningIcon").show();
 
                         // Calculate the position of the icon depending on how many debuffs the monster has
-                        var left = this.debuffIconLeftPositionBase;
-                        if (this.debuffs.bleeding) {
-                            left += this.debuffLeftPositionIncrement;
+                        var left = this.buffIconLeftPositionBase;
+                        if (this.buffs.bleeding) {
+                            left += this.buffLeftPositionIncrement;
                         }
-                        if (this.debuffs.chilled) {
-                            left += this.debuffLeftPositionIncrement;
+                        if (this.buffs.chilled) {
+                            left += this.buffLeftPositionIncrement;
                         }
 
                         // Set the position
                         $("#monsterBurningIcon").css('left', left + 'px');
                     }
-                    this.debuffs.burning = true;
-                    this.debuffs.burningDamage = damage;
-                    this.debuffs.burningDuration = 0;
-                    this.debuffs.burningMaxDuration = duration;
+                    this.buffs.burning = true;
+                    this.buffs.burningDamage = damage;
+                    this.buffs.burningDuration = 0;
+                    this.buffs.burningMaxDuration = duration;
                     // Check to see if the player has any Combustion effects allowing them to stack burning
                     var effects = game.player.getEffectsOfType(EffectType.COMBUSTION);
                     var maxStacks = 0;
@@ -120,83 +123,83 @@ declare("Monster", function () {
                         }
                     }
                     // Add a stack if possible
-                    if (maxStacks > this.debuffs.burningStacks) {
-                        this.debuffs.burningStacks++;
+                    if (maxStacks > this.buffs.burningStacks) {
+                        this.buffs.burningStacks++;
                     }
-                    if (this.debuffs.burningStacks == 0) {
-                        this.debuffs.burningStacks = 1;
+                    if (this.buffs.burningStacks == 0) {
+                        this.buffs.burningStacks = 1;
                     }
-                    document.getElementById("monsterBurningStacks").innerHTML = this.debuffs.burningStacks;
+                    document.getElementById("monsterBurningStacks").innerHTML = this.buffs.burningStacks;
                     break;
                 case DebuffType.CHILL:
                     // If the monster is not currently chilled then show the chilled icon
-                    if (this.debuffs.chilled == false) {
+                    if (this.buffs.chilled == false) {
                         $("#monsterChilledIcon").show();
 
                         // Calculate the position of the icon depending on how many debuffs the monster has
-                        var left = this.debuffIconLeftPositionBase;
-                        if (this.debuffs.bleeding) {
-                            left += this.debuffLeftPositionIncrement;
+                        var left = this.buffIconLeftPositionBase;
+                        if (this.buffs.bleeding) {
+                            left += this.buffLeftPositionIncrement;
                         }
-                        if (this.debuffs.burning) {
-                            left += this.debuffLeftPositionIncrement;
+                        if (this.buffs.burning) {
+                            left += this.buffLeftPositionIncrement;
                         }
 
                         // Set the position
                         $("#monsterChilledIcon").css('left', left + 'px');
                     }
-                    this.debuffs.chilled = true;
-                    this.debuffs.chillDuration = 0;
-                    this.debuffs.chillMaxDuration = duration;
+                    this.buffs.chilled = true;
+                    this.buffs.chillDuration = 0;
+                    this.buffs.chillMaxDuration = duration;
                     break;
             }
         }
 
         // Update all the debuffs on this monster
-        this.updateDebuffs = function updateDebuffs() {
+        this.updateDebuffs = function() {
             // Update all the debuffs on this monster
             // If there are bleed stacks on this monster
-            if (this.debuffs.bleeding) {
+            if (this.buffs.bleeding) {
                 // Cause the monster to take damage
-                this.takeDamage(this.debuffs.bleedDamage * this.debuffs.bleedStacks, false, false);
+                this.takeDamage(this.buffs.bleedDamage * this.buffs.bleedStacks, false, false);
                 // Increase the duration of this debuff
-                this.debuffs.bleedDuration++;
+                this.buffs.bleedDuration++;
                 // If the debuff has expired then remove it
-                if (this.debuffs.bleedDuration >= this.debuffs.bleedMaxDuration) {
+                if (this.buffs.bleedDuration >= this.buffs.bleedMaxDuration) {
                     // Hide the icon and decrease the left position of the other icons
                     $("#monsterBleedingIcon").hide();
-                    $("#monsterBurningIcon").css('left', ($("#monsterBurningIcon").position().left - this.debuffLeftPositionIncrement) + 'px');
-                    $("#monsterChilledIcon").css('left', ($("#monsterChilledIcon").position().left - this.debuffLeftPositionIncrement) + 'px');
+                    $("#monsterBurningIcon").css('left', ($("#monsterBurningIcon").position().left - this.buffLeftPositionIncrement) + 'px');
+                    $("#monsterChilledIcon").css('left', ($("#monsterChilledIcon").position().left - this.buffLeftPositionIncrement) + 'px');
 
-                    this.debuffs.bleeding = false;
-                    this.debuffs.bleedDamage = 0;
-                    this.debuffs.bleedDuration = 0;
-                    this.debuffs.bleedMaxDuration = 0;
-                    this.debuffs.bleedStacks = 0;
+                    this.buffs.bleeding = false;
+                    this.buffs.bleedDamage = 0;
+                    this.buffs.bleedDuration = 0;
+                    this.buffs.bleedMaxDuration = 0;
+                    this.buffs.bleedStacks = 0;
                 }
             }
 
             // If this monster is burning
-            if (this.debuffs.burning) {
-                this.takeDamage(this.debuffs.burningDamage * this.debuffs.burningStacks, false, false);
+            if (this.buffs.burning) {
+                this.takeDamage(this.buffs.burningDamage * this.buffs.burningStacks, false, false);
                 // Increase the duration of this debuff
-                this.debuffs.burningDuration++;
+                this.buffs.burningDuration++;
                 // If the debuff has expired then remove it
-                if (this.debuffs.burningDuration >= this.debuffs.burningMaxDuration) {
+                if (this.buffs.burningDuration >= this.buffs.burningMaxDuration) {
                     $("#monsterBurningIcon").hide();
-                    $("#monsterBleedingIcon").css('left', ($("#monsterBleedingIcon").position().left - this.debuffLeftPositionIncrement) + 'px');
-                    $("#monsterChilledIcon").css('left', ($("#monsterChilledIcon").position().left - this.debuffLeftPositionIncrement) + 'px');
+                    $("#monsterBleedingIcon").css('left', ($("#monsterBleedingIcon").position().left - this.buffLeftPositionIncrement) + 'px');
+                    $("#monsterChilledIcon").css('left', ($("#monsterChilledIcon").position().left - this.buffLeftPositionIncrement) + 'px');
 
-                    this.debuffs.burningStacks = 0;
-                    this.debuffs.burningDamage = 0;
-                    this.debuffs.burningDuration = 0;
-                    this.debuffs.burningMaxDuration = 0;
-                    this.debuffs.burning = false;
+                    this.buffs.burningStacks = 0;
+                    this.buffs.burningDamage = 0;
+                    this.buffs.burningDuration = 0;
+                    this.buffs.burningMaxDuration = 0;
+                    this.buffs.burning = false;
                 }
             }
 
             // If this monster is chilled
-            if (this.debuffs.chilled) {
+            if (this.buffs.chilled) {
                 // If the chill duration is even then the monster can't attack this turn
                 if (this.canAttack) {
                     this.canAttack = false;
@@ -205,17 +208,17 @@ declare("Monster", function () {
                     this.canAttack = true;
                 }
                 // Increase the duration of this debuff
-                this.debuffs.chillDuration++;
+                this.buffs.chillDuration++;
                 // If the debuff has expired then remove it
-                if (this.debuffs.chillDuration >= this.debuffs.chillMaxDuration) {
+                if (this.buffs.chillDuration >= this.buffs.chillMaxDuration) {
                     // Hide the icon and decrease the left position of the other icons
                     $("#monsterChilledIcon").hide();
-                    $("#monsterBleedingIcon").css('left', ($("#monsterBleedingIcon").position().left - this.debuffLeftPositionIncrement) + 'px');
-                    $("#monsterBurningIcon").css('left', ($("#monsterBurningIcon").position().left - this.debuffLeftPositionIncrement) + 'px');
+                    $("#monsterBleedingIcon").css('left', ($("#monsterBleedingIcon").position().left - this.buffLeftPositionIncrement) + 'px');
+                    $("#monsterBurningIcon").css('left', ($("#monsterBurningIcon").position().left - this.buffLeftPositionIncrement) + 'px');
 
-                    this.debuffs.chillDuration = 0;
-                    this.debuffs.chillMaxDuration = 0;
-                    this.debuffs.chilled = false;
+                    this.buffs.chillDuration = 0;
+                    this.buffs.chillMaxDuration = 0;
+                    this.buffs.chilled = false;
                 }
             }
             // If the monster is not chilled then it can attack

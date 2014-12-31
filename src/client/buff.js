@@ -12,6 +12,6 @@ declare("Buff", function () {
     }
 
     return {
-        create: function() { return new Buff(); }
+        create: function(name, type, multiplier, duration, leftPos, topPos) { return new Buff(name, type, multiplier, duration, leftPos, topPos); }
     }
 });

@@ -1,16 +1,33 @@
-declare("BuffManager", function () {
+declare("BuffSet", function () {
     include('Component');
 
-    BuffManager.prototype = component.create();
-    BuffManager.prototype.$super = parent;
-    BuffManager.prototype.constructor = BuffManager;
+    BuffSet.prototype = component.create();
+    BuffSet.prototype.$super = parent;
+    BuffSet.prototype.constructor = BuffSet;
 
-    function BuffManager() {
-        this.id = "BuffManager";
+    function BuffSet() {
+        this.id = "BuffSet";
 
         this.buffs = new Array();
 
-        this.addBuff = function addBuff(buff) {
+        // These are for debuffs
+        this.bleeding = false;
+        this.bleedStacks = 0;
+        this.bleedDamage = 0;
+        this.bleedDuration = 0;
+        this.bleedMaxDuration = 0;
+
+        this.chilled = false;
+        this.chillDuration = 0;
+        this.chillMaxDuration = 0;
+
+        this.burning = false;
+        this.burningStacks = 0;
+        this.burningDamage = 0;
+        this.burningDuration = 0;
+        this.burningMaxDuration = 0;
+
+        this.addBuff = function(buff) {
             buff.id = this.buffs.length + 1;
             this.buffs.push(buff);
             game.displayAlert(buff.name);
@@ -34,7 +51,7 @@ declare("BuffManager", function () {
             newDiv.appendChild(newDiv3);
         }
 
-        this.getDamageMultiplier = function getDamageMultiplier() {
+        this.getDamageMultiplier = function() {
             var multiplier = 0;
             for (var x = 0; x < this.buffs.length; x++) {
                 if (this.buffs[x].type == BuffType.DAMAGE) {
@@ -46,7 +63,7 @@ declare("BuffManager", function () {
             }
             return multiplier;
         }
-        this.getGoldMultiplier = function getGoldMultiplier() {
+        this.getGoldMultiplier = function() {
             var multiplier = 0;
             for (var x = 0; x < this.buffs.length; x++) {
                 if (this.buffs[x].type == BuffType.GOLD) {
@@ -58,7 +75,7 @@ declare("BuffManager", function () {
             }
             return multiplier;
         }
-        this.getExperienceMultiplier = function getExperienceMultiplier() {
+        this.getExperienceMultiplier = function() {
             var multiplier = 0;
             for (var x = 0; x < this.buffs.length; x++) {
                 if (this.buffs[x].type == BuffType.EXPERIENCE) {
@@ -71,10 +88,15 @@ declare("BuffManager", function () {
             return multiplier;
         }
 
-        this.update = function update(ms) {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             // Update all the buff durations
             for (var x = this.buffs.length - 1; x >= 0; x--) {
-                this.buffs[x].currentDuration -= ms;
+                this.buffs[x].currentDuration -= gameTime.elapsed;
                 // If the buff has expired, remove it and its elements, then update the id of all the other buffs that need updating
                 if (this.buffs[x].currentDuration <= 0) {
                     var buffContainer = document.getElementById('buffContainer' + (this.buffs.length));
@@ -92,7 +114,7 @@ declare("BuffManager", function () {
             }
         }
 
-        this.getRandomQuestRewardBuff = function getRandomQuestRewardBuff() {
+        this.getRandomQuestRewardBuff = function() {
             switch (Math.floor(Math.random() * 9)) {
                 case 0:
                     return new Buff("Damage x2", BuffType.DAMAGE, 2, 60, 0, 0);
@@ -126,6 +148,6 @@ declare("BuffManager", function () {
     }
 
     return {
-        create: function() { return new BuffManager(); }
-    };
+        create: function() { return new BuffSet(); }
+    }
 });

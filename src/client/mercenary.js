@@ -5,7 +5,7 @@ declare("BaseGame", function () {
     }
 
     return {
-        create: function() { return new Mercenary(); }
+        create: function(type) { return new Mercenary(type); }
     }
 
 });

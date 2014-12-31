@@ -10,7 +10,11 @@ declare("Game", function() {
     include('UpgradeManager');
     include('ParticleManager');
     include('MonsterCreator');
-    include('ItemCreator');
+    include('NameGenerator');
+    include('StatUpgradeManager');
+    include('QuestManager');
+    include('EventManager');
+    include('GameState');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -26,54 +30,51 @@ declare("Game", function() {
 
         // Player
         this.player = player.create();
+        this.player.init();
         this.inventory = inventory.create();
+        this.inventory.init();
         this.equipment = equipment.create();
+        this.equipment.init();
 
         // Other
         this.stats = stats.create();
+        this.stats.init();
         this.options = options.create();
+        this.options.init();
 
         // Combat
         this.inBattle = false;
         this.battleLevel = 1;
         this.battleDepth = 1;
 
-        // Mercenaries
-        this.mercenaryManager = mercenaryManager.create();
-
-        // Upgrades
-        this.upgradeManager = upgradeManager.create();
-
-        // Particles
-        this.particleManager = particleManager.create();
-
         // Monsters
-        this.monsterCreator = monsterCreator.create();
-        this.monster = this.monsterCreator.createRandomMonster(
+        this.monster = monsterCreator.createRandomMonster(
             this.battleLevel,
-            this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+            monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
         this.displayMonsterHealth = false;
-
-        // Items
-        this.itemCreator = itemCreator.create();
 
         // Saving/Loading
         this.saveDelay = 10000;
         this.saveTimeRemaining = this.saveDelay;
 
-        this.initialize = function initialize() {
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
+            this.reset();
+
             this.beginLoading();
-            this.tutorialManager.initialize();
-            this.mercenaryManager.initialize();
-            this.upgradeManager.initialize();
-            this.particleManager.initialize();
+            tutorialManager.init();
+            this.mercenaryManager.init();
+            upgradeManager.init();
+            particleManager.init();
 
             this.load();
 
             document.getElementById("version").innerHTML = "Version " + this.version;
         }
 
-        this.beginLoading = function beginLoading() {
+        this.beginLoading = function() {
             this.loading = true;
             this.loadingTextInterval = setInterval(function () {
                 this.loadingInterval++;
@@ -87,33 +88,33 @@ declare("Game", function() {
             }, 500);
         }
 
-        this.finishLoading = function finishLoading() {
+        this.finishLoading = function() {
             this.loading = false;
             clearInterval(this.loadingTextInterval);
             $("#loadingArea").hide();
         }
 
-        this.allowBattle = function allowBattle() {
+        this.allowBattle = function() {
             enterBattleButtonReset();
         }
 
-        this.disallowBattle = function disallowBattle() {
+        this.disallowBattle = function() {
             this.leaveBattle();
             $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 25px');
         }
 
-        this.enterBattle = function enterBattle() {
+        this.enterBattle = function() {
             this.inBattle = true;
             // Create a new monster
-            this.monster = this.monsterCreator.createRandomMonster(
+            this.monster = monsterCreator.createRandomMonster(
                 this.battleLevel,
-                this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
 
             $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 50px');
             $("#leaveBattleButton").show();
             $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
             $("#monsterHealthBarArea").show();
-            game.tutorialManager.battleButtonClicked = true;
+            gameState.battleButtonClicked = true;
 
             // Hide the battle level buttons
             $("#battleLevelDownButton").hide();
@@ -123,7 +124,7 @@ declare("Game", function() {
             $("#attackButton").show();
         }
 
-        this.leaveBattle = function leaveBattle() {
+        this.leaveBattle = function() {
             // Leave the battle and update the interface
             $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 50px');
             this.inBattle = false;
@@ -135,9 +136,7 @@ declare("Game", function() {
             this.resetBattle();
 
             // Update the tutorial if it is active
-            if (this.tutorialManager.currentTutorial == 4) {
-                this.tutorialManager.leaveBattleButtonPressed = true;
-            }
+            gameState.leaveBattleButtonPressed = true;
 
             // Show the battle level buttons if the player is higher than level 1
             if (this.player.level > 1) {
@@ -152,7 +151,7 @@ declare("Game", function() {
             $("#monsterChilledIcon").hide();
         }
 
-        this.attack = function attack() {
+        this.attack = function() {
             // Update the player and monster
             this.player.updateDebuffs();
             this.monster.updateDebuffs();
@@ -276,7 +275,7 @@ declare("Game", function() {
 
             if (this.monster.alive == false) {
                 // Add the kill to any quests that require it
-                this.questsManager.updateKillCounts(this.monster.level);
+                questManager.updateKillCounts(this.monster.level);
 
                 // Get the loot and experience from the monster and reward it to the player
                 var loot = this.monster.getRandomLoot();
@@ -289,14 +288,14 @@ declare("Game", function() {
                 }
 
                 // Create particles for the loot, experience and kill
-                this.particleManager.createParticle(this.player.lastGoldGained.toFixed(2), ParticleType.GOLD);
-                this.particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), ParticleType.EXP_ORB);
-                this.particleManager.createParticle(null, ParticleType.SKULL);
+                particleManager.createParticle(this.player.lastGoldGained.toFixed(2), ParticleType.GOLD);
+                particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), ParticleType.EXP_ORB);
+                particleManager.createParticle(null, ParticleType.SKULL);
 
                 // Create a new monster
-                this.monster = this.monsterCreator.createRandomMonster(
+                this.monster = monsterCreator.createRandomMonster(
                     this.battleLevel,
-                    this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                    monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
 
                 // Hide the debuff icons for the monster
                 $("#monsterBleedingIcon").hide();
@@ -308,7 +307,7 @@ declare("Game", function() {
             }
         }
 
-        this.maxBattleLevelReached = function maxBattleLevelReached() {
+        this.maxBattleLevelReached = function() {
             if (this.player.level == this.battleLevel) {
                 return true;
             }
@@ -317,7 +316,7 @@ declare("Game", function() {
             }
         }
 
-        this.increaseBattleLevel = function increaseBattleLevel() {
+        this.increaseBattleLevel = function() {
             if (this.player.level > this.battleLevel) {
                 this.battleLevel++;
                 this.displayAlert("Battle Level " + game.battleLevel);
@@ -357,7 +356,7 @@ declare("Game", function() {
             // Else the player can upgrade a stat
             else {
                 // Set the upgrade names on the window's buttons
-                var upgrades = this.statUpgradesManager.upgrades[0];
+                var upgrades = statUpgradeManager.upgrades[0];
                 $("#statUpgradesWindow").show();
 
                 switch (upgrades[0].type) {
@@ -473,14 +472,14 @@ declare("Game", function() {
         this.save = function save() {
             if (typeof (Storage) !== "undefined") {
                 localStorage.version = this.version;
-                this.tutorialManager.save();
+                tutorialManager.save();
                 this.inventory.save();
                 this.equipment.save();
                 this.player.save();
-                this.questsManager.save();
-                this.mercenaryManager.save();
-                this.upgradeManager.save();
-                this.statUpgradesManager.save();
+                questManager.save();
+                mercenaryManager.save();
+                upgradeManager.save();
+                statUpgradeManager.save();
                 this.stats.save();
                 this.options.save();
 
@@ -490,14 +489,14 @@ declare("Game", function() {
 
         this.load = function load() {
             if (typeof (Storage) !== "undefined") {
-                this.tutorialManager.load();
+                tutorialManager.load();
                 this.inventory.load();
                 this.equipment.load();
                 this.player.load();
-                this.questsManager.load();
-                this.mercenaryManager.load();
-                this.upgradeManager.load();
-                this.statUpgradesManager.load();
+                questManager.load();
+                mercenaryManager.load();
+                upgradeManager.load();
+                statUpgradeManager.load();
                 this.stats.load();
                 this.options.load();
 
@@ -517,56 +516,48 @@ declare("Game", function() {
                     $("#battleLevelUpButton").css('background', 'url("includes/images/battleLevelButton.png") 0 25px');
                 }
 
-                this.monster = this.monsterCreator.createRandomMonster(
+                this.monster = monsterCreator.createRandomMonster(
                     this.battleLevel,
-                    this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                    monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
             }
         }
 
-        this.reset = function reset() {
+        this.reset = function() {
             localStorage.clear();
             // Player
             this.player = player.create();
+            this.player.init();
             this.inventory = inventory.create();
+            this.inventory.init();
             this.equipment = equipment.create();
-            this.statGenerator = statGenerator.create();
-            this.nameGenerator = nameGenerator.create();
-            this.statUpgradesManager = statUpgradeManager.create();
+            this.equipment.init();
 
             // Other
-            this.questsManager = questManager.create();
-            this.eventManager = eventManager.create();
-            this.tutorialManager = tutorialManager.create();
+            eventManager.init();
             this.stats = stats.create();
+            this.stats.init();
 
             // Combat
             this.inBattle = false;
             this.battleLevel = 1;
             this.battleDepth = 1;
 
-            // Mercenaries
-            this.mercenaryManager = mercenaryManager.create();
-
             // Upgrades
             // Remove all the upgrade purchase buttons
             var currentElement;
-            for (var x = 0; x < this.upgradeManager.upgradesAvailable; x++) {
+            for (var x = 0; x < upgradeManager.upgradesAvailable; x++) {
                 currentElement = document.getElementById('upgradePurchaseButton' + (x + 1));
                 currentElement.parentNode.removeChild(currentElement);
             }
-            this.upgradeManager = upgradeManager.create();
 
             // Particles
-            this.particleManager = particleManager.create();
+            particleManager = particleManager.create();
 
             // Monsters
-            this.monsterCreator = monsterCreator.create();
-            this.monster = this.monsterCreator.createRandomMonster(
+            this.monster = monsterCreator.createRandomMonster(
                 this.battleLevel,
-                this.monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
 
-            // Items
-            this.itemCreator = itemCreator.create();
             // Reset all the inventory and equipment slots
             for (var x = 0; x < this.inventory.slots.length; x++) {
                 $("#inventoryItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
@@ -574,8 +565,6 @@ declare("Game", function() {
             for (var x = 0; x < this.equipment.slots.length; x++) {
                 $(".equipItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
             }
-
-            this.initialize();
 
             $("#leaveBattleButton").hide();
             $("#battleLevelDownButton").hide();
@@ -612,23 +601,27 @@ declare("Game", function() {
             $("#checkboxOrange").hide();
 
             // Reset the mercenary amounts and prices to default
-            document.getElementById("footmanCost").innerHTML = this.mercenaryManager.footmanPrice.formatMoney(0);
-            document.getElementById("footmenOwned").innerHTML = this.mercenaryManager.footmenOwned;
-            document.getElementById("clericCost").innerHTML = this.mercenaryManager.clericPrice.formatMoney(0);
-            document.getElementById("clericsOwned").innerHTML = this.mercenaryManager.clericsOwned;
-            document.getElementById("commanderCost").innerHTML = this.mercenaryManager.commanderPrice.formatMoney(0);
-            document.getElementById("commandersOwned").innerHTML = this.mercenaryManager.commandersOwned;
-            document.getElementById("mageCost").innerHTML = this.mercenaryManager.magePrice.formatMoney(0);
-            document.getElementById("magesOwned").innerHTML = this.mercenaryManager.magesOwned;
-            document.getElementById("assassinCost").innerHTML = this.mercenaryManager.assassinPrice.formatMoney(0);
-            document.getElementById("assassinsOwned").innerHTML = this.mercenaryManager.assassinsOwned;
-            document.getElementById("warlockCost").innerHTML = this.mercenaryManager.warlockPrice.formatMoney(0);
-            document.getElementById("warlocksOwned").innerHTML = this.mercenaryManager.warlocksOwned;
+            document.getElementById("footmanCost").innerHTML = gameState.footmanPrice.formatMoney(0);
+            document.getElementById("footmenOwned").innerHTML = gameState.footmenOwned;
+            document.getElementById("clericCost").innerHTML = gameState.clericPrice.formatMoney(0);
+            document.getElementById("clericsOwned").innerHTML = gameState.clericsOwned;
+            document.getElementById("commanderCost").innerHTML = gameState.commanderPrice.formatMoney(0);
+            document.getElementById("commandersOwned").innerHTML = gameState.commandersOwned;
+            document.getElementById("mageCost").innerHTML = gameState.magePrice.formatMoney(0);
+            document.getElementById("magesOwned").innerHTML = gameState.magesOwned;
+            document.getElementById("assassinCost").innerHTML = gameState.assassinPrice.formatMoney(0);
+            document.getElementById("assassinsOwned").innerHTML = gameState.assassinsOwned;
+            document.getElementById("warlockCost").innerHTML = gameState.warlockPrice.formatMoney(0);
+            document.getElementById("warlocksOwned").innerHTML = gameState.warlocksOwned;
         }
 
-        this.update = function update(gameTime) {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             var newDate = new Date();
-            var ms = (newDate.getTime() - this.oldDate.getTime());
             this.oldDate = newDate;
 
             // Check if the player is dead
@@ -640,12 +633,12 @@ declare("Game", function() {
                     this.player.resurrectionTimeRemaining = this.player.resurrectionTimer;
                     this.disallowBattle();
                     this.player.health = 0;
-                    this.mercenaryManager.addGpsReduction(this.mercenaryManager.deathGpsReductionAmount, this.mercenaryManager.deathGpsReductionDuration);
+                    mercenaryManager.addGpsReduction(static.deathGpsReductionAmount, static.deathGpsReductionDuration);
                 }
                 // Else update the resurrecting
                 else {
                     // Update the timer
-                    this.player.resurrectionTimeRemaining -= (ms / 1000);
+                    this.player.resurrectionTimeRemaining -= (gameTime.elapsed / 1000);
 
                     // Update the bar
                     $("#resurrectionBar").css('width', (200 * (this.player.resurrectionTimeRemaining / this.player.resurrectionTimer)));
@@ -670,19 +663,19 @@ declare("Game", function() {
             // Else if the player is alive
             else {
                 // Regenerate the player's health
-                this.player.regenerateHealth(ms);
+                this.player.regenerateHealth(gameTime.elapsed);
             }
 
-            this.mercenaryManager.update(ms);
-            this.inventory.update(ms);
-            this.updateInterface(ms);
-            this.questsManager.update();
-            this.eventManager.update(ms);
-            this.tutorialManager.update();
-            this.player.update(ms);
+            mercenaryManager.update(gameTime);
+            this.inventory.update(gameTime);
+            this.updateInterface(gameTime.elapsed);
+            questManager.update(gameTime);
+            eventManager.update(gameTime);
+            tutorialManager.update(gameTime);
+            this.player.update(gameTime);
 
             // Save the progress if enough time has passed
-            game.saveTimeRemaining -= ms;
+            game.saveTimeRemaining -= gameTime.elapsed;
             if (game.saveTimeRemaining <= 0) {
                 game.saveTimeRemaining = game.saveDelay;
                 game.save();
@@ -691,7 +684,7 @@ declare("Game", function() {
             oldDate = newDate;
         }
 
-        this.updateInterface = function updateInterface(ms) {
+        this.updateInterface = function(ms) {
             // Update the player's health bar
             var hpBar = $("#playerHealthBar");
             hpBar.css('width', 198 * (this.player.health / this.player.getMaxHealth()));
@@ -708,18 +701,18 @@ declare("Game", function() {
             hpBar = $("#monsterHealthBar");
             hpBar.css('width', 198 * (this.monster.health / this.monster.maxHealth));
             hpBar.css('height', '23');
-            hpBar.css('color', game.monsterCreator.getRarityColour(this.monster.rarity));
+            hpBar.css('color', monsterCreator.getRarityColour(this.monster.rarity));
 
             // Set the monster's name or health on the screen
             if (this.displayMonsterHealth) {
                 document.getElementById("monsterName").innerHTML = Math.floor(this.monster.health) + '/' + Math.floor(this.monster.maxHealth);
                 // Set the colour
-                $("#monsterName").css('color', game.monsterCreator.getRarityColour(this.monster.rarity));
+                $("#monsterName").css('color', monsterCreator.getRarityColour(this.monster.rarity));
             }
             else {
                 document.getElementById("monsterName").innerHTML = "(Lv" + this.monster.level + ") " + this.monster.name;
                 // Set the colour
-                $("#monsterName").css('color', this.monsterCreator.getRarityColour(this.monster.rarity));
+                $("#monsterName").css('color', monsterCreator.getRarityColour(this.monster.rarity));
             }
 
             // Update the gold and experience amounts
@@ -731,10 +724,10 @@ declare("Game", function() {
             $("#goldCoin").css('left', (($("#gameArea").width() / 2) - leftReduction - 21) + 'px');
 
             // Update the upgrades
-            this.upgradeManager.update();
+            upgradeManager.update(gameTime);
 
             // Update the particles
-            this.particleManager.update(ms);
+            particleManager.update(gameTime);
 
             // Update the player's stats
             document.getElementById("levelValue").innerHTML = this.player.level;
@@ -756,7 +749,7 @@ declare("Game", function() {
             document.getElementById("experienceGainValue").innerHTML = this.player.getExperienceGain().toFixed(2) + '%';
 
             // Update the select quest display
-            var quest = this.questsManager.getSelectedQuest();
+            var quest = questManager.getSelectedQuest();
             if (quest != null) {
                 var newText = '';
                 // Name
@@ -794,7 +787,7 @@ declare("Game", function() {
                         }
                         break;
                     case QuestType.UPGRADE:
-                        newText = "Purchase the " + this.upgradeManager.upgrades[quest.typeId].name + " upgrade.";
+                        newText = "Purchase the " + upgradeManager.upgrades[quest.typeId].name + " upgrade.";
                         break;
                 }
                 document.getElementById("questGoal").innerHTML = newText;
@@ -806,22 +799,22 @@ declare("Game", function() {
                     case QuestType.MERCENARIES:
                         switch (quest.typeId) {
                             case 0:
-                                newText = this.mercenaryManager.footmenOwned + "/" + quest.typeAmount + " Footmen owned.";
+                                newText = gameState.footmenOwned + "/" + quest.typeAmount + " Footmen owned.";
                                 break;
                             case 1:
-                                newText = this.mercenaryManager.clericsOwned + "/" + quest.typeAmount + " Clerics owned.";
+                                newText = gameState.clericsOwned + "/" + quest.typeAmount + " Clerics owned.";
                                 break;
                             case 2:
-                                newText = this.mercenaryManager.commandersOwned + "/" + quest.typeAmount + " Commanders owned.";
+                                newText = gameState.commandersOwned + "/" + quest.typeAmount + " Commanders owned.";
                                 break;
                             case 3:
-                                newText = this.mercenaryManager.magesOwned + "/" + quest.typeAmount + " Mages owned.";
+                                newText = gameState.magesOwned + "/" + quest.typeAmount + " Mages owned.";
                                 break;
                             case 4:
-                                newText = this.mercenaryManager.assassinsOwned + "/" + quest.typeAmount + " Assassins owned.";
+                                newText = gameState.assassinsOwned + "/" + quest.typeAmount + " Assassins owned.";
                                 break;
                             case 5:
-                                newText = this.mercenaryManager.warlocksOwned + "/" + quest.typeAmount + " Warlocks owned.";
+                                newText = gameState.warlocksOwned + "/" + quest.typeAmount + " Warlocks owned.";
                                 break;
                         }
                         break;
@@ -845,7 +838,7 @@ declare("Game", function() {
             }
 
             // Update the stats window
-            this.stats.update();
+            this.stats.update(gameTime);
         }
     }
 

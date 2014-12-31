@@ -8,7 +8,7 @@ declare("Event", function () {
     }
 
     return {
-        create: function() { return new Event(); }
+        create: function(id) { return new Event(id); }
     }
 
 });

@@ -16,7 +16,7 @@ declare("Abilities", function () {
         this.baseFireBladeLevel = 0;
         this.fireBladeBurnDuration = 5;
 
-        this.getRendLevel = function getRendLevel() {
+        this.getRendLevel = function() {
             var level = this.baseRendLevel;
             var effects = game.player.getEffectsOfType(EffectType.WOUNDING);
             for (var x = 0; x < effects.length; x++) {
@@ -24,10 +24,10 @@ declare("Abilities", function () {
             }
             return level;
         }
-        this.getRendDamage = function getRendDamage(levelBonus) {
+        this.getRendDamage = function(levelBonus) {
             return Math.ceil((game.player.getAverageDamage() / 17) + (game.player.level / 1.5)) * (this.getRendLevel() + levelBonus);
         }
-        this.getRejuvenatingStrikesLevel = function getRejuvenatingStrikesLevel() {
+        this.getRejuvenatingStrikesLevel = function() {
             var level = this.baseRejuvenatingStrikesLevel;
             var effects = game.player.getEffectsOfType(EffectType.CURING);
             for (var x = 0; x < effects.length; x++) {
@@ -35,10 +35,10 @@ declare("Abilities", function () {
             }
             return level;
         }
-        this.getRejuvenatingStrikesHealAmount = function getRejuvenatingStrikesHealAmount(levelBonus) {
+        this.getRejuvenatingStrikesHealAmount = function(levelBonus) {
             return Math.ceil((game.player.getAverageDamage() / 54) + (game.player.level / 2)) * (this.getRejuvenatingStrikesLevel() + levelBonus);
         }
-        this.getIceBladeLevel = function getIceBladeLevel() {
+        this.getIceBladeLevel = function() {
             var level = this.baseIceBladeLevel;
             var effects = game.player.getEffectsOfType(EffectType.FROST_SHARDS);
             for (var x = 0; x < effects.length; x++) {
@@ -46,10 +46,10 @@ declare("Abilities", function () {
             }
             return level;
         }
-        this.getIceBladeDamage = function getIceBladeDamage(levelBonus) {
+        this.getIceBladeDamage = function(levelBonus) {
             return Math.ceil((game.player.getAverageDamage() / 12) + game.player.level) * (this.getIceBladeLevel() + levelBonus);
         }
-        this.getFireBladeLevel = function getFireBladeLevel() {
+        this.getFireBladeLevel = function() {
             var level = this.baseFireBladeLevel;
             var effects = game.player.getEffectsOfType(EffectType.FLAME_IMBUED);
             for (var x = 0; x < effects.length; x++) {
@@ -57,21 +57,21 @@ declare("Abilities", function () {
             }
             return level;
         }
-        this.getFireBladeDamage = function getFireBladeDamage(levelBonus) {
+        this.getFireBladeDamage = function(levelBonus) {
             return Math.ceil((game.player.getAverageDamage() / 12) + game.player.level) * (this.getFireBladeLevel() + levelBonus);
         }
-        this.getFireBladeBurnDamage = function getFireBladeBurnDamage(levelBonus) {
+        this.getFireBladeBurnDamage = function(levelBonus) {
             return Math.ceil((game.player.getAverageDamage() / 9) + game.player.level) * (this.getFireBladeLevel() + levelBonus);
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.playerRendLevel = this.baseRendLevel;
             localStorage.playerRejuvenatingStrikesLevel = this.baseRejuvenatingStrikesLevel;
             localStorage.playerIceBladeLevel = this.baseIceBladeLevel;
             localStorage.playerFireBladeLevel = this.baseFireBladeLevel;
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.playerRendLevel != null) {
                 this.baseRendLevel = parseInt(localStorage.playerRendLevel);
             }

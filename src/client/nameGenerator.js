@@ -11,37 +11,37 @@ declare("NameGenerator", function () {
         var rand;
         // ----- Prefixes -----
         // Damage Bonus
-        this.getRandomDamageBonusName = function getRandomDamageBonusName() {
+        this.getRandomDamageBonusName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return DamageNames[rand];
         }
         // Health
-        this.getRandomHealthName = function getRandomHealthName() {
+        this.getRandomHealthName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return HealthNames[rand];
         }
         // Armour Bonus
-        this.getRandomArmourBonusName = function getRandomArmourBonusName() {
+        this.getRandomArmourBonusName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return ArmourNames[rand];
         }
         // Crit Chance
-        this.getRandomCritChanceName = function getRandomCritChanceName() {
+        this.getRandomCritChanceName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return CritChanceNames[rand];
         }
         // Item Rarity
-        this.getRandomItemRarityName = function getRandomItemRarityName() {
+        this.getRandomItemRarityName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return ItemRarityNames[rand];
         }
         // Gold Gain
-        this.getRandomGoldGainName = function getRandomGoldGainName() {
+        this.getRandomGoldGainName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return GoldGainNames[rand];
@@ -49,43 +49,43 @@ declare("NameGenerator", function () {
 
         // ----- Suffixes -----
         // Strength
-        this.getRandomStrengthName = function getRandomStrengthName() {
+        this.getRandomStrengthName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return StrengthNames[rand];
         }
         // Agility
-        this.getRandomAgilityName = function getRandomAgilityName() {
+        this.getRandomAgilityName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return AgilityNames[rand];
         }
         // Stamina
-        this.getRandomStaminaName = function getRandomStaminaName() {
+        this.getRandomStaminaName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return StaminaNames[rand];
         }
         // Hp5
-        this.getRandomHp5Name = function getRandomHp5Name() {
+        this.getRandomHp5Name = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return Hp5Names[rand];
         }
         // Crit Damage
-        this.getRandomCritDamageName = function getRandomCritDamageName() {
+        this.getRandomCritDamageName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return CritDamageNames[rand];
         }
         // Experience Gain
-        this.getRandomExperienceGainName = function getRandomExperienceGainName() {
+        this.getRandomExperienceGainName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return ExperienceGainNames[rand];
         }
         // Evasion
-        this.getRandomEvasionName = function getRandomEvasionName() {
+        this.getRandomEvasionName = function() {
             rand = Math.random() * namesAmount;
             rand = Math.floor(rand);
             return EvasionNames[rand];

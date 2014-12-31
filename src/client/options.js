@@ -18,7 +18,7 @@ declare("Options", function () {
         this.alwaysDisplayMonsterHealth = false;
         this.alwaysDisplayExp = false;
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.optionsSaved = true;
             localStorage.displaySkullParticles = this.displaySkullParticles;
             localStorage.displayGoldParticles = this.displayGoldParticles;
@@ -31,7 +31,7 @@ declare("Options", function () {
             localStorage.alwaysDisplayExp = this.alwaysDisplayExp;
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.optionsSaved != null) {
                 this.displaySkullParticles = JSON.parse(localStorage.displaySkullParticles);
                 this.displayGoldParticles = JSON.parse(localStorage.displayGoldParticles);

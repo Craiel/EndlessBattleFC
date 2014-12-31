@@ -4,7 +4,8 @@ declare("Effect", function () {
         this.type = type;
         this.chance = chance;
         this.value = value;
-        this.getDescription = function getDescription() {
+
+        this.getDescription = function() {
             switch (this.type) {
                 case EffectType.CRUSHING_BLOWS:
                     return "Crushing Blows: Your attack deal " + this.value + "% of your opponent's current health in damage";
@@ -47,7 +48,7 @@ declare("Effect", function () {
     }
 
     return {
-        create: function() { return new Effect(); }
+        create: function(type, chance, value) { return new Effect(type, chance, value); }
     }
 
 });

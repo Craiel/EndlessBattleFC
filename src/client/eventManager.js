@@ -1,5 +1,6 @@
 declare("EventManager", function () {
     include('Component');
+    include('QuestManager');
 
     EventManager.prototype = component.create();
     EventManager.prototype.$super = parent;
@@ -11,7 +12,7 @@ declare("EventManager", function () {
         this.eventSpawnTimeRemaining = this.eventSpawnTime;
         this.events = new Array();
 
-        this.addRandomEvent = function addRandomEvent(level) {
+        this.addRandomEvent = function(level) {
             var event = new Event(this.events.length + 1);
             event.type = EventType.QUEST;
             // Create a random quest
@@ -30,9 +31,14 @@ declare("EventManager", function () {
             container.appendChild(newDiv);
         }
 
-        this.update = function update(ms) {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             // Add a new event if enough time has passed
-            this.eventSpawnTimeRemaining -= ms;
+            this.eventSpawnTimeRemaining -= gameTime.elapsed;
             if (this.eventSpawnTimeRemaining <= 0) {
                 this.eventSpawnTimeRemaining = this.eventSpawnTime;
                 this.addRandomEvent(game.player.level);
@@ -45,7 +51,7 @@ declare("EventManager", function () {
                 var parent = element.parentNode;
                 var bottom = parent.clientHeight - element.offsetTop - element.clientHeight;
                 var minBottom = x * 25;
-                var newBottom = bottom - (this.events[x].velY * (ms / 1000));
+                var newBottom = bottom - (this.events[x].velY * (gameTime.elapsed / 1000));
                 if (newBottom < minBottom) {
                     newBottom = minBottom;
                     this.events[x].velY = 0;
@@ -55,10 +61,10 @@ declare("EventManager", function () {
             }
         }
 
-        this.startEvent = function startEvent(obj, id) {
+        this.startEvent = function(obj, id) {
             // Remove the event button
             obj.parentNode.removeChild(obj);
-            game.questsManager.addQuest(this.events[id - 1].quest);
+            questManager.addQuest(this.events[id - 1].quest);
             this.events.splice(id - 1, 1);
 
             // Change all the ids of the events that need changing

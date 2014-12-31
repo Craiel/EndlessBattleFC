@@ -31,7 +31,7 @@ declare("Component", function() {
         };
         
         this.update = function(currentTime) {
-            assert.isTrue(this.initDone, StrLoc("Init must be called before update!"));
+            assert.isTrue(this.initDone, StrLoc("Init must be called before update on {0}").format(this.id));
             
             if(this.enabled === false) {
                 return false;

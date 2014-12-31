@@ -1,5 +1,8 @@
 declare("Quest", function () {
     include('Component');
+    include('MercenaryManager');
+    include('QuestManager');
+    include('UpgradeManager');
 
     Quest.prototype = component.create();
     Quest.prototype.$super = parent;
@@ -23,9 +26,14 @@ declare("Quest", function () {
         this.complete = false;
 
         // The Id that this quest will use to display in the quests window
-        this.displayId = game.questsManager.quests.length + 1;
+        this.displayId = questManager.quests.length + 1;
 
-        this.update = function update() {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             // Update this quest depending on the type that it is
             switch (this.type) {
                 // Kill Quest - Check if the amount of monsters required has been met
@@ -38,32 +46,32 @@ declare("Quest", function () {
                 case QuestType.MERCENARIES:
                     switch (this.typeId) {
                         case 0:
-                            if (game.mercenaryManager.footmenOwned >= this.typeAmount) {
+                            if (mercenaryManager.footmenOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 1:
-                            if (game.mercenaryManager.clericsOwned >= this.typeAmount) {
+                            if (mercenaryManager.clericsOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 2:
-                            if (game.mercenaryManager.commandersOwned >= this.typeAmount) {
+                            if (mercenaryManager.commandersOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 3:
-                            if (game.mercenaryManager.magesOwned >= this.typeAmount) {
+                            if (mercenaryManager.magesOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 4:
-                            if (game.mercenaryManager.assassinsOwned >= this.typeAmount) {
+                            if (mercenaryManager.assassinsOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 5:
-                            if (game.mercenaryManager.warlocksOwned >= this.typeAmount) {
+                            if (mercenaryManager.warlocksOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
@@ -71,14 +79,14 @@ declare("Quest", function () {
                     break;
                 // Upgrade Quest - Check if the required upgrade has been purchased
                 case QuestType.UPGRADE:
-                    if (game.upgradeManager.upgrades[this.typeId].purchased) {
+                    if (upgradeManager.upgrades[this.typeId].purchased) {
                         this.complete = true;
                     }
                     break;
             }
         }
 
-        this.grantReward = function grantReward() {
+        this.grantReward = function() {
             game.player.gainGold(this.goldReward, false);
             game.stats.goldFromQuests += game.player.lastGoldGained;
             game.player.gainExperience(this.expReward, false);
@@ -90,6 +98,6 @@ declare("Quest", function () {
     }
 
     return {
-        create: function() { return new Quest(); }
+        create: function(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward) { return new Quest(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward); }
     }
 });

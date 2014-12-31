@@ -1,11 +1,13 @@
 declare("Player", function () {
     include('Component');
-    include('GameState');
+    include('PlayerState');
     include('Static');
     include('Utils');
     include('Abilities');
-    include('BuffManager');
-    include('DebuffManager');
+    include('BuffSet');
+    include('MercenaryManager');
+    include('ParticleManager');
+    include('StatUpgradeManager');
 
     Player.prototype = component.create();
     Player.prototype.$super = parent;
@@ -18,7 +20,7 @@ declare("Player", function () {
         this.health = 100;
 
         // Base values for all stats; these are static
-        this.baseStats = gameState.create();
+        this.baseStats = playerState.create();
         this.baseStats.health = this.health;
         this.baseStats.hp5 = 10;
         this.baseStats.minDamage = 1;
@@ -36,18 +38,18 @@ declare("Player", function () {
         this.baseStats.experienceGain = 0;
 
         // Stat bonuses automatically gained when leveling up
-        this.baseLevelUpBonuses = gameState.create();
+        this.baseLevelUpBonuses = playerState.create();
         this.baseLevelUpBonuses.health = 5;
         this.baseLevelUpBonuses.hp5 = 1;
 
         // The amount of stats the player has gained from leveling up
-        this.levelUpBonuses = gameState.create();
+        this.levelUpBonuses = playerState.create();
 
         // Stat bonuses chosen when leveling up
-        this.chosenLevelUpBonuses = gameState.create();
+        this.chosenLevelUpBonuses = playerState.create();
 
         // Item stat bonuses; this does not include increases to these stats
-        this.baseItemBonuses = gameState.create();
+        this.baseItemBonuses = playerState.create();
 
         // All the special effects from items the player has
         this.effects = new Array();
@@ -78,75 +80,74 @@ declare("Player", function () {
         this.abilities = abilities.create();
 
         // Buffs/Debuffs
-        this.buffs = buffManager.create();
-        this.debuffs = debuffManager.create();
+        this.buffSet = buffSet.create();
 
         // Stat calculation functions
-        this.getMaxHealth = function getMaxHealth() {
-            return Math.floor((this.getStrength() * 5) + (((this.baseStats.health + this.levelUpBonuses.health + this.baseItemBonuses.health) * (((game.mercenaryManager.getCommanderHealthPercentBonus() * game.mercenaryManager.commandersOwned) / 100) + 1)) * ((this.powerShards / 100) + 1)));
+        this.getMaxHealth = function() {
+            return Math.floor((this.getStrength() * 5) + (((this.baseStats.health + this.levelUpBonuses.health + this.baseItemBonuses.health) * (((mercenaryManager.getCommanderHealthPercentBonus() * mercenaryManager.commandersOwned) / 100) + 1)) * ((this.powerShards / 100) + 1)));
         }
-        this.getHp5 = function getHp5() {
-            return Math.floor(this.getStamina() + (((this.baseStats.hp5 + this.levelUpBonuses.hp5 + this.chosenLevelUpBonuses.hp5 + this.baseItemBonuses.hp5) * ((game.mercenaryManager.getClericHp5PercentBonus() * game.mercenaryManager.clericsOwned) / 100 + 1)) * ((this.powerShards / 100) + 1)));
+        this.getHp5 = function() {
+            return Math.floor(this.getStamina() + (((this.baseStats.hp5 + this.levelUpBonuses.hp5 + this.chosenLevelUpBonuses.hp5 + this.baseItemBonuses.hp5) * ((mercenaryManager.getClericHp5PercentBonus() * mercenaryManager.clericsOwned) / 100 + 1)) * ((this.powerShards / 100) + 1)));
         }
-        this.getMinDamage = function getMinDamage() {
+        this.getMinDamage = function() {
             // If the player has a weapon equipped then remove the 1 unarmed damage
             if (game.equipment.weapon() != null) {
-                return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage - 1) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+                return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage - 1) * ((this.getDamageBonus() + 100) / 100)) * this.buffSet.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
             }
             else {
-                return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+                return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage) * ((this.getDamageBonus() + 100) / 100)) * this.buffSet.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
             }
         }
-        this.getMaxDamage = function getMaxDamage() {
+        this.getMaxDamage = function() {
             // If the player has a weapon equipped then remove the 2 unarmed damage
             if (game.equipment.weapon() != null) {
-                return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage - 1) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+                return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage - 1) * ((this.getDamageBonus() + 100) / 100)) * this.buffSet.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
             }
             else {
-                return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+                return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage) * ((this.getDamageBonus() + 100) / 100)) * this.buffSet.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
             }
         }
-        this.getDamageBonus = function getDamageBonus() {
-            return this.getStrength() + ((this.baseStats.damageBonus + this.chosenLevelUpBonuses.damageBonus + this.baseItemBonuses.damageBonus + (game.mercenaryManager.getMageDamagePercentBonus() * game.mercenaryManager.magesOwned)) * ((this.powerShards / 100) + 1));
+        this.getDamageBonus = function() {
+            return this.getStrength() + ((this.baseStats.damageBonus + this.chosenLevelUpBonuses.damageBonus + this.baseItemBonuses.damageBonus + (mercenaryManager.getMageDamagePercentBonus() * mercenaryManager.magesOwned)) * ((this.powerShards / 100) + 1));
         }
-        this.getAverageDamage = function getAverageDamage() {
+        this.getAverageDamage = function() {
             var average = this.getMaxDamage() - this.getMinDamage();
             average += this.getMinDamage();
             return average;
         }
-        this.getArmour = function getArmour() {
+        this.getArmour = function() {
             return Math.floor(((this.baseStats.armour + this.chosenLevelUpBonuses.armour + this.baseItemBonuses.armour) * ((this.getStamina() / 100) + 1)) * ((this.powerShards / 100) + 1));
         }
-        this.getEvasion = function getEvasion() {
-            return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (game.mercenaryManager.getAssassinEvasionPercentBonus() * game.mercenaryManager.assassinsOwned)) / 100) + 1)) * ((this.powerShards / 100) + 1));
+        this.getEvasion = function() {
+            return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (mercenaryManager.getAssassinEvasionPercentBonus() * mercenaryManager.assassinsOwned)) / 100) + 1)) * ((this.powerShards / 100) + 1));
         }
-        this.getStrength = function getStrength() {
+        this.getStrength = function() {
             return Math.floor((this.baseStats.strength + this.chosenLevelUpBonuses.strength + this.baseItemBonuses.strength) * ((this.powerShards / 100) + 1));
         }
-        this.getStamina = function getStamina() {
+        this.getStamina = function() {
             return Math.floor((this.baseStats.stamina + this.chosenLevelUpBonuses.stamina + this.baseItemBonuses.stamina) * ((this.powerShards / 100) + 1));
         }
-        this.getAgility = function getAgility() {
+        this.getAgility = function() {
             return Math.floor((this.baseStats.agility + this.chosenLevelUpBonuses.agility + this.baseItemBonuses.agility) * ((this.powerShards / 100) + 1));
         }
-        this.getCritChance = function getCritChance() {
+        this.getCritChance = function() {
             return ((this.baseStats.critChance + this.chosenLevelUpBonuses.critChance + this.baseItemBonuses.critChance)) * ((this.powerShards / 100) + 1);
         }
-        this.getCritDamage = function getCritDamage() {
-            return ((this.baseStats.critDamage + this.chosenLevelUpBonuses.critDamage + this.baseItemBonuses.critDamage) + (this.getAgility() * 0.2) + (game.mercenaryManager.getWarlockCritDamageBonus() * game.mercenaryManager.warlocksOwned)) * ((this.powerShards / 100) + 1);
+        this.getCritDamage = function() {
+            return ((this.baseStats.critDamage + this.chosenLevelUpBonuses.critDamage + this.baseItemBonuses.critDamage) + (this.getAgility() * 0.2) + (mercenaryManager.getWarlockCritDamageBonus() * mercenaryManager.warlocksOwned)) * ((this.powerShards / 100) + 1);
         }
-        this.getItemRarity = function getItemRarity() {
+        this.getItemRarity = function() {
             return (this.baseStats.itemRarity + this.chosenLevelUpBonuses.itemRarity + this.baseItemBonuses.itemRarity) * ((this.powerShards / 100) + 1);
         }
-        this.getGoldGain = function getGoldGain() {
+        this.getGoldGain = function() {
             return (this.baseStats.goldGain + this.chosenLevelUpBonuses.goldGain + this.baseItemBonuses.goldGain) * ((this.powerShards / 100) + 1);
         }
-        this.getExperienceGain = function getExperienceGain() {
+        this.getExperienceGain = function() {
             return (this.baseStats.experienceGain + this.chosenLevelUpBonuses.experienceGain + this.baseItemBonuses.experienceGain) * ((this.powerShards / 100) + 1);
         }
 
         // Get the power of a certain special effect
-        this.getEffectsOfType = function getEffectsOfType(type) {
+        this.getEffectsOfType = function(type) {
             var allEffects = new Array();
             for (var x = 0; x < this.effects.length; x++) {
                 if (this.effects[x].type == type) {
@@ -157,7 +158,7 @@ declare("Player", function () {
         }
 
         // Increase the power of an ability
-        this.increaseAbilityPower = function increaseAbilityPower(name) {
+        this.increaseAbilityPower = function(name) {
             // Increase the level for the ability
             switch (name) {
                 case AbilityName.REND:
@@ -185,7 +186,7 @@ declare("Player", function () {
         }
 
         // Use all the abilities the player has
-        this.useAbilities = function useAbilities() {
+        this.useAbilities = function() {
             var monstersDamageTaken = 0;
             var criticalHappened = false;
             // Use the abilities
@@ -232,7 +233,7 @@ declare("Player", function () {
         }
 
         // Change the player's attack
-        this.changeAttack = function changeAttack(type) {
+        this.changeAttack = function(type) {
             switch (type) {
                 case static.AttackType.BASIC_ATTACK:
                     this.attackType = static.AttackType.BASIC_ATTACK;
@@ -250,10 +251,10 @@ declare("Player", function () {
         }
 
         // Gain an amount of gold, this can include bonuses from gold gain and it also can not
-        this.gainGold = function gainGold(amount, includeBonuses) {
+        this.gainGold = function(amount, includeBonuses) {
             if (includeBonuses) {
                 amount *= 1 + (this.getGoldGain() / 100);
-                amount *= this.buffs.getGoldMultiplier();
+                amount *= this.buffSet.getGoldMultiplier();
                 this.gold += amount;
                 this.lastGoldGained = amount;
             }
@@ -265,10 +266,10 @@ declare("Player", function () {
         }
 
         // Gain an amount of experience, this can include bonuses from exp gain and it also can not
-        this.gainExperience = function gainExperience(amount, includeBonuses) {
+        this.gainExperience = function(amount, includeBonuses) {
             if (includeBonuses) {
                 amount *= 1 + (this.getExperienceGain() / 100);
-                amount *= this.buffs.getExperienceMultiplier();
+                amount *= this.buffSet.getExperienceMultiplier();
                 this.experience += amount;
                 this.lastExperienceGained = amount;
             }
@@ -288,7 +289,7 @@ declare("Player", function () {
 
                 // If this number is not divisible by 5 then add a random stat upgrade
                 if (this.level % 5 != 0) {
-                    game.statUpgradesManager.addRandomUpgrades(this.level);
+                    statUpgradeManager.addRandomUpgrades(this.level);
                 }
 
                 // Add stats to the player for leveling up
@@ -298,7 +299,7 @@ declare("Player", function () {
         }
 
         // Take an amount of damage
-        this.takeDamage = function takeDamage(damage) {
+        this.takeDamage = function(damage) {
             // Reduce the damage based on the amount of armour
             var damageReduction = this.calculateDamageReduction();
             var newDamage = damage - Math.floor(damage * (damageReduction / 100));
@@ -328,11 +329,11 @@ declare("Player", function () {
             }
 
             // Create the monster's damage particle
-            game.particleManager.createParticle(newDamage, ParticleType.MONSTER_DAMAGE);
+            particleManager.createParticle(newDamage, ParticleType.MONSTER_DAMAGE);
         }
 
         // Calculate the amount of reduction granted by armour
-        this.calculateDamageReduction = function calculateDamageReduction() {
+        this.calculateDamageReduction = function() {
             // Calculate the reduction
             var reduction = this.getArmour() / (this.getArmour() + 500) * 99
 
@@ -345,7 +346,7 @@ declare("Player", function () {
         }
 
         // Calculate the chance the player has of dodging an attack
-        this.calculateEvasionChance = function calculateEvasionChance() {
+        this.calculateEvasionChance = function() {
             // Calculate the chance
             var chance = (this.getEvasion() / (this.getEvasion() + 375)) * 75;
 
@@ -358,7 +359,7 @@ declare("Player", function () {
         }
 
         // Heal the player for a specified amount
-        this.heal = function heal(amount) {
+        this.heal = function(amount) {
             this.health += amount;
             if (this.health > this.getMaxHealth()) {
                 this.health = this.getMaxHealth();
@@ -366,7 +367,7 @@ declare("Player", function () {
         }
 
         // Regenerate the players health depending on how much time has passed
-        this.regenerateHealth = function regenerateHealth(ms) {
+        this.regenerateHealth = function(ms) {
             this.health += ((this.getHp5() / 5) * (ms / 1000));
             if (this.health >= this.getMaxHealth()) {
                 this.health = this.getMaxHealth();
@@ -374,7 +375,7 @@ declare("Player", function () {
         }
 
         // Gain the stats from an item
-        this.gainItemsStats = function gainItemsStats(item) {
+        this.gainItemsStats = function(item) {
             this.baseItemBonuses.minDamage += item.minDamage + item.damageBonus;
             this.baseItemBonuses.maxDamage += item.maxDamage + item.damageBonus;
 
@@ -399,7 +400,7 @@ declare("Player", function () {
         }
 
         // Lose the stats from an item
-        this.loseItemsStats = function loseItemsStats(item) {
+        this.loseItemsStats = function(item) {
             this.baseItemBonuses.minDamage -= item.minDamage + item.damageBonus;
             this.baseItemBonuses.maxDamage -= item.maxDamage + item.damageBonus;
 
@@ -431,67 +432,72 @@ declare("Player", function () {
         }
 
         // Add a debuff to the player of the specified type, damage and duration
-        this.addDebuff = function addDebuff(type, damage, duration) {
+        this.addDebuff = function(type, damage, duration) {
             switch (type) {
                 case DebuffType.BLEED:
-                    this.debuffs.bleeding = true;
-                    this.debuffs.bleedDamage = damage;
-                    this.debuffs.bleedDuration = 0;
-                    this.debuffs.bleedMaxDuration = duration;
-                    this.debuffs.bleedStacks++;
+                    this.buffSet.bleeding = true;
+                    this.buffSet.bleedDamage = damage;
+                    this.buffSet.bleedDuration = 0;
+                    this.buffSet.bleedMaxDuration = duration;
+                    this.buffSet.bleedStacks++;
                     break;
                 case DebuffType.CHILL:
-                    this.debuffs.chilled = true;
-                    this.debuffs.chillDuration = 0;
-                    this.debuffs.chillMaxDuration = duration;
+                    this.buffSet.chilled = true;
+                    this.buffSet.chillDuration = 0;
+                    this.buffSet.chillMaxDuration = duration;
                     break;
                 case DebuffType.BURN:
-                    this.debuffs.burning = true;
-                    this.debuffs.burningDamage = damage;
-                    this.debuffs.burningDuration = 0;
-                    this.debuffs.burningMaxDuration = duration;
+                    this.buffSet.burning = true;
+                    this.buffSet.burningDamage = damage;
+                    this.buffSet.burningDuration = 0;
+                    this.buffSet.burningMaxDuration = duration;
                     break;
             }
         }
 
-        this.update = function update(ms) {
-            this.buffs.update(ms);
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            this.buffSet.update(gameTime);
         }
 
         // Update all the debuffs on the player
-        this.updateDebuffs = function updateDebuffs() {
+        this.updateDebuffs = function() {
             // If the player is bleeding
-            if (this.debuffs.bleeding) {
+            if (this.buffSet.bleeding) {
                 // Cause the player to take damage
-                this.takeDamage(this.debuffs.bleedDamage);
+                this.takeDamage(this.buffSet.bleedDamage);
                 // Increase the duration of this debuff
-                this.debuffs.bleedDuration++;
+                this.buffSet.bleedDuration++;
                 // If the debuff has expired then remove it
-                if (this.debuffs.bleedDuration >= this.debuffs.bleedMaxDuration) {
-                    this.debuffs.bleeding = false;
-                    this.debuffs.bleedDamage = 0;
-                    this.debuffs.bleedDuration = 0;
-                    this.debuffs.bleedMaxDuration = 0;
-                    this.debuffs.bleedStacks = 0;
+                if (this.buffSet.bleedDuration >= this.buffSet.bleedMaxDuration) {
+                    this.buffSet.bleeding = false;
+                    this.buffSet.bleedDamage = 0;
+                    this.buffSet.bleedDuration = 0;
+                    this.buffSet.bleedMaxDuration = 0;
+                    this.buffSet.bleedStacks = 0;
                 }
             }
 
             // If the player is chilled
-            if (this.debuffs.chilled) {
+            if (this.buffSet.chilled) {
                 // If the chill duration is even then the player can't attack this turn
-                if (this.debuffs.chillDuration == 0 || (this.debuffs.chillDuration % 2 == 0)) {
+                if (this.buffSet.chillDuration == 0 || (this.buffSet.chillDuration % 2 == 0)) {
                     this.canAttack = false;
                 }
                 else {
                     this.canAttack = true;
                 }
                 // Increase the duration of this debuff
-                this.debuffs.chillDuration++;
+                this.buffSet.chillDuration++;
                 // If the debuff has expired then remove it
-                if (this.debuffs.chillDuration >= this.debuffs.chillMaxDuration) {
-                    this.debuffs.chillDuration = 0;
-                    this.debuffs.chillMaxDuration = 0;
-                    this.debuffs.chilled = false;
+                if (this.buffSet.chillDuration >= this.buffSet.chillMaxDuration) {
+                    this.buffSet.chillDuration = 0;
+                    this.buffSet.chillMaxDuration = 0;
+                    this.buffSet.chilled = false;
                 }
             }
             // If the player is not chilled then they can attack
@@ -500,23 +506,23 @@ declare("Player", function () {
             }
 
             // If the player is burning
-            if (this.debuffs.burning) {
+            if (this.buffSet.burning) {
                 // Cause the player to take damage
-                this.takeDamage(this.debuffs.burningDamage);
+                this.takeDamage(this.buffSet.burningDamage);
                 // Increase the duration of this debuff
-                this.debuffs.burningDuration++;
+                this.buffSet.burningDuration++;
                 // If the debuff has expired then remove it
-                if (this.debuffs.burningDuration >= this.debuffs.burningMaxDuration) {
-                    this.debuffs.burningDamage = 0;
-                    this.debuffs.burningDuration = 0;
-                    this.debuffs.burningMaxDuration = 0;
-                    this.debuffs.burning = false;
+                if (this.buffSet.burningDuration >= this.buffSet.burningMaxDuration) {
+                    this.buffSet.burningDamage = 0;
+                    this.buffSet.burningDuration = 0;
+                    this.buffSet.burningMaxDuration = 0;
+                    this.buffSet.burning = false;
                 }
             }
         }
 
         // Save all the player's data
-        this.save = function save() {
+        this.save = function() {
             localStorage.playerSaved = true;
             localStorage.playerLevel = this.level;
             localStorage.playerHealth = this.health;

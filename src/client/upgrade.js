@@ -15,7 +15,7 @@ declare("Upgrade", function () {
     }
 
     return {
-        create: function() { return new Upgrade(); }
+        create: function(name, cost, type, requirementType, requirementAmount, description, iconSourceLeft, iconSourceTop) { return new Upgrade(name, cost, type, requirementType, requirementAmount, description, iconSourceLeft, iconSourceTop); }
     }
 
 });

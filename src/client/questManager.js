@@ -1,5 +1,6 @@
 declare("QuestManager", function () {
     include('Component');
+    include('GameState');
 
     QuestManager.prototype = component.create();
     QuestManager.prototype.$super = parent;
@@ -12,7 +13,7 @@ declare("QuestManager", function () {
         this.selectedQuest = 0;
         this.questsButtonGlowing = false;
 
-        this.addQuest = function addQuest(quest) {
+        this.addQuest = function(quest) {
             this.quests.push(quest);
             game.displayAlert("New quest received!");
             this.glowQuestsButton();
@@ -35,20 +36,25 @@ declare("QuestManager", function () {
 
         // Go through every quest and update it
         // If the quest is now complete, grant the reward and remove it
-        this.update = function update() {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
             for (var x = this.quests.length - 1; x >= 0; x--) {
-                this.quests[x].update();
+                this.quests[x].update(gameTime);
                 if (this.quests[x].complete) {
                     this.quests[x].grantReward();
                     // If this is a tutorial quest then update the tutorial
                     if (this.quests[x].name == "A Beginner's Task") {
-                        game.tutorialManager.quest1Complete = true;
+                        gameState.quest1Complete = true;
                     }
                     else if (this.quests[x].name == "A Helping Hand") {
-                        game.tutorialManager.quest2Complete = true;
+                        gameState.quest2Complete = true;
                     }
                     else if (this.quests[x].name == "Strengthening your Forces") {
-                        game.tutorialManager.quest3Complete = true;
+                        gameState.quest3Complete = true;
                     }
                     this.removeQuest(x);
                     game.stats.questsCompleted++;
@@ -56,13 +62,13 @@ declare("QuestManager", function () {
             }
         }
 
-        this.stopGlowingQuestsButton = function stopGlowingQuestsButton() {
+        this.stopGlowingQuestsButton = function() {
             this.questsButtonGlowing = false;
             $("#questsWindowButtonGlow").stop(true);
             $("#questsWindowButtonGlow").css('opacity', 0);
             $("#questsWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 78px 195px');
         }
-        this.glowQuestsButton = function glowQuestsButton() {
+        this.glowQuestsButton = function() {
             this.questsButtonGlowing = true;
             $("#questsWindowButtonGlow").animate({opacity: '+=0.5'}, 400);
             $("#questsWindowButtonGlow").animate({opacity: '-=0.5'}, 400, function () {
@@ -71,7 +77,7 @@ declare("QuestManager", function () {
         }
 
         // Go through every quest and if it is a kill quest and the level required is equal to this one; increase the kill count
-        this.updateKillCounts = function updateKillCounts(level) {
+        this.updateKillCounts = function(level) {
             for (var x = 0; x < this.quests.length; x++) {
                 if (this.quests[x].type == QuestType.KILL && this.quests[x].typeId == level) {
                     this.quests[x].killCount++;
@@ -79,7 +85,7 @@ declare("QuestManager", function () {
             }
         }
 
-        this.removeQuest = function removeQuest(id) {
+        this.removeQuest = function(id) {
             // Remove the quest and calculate the display id it had
             this.quests.splice(id, 1);
             var displayId = id + 1;
@@ -105,7 +111,7 @@ declare("QuestManager", function () {
             }
         }
 
-        this.getSelectedQuest = function getSelectedQuest() {
+        this.getSelectedQuest = function() {
             if (this.quests.length >= 0) {
                 return this.quests[this.selectedQuest];
             }
@@ -114,7 +120,7 @@ declare("QuestManager", function () {
             }
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.questsManagerSaved = true;
 
             var questNames = new Array();
@@ -147,7 +153,7 @@ declare("QuestManager", function () {
             localStorage.setItem("questBuffRewards", JSON.stringify(questBuffRewards));
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.questsManagerSaved != null) {
                 var questNames = JSON.parse(localStorage.getItem("questNames"));
                 var questDescriptions = JSON.parse(localStorage.getItem("questDescriptions"));

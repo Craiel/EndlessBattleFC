@@ -13,15 +13,20 @@ declare("Particle", function () {
         this.duration = duration;
         this.maxDuration = duration;
 
-        this.update = function update(ms) {
-            this.duration -= ms;
-            var velX = (this.velocityX * (ms / 1000));
-            var velY = (this.velocityY * (ms / 1000));
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            this.duration -= gameTime.elapsed;
+            var velX = (this.velocityX * (gameTime.elapsed / 1000));
+            var velY = (this.velocityY * (gameTime.elapsed / 1000));
             this.x += velX;
             this.y += velY;
         }
 
-        this.draw = function draw() {
+        this.draw = function() {
             var canvas = document.getElementById("particleCanvas");
             var context = canvas.getContext("2d");
             if (this.duration <= this.maxDuration / 5) {
@@ -44,7 +49,7 @@ declare("Particle", function () {
             context.globalAlpha = 1;
         }
 
-        this.expired = function expired() {
+        this.expired = function() {
             return this.duration <= 0;
         }
     }

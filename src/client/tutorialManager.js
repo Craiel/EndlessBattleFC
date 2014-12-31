@@ -1,5 +1,6 @@
 declare("TutorialManager", function () {
     include('Component');
+    include('QuestManager');
 
     TutorialManager.prototype = component.create();
     TutorialManager.prototype.$super = parent;
@@ -12,25 +13,6 @@ declare("TutorialManager", function () {
         // If each of the tutorials have had the continue button pressed
         this.tutorialContinued = new Array();
         this.tutorialsAmount = 12;
-
-        // Tutorial 1
-        this.battleButtonClicked = false;
-        // Tutorial 2
-        this.monsterKilled = false;
-        // Tutorial 4
-        this.statUpgradeChosen = false;
-        // Tutorial 5
-        this.leaveBattleButtonPressed = false;
-        // Tutorial 7
-        this.quest1Complete = false;
-        // Tutorial 8
-        this.inventoryOpened = false;
-        // Tutorial 9
-        this.equipmentOpened = false;
-        // Tutorial 10
-        this.quest2Complete = false;
-        // Tutorial 11
-        this.quest3Complete = false;
 
         for (var x = 0; x < this.tutorialsAmount; x++) {
             this.tutorialContinued.push(false);
@@ -50,7 +32,10 @@ declare("TutorialManager", function () {
             "Mercenaries are good, but to make them more worth their money you can purchase upgrades. It's time for another quest, get a total of 10 Footmen to unlock the Footman Training upgrade and then purchase it.",
             "Well done! You're off to a great start, but there's dangerous monsters, powerful loot and riches ahead. This concludes the tutorial, good luck!");
 
-        this.initialize = function initialize() {
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
             document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[0];
             $("#tutorialContinueButton").hide();
 
@@ -72,14 +57,14 @@ declare("TutorialManager", function () {
             this.animateRightArrow();
         }
 
-        this.animateRightArrow = function animateRightArrow() {
+        this.animateRightArrow = function() {
             $("#tutorialRightArrow").animate({left: '+=20px'}, 400);
             $("#tutorialRightArrow").animate({left: '-=20px'}, 400, function () {
                 animateRightArrow();
             });
         }
 
-        this.advanceTutorial = function advanceTutorial() {
+        this.advanceTutorial = function() {
             this.currentTutorial++;
             if (this.currentTutorial < this.tutorialsAmount) {
                 document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
@@ -88,21 +73,26 @@ declare("TutorialManager", function () {
             $("#tutorialRightArrow").show();
         }
 
-        this.continueTutorial = function continueTutorial() {
+        this.continueTutorial = function() {
             this.tutorialContinued[this.currentTutorial] = true;
             this.hideTutorial();
         }
 
-        this.hideTutorial = function hideTutorial() {
+        this.hideTutorial = function() {
             $("#tutorialWindow").hide();
             $("#tutorialRightArrow").hide();
         }
 
-        this.update = function update() {
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return;
+            }
+
             // Check the requirements of the current tutorial, if it is completed then start the next tutorial
             switch (this.currentTutorial) {
                 case 0:
-                    if (this.battleButtonClicked) {
+                    if (gameState.battleButtonClicked) {
                         this.advanceTutorial();
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
@@ -111,7 +101,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 1:
-                    if (this.monsterKilled) {
+                    if (gameState.monsterKilled) {
                         this.advanceTutorial();
                         $("#expBarArea").show();
                     }
@@ -128,7 +118,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 3:
-                    if (this.statUpgradeChosen) {
+                    if (gameState.statUpgradeChosen) {
                         this.advanceTutorial();
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
@@ -139,7 +129,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 4:
-                    if (this.leaveBattleButtonPressed) {
+                    if (gameState.leaveBattleButtonPressed) {
                         this.advanceTutorial();
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
@@ -154,7 +144,7 @@ declare("TutorialManager", function () {
                 case 5://
                     if (this.tutorialContinued[5]) {
                         this.advanceTutorial();
-                        game.questsManager.addQuest(new Quest("A Beginner's Task", "It's time for your first quest as well as more combat experience. Increase the battle level and slay a level 2 monster and the tutorial will continue.", QuestType.KILL, 2, 1, 5, 5, null));
+                        questManager.addQuest(new Quest("A Beginner's Task", "It's time for your first quest as well as more combat experience. Increase the battle level and slay a level 2 monster and the tutorial will continue.", QuestType.KILL, 2, 1, 5, 5, null));
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
                         $("#tutorialRightArrow").css('top', '67px');
@@ -198,7 +188,7 @@ declare("TutorialManager", function () {
                 case 8://
                     if (this.equipmentOpened) {
                         this.advanceTutorial();
-                        game.questsManager.addQuest(new Quest("A Helping Hand", "You've slain monsters, but if you really want a lot of gold you'll need to hire mercenaries to help you. Hire 5 Footmen to continue the tutorial.", QuestType.MERCENARIES, 0, 5, 10, 10, null));
+                        questManager.addQuest(new Quest("A Helping Hand", "You've slain monsters, but if you really want a lot of gold you'll need to hire mercenaries to help you. Hire 5 Footmen to continue the tutorial.", QuestType.MERCENARIES, 0, 5, 10, 10, null));
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
                         $("#tutorialRightArrow").css('top', '38px');
@@ -209,7 +199,7 @@ declare("TutorialManager", function () {
                 case 9:
                     if (this.quest2Complete) {
                         this.advanceTutorial();
-                        game.questsManager.addQuest(new Quest("Strengthening your Forces", "Purchasing those footmen is a good start, but they can get pricey. To negate this inflation you'll need to upgrade them. Hire a total of 10 Footmen and then buy the Footman Training upgrade.", QuestType.UPGRADE, 0, 0, 50, 50, null));
+                        questManager.addQuest(new Quest("Strengthening your Forces", "Purchasing those footmen is a good start, but they can get pricey. To negate this inflation you'll need to upgrade them. Hire a total of 10 Footmen and then buy the Footman Training upgrade.", QuestType.UPGRADE, 0, 0, 50, 50, null));
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
                         $("#tutorialRightArrow").css('top', '67px');
@@ -237,12 +227,12 @@ declare("TutorialManager", function () {
             }
         }
 
-        this.save = function save() {
+        this.save = function() {
             localStorage.tutorialSaved = true;
             localStorage.currentTutorial = this.currentTutorial;
         }
 
-        this.load = function load() {
+        this.load = function() {
             if (localStorage.tutorialSaved != null) {
                 this.currentTutorial = parseInt(localStorage.currentTutorial);
 

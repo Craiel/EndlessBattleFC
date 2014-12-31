@@ -1,10 +1,12 @@
 declare("Item", function () {
+    include('UpgradeManager');
+
     function Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses) {
         this.name = name;
         this.level = level;
         this.rarity = rarity;
         this.type = type;
-        this.sellValue = sellValue * (Math.pow(2, game.upgradeManager.autoSellUpgradesPurchased));
+        this.sellValue = sellValue * (Math.pow(2, upgradeManager.autoSellUpgradesPurchased));
         this.iconSourceX = iconSourceX;
         this.iconSourceY = iconSourceY;
 
@@ -33,6 +35,6 @@ declare("Item", function () {
     }
 
     return {
-        create: function() { return new Item(); }
+        create: function(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses) { return new Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses); }
     }
 });
