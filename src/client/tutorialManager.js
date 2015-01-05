@@ -1,6 +1,7 @@
 declare("TutorialManager", function () {
     include('Component');
     include('QuestManager');
+    include('GameState');
 
     TutorialManager.prototype = component.create();
     TutorialManager.prototype.$super = parent;

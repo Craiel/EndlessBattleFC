@@ -134,32 +134,32 @@ declare("UpgradeManager", function () {
                     // Find the matching requirement type, then see if it has been met
                     switch (currentUpgrade.requirementType) {
                         case static.UpgradeRequirementType.FOOTMAN:
-                            if (mercenaryManager.footmenOwned >= currentUpgrade.requirementAmount) {
+                            if (gameState.footmenOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
                         case static.UpgradeRequirementType.CLERIC:
-                            if (mercenaryManager.clericsOwned >= currentUpgrade.requirementAmount) {
+                            if (gameState.clericsOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
                         case static.UpgradeRequirementType.COMMANDER:
-                            if (mercenaryManager.commandersOwned >= currentUpgrade.requirementAmount) {
+                            if (gameState.commandersOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
                         case static.UpgradeRequirementType.MAGE:
-                            if (mercenaryManager.magesOwned >= currentUpgrade.requirementAmount) {
+                            if (gameState.magesOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
                         case static.UpgradeRequirementType.ASSASSIN:
-                            if (mercenaryManager.assassinsOwned >= currentUpgrade.requirementAmount) {
+                            if (gameState.assassinsOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
                         case static.UpgradeRequirementType.WARLOCK:
-                            if (mercenaryManager.warlocksOwned >= currentUpgrade.requirementAmount) {
+                            if (gameState.warlocksOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;

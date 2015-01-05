@@ -15,6 +15,7 @@ declare("Game", function() {
     include('QuestManager');
     include('EventManager');
     include('GameState');
+    include('TutorialManager');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -65,9 +66,10 @@ declare("Game", function() {
 
             this.beginLoading();
             tutorialManager.init();
-            this.mercenaryManager.init();
+            mercenaryManager.init();
             upgradeManager.init();
             particleManager.init();
+            questManager.init();
 
             this.load();
 
@@ -524,18 +526,9 @@ declare("Game", function() {
 
         this.reset = function() {
             localStorage.clear();
-            // Player
-            this.player = player.create();
-            this.player.init();
-            this.inventory = inventory.create();
-            this.inventory.init();
-            this.equipment = equipment.create();
-            this.equipment.init();
 
             // Other
             eventManager.init();
-            this.stats = stats.create();
-            this.stats.init();
 
             // Combat
             this.inBattle = false;
@@ -549,9 +542,6 @@ declare("Game", function() {
                 currentElement = document.getElementById('upgradePurchaseButton' + (x + 1));
                 currentElement.parentNode.removeChild(currentElement);
             }
-
-            // Particles
-            particleManager = particleManager.create();
 
             // Monsters
             this.monster = monsterCreator.createRandomMonster(
@@ -672,6 +662,9 @@ declare("Game", function() {
             questManager.update(gameTime);
             eventManager.update(gameTime);
             tutorialManager.update(gameTime);
+            upgradeManager.update(gameTime);
+            particleManager.update(gameTime);
+            this.stats.update(gameTime);
             this.player.update(gameTime);
 
             // Save the progress if enough time has passed
@@ -722,12 +715,6 @@ declare("Game", function() {
             var leftReduction = document.getElementById("goldAmount").scrollWidth / 2;
             $("#goldAmount").css('left', (($("#gameArea").width() / 2) - leftReduction) + 'px');
             $("#goldCoin").css('left', (($("#gameArea").width() / 2) - leftReduction - 21) + 'px');
-
-            // Update the upgrades
-            upgradeManager.update(gameTime);
-
-            // Update the particles
-            particleManager.update(gameTime);
 
             // Update the player's stats
             document.getElementById("levelValue").innerHTML = this.player.level;
@@ -836,9 +823,6 @@ declare("Game", function() {
                 $("#questNamesArea").hide();
                 $("#questTextArea").hide();
             }
-
-            // Update the stats window
-            this.stats.update(gameTime);
         }
     }
 

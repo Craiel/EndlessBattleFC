@@ -22,11 +22,11 @@ declare("MercenaryManager", function () {
             this.componentInit();
 
             document.getElementById("footmanCost").innerHTML = gameState.footmanPrice.formatMoney(0);
-            document.getElementById("clericCost").innerHTML = this.clericPrice.formatMoney(0);
-            document.getElementById("commanderCost").innerHTML = this.commanderPrice.formatMoney(0);
-            document.getElementById("mageCost").innerHTML = this.magePrice.formatMoney(0);
-            document.getElementById("assassinCost").innerHTML = this.assassinPrice.formatMoney(0);
-            document.getElementById("warlockCost").innerHTML = this.warlockPrice.formatMoney(0);
+            document.getElementById("clericCost").innerHTML = gameState.clericPrice.formatMoney(0);
+            document.getElementById("commanderCost").innerHTML = gameState.commanderPrice.formatMoney(0);
+            document.getElementById("mageCost").innerHTML = gameState.magePrice.formatMoney(0);
+            document.getElementById("assassinCost").innerHTML = gameState.assassinPrice.formatMoney(0);
+            document.getElementById("warlockCost").innerHTML = gameState.warlockPrice.formatMoney(0);
         }
 
         // Add a new mercenary of a specified type for the player
@@ -186,19 +186,19 @@ declare("MercenaryManager", function () {
                     price = gameState.footmanPrice;
                     break;
                 case MercenaryType.CLERIC:
-                    price = this.clericPrice;
+                    price = gameState.clericPrice;
                     break;
                 case MercenaryType.COMMANDER:
-                    price = this.commanderPrice;
+                    price = gameState.commanderPrice;
                     break;
                 case MercenaryType.MAGE:
-                    price = this.magePrice;
+                    price = gameState.magePrice;
                     break;
                 case MercenaryType.ASSASSIN:
-                    price = this.assassinPrice;
+                    price = gameState.assassinPrice;
                     break;
                 case MercenaryType.WARLOCK:
-                    price = this.warlockPrice;
+                    price = gameState.warlockPrice;
                     break;
             }
             // Can the player afford it?
@@ -235,19 +235,19 @@ declare("MercenaryManager", function () {
                         gameState.footmanPrice = Math.floor(static.baseFootmanPrice * Math.pow(1.15, gameState.footmenOwned));
                         break;
                     case MercenaryType.CLERIC:
-                        this.clericPrice = Math.floor(static.baseClericPrice * Math.pow(1.15, gameState.clericsOwned));
+                        gameState.clericPrice = Math.floor(static.baseClericPrice * Math.pow(1.15, gameState.clericsOwned));
                         break;
                     case MercenaryType.COMMANDER:
-                        this.commanderPrice = Math.floor(static.baseCommanderPrice * Math.pow(1.15, gameState.commandersOwned));
+                        gameState.commanderPrice = Math.floor(static.baseCommanderPrice * Math.pow(1.15, gameState.commandersOwned));
                         break;
                     case MercenaryType.MAGE:
-                        this.magePrice = Math.floor(static.baseMagePrice * Math.pow(1.15, gameState.magesOwned));
+                        gameState.magePrice = Math.floor(static.baseMagePrice * Math.pow(1.15, gameState.magesOwned));
                         break;
                     case MercenaryType.ASSASSIN:
-                        this.assassinPrice = Math.floor(static.baseAssassinPrice * Math.pow(1.15, gameState.assassinsOwned));
+                        gameState.assassinPrice = Math.floor(static.baseAssassinPrice * Math.pow(1.15, gameState.assassinsOwned));
                         break;
                     case MercenaryType.WARLOCK:
-                        this.warlockPrice = Math.floor(static.baseWarlockPrice * Math.pow(1.15, gameState.warlocksOwned));
+                        gameState.warlockPrice = Math.floor(static.baseWarlockPrice * Math.pow(1.15, gameState.warlocksOwned));
                         break;
                 }
 

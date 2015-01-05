@@ -455,6 +455,13 @@ declare("Player", function () {
             }
         }
 
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
+            this.buffSet.init();
+        }
+
         this.componentUpdate = this.update;
         this.update = function(gameTime) {
             if(this.componentUpdate(gameTime) !== true) {
