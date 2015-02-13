@@ -237,15 +237,15 @@ declare("Player", function () {
             switch (type) {
                 case static.AttackType.BASIC_ATTACK:
                     this.attackType = static.AttackType.BASIC_ATTACK;
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 0');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 0');
                     break;
                 case static.AttackType.POWER_STRIKE:
                     this.attackType = static.AttackType.POWER_STRIKE;
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 100px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 100px');
                     break;
                 case static.AttackType.DOUBLE_STRIKE:
                     this.attackType = static.AttackType.DOUBLE_STRIKE;
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 50px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 50px');
                     break;
             }
         }
@@ -314,7 +314,7 @@ declare("Player", function () {
 
             // Reflect a percentage of the damage if the player has any Barrier effects
             var reflectAmount = 0;
-            var barrierEffects = this.getEffectsOfType(EffectType.BARRIER);
+            var barrierEffects = this.getEffectsOfType(static.EffectType.BARRIER);
             for (var x = 0; x < barrierEffects.length; x++) {
                 reflectAmount += barrierEffects[x].value;
             }
@@ -329,7 +329,7 @@ declare("Player", function () {
             }
 
             // Create the monster's damage particle
-            particleManager.createParticle(newDamage, ParticleType.MONSTER_DAMAGE);
+            particleManager.createParticle(newDamage, static.ParticleType.MONSTER_DAMAGE);
         }
 
         // Calculate the amount of reduction granted by armour

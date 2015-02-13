@@ -1,6 +1,7 @@
 declare("EventManager", function () {
     include('Component');
     include('QuestManager');
+    include('Static');
 
     EventManager.prototype = component.create();
     EventManager.prototype.$super = parent;
@@ -14,7 +15,7 @@ declare("EventManager", function () {
 
         this.addRandomEvent = function(level) {
             var event = new Event(this.events.length + 1);
-            event.type = EventType.QUEST;
+            event.type = static.EventType.QUEST;
             // Create a random quest
             var name = QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + QuestNameSuffixes[Math.floor(Math.random() * 5)];
             var amount = Math.floor(Math.random() * 6) + 7;

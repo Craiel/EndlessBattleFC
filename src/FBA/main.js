@@ -638,7 +638,7 @@ function EndlessBattle() {
             }
             else {
                 $("#inventoryItem" + (slot + 1)).css('background',
-                        'url("includes/images/NULL.png")');
+                        'url("' + resources.ImageNull + '")');
             }
 
             // Fix the positioning, sometimes this can go wonky...

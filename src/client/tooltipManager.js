@@ -391,7 +391,7 @@ declare("TooltipManager", function () {
             $("#basicTooltip").show();
 
             // Set the tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#basicTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("basicTooltip").scrollWidth;
             $("#basicTooltip").css('left', (rect.left - leftReduction - 40));

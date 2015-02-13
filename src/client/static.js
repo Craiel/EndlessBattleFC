@@ -215,7 +215,7 @@ declare("Static", function () {
         this.deathGpsReductionDuration = 60;
 
         this.setRoot = function(value) {
-
+            this.imageRoot = value + 'images/';
         };
     }
 

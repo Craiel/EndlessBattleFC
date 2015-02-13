@@ -60,12 +60,6 @@
       "Directory": "data\\www\\",
       "FilterStrings": [
         "*"
-      ]
-    },
-    {
-      "Directory": "data\\img",
-      "FilterStrings": [
-        "*.png"
       ],
       "Option": 1
     }

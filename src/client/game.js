@@ -16,6 +16,7 @@ declare("Game", function() {
     include('EventManager');
     include('GameState');
     include('TutorialManager');
+    include('Resources');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -102,7 +103,7 @@ declare("Game", function() {
 
         this.disallowBattle = function() {
             this.leaveBattle();
-            $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 25px');
+            $("#enterBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 25px');
         }
 
         this.enterBattle = function() {
@@ -112,9 +113,9 @@ declare("Game", function() {
                 this.battleLevel,
                 monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
 
-            $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 50px');
+            $("#enterBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 50px');
             $("#leaveBattleButton").show();
-            $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
+            $("#leaveBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
             $("#monsterHealthBarArea").show();
             gameState.battleButtonClicked = true;
 
@@ -128,9 +129,9 @@ declare("Game", function() {
 
         this.leaveBattle = function() {
             // Leave the battle and update the interface
-            $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 50px');
+            $("#leaveBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 50px');
             this.inBattle = false;
-            $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
+            $("#enterBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
             $("#monsterHealthBarArea").hide();
             $("#leaveBattleButton").hide();
 
@@ -187,7 +188,7 @@ declare("Game", function() {
                     }
 
                     // If the player has any crushing blows effects then deal the damage from those effects
-                    var crushingBlowsEffects = game.player.getEffectsOfType(EffectType.CRUSHING_BLOWS);
+                    var crushingBlowsEffects = game.player.getEffectsOfType(static.EffectType.CRUSHING_BLOWS);
                     var crushingBlowsDamage = 0;
                     if (crushingBlowsEffects.length > 0) {
                         for (var y = 0; y < crushingBlowsEffects.length; y++) {
@@ -202,7 +203,7 @@ declare("Game", function() {
                     successfulAttacks++;
 
                     // If the player has any Swiftness effects, see if the player generates any extra attacks
-                    var swiftnessEffects = game.player.getEffectsOfType(EffectType.SWIFTNESS);
+                    var swiftnessEffects = game.player.getEffectsOfType(static.EffectType.SWIFTNESS);
                     for (var z = 0; z < swiftnessEffects.length; z++) {
                         // Try to generate an extra attack
                         if (Math.random() < swiftnessEffects[z].chance / 100) {
@@ -224,7 +225,7 @@ declare("Game", function() {
                             }
 
                             // If the player has any crushing blows effects then deal the damage from those effects
-                            crushingBlowsEffects = game.player.getEffectsOfType(EffectType.CRUSHING_BLOWS);
+                            crushingBlowsEffects = game.player.getEffectsOfType(static.EffectType.CRUSHING_BLOWS);
                             crushingBlowsDamage = 0;
                             if (crushingBlowsEffects.length > 0) {
                                 for (var y = 0; y < crushingBlowsEffects.length; y++) {
@@ -242,9 +243,9 @@ declare("Game", function() {
                 }
 
                 // Try to trigger on-hit effects for every attack
-                var pillagingEffects = this.player.getEffectsOfType(EffectType.PILLAGING);
-                var nourishmentEffects = this.player.getEffectsOfType(EffectType.NOURISHMENT);
-                var berserkingEffects = this.player.getEffectsOfType(EffectType.BERSERKING);
+                var pillagingEffects = this.player.getEffectsOfType(static.EffectType.PILLAGING);
+                var nourishmentEffects = this.player.getEffectsOfType(static.EffectType.NOURISHMENT);
+                var berserkingEffects = this.player.getEffectsOfType(static.EffectType.BERSERKING);
                 for (var x = 0; x < successfulAttacks; x++) {
                     for (var y = 0; y < pillagingEffects.length; y++) {
                         if (Math.random() < pillagingEffects[y].chance / 100) {
@@ -290,9 +291,9 @@ declare("Game", function() {
                 }
 
                 // Create particles for the loot, experience and kill
-                particleManager.createParticle(this.player.lastGoldGained.toFixed(2), ParticleType.GOLD);
-                particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), ParticleType.EXP_ORB);
-                particleManager.createParticle(null, ParticleType.SKULL);
+                particleManager.createParticle(this.player.lastGoldGained.toFixed(2), static.ParticleType.GOLD);
+                particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), static.ParticleType.EXP_ORB);
+                particleManager.createParticle(null, static.ParticleType.SKULL);
 
                 // Create a new monster
                 this.monster = monsterCreator.createRandomMonster(
@@ -512,10 +513,10 @@ declare("Game", function() {
                     this.battleLevel = parseInt(localStorage.battleLevel);
                 }
                 if (this.battleLevel > 1) {
-                    $("#battleLevelDownButton").css('background', 'url("includes/images/battleLevelButton.png") 0 0px');
+                    $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
                 }
                 if (this.maxBattleLevelReached()) {
-                    $("#battleLevelUpButton").css('background', 'url("includes/images/battleLevelButton.png") 0 25px');
+                    $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 25px');
                 }
 
                 this.monster = monsterCreator.createRandomMonster(
@@ -550,10 +551,10 @@ declare("Game", function() {
 
             // Reset all the inventory and equipment slots
             for (var x = 0; x < this.inventory.slots.length; x++) {
-                $("#inventoryItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
+                $("#inventoryItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
             }
             for (var x = 0; x < this.equipment.slots.length; x++) {
-                $(".equipItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
+                $(".equipItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
             }
 
             $("#leaveBattleButton").hide();
@@ -581,9 +582,9 @@ declare("Game", function() {
 
             $("#resurrectionBarArea").hide();
             $("#gps").css('color', '#ffd800');
-            $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
+            $("#enterBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
 
-            $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 0');
+            $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 0');
             $("#checkboxWhite").hide();
             $("#checkboxGreen").hide();
             $("#checkboxBlue").hide();

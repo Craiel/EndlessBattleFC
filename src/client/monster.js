@@ -40,10 +40,10 @@ declare("Monster", function () {
             // Create the player's damage particle
             if (displayParticle) {
                 if (isCritical) {
-                    particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_CRITICAL);
+                    particleManager.createParticle(Math.round(this.lastDamageTaken), static.ParticleType.PLAYER_CRITICAL);
                 }
                 else {
-                    particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_DAMAGE);
+                    particleManager.createParticle(Math.round(this.lastDamageTaken), static.ParticleType.PLAYER_DAMAGE);
                 }
             }
 
@@ -76,7 +76,7 @@ declare("Monster", function () {
                         $("#monsterBleedingIcon").css('left', left + 'px');
                     }
                     // Check to see if the player has any Rupture effects
-                    var effects = game.player.getEffectsOfType(EffectType.RUPTURE);
+                    var effects = game.player.getEffectsOfType(static.EffectType.RUPTURE);
                     var maxStacks = 5;
                     if (effects.length > 0) {
                         for (var x = 0; x < effects.length; x++) {
@@ -115,7 +115,7 @@ declare("Monster", function () {
                     this.buffs.burningDuration = 0;
                     this.buffs.burningMaxDuration = duration;
                     // Check to see if the player has any Combustion effects allowing them to stack burning
-                    var effects = game.player.getEffectsOfType(EffectType.COMBUSTION);
+                    var effects = game.player.getEffectsOfType(static.EffectType.COMBUSTION);
                     var maxStacks = 0;
                     if (effects.length > 0) {
                         for (var x = 0; x < effects.length; x++) {

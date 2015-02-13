@@ -379,7 +379,7 @@ declare("Equipment", function () {
         this.removeItem = function(index) {
             game.player.loseItemsStats(this.slots[index]);
             this.slots[index] = null;
-            $(".equipItem" + (index + 1)).css('background', 'url("includes/images/NULL.png")');
+            $(".equipItem" + (index + 1)).css('background', 'url("' + resources.ImageNull + '")');
         }
 
         // Unequip an item to the first available slot
@@ -437,7 +437,7 @@ declare("Equipment", function () {
                 $(".equipItem" + 8).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[7].iconSourceX + 'px ' + this.slots[7].iconSourceY + 'px');
             }
             else {
-                $(".equipItem" + 8).css('background', 'url("includes/images/NULL.png")');
+                $(".equipItem" + 8).css('background', 'url("' + resources.ImageNull + '")');
             }
 
             // Change the second slot item
@@ -446,7 +446,7 @@ declare("Equipment", function () {
                 $(".equipItem" + 9).css('background', 'url("includes/images/itemSheet3.png") ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
             }
             else {
-                $(".equipItem" + 9).css('background', 'url("includes/images/NULL.png")');
+                $(".equipItem" + 9).css('background', 'url("' + resources.ImageNull + '")');
             }
         }
 

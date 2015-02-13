@@ -446,48 +446,48 @@ declare("ItemCreator", function () {
                     case ItemType.WEAPON:
                         switch (Math.floor(Math.random() * 3)) {
                             case 0:
-                                newEffect = new Effect(EffectType.CRUSHING_BLOWS, 100, 5);
+                                newEffect = new Effect(static.EffectType.CRUSHING_BLOWS, 100, 5);
                                 break;
                             case 1:
-                                newEffect = new Effect(EffectType.COMBUSTION, 100, 5);
+                                newEffect = new Effect(static.EffectType.COMBUSTION, 100, 5);
                                 break;
                             case 2:
-                                newEffect = new Effect(EffectType.RUPTURE, 100, 5);
+                                newEffect = new Effect(static.EffectType.RUPTURE, 100, 5);
                                 break;
                         }
                         break;
                     case ItemType.TRINKET:
                         switch (Math.floor(Math.random() * 4)) {
                             case 0:
-                                newEffect = new Effect(EffectType.SWIFTNESS, 10, 0);
+                                newEffect = new Effect(static.EffectType.SWIFTNESS, 10, 0);
                                 break;
                             case 1:
-                                newEffect = new Effect(EffectType.PILLAGING, 10, Math.floor(((utils.Sigma(level) * Math.pow(1.01, level)) / 4 + 1) * 15));
+                                newEffect = new Effect(static.EffectType.PILLAGING, 10, Math.floor(((utils.Sigma(level) * Math.pow(1.01, level)) / 4 + 1) * 15));
                                 break;
                             case 2:
-                                newEffect = new Effect(EffectType.NOURISHMENT, 10, Math.floor((10 * level) * Math.pow(1.001, level) * 0.75));
+                                newEffect = new Effect(static.EffectType.NOURISHMENT, 10, Math.floor((10 * level) * Math.pow(1.001, level) * 0.75));
                                 break;
                             case 3:
-                                newEffect = new Effect(EffectType.BERSERKING, 10, Math.floor((level) * Math.pow(1.001, level) * 3));
+                                newEffect = new Effect(static.EffectType.BERSERKING, 10, Math.floor((level) * Math.pow(1.001, level) * 3));
                                 break;
                         }
                         break;
                     default:
                         switch (Math.floor(Math.random() * 5)) {
                             case 0:
-                                newEffect = new Effect(EffectType.WOUNDING, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(static.EffectType.WOUNDING, 100, Math.ceil(level / 35));
                                 break;
                             case 1:
-                                newEffect = new Effect(EffectType.CURING, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(static.EffectType.CURING, 100, Math.ceil(level / 35));
                                 break;
                             case 2:
-                                newEffect = new Effect(EffectType.FROST_SHARDS, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(static.EffectType.FROST_SHARDS, 100, Math.ceil(level / 35));
                                 break;
                             case 3:
-                                newEffect = new Effect(EffectType.FLAME_IMBUED, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(static.EffectType.FLAME_IMBUED, 100, Math.ceil(level / 35));
                                 break;
                             case 4:
-                                newEffect = new Effect(EffectType.BARRIER, 100, Math.floor((Math.random() * 15) + 20));
+                                newEffect = new Effect(static.EffectType.BARRIER, 100, Math.floor((Math.random() * 15) + 20));
                                 break;
                         }
                         break;

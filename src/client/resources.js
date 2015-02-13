@@ -10,6 +10,8 @@ declare("Resources", function() {
         this.id = 'Resources';
         
         this.componentInit = this.init;
+
+
         
         // ---------------------------------------------------------------------------
     	// component functions
@@ -17,8 +19,10 @@ declare("Resources", function() {
         this.init = function() {
         	this.componentInit();
 
-            // Todo
-        	// this.ImageStartBackground = static.imageRoot + "TitleScreen.png";
+            this.ImageNull = static.imageRoot + "NULL.png";
+            this.ImageAttackButtons = static.imageRoot + "attackButtons.png";
+            this.ImageStoneButtons = static.imageRoot + "stoneButton1.png";
+            this.ImageBattleLevelButton = static.imageRoot + "battleLevelButton.png";
         };
     };
     

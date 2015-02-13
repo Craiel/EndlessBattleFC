@@ -1,23 +1,23 @@
 .goldCoin {
-    background-image: url("icons/goldCoin.png");
+    background-image: url("images/goldCoin.png");
     background-size: 100%;
     position: absolute;
 }
 
 .expOrb {
-    background-image: url("icons/expOrb.png");
+    background-image: url("images/expOrb.png");
     background-size: 100%;
     position: absolute;
 }
 
 .powerShard {
-    background: url("icons/powerShard.png");
+    background: url("images/powerShard.png");
     background-size: 100%;
     position: absolute;
 }
 
 .bleedingIcon {
-    background: url("icons/bleedingIcon.png");
+    background: url("images/bleedingIcon.png");
     position: absolute;
     top: 0px;
     left: 325px;
@@ -27,7 +27,7 @@
 }
 
 .burningIcon {
-    background: url("icons/burningIcon.png");
+    background: url("images/burningIcon.png");
     position: absolute;
     top: 0px;
     left: 325px;
@@ -37,7 +37,7 @@
 }
 
 .chilledIcon {
-    background: url("icons/chilledIcon.png");
+    background: url("images/chilledIcon.png");
     position: absolute;
     top: 0px;
     left: 325px;
@@ -47,7 +47,7 @@
 }
 
 .buffIcon {
-    background: url("icons/buffIcons.png") 15px 0;
+    background: url("images/buffIcons.png") 15px 0;
     position: relative;
     left: 0px;
     top: 0px;
@@ -56,7 +56,7 @@
 }
 
 #attackButton {
-    background: url("icons/attackButtons.png") 0 0;
+    background: url("images/attackButtons.png") 0 0;
     position: absolute;
     left: 195px;
     top: 90px;
@@ -89,15 +89,15 @@
     top: 3px;
 }
 
-#footmanIcon { background: url("icons/bigIcons.png") 0 0 }
-#clericIcon { background: url("icons/bigIcons.png") 200px 0 }
-#commanderIcon { background: url("icons/bigIcons.png") 160px 0 }
-#mageIcon { background: url("icons/bigIcons.png") 120px 0 }
-#assassinIcon { background: url("icons/bigIcons.png") 80px 0 }
-#warlockIcon { background: url("icons/bigIcons.png") 40px 0 }
+#footmanIcon { background: url("images/bigIcons.png") 0 0 }
+#clericIcon { background: url("images/bigIcons.png") 200px 0 }
+#commanderIcon { background: url("images/bigIcons.png") 160px 0 }
+#mageIcon { background: url("images/bigIcons.png") 120px 0 }
+#assassinIcon { background: url("images/bigIcons.png") 80px 0 }
+#warlockIcon { background: url("images/bigIcons.png") 40px 0 }
 
-.statIcon { background: url("icons/bigIcons.png") 0 40px; }
-.rendIcon { background: url("icons/bigIcons.png") 0 120px; }
-.rejuvenatingStrikesIcon { background: url("icons/bigIcons.png") 200px 120px; }
-.iceBladeIcon { background: url("icons/bigIcons.png") 160px 120px; }
-.fireBladeIcon { background: url("icons/bigIcons.png") 120px 120px; }
+.statIcon { background: url("images/bigIcons.png") 0 40px; }
+.rendIcon { background: url("images/bigIcons.png") 0 120px; }
+.rejuvenatingStrikesIcon { background: url("images/bigIcons.png") 200px 120px; }
+.iceBladeIcon { background: url("images/bigIcons.png") 160px 120px; }
+.fireBladeIcon { background: url("images/bigIcons.png") 120px 120px; }

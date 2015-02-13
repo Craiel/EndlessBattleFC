@@ -43,7 +43,7 @@ declare("Inventory", function () {
                 $("#inventoryItem" + (index1 + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[index1].iconSourceX + 'px ' + this.slots[index1].iconSourceY + 'px');
             }
             else {
-                $("#inventoryItem" + (index1 + 1)).css('background', 'url("includes/images/NULL.png")');
+                $("#inventoryItem" + (index1 + 1)).css('background', 'url("' + resources.ImageNull + '")');
             }
 
             this.slots[index2] = savedItem;
@@ -51,14 +51,14 @@ declare("Inventory", function () {
                 $("#inventoryItem" + (index2 + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
             }
             else {
-                $("#inventoryItem" + (index2 + 1)).css('background', 'url("includes/images/NULL.png")');
+                $("#inventoryItem" + (index2 + 1)).css('background', 'url("' + resources.ImageNull + '")');
             }
         }
 
         // Remove an item from the inventory
         this.removeItem = function(index) {
             this.slots[index] = null;
-            $("#inventoryItem" + (index + 1)).css('background', 'url("includes/images/NULL.png")');
+            $("#inventoryItem" + (index + 1)).css('background', 'url("' + resources.ImageNull + '")');
         }
 
         // Add an item to a specified slot

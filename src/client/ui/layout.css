@@ -1,5 +1,5 @@
 body {
-    background-image: url("ui/background.png");
+    background-image: url("images/background.png");
     font-family: 'Gentium Book Basic';
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -46,7 +46,7 @@ body:hover {
 
 /* ---------------------------------------------- RESETTING --------------------------------------------- */
 #resetConfirmWindow {
-    background: url("ui/tutorialWindow.png");
+    background: url("images/tutorialWindow.png");
     position: absolute;
     left: 0px;
     right: 0;
@@ -150,7 +150,7 @@ body:hover {
 }
 
 .navBarWindow {
-    background-image: url("ui/updatesWindow2.png");
+    background-image: url("images/updatesWindow2.png");
     position: absolute;
     height: 600px;
     width: 500px;
@@ -292,7 +292,7 @@ body:hover {
     height: 25px;
 }
 .smallBarBackground {
-    background: url("ui/playerHealthBarBackground.png");
+    background: url("images/playerHealthBarBackground.png");
     position: absolute; 
     top: 1px; 
     left: 1px; 
@@ -307,7 +307,7 @@ body:hover {
     height: 23px;
 }
 .smallBarBorder {
-    background: url("ui/healthBarBorder2.png");
+    background: url("images/healthBarBorder2.png");
     position: absolute; 
     width: 200px;
     height: 25px;
@@ -332,7 +332,7 @@ body:hover {
     left: 10px; 
 }
 #playerHealthBar {
-    background: url("ui/playerHealthBar.png");
+    background: url("images/playerHealthBar.png");
 }
 
 #resurrectionBarArea {
@@ -340,7 +340,7 @@ body:hover {
     left: 120px; 
 }
 #resurrectionBar {
-    background: url("ui/resurrectionBar.png");
+    background: url("images/resurrectionBar.png");
 }
 
 #monsterHealthBarArea {
@@ -348,7 +348,7 @@ body:hover {
     left: 120px; 
 }
 #monsterHealthBar {
-    background: url("ui/monsterHealthBar.png");
+    background: url("images/monsterHealthBar.png");
 }
 
 /* --------------------------------------------- EVENTS AREA -------------------------------------------- */
@@ -361,7 +361,7 @@ body:hover {
     overflow: hidden;
 }
 .eventButton {
-    background: url("ui/randomQuestButton2.png");
+    background: url("images/randomQuestButton2.png");
     position: absolute;
     bottom: 700px;
     left: 0;
@@ -384,7 +384,7 @@ body:hover {
 }
 
 .buffBar {
-    background: url("ui/buffBar.png");
+    background: url("images/buffBar.png");
     position: relative;
     left: 16px;
     top: -12px;
@@ -431,7 +431,7 @@ body:hover {
     height: 15px;
 }
 #expBarBackground {
-    background: url("ui/expBarBackground2.png");
+    background: url("images/expBarBackground2.png");
     position: absolute; 
     top: 1px; 
     left: 1px; 
@@ -439,7 +439,7 @@ body:hover {
     height: 13px;
 }
 #expBar {
-    background: url("ui/expBar2.png");
+    background: url("images/expBar2.png");
     position: absolute; 
     top: 1px; 
     left: 1px; 
@@ -447,7 +447,7 @@ body:hover {
     height: 13px;
 }
 #expBarBorder {
-    background: url("ui/expBarBorder2.png");
+    background: url("images/expBarBorder2.png");
     position: absolute; 
     width: 722px;
     height: 15px;
@@ -485,7 +485,7 @@ body:hover {
     color: #fff; 
     line-height: 25px;
     
-    background: url("ui/stoneButton1.png");
+    background: url("images/stoneButton1.png");
     position: absolute; 
     width: 200px;
     height: 25px;
@@ -500,7 +500,7 @@ body:hover {
     color: #fff; 
     line-height: 25px;
     
-    background: url("ui/battleLevelButton.png") 0 0;
+    background: url("images/battleLevelButton.png") 0 0;
     position: absolute; 
     top: 30px; 
     left: 90px; 
@@ -510,7 +510,7 @@ body:hover {
 }
 
 .characterWindowButton {
-    background: url("icons/windowButtons.png") 0 78px;
+    background: url("images/windowButtons.png") 0 78px;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -518,7 +518,7 @@ body:hover {
     height: 39px;
 }
 .mercenariesWindowButton {
-    background: url("icons/windowButtons.png") 0 117px;
+    background: url("images/windowButtons.png") 0 117px;
     position: absolute;
     right: 10px;
     top: 50px;
@@ -526,7 +526,7 @@ body:hover {
     height: 39px;
 }
 .upgradesWindowButton {
-    background: url("icons/windowButtons.png") 0 0;
+    background: url("images/windowButtons.png") 0 0;
     position: absolute;
     right: 10px;
     top: 90px;
@@ -534,7 +534,7 @@ body:hover {
     height: 39px;
 }
 #upgradesWindowButtonGlow {
-    background: url("icons/windowButtons.png") 78px 0;
+    background: url("images/windowButtons.png") 78px 0;
     position: absolute;
     right: 10px;
     top: 90px;
@@ -543,7 +543,7 @@ body:hover {
     opacity: 0;
 }
 .questsWindowButton {
-    background: url("icons/windowButtons.png") 0 195px;
+    background: url("images/windowButtons.png") 0 195px;
     position: absolute;
     right: 10px;
     top: 130px;
@@ -551,7 +551,7 @@ body:hover {
     height: 39px;
 }
 #questsWindowButtonGlow {
-    background: url("icons/windowButtons.png") 78px 195px;
+    background: url("images/windowButtons.png") 78px 195px;
     position: absolute;
     right: 10px;
     top: 130px;
@@ -560,7 +560,7 @@ body:hover {
     opacity: 0;
 }
 .craftingWindowButton {
-    background: url("icons/windowButtons.png") 0 156px;
+    background: url("images/windowButtons.png") 0 156px;
     position: absolute;
     right: 10px;
     top: 170px;
@@ -568,7 +568,7 @@ body:hover {
     height: 39px;
 }
 .inventoryWindowButton {
-    background: url("icons/windowButtons.png") 0 39px;
+    background: url("images/windowButtons.png") 0 39px;
     position: absolute;
     right: 10px;
     bottom: 10px;
@@ -586,7 +586,7 @@ windowArea {
     z-index: 8;
 }
 #inventoryWindow {
-    background-image: url("ui/inventory2.png");
+    background-image: url("images/inventory2.png");
     position: absolute;
     right: 50px;
     bottom: 30px;
@@ -619,7 +619,7 @@ windowArea {
 }
 
 .closeButton {
-    background: url("ui/closeButton.png");
+    background: url("images/closeButton.png");
     position: absolute;
     right: 4px;
     top: 4px;
@@ -627,7 +627,7 @@ windowArea {
     height: 14px;
 }
 #characterWindow {
-    background-image: url("ui/characterWindow2.png");
+    background-image: url("images/characterWindow2.png");
     background-size: 100%;
     position: absolute;
     right: 50px;
@@ -676,7 +676,7 @@ windowArea {
 }
 
 #mercenariesWindow {
-    background-image: url("ui/upgradesWindow2.png");
+    background-image: url("images/upgradesWindow2.png");
     position: absolute;
     right: 50px;
     top: 10px;
@@ -705,7 +705,7 @@ windowArea {
     overflow-x: hidden;
 }
 .buyButton {
-    background: url("ui/buyButtonBase.png") 0 0;
+    background: url("images/buyButtonBase.png") 0 0;
     width: 164px;
     height: 46px;
 }
@@ -738,7 +738,7 @@ windowArea {
 }
 
 #upgradesWindow {
-    background-image: url("ui/upgradesWindow2.png");
+    background-image: url("images/upgradesWindow2.png");
     position: absolute;
     right: 50px;
     top: 10px;
@@ -779,7 +779,7 @@ windowArea {
 }
 
 #questsWindow {
-    background-image: url("ui/questsWindow2.png");
+    background-image: url("images/questsWindow2.png");
     background-size: 100%;
     position: absolute;
     right: 50px;
@@ -845,7 +845,7 @@ windowArea {
 #questExperience { font-size: 14px; padding: 1px 1px 1px 1px; padding-left: 14px; }
 
 #statUpgradesWindow {
-    background: url("ui/skillUpgradesWindow2.png");
+    background: url("images/skillUpgradesWindow2.png");
     position: absolute;
     left: 0;
     right: 0;
@@ -877,7 +877,7 @@ windowArea {
     overflow-x: hidden;
 }
 .statUpgradeButton {
-    background: url("ui/buyButtonBase.png") 0 0;
+    background: url("images/buyButtonBase.png") 0 0;
     position: absolute;
     width: 164px;
     height: 46px;
@@ -902,7 +902,7 @@ windowArea {
 }
 
 #abilityUpgradesWindow {
-    background: url("ui/skillUpgradesWindow2.png");
+    background: url("images/skillUpgradesWindow2.png");
     position: absolute;
     left: 0;
     right: 0;
@@ -934,7 +934,7 @@ windowArea {
     overflow-x: hidden;
 }
 .abilityUpgradeButton {
-    background: url("ui/buyButtonBase.png") 0 0;
+    background: url("images/buyButtonBase.png") 0 0;
     position: absolute;
     width: 164px;
     height: 46px;
@@ -1062,7 +1062,7 @@ windowArea {
     height: 190px;
 }
 #tutorialWindow {
-    background: url("ui/tutorialWindow.png");
+    background: url("images/tutorialWindow.png");
     position: absolute;
     width: 285px;
     height: 190px;
@@ -1098,7 +1098,7 @@ windowArea {
     line-height: 22px;
 }
 .tutorialRightArrow {
-    background: url("ui/tutorialRightArrow.png");
+    background: url("images/tutorialRightArrow.png");
     position: absolute;
     width: 100px;
     height: 57px;

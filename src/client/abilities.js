@@ -1,5 +1,6 @@
 declare("Abilities", function () {
     include('Component');
+    include('Static');
 
     Abilities.prototype = component.create();
     Abilities.prototype.$super = parent;
@@ -18,7 +19,7 @@ declare("Abilities", function () {
 
         this.getRendLevel = function() {
             var level = this.baseRendLevel;
-            var effects = game.player.getEffectsOfType(EffectType.WOUNDING);
+            var effects = game.player.getEffectsOfType(static.EffectType.WOUNDING);
             for (var x = 0; x < effects.length; x++) {
                 level += effects[x].value;
             }
@@ -29,7 +30,7 @@ declare("Abilities", function () {
         }
         this.getRejuvenatingStrikesLevel = function() {
             var level = this.baseRejuvenatingStrikesLevel;
-            var effects = game.player.getEffectsOfType(EffectType.CURING);
+            var effects = game.player.getEffectsOfType(static.EffectType.CURING);
             for (var x = 0; x < effects.length; x++) {
                 level += effects[x].value;
             }
@@ -40,7 +41,7 @@ declare("Abilities", function () {
         }
         this.getIceBladeLevel = function() {
             var level = this.baseIceBladeLevel;
-            var effects = game.player.getEffectsOfType(EffectType.FROST_SHARDS);
+            var effects = game.player.getEffectsOfType(static.EffectType.FROST_SHARDS);
             for (var x = 0; x < effects.length; x++) {
                 level += effects[x].value;
             }
@@ -51,7 +52,7 @@ declare("Abilities", function () {
         }
         this.getFireBladeLevel = function() {
             var level = this.baseFireBladeLevel;
-            var effects = game.player.getEffectsOfType(EffectType.FLAME_IMBUED);
+            var effects = game.player.getEffectsOfType(static.EffectType.FLAME_IMBUED);
             for (var x = 0; x < effects.length; x++) {
                 level += effects[x].value;
             }

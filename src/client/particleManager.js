@@ -1,5 +1,7 @@
 declare("ParticleManager", function () {
     include('Component');
+    include('Static');
+    include('Particle');
 
     ParticleManager.prototype = component.create();
     ParticleManager.prototype.$super = parent;
@@ -11,11 +13,11 @@ declare("ParticleManager", function () {
         this.maxParticles = 50;
         this.particles = new Array();
         this.particleSources = new Object();
-        this.particleSources.SKULL = "includes/images/skull.png";
-        this.particleSources.GOLD = "includes/images/goldCoin.png";
-        this.particleSources.EXP_ORB = "includes/images/expOrb.png";
-        this.particleSources.PLAYER_DAMAGE = "includes/images/sword.png";
-        this.particleSources.PLAYER_CRITICAL = "includes/images/sword.png";
+        this.particleSources.SKULL = "images/skull.png";
+        this.particleSources.GOLD = "images/goldCoin.png";
+        this.particleSources.EXP_ORB = "images/expOrb.png";
+        this.particleSources.PLAYER_DAMAGE = "images/sword.png";
+        this.particleSources.PLAYER_CRITICAL = "images/sword.png";
 
         this.componentInit = this.init;
         this.init = function() {
@@ -30,32 +32,32 @@ declare("ParticleManager", function () {
         this.createParticle = function(text, imageType) {
             // If the type should not be displayed, end this function
             switch (imageType) {
-                case ParticleType.SKULL:
+                case static.ParticleType.SKULL:
                     if (game.options.displaySkullParticles == false) {
                         return;
                     }
                     break;
-                case ParticleType.GOLD:
+                case static.ParticleType.GOLD:
                     if (game.options.displayGoldParticles == false) {
                         return;
                     }
                     break;
-                case ParticleType.EXP_ORB:
+                case static.ParticleType.EXP_ORB:
                     if (game.options.displayExpParticles == false) {
                         return;
                     }
                     break;
-                case ParticleType.PLAYER_DAMAGE:
+                case static.ParticleType.PLAYER_DAMAGE:
                     if (game.options.displayPlayerDamageParticles == false) {
                         return;
                     }
                     break;
-                case ParticleType.PLAYER_CRITICAL:
+                case static.ParticleType.PLAYER_CRITICAL:
                     if (game.options.displayPlayerDamageParticles == false) {
                         return;
                     }
                     break;
-                case ParticleType.MONSTER_DAMAGE:
+                case static.ParticleType.MONSTER_DAMAGE:
                     if (game.options.displayMonsterDamageParticles == false) {
                         return;
                     }
@@ -70,26 +72,26 @@ declare("ParticleManager", function () {
 
             // Set the text colour and image source
             switch (imageType) {
-                case ParticleType.SKULL:
+                case static.ParticleType.SKULL:
                     source = this.particleSources.SKULL;
                     break;
-                case ParticleType.GOLD:
+                case static.ParticleType.GOLD:
                     textColour = '#fcd200';
                     source = this.particleSources.GOLD;
                     break;
-                case ParticleType.EXP_ORB:
+                case static.ParticleType.EXP_ORB:
                     textColour = '#00ff00';
                     source = this.particleSources.EXP_ORB;
                     break;
-                case ParticleType.PLAYER_DAMAGE:
+                case static.ParticleType.PLAYER_DAMAGE:
                     textColour = '#ffffff';
                     source = this.particleSources.PLAYER_DAMAGE;
                     break;
-                case ParticleType.PLAYER_CRITICAL:
+                case static.ParticleType.PLAYER_CRITICAL:
                     textColour = '#fcff00';
                     source = this.particleSources.PLAYER_CRITICAL;
                     break;
-                case ParticleType.MONSTER_DAMAGE:
+                case static.ParticleType.MONSTER_DAMAGE:
                     textColour = '#ff0000';
                     source = this.particleSources.MONSTER_DAMAGE;
                     break;
@@ -100,16 +102,16 @@ declare("ParticleManager", function () {
             if (text != null) {
                 // Calcuate the final text and set it
                 finalText = '';
-                if (imageType == ParticleType.GOLD || imageType == ParticleType.EXP_ORB) {
+                if (imageType == static.ParticleType.GOLD || imageType == static.ParticleType.EXP_ORB) {
                     finalText += '+';
                 }
-                else if (imageType == ParticleType.MONSTER_DAMAGE) {
+                else if (imageType == static.ParticleType.MONSTER_DAMAGE) {
                     finalText += '-';
                 }
                 finalText += text;
 
                 // If this was a player critical add an exclamation on the end
-                if (imageType == ParticleType.PLAYER_CRITICAL) {
+                if (imageType == static.ParticleType.PLAYER_CRITICAL) {
                     finalText += '!';
                 }
             }
@@ -124,8 +126,8 @@ declare("ParticleManager", function () {
             var canvas = document.getElementById("particleCanvas");
             var context = canvas.getContext("2d");
 
-            var particle = new Particle(image, finalText, textColour, left, top, 25, 25, 0, -50, 2000);
-            this.particles.push(particle);
+            var newParticle = particle.create(image, finalText, textColour, left, top, 25, 25, 0, -10, 1.5);
+            this.particles.push(newParticle);
             // If the maximum amount of particles has been exceeded, remove the first particle
             if (this.particles.length > this.maxParticles) {
                 this.particles.splice(0, 1);

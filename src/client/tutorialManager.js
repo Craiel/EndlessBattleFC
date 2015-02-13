@@ -61,7 +61,8 @@ declare("TutorialManager", function () {
         this.animateRightArrow = function() {
             $("#tutorialRightArrow").animate({left: '+=20px'}, 400);
             $("#tutorialRightArrow").animate({left: '-=20px'}, 400, function () {
-                animateRightArrow();
+                include("TutorialManager");
+                tutorialManager.animateRightArrow();
             });
         }
 

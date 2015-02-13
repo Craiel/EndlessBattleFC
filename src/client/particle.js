@@ -10,20 +10,13 @@ declare("Particle", function () {
         this.height = height;
         this.velocityX = velocityX;
         this.velocityY = velocityY;
-        this.duration = duration;
+        this.duration = duration * 100000; // in seconds
         this.maxDuration = duration;
 
-        this.componentUpdate = this.update;
         this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
-            }
-
             this.duration -= gameTime.elapsed;
-            var velX = (this.velocityX * (gameTime.elapsed / 1000));
-            var velY = (this.velocityY * (gameTime.elapsed / 1000));
-            this.x += velX;
-            this.y += velY;
+            this.x += this.velocityX;
+            this.y += this.velocityY;
         }
 
         this.draw = function() {
@@ -55,7 +48,7 @@ declare("Particle", function () {
     }
 
     return {
-        create: function() { return new Particle(); }
+        create: function(image, text, textColour, x, y, width, height, velocityX, velocityY, duration) { return new Particle(image, text, textColour, x, y, width, height, velocityX, velocityY, duration); }
     }
 
 });

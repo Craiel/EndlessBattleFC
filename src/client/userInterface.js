@@ -8,6 +8,7 @@ declare("UserInterface", function () {
     include('TooltipManager');
     include('GameState');
     include('UpgradeManager');
+    include('Resources');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -49,10 +50,11 @@ declare("UserInterface", function () {
             (function () {
                 window.onmousemove = handleMouseMove;
                 function handleMouseMove(event) {
+                    include('UserInterface');
                     event = event || window.event; // IE-ism
                     // event.clientX and event.clientY contain the mouse position
-                    game.ui.mouseX = event.clientX;
-                    game.ui.mouseY = event.clientY;
+                    userInterface.mouseX = event.clientX;
+                    userInterface.mouseY = event.clientY;
                 }
             })();
 
@@ -200,7 +202,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -224,7 +226,7 @@ declare("UserInterface", function () {
             // Display a different tooltip depending on the player's attack
             switch (game.player.attackType) {
                 case static.AttackType.BASIC_ATTACK:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 0');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 0');
                     $("#otherTooltipTitle").html('Attack');
                     $("#otherTooltipCooldown").html('');
                     $("#otherTooltipLevel").html('');
@@ -232,7 +234,7 @@ declare("UserInterface", function () {
                     $("#otherTooltip").show();
                     break;
                 case static.AttackType.POWER_STRIKE:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 100px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 100px');
                     $("#otherTooltipTitle").html('Power Strike');
                     $("#otherTooltipCooldown").html('');
                     $("#otherTooltipLevel").html('');
@@ -240,7 +242,7 @@ declare("UserInterface", function () {
                     $("#otherTooltip").show();
                     break;
                 case static.AttackType.DOUBLE_STRIKE:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 50px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 50px');
                     $("#otherTooltipTitle").html('Double Strike');
                     $("#otherTooltipCooldown").html('');
                     $("#otherTooltipLevel").html('');
@@ -250,7 +252,7 @@ declare("UserInterface", function () {
             }
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
@@ -259,13 +261,13 @@ declare("UserInterface", function () {
         this.attackButtonReset = function() {
             switch (game.player.attackType) {
                 case static.AttackType.BASIC_ATTACK:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 0');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 0');
                     break;
                 case static.AttackType.POWER_STRIKE:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 100px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 100px');
                     break;
                 case static.AttackType.DOUBLE_STRIKE:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 50px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 50px');
                     break;
             }
             $("#otherTooltip").hide();
@@ -274,13 +276,13 @@ declare("UserInterface", function () {
         this.attackButtonClick = function() {
             switch (game.player.attackType) {
                 case static.AttackType.BASIC_ATTACK:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 0');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 0');
                     break;
                 case static.AttackType.POWER_STRIKE:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 100px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 100px');
                     break;
                 case static.AttackType.DOUBLE_STRIKE:
-                    $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 50px');
+                    $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 50px');
                     break;
             }
             if (game.inBattle == true) {
@@ -288,33 +290,17 @@ declare("UserInterface", function () {
             }
         }
 
-        this.enterBattleButtonHover = function(obj) {
-            if (game.inBattle == false && game.player.alive) {
-                $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 75px');
-            }
+        this.stoneButtonHover = function(obj) {
+            $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 75px');
         }
 
-        this.enterBattleButtonReset = function(obj) {
-            if (game.inBattle == false && game.player.alive) {
-                $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
-            }
+        this.stoneButtonReset = function(obj) {
+            $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
         }
 
         this.enterBattleButtonClick = function(obj) {
             if (game.inBattle == false && game.player.alive) {
                 game.enterBattle();
-            }
-        }
-
-        this.leaveBattleButtonHover = function(obj) {
-            if (game.inBattle == true) {
-                $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 75px');
-            }
-        }
-
-        this.leaveBattleButtonReset = function(obj) {
-            if (game.inBattle == true) {
-                $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
             }
         }
 
@@ -325,51 +311,27 @@ declare("UserInterface", function () {
             }
         }
 
-        this.battleLevelUpButtonHover = function(obj) {
-            if (!game.maxBattleLevelReached()) {
-                obj.style.background = 'url("includes/images/battleLevelButton.png") 0 75px';
-            }
-        }
-
         this.battleLevelUpButtonClick = function(obj) {
-            obj.style.background = 'url("includes/images/battleLevelButton.png") 0 50px';
+            obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
 
             if (!game.maxBattleLevelReached()) {
                 game.increaseBattleLevel();
-                $("#battleLevelDownButton").css('background', 'url("includes/images/battleLevelButton.png") 0 0px');
+                $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
                 if (game.maxBattleLevelReached()) {
-                    obj.style.background = 'url("includes/images/battleLevelButton.png") 0 25px';
+                    obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
                 }
-            }
-        }
-
-        this.battleLevelUpButtonReset = function(obj) {
-            if (!game.maxBattleLevelReached()) {
-                obj.style.background = 'url("includes/images/battleLevelButton.png") 0 0px';
-            }
-        }
-
-        this.battleLevelDownButtonHover = function(obj) {
-            if (game.battleLevel != 1) {
-                obj.style.background = 'url("includes/images/battleLevelButton.png") 0 75px';
             }
         }
 
         this.battleLevelDownButtonClick = function(obj) {
-            obj.style.background = 'url("includes/images/battleLevelButton.png") 0 50px';
+            obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
 
             if (game.battleLevel != 1) {
                 game.decreaseBattleLevel();
-                $("#battleLevelUpButton").css('background', 'url("includes/images/battleLevelButton.png") 0 0px');
+                $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
                 if (game.battleLevel == 1) {
-                    obj.style.background = 'url("includes/images/battleLevelButton.png") 0 25px';
+                    obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
                 }
-            }
-        }
-
-        this.battleLevelDownButtonReset = function(obj) {
-            if (game.battleLevel != 1) {
-                obj.style.background = 'url("includes/images/battleLevelButton.png") 0 0px';
             }
         }
 
@@ -377,7 +339,7 @@ declare("UserInterface", function () {
             var item = game.equipment.slots[index - 1];
             // If there is an item in this slot then show the item tooltip
             if (item != null) {
-                var rect = obj.getBoundingClientRect();
+                var rect = $(this)[0].getBoundingClientRect();
                 tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
             }
         }
@@ -466,7 +428,7 @@ declare("UserInterface", function () {
                 }
 
                 // Get the item slot's location
-                var rect = obj.getBoundingClientRect();
+                var rect = $(this)[0].getBoundingClientRect();
 
                 // Display the tooltip
                 tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
@@ -541,16 +503,8 @@ declare("UserInterface", function () {
             }
         }
 
-        this.levelUpButtonHover = function() {
-            $("#levelUpButton").css('background', 'url("includes/images/stoneButton1.png") 0 75px');
-        }
-
-        this.levelUpButtonReset = function() {
-            $("#levelUpButton").css("background", 'url("includes/images/stoneButton1.png") 0 0px');
-        }
-
         this.levelUpButtonClick = function() {
-            $("#levelUpButton").css("background", 'url("includes/images/stoneButton1.png") 0 50px');
+            $("#levelUpButton").css("background", 'url("' + resources.ImageStoneButtons + '") 0 50px');
 
             game.displayLevelUpWindow();
         }
@@ -770,7 +724,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -797,7 +751,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -824,7 +778,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -851,7 +805,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -878,7 +832,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -905,7 +859,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
@@ -978,13 +932,14 @@ declare("UserInterface", function () {
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
             $("#otherTooltip").show();
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
         }
 
-        this.statUpgradeButtonClick = function(obj, index) {
+        this.statUpgradeButtonClick = function(obj) {
+            var index = obj.data.index;
             obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
             $("#statUpgradesWindow").hide();
 
@@ -1069,7 +1024,7 @@ declare("UserInterface", function () {
             $("#abilityUpgradeTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#abilityUpgradeTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
             $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 40));
@@ -1108,7 +1063,7 @@ declare("UserInterface", function () {
             $("#abilityUpgradeTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#abilityUpgradeTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
             $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1147,7 +1102,7 @@ declare("UserInterface", function () {
             $("#abilityUpgradeTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#abilityUpgradeTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
             $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1188,7 +1143,7 @@ declare("UserInterface", function () {
             $("#abilityUpgradeTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#abilityUpgradeTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("abilityUpgradeTooltip").scrollWidth;
             $("#abilityUpgradeTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1243,7 +1198,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1261,7 +1216,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1279,7 +1234,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1398,7 +1353,7 @@ declare("UserInterface", function () {
         }
 
         this.setTooltipLocation = function(obj) {
-            var rect = obj.getBoundingClientRect();
+            var rect = $(this)[0].getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1412,47 +1367,54 @@ declare("UserInterface", function () {
             tutorialManager.continueTutorial();
         }
 
-        this.updatesWindowButtonClick = function() {
-            if (!updatesWindowShown) {
-                updatesWindowShown = true;
-                statsWindowShown = false;
-                optionsWindowShown = false;
+        this.updatesWindowButtonClick = function(obj) {
+            var self = obj.data.self;
+            if (!self.updatesWindowShown) {
+                self.updatesWindowShown = true;
+                self.statsWindowShown = false;
+                self.optionsWindowShown = false;
                 $("#updatesWindow").show();
                 $("#statsWindow").hide();
                 $("#optionsWindow").hide();
             }
             else {
-                updatesWindowShown = false;
+                self.updatesWindowShown = false;
                 $("#updatesWindow").hide();
             }
         }
 
-        this.statsWindowButtonClick = function() {
-            if (!statsWindowShown) {
-                updatesWindowShown = false;
-                statsWindowShown = true;
-                optionsWindowShown = false;
+        this.statsWindowButtonClick = function(obj) {
+            var self = obj.data.self;
+            if (!self.statsWindowShown) {
+                self.updatesWindowShown = false;
+                self.statsWindowShown = true;
+                self.optionsWindowShown = false;
                 $("#updatesWindow").hide();
                 $("#statsWindow").show();
+
+
+
+
                 $("#optionsWindow").hide();
             }
             else {
-                statsWindowShown = false;
+                self.statsWindowShown = false;
                 $("#statsWindow").hide();
             }
         }
 
-        this.optionsWindowButtonClick = function() {
-            if (!optionsWindowShown) {
-                updatesWindowShown = false;
-                statsWindowShown = false;
-                optionsWindowShown = true;
+        this.optionsWindowButtonClick = function(obj) {
+            var self = obj.data.self;
+            if (!self.optionsWindowShown) {
+                self.updatesWindowShown = false;
+                self.statsWindowShown = false;
+                self.optionsWindowShown = true;
                 $("#updatesWindow").hide();
                 $("#statsWindow").hide();
                 $("#optionsWindow").show();
             }
             else {
-                optionsWindowShown = false;
+                self.optionsWindowShown = false;
                 $("#optionsWindow").hide();
             }
         }
@@ -1500,7 +1462,64 @@ declare("UserInterface", function () {
             $("#optionsWindow").hide();
         }
 
+        this.setupStoneButton = function(name, clickCallback) {
+            $("#" + name).mouseover({self: this}, this.stoneButtonHover);
+            $("#" + name).mouseup({self: this}, this.stoneButtonHover);
+            $("#" + name).mousedown({self: this}, clickCallback);
+            $("#" + name).mouseout({self: this}, this.stoneButtonReset);
+        }
+
+        this.setupStatUpgradeButton = function(name, index) {
+            $("#" + name).mouseover({self: this}, this.statUpgradeButtonHover);
+            $("#" + name).mouseup({self: this}, this.statUpgradeButtonHover);
+            $("#" + name).mousedown({self: this, index: index}, this.statUpgradeButtonClick);
+            $("#" + name).mouseout({self: this}, this.statUpgradeButtonReset);
+        }
+
+        this.setupCloseButton = function(name) {
+            $("#" + name).mouseover({self: this}, this.closeButtonHover);
+            $("#" + name).mouseup({self: this}, this.closeButtonHover);
+            $("#" + name).mousedown({self: this}, this.closeButtonClick);
+            $("#" + name).mouseout({self: this}, this.closeButtonReset);
+        }
+
         this.setupWindowState = function() {
+            // Wire up all the events
+            this.setupStoneButton("enterBattleButton", this.enterBattleButtonClick);
+            this.setupStoneButton("leaveBattleButton", this.leaveBattleButtonClick);
+            this.setupStoneButton("battleLevelDown", this.battleLevelDownButtonClick);
+            this.setupStoneButton("battleLevelUp", this.battleLevelUpButtonClick);
+            this.setupStoneButton("levelUpButton", this.levelUpButtonClick);
+
+            this.setupStatUpgradeButton("statUpgradeButton1", 1);
+            this.setupStatUpgradeButton("statUpgradeButton2", 2);
+            this.setupStatUpgradeButton("statUpgradeButton3", 3);
+
+            this.setupCloseButton("updatesWindowCloseButton");
+            this.setupCloseButton("statsWindowCloseButton");
+            this.setupCloseButton("optionsWindowCloseButton");
+            this.setupCloseButton("inventoryWindowCloseButton");
+            this.setupCloseButton("characterWindowCloseButton");
+            this.setupCloseButton("mercenariesWindowCloseButton");
+            this.setupCloseButton("upgradesWindowCloseButton");
+            this.setupCloseButton("questsWindowCloseButton");
+            this.setupCloseButton("statUpgradesWindowCloseButton");
+            this.setupCloseButton("abilityUpgradesWindowCloseButton");
+
+            $("#updates").mousedown({self: this}, this.updatesWindowButtonClick);
+            $("#options").mousedown({self: this}, this.optionsWindowButtonClick);
+            $("#stats").mousedown({self: this}, this.statsWindowButtonClick);
+
+            $("#saveButton").mousedown({self: this}, this.saveButtonClick);
+            $("#reset").mousedown({self: this}, this.resetButtonClick);
+            $("#fullReset").mousedown({self: this}, this.fullResetButtonClick);
+
+            $("#attackButton").mouseover({self: this}, this.attackButtonHover);
+            $("#attackButton").mouseup({self: this}, this.attackButtonHover);
+            $("#attackButton").mousedown({self: this}, this.attackButtonClick);
+            $("#attackButton").mouseout({self: this}, this.attackButtonReset);
+
+            // Set the startup visibility of things
             $("#itemTooltip").hide();
             $("#itemCompareTooltip").hide();
             $("#itemCompareTooltip2").hide();
