@@ -2,6 +2,7 @@ declare("StatUpgradeManager", function () {
     include('Component');
     include('StatUpgrade');
     include('StatGenerator');
+    include('Static');
 
     StatUpgradeManager.prototype = component.create();
     StatUpgradeManager.prototype.$super = parent;
@@ -41,7 +42,7 @@ declare("StatUpgradeManager", function () {
             var newId;
             while (idsRemaining >= 0) {
                 // Create a random Id
-                newId = Math.floor(Math.random() * (StatUpgradeType.amount + 1));
+                newId = Math.floor(Math.random() * (static.StatUpgradeType.amount + 1));
 
                 // Check that the new Id hasn't already been generated
                 if (upgradeIds.indexOf(newId) == -1) {
@@ -55,43 +56,43 @@ declare("StatUpgradeManager", function () {
             for (var x = 0; x < upgradeIds.length; x++) {
                 switch (upgradeIds[x]) {
                     case 0:
-                        upgradeTypes.push(StatUpgradeType.DAMAGE);
+                        upgradeTypes.push(static.StatUpgradeType.DAMAGE);
                         upgradeAmounts.push(statGenerator.getRandomDamageBonus(level));
                         break;
                     case 1:
-                        upgradeTypes.push(StatUpgradeType.STRENGTH);
+                        upgradeTypes.push(static.StatUpgradeType.STRENGTH);
                         upgradeAmounts.push(statGenerator.getRandomStrengthBonus(level));
                         break;
                     case 2:
-                        upgradeTypes.push(StatUpgradeType.AGILITY);
+                        upgradeTypes.push(static.StatUpgradeType.AGILITY);
                         upgradeAmounts.push(statGenerator.getRandomAgilityBonus(level));
                         break;
                     case 3:
-                        upgradeTypes.push(StatUpgradeType.STAMINA);
+                        upgradeTypes.push(static.StatUpgradeType.STAMINA);
                         upgradeAmounts.push(statGenerator.getRandomStaminaBonus(level));
                         break;
                     case 4:
-                        upgradeTypes.push(StatUpgradeType.ARMOUR);
+                        upgradeTypes.push(static.StatUpgradeType.ARMOUR);
                         upgradeAmounts.push(statGenerator.getRandomArmourBonus(level));
                         break;
                     case 5:
-                        upgradeTypes.push(StatUpgradeType.HP5);
+                        upgradeTypes.push(static.StatUpgradeType.HP5);
                         upgradeAmounts.push(statGenerator.getRandomHp5Bonus(level));
                         break;
                     case 6:
-                        upgradeTypes.push(StatUpgradeType.CRIT_DAMAGE);
+                        upgradeTypes.push(static.StatUpgradeType.CRIT_DAMAGE);
                         upgradeAmounts.push(statGenerator.getRandomCritDamageBonus(level));
                         break;
                     case 7:
-                        upgradeTypes.push(StatUpgradeType.ITEM_RARITY);
+                        upgradeTypes.push(static.StatUpgradeType.ITEM_RARITY);
                         upgradeAmounts.push(statGenerator.getRandomItemRarityBonus(level));
                         break;
                     case 8:
-                        upgradeTypes.push(StatUpgradeType.GOLD_GAIN);
+                        upgradeTypes.push(static.StatUpgradeType.GOLD_GAIN);
                         upgradeAmounts.push(statGenerator.getRandomGoldGainBonus(level));
                         break;
                     case 9:
-                        upgradeTypes.push(StatUpgradeType.EXPERIENCE_GAIN);
+                        upgradeTypes.push(static.StatUpgradeType.EXPERIENCE_GAIN);
                         upgradeAmounts.push(statGenerator.getRandomExperienceGainBonus(level));
                         break;
                 }

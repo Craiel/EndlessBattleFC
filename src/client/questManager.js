@@ -1,6 +1,7 @@
 declare("QuestManager", function () {
     include('Component');
     include('GameState');
+    include('Quest');
 
     QuestManager.prototype = component.create();
     QuestManager.prototype.$super = parent;
@@ -79,7 +80,7 @@ declare("QuestManager", function () {
         // Go through every quest and if it is a kill quest and the level required is equal to this one; increase the kill count
         this.updateKillCounts = function(level) {
             for (var x = 0; x < this.quests.length; x++) {
-                if (this.quests[x].type == QuestType.KILL && this.quests[x].typeId == level) {
+                if (this.quests[x].type == static.QuestType.KILL && this.quests[x].typeId == level) {
                     this.quests[x].killCount++;
                 }
             }
@@ -118,6 +119,13 @@ declare("QuestManager", function () {
             else {
                 return null;
             }
+        }
+
+        this.createQuest = function(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward)
+        {
+            var result = quest.create(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward);
+            result.displayId = this.quests.length + 1;
+            return result;
         }
 
         this.save = function() {
@@ -166,12 +174,12 @@ declare("QuestManager", function () {
 
                 if (questBuffRewards == null) {
                     for (var x = 0; x < questNames.length; x++) {
-                        this.addQuest(new Quest(questNames[x], questDescriptions[x], questTypes[x], questTypeIds[x], questTypeAmounts[x], questGoldRewards[x], questExpRewards[x], null));
+                            this.addQuest(this.createQuest(questNames[x], questDescriptions[x], questTypes[x], questTypeIds[x], questTypeAmounts[x], questGoldRewards[x], questExpRewards[x], null));
                     }
                 }
                 else {
                     for (var x = 0; x < questNames.length; x++) {
-                        this.addQuest(new Quest(questNames[x], questDescriptions[x], questTypes[x], questTypeIds[x], questTypeAmounts[x], questGoldRewards[x], questExpRewards[x], null));
+                        this.addQuest(this.createQuest(questNames[x], questDescriptions[x], questTypes[x], questTypeIds[x], questTypeAmounts[x], questGoldRewards[x], questExpRewards[x], null));
                     }
                 }
             }

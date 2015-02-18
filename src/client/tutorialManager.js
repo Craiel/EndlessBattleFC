@@ -146,7 +146,7 @@ declare("TutorialManager", function () {
                 case 5://
                     if (this.tutorialContinued[5]) {
                         this.advanceTutorial();
-                        questManager.addQuest(new Quest("A Beginner's Task", "It's time for your first quest as well as more combat experience. Increase the battle level and slay a level 2 monster and the tutorial will continue.", QuestType.KILL, 2, 1, 5, 5, null));
+                        questManager.addQuest(questManager.createQuest("A Beginner's Task", "It's time for your first quest as well as more combat experience. Increase the battle level and slay a level 2 monster and the tutorial will continue.", static.QuestType.KILL, 2, 1, 5, 5, null));
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
                         $("#tutorialRightArrow").css('top', '67px');
@@ -190,7 +190,7 @@ declare("TutorialManager", function () {
                 case 8://
                     if (this.equipmentOpened) {
                         this.advanceTutorial();
-                        questManager.addQuest(new Quest("A Helping Hand", "You've slain monsters, but if you really want a lot of gold you'll need to hire mercenaries to help you. Hire 5 Footmen to continue the tutorial.", QuestType.MERCENARIES, 0, 5, 10, 10, null));
+                        questManager.addQuest(questManager.createQuest("A Helping Hand", "You've slain monsters, but if you really want a lot of gold you'll need to hire mercenaries to help you. Hire 5 Footmen to continue the tutorial.", static.QuestType.MERCENARIES, 0, 5, 10, 10, null));
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
                         $("#tutorialRightArrow").css('top', '38px');
@@ -201,7 +201,7 @@ declare("TutorialManager", function () {
                 case 9:
                     if (this.quest2Complete) {
                         this.advanceTutorial();
-                        questManager.addQuest(new Quest("Strengthening your Forces", "Purchasing those footmen is a good start, but they can get pricey. To negate this inflation you'll need to upgrade them. Hire a total of 10 Footmen and then buy the Footman Training upgrade.", QuestType.UPGRADE, 0, 0, 50, 50, null));
+                        questManager.addQuest(questManager.createQuest("Strengthening your Forces", "Purchasing those footmen is a good start, but they can get pricey. To negate this inflation you'll need to upgrade them. Hire a total of 10 Footmen and then buy the Footman Training upgrade.", static.QuestType.UPGRADE, 0, 0, 50, 50, null));
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
                         $("#tutorialRightArrow").css('top', '67px');

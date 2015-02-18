@@ -1,5 +1,6 @@
 declare("Inventory", function () {
     include('Component');
+    include('Static');
 
     Inventory.prototype = component.create();
     Inventory.prototype.$super = parent;
@@ -91,19 +92,19 @@ declare("Inventory", function () {
         // Unlock the ability to auto sell an item rarity
         this.unlockAutoSell = function(rarity) {
             switch (rarity) {
-                case ItemRarity.COMMON:
+                case static.ItemRarity.COMMON:
                     $("#checkboxWhite").show();
                     break;
-                case ItemRarity.UNCOMMON:
+                case static.ItemRarity.UNCOMMON:
                     $("#checkboxGreen").show();
                     break;
-                case ItemRarity.RARE:
+                case static.ItemRarity.RARE:
                     $("#checkboxBlue").show();
                     break;
-                case ItemRarity.EPIC:
+                case static.ItemRarity.EPIC:
                     $("#checkboxPurple").show();
                     break;
-                case ItemRarity.LEGENDARY:
+                case static.ItemRarity.LEGENDARY:
                     $("#checkboxOrange").show();
                     break;
             }
@@ -165,9 +166,9 @@ declare("Inventory", function () {
                 this.autoSellTimeRemaining = this.autoSellInterval;
                 for (var x = 0; x < this.slots.length; x++) {
                     if (this.slots[x] != null) {
-                        if ((this.slots[x].rarity == ItemRarity.COMMON && this.autoSellCommons) || (this.slots[x].rarity == ItemRarity.UNCOMMON && this.autoSellUncommons) ||
-                            (this.slots[x].rarity == ItemRarity.RARE && this.autoSellRares) || (this.slots[x].rarity == ItemRarity.EPIC && this.autoSellEpics) ||
-                            (this.slots[x].rarity == ItemRarity.LEGENDARY && this.autoSellLegendaries)) {
+                        if ((this.slots[x].rarity == static.ItemRarity.COMMON && this.autoSellCommons) || (this.slots[x].rarity == static.ItemRarity.UNCOMMON && this.autoSellUncommons) ||
+                            (this.slots[x].rarity == static.ItemRarity.RARE && this.autoSellRares) || (this.slots[x].rarity == static.ItemRarity.EPIC && this.autoSellEpics) ||
+                            (this.slots[x].rarity == static.ItemRarity.LEGENDARY && this.autoSellLegendaries)) {
                             this.sellItem(x);
                         }
                     }

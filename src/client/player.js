@@ -8,6 +8,7 @@ declare("Player", function () {
     include('MercenaryManager');
     include('ParticleManager');
     include('StatUpgradeManager');
+    include('GameState');
 
     Player.prototype = component.create();
     Player.prototype.$super = parent;
@@ -26,11 +27,11 @@ declare("Player", function () {
         this.baseStats.minDamage = 1;
         this.baseStats.maxDamage = 1;
         this.baseStats.damageBonus = 0;
-        this.baseStats.armour = 0;
-        this.baseStats.evasion = 0;
-        this.baseStats.strength = 0;
-        this.baseStats.agility = 0;
-        this.baseStats.stamina = 0;
+        this.baseStats.armour = 1;
+        this.baseStats.evasion = 1;
+        this.baseStats.strength = 1;
+        this.baseStats.agility = 1;
+        this.baseStats.stamina = 1;
         this.baseStats.critChance = 5;
         this.baseStats.critDamage = 200;
         this.baseStats.itemRarity = 0;
@@ -84,10 +85,10 @@ declare("Player", function () {
 
         // Stat calculation functions
         this.getMaxHealth = function() {
-            return Math.floor((this.getStrength() * 5) + (((this.baseStats.health + this.levelUpBonuses.health + this.baseItemBonuses.health) * (((mercenaryManager.getCommanderHealthPercentBonus() * mercenaryManager.commandersOwned) / 100) + 1)) * ((this.powerShards / 100) + 1)));
+            return Math.floor((this.getStrength() * 5) + (((this.baseStats.health + this.levelUpBonuses.health + this.baseItemBonuses.health) * (((mercenaryManager.getCommanderHealthPercentBonus() * gameState.commandersOwned) / 100) + 1)) * ((this.powerShards / 100) + 1)));
         }
         this.getHp5 = function() {
-            return Math.floor(this.getStamina() + (((this.baseStats.hp5 + this.levelUpBonuses.hp5 + this.chosenLevelUpBonuses.hp5 + this.baseItemBonuses.hp5) * ((mercenaryManager.getClericHp5PercentBonus() * mercenaryManager.clericsOwned) / 100 + 1)) * ((this.powerShards / 100) + 1)));
+            return Math.floor(this.getStamina() + (((this.baseStats.hp5 + this.levelUpBonuses.hp5 + this.chosenLevelUpBonuses.hp5 + this.baseItemBonuses.hp5) * ((mercenaryManager.getClericHp5PercentBonus() * gameState.clericsOwned) / 100 + 1)) * ((this.powerShards / 100) + 1)));
         }
         this.getMinDamage = function() {
             // If the player has a weapon equipped then remove the 1 unarmed damage
@@ -108,7 +109,12 @@ declare("Player", function () {
             }
         }
         this.getDamageBonus = function() {
-            return this.getStrength() + ((this.baseStats.damageBonus + this.chosenLevelUpBonuses.damageBonus + this.baseItemBonuses.damageBonus + (mercenaryManager.getMageDamagePercentBonus() * mercenaryManager.magesOwned)) * ((this.powerShards / 100) + 1));
+            var baseBonus = this.baseStats.damageBonus + this.chosenLevelUpBonuses.damageBonus + this.baseItemBonuses.damageBonus;
+            var mercenaryBonus = mercenaryManager.getMageDamagePercentBonus() * gameState.magesOwned;
+            //var mercenaryBonus = 0;
+            var shardMultiplier = (this.powerShards / 100) + 1;
+            var bonus = (baseBonus + mercenaryBonus) * shardMultiplier;
+            return this.getStrength() + bonus;
         }
         this.getAverageDamage = function() {
             var average = this.getMaxDamage() - this.getMinDamage();
@@ -119,7 +125,7 @@ declare("Player", function () {
             return Math.floor(((this.baseStats.armour + this.chosenLevelUpBonuses.armour + this.baseItemBonuses.armour) * ((this.getStamina() / 100) + 1)) * ((this.powerShards / 100) + 1));
         }
         this.getEvasion = function() {
-            return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (mercenaryManager.getAssassinEvasionPercentBonus() * mercenaryManager.assassinsOwned)) / 100) + 1)) * ((this.powerShards / 100) + 1));
+            return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (mercenaryManager.getAssassinEvasionPercentBonus() * gameState.assassinsOwned)) / 100) + 1)) * ((this.powerShards / 100) + 1));
         }
         this.getStrength = function() {
             return Math.floor((this.baseStats.strength + this.chosenLevelUpBonuses.strength + this.baseItemBonuses.strength) * ((this.powerShards / 100) + 1));
@@ -134,7 +140,7 @@ declare("Player", function () {
             return ((this.baseStats.critChance + this.chosenLevelUpBonuses.critChance + this.baseItemBonuses.critChance)) * ((this.powerShards / 100) + 1);
         }
         this.getCritDamage = function() {
-            return ((this.baseStats.critDamage + this.chosenLevelUpBonuses.critDamage + this.baseItemBonuses.critDamage) + (this.getAgility() * 0.2) + (mercenaryManager.getWarlockCritDamageBonus() * mercenaryManager.warlocksOwned)) * ((this.powerShards / 100) + 1);
+            return ((this.baseStats.critDamage + this.chosenLevelUpBonuses.critDamage + this.baseItemBonuses.critDamage) + (this.getAgility() * 0.2) + (mercenaryManager.getWarlockCritDamageBonus() * gameState.warlocksOwned)) * ((this.powerShards / 100) + 1);
         }
         this.getItemRarity = function() {
             return (this.baseStats.itemRarity + this.chosenLevelUpBonuses.itemRarity + this.baseItemBonuses.itemRarity) * ((this.powerShards / 100) + 1);

@@ -17,9 +17,9 @@ declare("EventManager", function () {
             var event = new Event(this.events.length + 1);
             event.type = static.EventType.QUEST;
             // Create a random quest
-            var name = QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + QuestNameSuffixes[Math.floor(Math.random() * 5)];
+            var name = static.QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + static.QuestNameSuffixes[Math.floor(Math.random() * 5)];
             var amount = Math.floor(Math.random() * 6) + 7;
-            event.quest = new Quest(name, ("Kill " + amount + " level " + level + " monsters."), QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
+            event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), static.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffSet.getRandomQuestRewardBuff());
             this.events.push(event);
 
             var newDiv = document.createElement('div');

@@ -1,6 +1,6 @@
 var loader = new Loader();
 declare = function(name, content) { loader.declare(name, content); };
-include = function(name) { return loader.include(name); };
+include = function(name, source) { return loader.include(name, source); };
 
 /** @constructor */
 function Loader(nameSpace) {
@@ -8,19 +8,27 @@ function Loader(nameSpace) {
 	this.instances = {};
 	this.declarations = {};
 	this.refCount = {};
-		
-	this.include = function(name) {
-		if(name === undefined || typeof(name) == "function") {
+
+    this.includeThreshold = 1000;
+    this.includeCounter = []
+
+	this.include = function(name, source) {
+        this.includeCounter.push(source + " -> " + name);
+        if(this.includeCounter.length > this.includeThreshold) {
+            this.includeCounter.shift();
+        }
+
+        if(name === undefined || typeof(name) == "function") {
 			// JQuery has a tendency to callback an include with a function
 			//  Not sure why yet so just throwing it for now...
 			throw "Invalid arguments for include!";
 		}
-		
+
 		if(this.instances[name] === undefined) {
 			if(this.declarations[name] === undefined) {
-				throw "No declaration for include " + name;				
+				throw "No declaration for include " + name;
 			}
-			
+
 			// Special case for jQuery, we don't call new
 			if(name === '$') {
 				this.instances[name] = this.declarations[name](this.include);

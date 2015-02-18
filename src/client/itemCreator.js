@@ -4,6 +4,9 @@ declare("ItemCreator", function () {
     include('Static');
     include('NameGenerator');
     include('StatGenerator');
+    include('ItemBonuses');
+    include('Item');
+    include('UpgradeManager');
 
     ItemCreator.prototype = component.create();
     ItemCreator.prototype.$super = parent;
@@ -19,53 +22,53 @@ declare("ItemCreator", function () {
                     if (rand < 0.20) {
                         rand = Math.random();
                         if (rand < (0.00001 * ((game.player.getItemRarity() / 100) + 1))) {
-                            return ItemRarity.LEGENDARY;
+                            return static.ItemRarity.LEGENDARY;
                         }
                         else if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) {
-                            return ItemRarity.EPIC;
+                            return static.ItemRarity.EPIC;
                         }
                         else if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
-                            return ItemRarity.RARE;
+                            return static.ItemRarity.RARE;
                         }
                         else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
-                            return ItemRarity.UNCOMMON;
+                            return static.ItemRarity.UNCOMMON;
                         }
                         else {
-                            return ItemRarity.COMMON;
+                            return static.ItemRarity.COMMON;
                         }
                     }
                     break;
                 case static.MonsterRarity.RARE:
                     if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) {
-                        return ItemRarity.LEGENDARY;
+                        return static.ItemRarity.LEGENDARY;
                     }
                     else if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
-                        return ItemRarity.EPIC;
+                        return static.ItemRarity.EPIC;
                     }
                     else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
-                        return ItemRarity.RARE;
+                        return static.ItemRarity.RARE;
                     }
                     else {
-                        return ItemRarity.UNCOMMON;
+                        return static.ItemRarity.UNCOMMON;
                     }
                     break;
                 case static.MonsterRarity.ELITE:
                     if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
-                        return ItemRarity.LEGENDARY;
+                        return static.ItemRarity.LEGENDARY;
                     }
                     else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
-                        return ItemRarity.EPIC;
+                        return static.ItemRarity.EPIC;
                     }
                     else {
-                        return ItemRarity.RARE;
+                        return static.ItemRarity.RARE;
                     }
                     break;
                 case static.MonsterRarity.BOSS:
                     if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
-                        return ItemRarity.LEGENDARY;
+                        return static.ItemRarity.LEGENDARY;
                     }
                     else {
-                        return ItemRarity.EPIC;
+                        return static.ItemRarity.EPIC;
                     }
                     break;
             }
@@ -78,35 +81,35 @@ declare("ItemCreator", function () {
             }
 
             // Get a random item type
-            var rand = Math.floor(Math.random() * ItemType.count);
+            var rand = Math.floor(Math.random() * static.ItemType.count);
             var type;
             switch (rand) {
                 case 0:
-                    type = ItemType.HELM;
+                    type = static.ItemType.HELM;
                     break;
                 case 1:
-                    type = ItemType.SHOULDERS;
+                    type = static.ItemType.SHOULDERS;
                     break;
                 case 2:
-                    type = ItemType.CHEST;
+                    type = static.ItemType.CHEST;
                     break;
                 case 3:
-                    type = ItemType.LEGS;
+                    type = static.ItemType.LEGS;
                     break;
                 case 4:
-                    type = ItemType.WEAPON;
+                    type = static.ItemType.WEAPON;
                     break;
                 case 5:
-                    type = ItemType.GLOVES;
+                    type = static.ItemType.GLOVES;
                     break;
                 case 6:
-                    type = ItemType.BOOTS;
+                    type = static.ItemType.BOOTS;
                     break;
                 case 7:
-                    type = ItemType.TRINKET;
+                    type = static.ItemType.TRINKET;
                     break;
                 case 8:
-                    type = ItemType.OFF_HAND;
+                    type = static.ItemType.OFF_HAND;
                     break;
             }
 
@@ -114,30 +117,30 @@ declare("ItemCreator", function () {
             var prefixAmount;
             var suffixAmount;
             switch (rarity) {
-                case ItemRarity.COMMON:
+                case static.ItemRarity.COMMON:
                     prefixAmount = 1;
                     suffixAmount = 0;
                     break;
-                case ItemRarity.UNCOMMON:
+                case static.ItemRarity.UNCOMMON:
                     prefixAmount = 1;
                     suffixAmount = 1;
                     break;
-                case ItemRarity.RARE:
+                case static.ItemRarity.RARE:
                     prefixAmount = 2;
                     suffixAmount = 1;
                     break;
-                case ItemRarity.EPIC:
+                case static.ItemRarity.EPIC:
                     prefixAmount = 2;
                     suffixAmount = 2;
                     break;
-                case ItemRarity.LEGENDARY:
+                case static.ItemRarity.LEGENDARY:
                     prefixAmount = 3;
                     suffixAmount = 3;
                     break;
             }
 
             // Add random item bonuses
-            var itemBonuses = new ItemBonuses();
+            var itemBonusAddition = itemBonuses.create();
             var randBonus;
             var prefix = "";
             var suffix = "";
@@ -147,13 +150,13 @@ declare("ItemCreator", function () {
 
             while (amount > 0) {
                 // Get the ID of the bonuses; randomly
-                randBonus = Math.floor(Math.random() * PREFIX_AMOUNT);
+                randBonus = Math.floor(Math.random() * static.PREFIX_AMOUNT);
 
                 // Add the bonus to the item bonuses
                 switch (randBonus) {
                     case 0:
-                        if (itemBonuses.damageBonus == 0 && type == ItemType.WEAPON) {
-                            itemBonuses.damageBonus = statGenerator.getRandomDamageBonus(level);
+                        if (itemBonusAddition.damageBonus == 0 && type == static.ItemType.WEAPON) {
+                            itemBonusAddition.damageBonus = statGenerator.getRandomDamageBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomDamageBonusName();
                             }
@@ -161,8 +164,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 1:
-                        if (itemBonuses.health == 0) {
-                            itemBonuses.health = statGenerator.getRandomHealthBonus(level);
+                        if (itemBonusAddition.health == 0) {
+                            itemBonusAddition.health = statGenerator.getRandomHealthBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomHealthName();
                             }
@@ -170,8 +173,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 2:
-                        if (itemBonuses.armourBonus == 0 && type != ItemType.WEAPON) {
-                            itemBonuses.armourBonus = statGenerator.getRandomArmourBonus(level);
+                        if (itemBonusAddition.armourBonus == 0 && type != static.ItemType.WEAPON) {
+                            itemBonusAddition.armourBonus = statGenerator.getRandomArmourBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomArmourBonusName();
                             }
@@ -179,8 +182,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 3:
-                        if (itemBonuses.critChance == 0) {
-                            itemBonuses.critChance = statGenerator.getRandomCritChanceBonus(level);
+                        if (itemBonusAddition.critChance == 0) {
+                            itemBonusAddition.critChance = statGenerator.getRandomCritChanceBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomCritChanceName();
                             }
@@ -188,8 +191,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 4:
-                        if (itemBonuses.itemRarity == 0) {
-                            itemBonuses.itemRarity = statGenerator.getRandomItemRarityBonus(level);
+                        if (itemBonusAddition.itemRarity == 0) {
+                            itemBonusAddition.itemRarity = statGenerator.getRandomItemRarityBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomItemRarityName();
                             }
@@ -197,8 +200,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 5:
-                        if (itemBonuses.goldGain == 0) {
-                            itemBonuses.goldGain = statGenerator.getRandomGoldGainBonus(level);
+                        if (itemBonusAddition.goldGain == 0) {
+                            itemBonusAddition.goldGain = statGenerator.getRandomGoldGainBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomGoldGainName();
                             }
@@ -217,8 +220,8 @@ declare("ItemCreator", function () {
                 // Add the bonus to the item bonuses
                 switch (randBonus) {
                     case 0:
-                        if (itemBonuses.strength == 0) {
-                            itemBonuses.strength = statGenerator.getRandomStrengthBonus(level);
+                        if (itemBonusAddition.strength == 0) {
+                            itemBonusAddition.strength = statGenerator.getRandomStrengthBonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomStrengthName();
                             }
@@ -226,8 +229,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 1:
-                        if (itemBonuses.agility == 0) {
-                            itemBonuses.agility = statGenerator.getRandomAgilityBonus(level);
+                        if (itemBonusAddition.agility == 0) {
+                            itemBonusAddition.agility = statGenerator.getRandomAgilityBonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomAgilityName();
                             }
@@ -235,8 +238,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 2:
-                        if (itemBonuses.stamina == 0) {
-                            itemBonuses.stamina = statGenerator.getRandomStaminaBonus(level);
+                        if (itemBonusAddition.stamina == 0) {
+                            itemBonusAddition.stamina = statGenerator.getRandomStaminaBonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomStaminaName();
                             }
@@ -244,8 +247,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 3:
-                        if (itemBonuses.hp5 == 0) {
-                            itemBonuses.hp5 = statGenerator.getRandomHp5Bonus(level);
+                        if (itemBonusAddition.hp5 == 0) {
+                            itemBonusAddition.hp5 = statGenerator.getRandomHp5Bonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomHp5Name();
                             }
@@ -253,8 +256,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 4:
-                        if (itemBonuses.critDamage == 0) {
-                            itemBonuses.critDamage = statGenerator.getRandomCritDamageBonus(level);
+                        if (itemBonusAddition.critDamage == 0) {
+                            itemBonusAddition.critDamage = statGenerator.getRandomCritDamageBonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomCritDamageName();
                             }
@@ -262,8 +265,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 5:
-                        if (itemBonuses.experienceGain == 0) {
-                            itemBonuses.experienceGain = statGenerator.getRandomExperienceGainBonus(level);
+                        if (itemBonusAddition.experienceGain == 0) {
+                            itemBonusAddition.experienceGain = statGenerator.getRandomExperienceGainBonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomExperienceGainName();
                             }
@@ -271,8 +274,8 @@ declare("ItemCreator", function () {
                         }
                         break;
                     case 6:
-                        if (itemBonuses.evasion == 0) {
-                            itemBonuses.evasion = statGenerator.getRandomEvasionBonus(level);
+                        if (itemBonusAddition.evasion == 0) {
+                            itemBonusAddition.evasion = statGenerator.getRandomEvasionBonus(level);
                             if (suffix == "") {
                                 suffix = nameGenerator.getRandomEvasionName();
                             }
@@ -283,62 +286,62 @@ declare("ItemCreator", function () {
             }
 
             // If it's a weapon; add weapon damage
-            if (type == ItemType.WEAPON) {
-                itemBonuses.minDamage = statGenerator.getRandomMinDamage(level);
-                itemBonuses.maxDamage = statGenerator.getRandomMaxDamage(level, itemBonuses.minDamage);
+            if (type == static.ItemType.WEAPON) {
+                itemBonusAddition.minDamage = statGenerator.getRandomMinDamage(level);
+                itemBonusAddition.maxDamage = statGenerator.getRandomMaxDamage(level, itemBonusAddition.minDamage);
                 // Add damage depending on the rarity
                 switch (rarity) {
-                    case ItemRarity.UNCOMMON:
-                        itemBonuses.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1);
-                        itemBonuses.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1);
+                    case static.ItemRarity.UNCOMMON:
+                        itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1);
+                        itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1);
                         break;
-                    case ItemRarity.RARE:
-                        itemBonuses.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 2;
-                        itemBonuses.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 2;
+                    case static.ItemRarity.RARE:
+                        itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 2;
+                        itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 2;
                         break;
-                    case ItemRarity.EPIC:
-                        itemBonuses.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 3;
-                        itemBonuses.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 3;
+                    case static.ItemRarity.EPIC:
+                        itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 3;
+                        itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 3;
                         break;
-                    case ItemRarity.LEGENDARY:
-                        itemBonuses.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 4;
-                        itemBonuses.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 4;
+                    case static.ItemRarity.LEGENDARY:
+                        itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 4;
+                        itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 4;
                         break;
                 }
             }
             // Else; add armour
             else {
-                itemBonuses.armour = statGenerator.getRandomArmour(level);
+                itemBonusAddition.armour = statGenerator.getRandomArmour(level);
             }
 
             // Create the name
             var name = prefix;
             switch (type) {
-                case ItemType.HELM:
+                case static.ItemType.HELM:
                     name += " Helmet ";
                     break;
-                case ItemType.SHOULDERS:
+                case static.ItemType.SHOULDERS:
                     name += " Shoulders ";
                     break;
-                case ItemType.CHEST:
+                case static.ItemType.CHEST:
                     name += " Chest ";
                     break;
-                case ItemType.LEGS:
+                case static.ItemType.LEGS:
                     name += " Legs ";
                     break;
-                case ItemType.WEAPON:
+                case static.ItemType.WEAPON:
                     name += " Weapon ";
                     break;
-                case ItemType.GLOVES:
+                case static.ItemType.GLOVES:
                     name += " Gloves ";
                     break;
-                case ItemType.BOOTS:
+                case static.ItemType.BOOTS:
                     name += " Boots ";
                     break;
-                case ItemType.TRINKET:
+                case static.ItemType.TRINKET:
                     name += " Trinket ";
                     break;
-                case ItemType.OFF_HAND:
+                case static.ItemType.OFF_HAND:
                     name += " Shield ";
                     break;
             }
@@ -349,46 +352,46 @@ declare("ItemCreator", function () {
             var iconSourceY = 0;
             // x coordinate
             switch (type) {
-                case ItemType.HELM:
+                case static.ItemType.HELM:
                     iconSourceX = 0;
                     break;
-                case ItemType.SHOULDERS:
+                case static.ItemType.SHOULDERS:
                     iconSourceX = 280;
                     break;
-                case ItemType.CHEST:
+                case static.ItemType.CHEST:
                     iconSourceX = 245;
                     break;
-                case ItemType.LEGS:
+                case static.ItemType.LEGS:
                     iconSourceX = 210;
                     break;
-                case ItemType.WEAPON:
+                case static.ItemType.WEAPON:
                     iconSourceX = 175;
                     break;
-                case ItemType.GLOVES:
+                case static.ItemType.GLOVES:
                     iconSourceX = 140;
                     break;
-                case ItemType.BOOTS:
+                case static.ItemType.BOOTS:
                     iconSourceX = 105;
                     break;
-                case ItemType.TRINKET:
+                case static.ItemType.TRINKET:
                     iconSourceX = 70;
                     break;
-                case ItemType.OFF_HAND:
+                case static.ItemType.OFF_HAND:
                     iconSourceX = 35;
                     break;
             }
             // y coordinate
             switch (rarity) {
-                case ItemRarity.UNCOMMON:
+                case static.ItemRarity.UNCOMMON:
                     iconSourceY = 140;
                     break;
-                case ItemRarity.RARE:
+                case static.ItemRarity.RARE:
                     iconSourceY = 105;
                     break;
-                case ItemRarity.EPIC:
+                case static.ItemRarity.EPIC:
                     iconSourceY = 70;
                     break;
-                case ItemRarity.LEGENDARY:
+                case static.ItemRarity.LEGENDARY:
                     iconSourceY = 35;
                     break;
             }
@@ -396,31 +399,31 @@ declare("ItemCreator", function () {
             // Calculate the sell value
             var multiple = 0;
             switch (type) {
-                case ItemType.HELM:
+                case static.ItemType.HELM:
                     multiple = 2.3;
                     break;
-                case ItemType.SHOULDERS:
+                case static.ItemType.SHOULDERS:
                     multiple = 2.5;
                     break;
-                case ItemType.CHEST:
+                case static.ItemType.CHEST:
                     multiple = 3.3;
                     break;
-                case ItemType.LEGS:
+                case static.ItemType.LEGS:
                     multiple = 3.1;
                     break;
-                case ItemType.WEAPON:
+                case static.ItemType.WEAPON:
                     multiple = 2.9;
                     break;
-                case ItemType.GLOVES:
+                case static.ItemType.GLOVES:
                     multiple = 2.1;
                     break;
-                case ItemType.BOOTS:
+                case static.ItemType.BOOTS:
                     multiple = 2.1;
                     break;
-                case ItemType.TRINKET:
+                case static.ItemType.TRINKET:
                     multiple = 2.9;
                     break;
-                case ItemType.OFF_HAND:
+                case static.ItemType.OFF_HAND:
                     multiple = 2.7;
                     break;
             }
@@ -432,10 +435,10 @@ declare("ItemCreator", function () {
             var effectOwned = false;
             var effectsAmount = 0;
             switch (rarity) {
-                case ItemRarity.EPIC:
+                case static.ItemRarity.EPIC:
                     effectsAmount = Math.floor(Math.random() * 2);
                     break;
-                case ItemRarity.LEGENDARY:
+                case static.ItemRarity.LEGENDARY:
                     effectsAmount = Math.floor(Math.random() * 2) + 1;
                     break;
             }
@@ -504,9 +507,10 @@ declare("ItemCreator", function () {
                     effectsAmount--;
                 }
             }
-            itemBonuses.effects = effects;
+            itemBonusAddition.effects = effects;
 
-            var newItem = new Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses);
+            sellValue *= Math.pow(2, upgradeManager.autoSellUpgradesPurchased);
+            var newItem = item.create(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonusAddition);
             return newItem;
         }
     }

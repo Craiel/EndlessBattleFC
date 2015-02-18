@@ -1,12 +1,11 @@
 declare("Item", function () {
-    include('UpgradeManager');
 
     function Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses) {
         this.name = name;
         this.level = level;
         this.rarity = rarity;
         this.type = type;
-        this.sellValue = sellValue * (Math.pow(2, upgradeManager.autoSellUpgradesPurchased));
+        this.sellValue = sellValue;
         this.iconSourceX = iconSourceX;
         this.iconSourceY = iconSourceY;
 

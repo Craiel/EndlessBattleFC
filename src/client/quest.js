@@ -1,8 +1,8 @@
 declare("Quest", function () {
     include('Component');
     include('MercenaryManager');
-    include('QuestManager');
     include('UpgradeManager');
+    include('GameState');
 
     Quest.prototype = component.create();
     Quest.prototype.$super = parent;
@@ -26,7 +26,7 @@ declare("Quest", function () {
         this.complete = false;
 
         // The Id that this quest will use to display in the quests window
-        this.displayId = questManager.quests.length + 1;
+        this.displayId = undefined;
 
         this.componentUpdate = this.update;
         this.update = function(gameTime) {
@@ -37,48 +37,48 @@ declare("Quest", function () {
             // Update this quest depending on the type that it is
             switch (this.type) {
                 // Kill Quest - Check if the amount of monsters required has been met
-                case QuestType.KILL:
+                case static.QuestType.KILL:
                     if (this.killCount >= this.typeAmount) {
                         this.complete = true;
                     }
                     break;
                 // Mercenary Quest - Check if the amount of mercenaries required has been met
-                case QuestType.MERCENARIES:
+                case static.QuestType.MERCENARIES:
                     switch (this.typeId) {
                         case 0:
-                            if (mercenaryManager.footmenOwned >= this.typeAmount) {
+                            if (gameState.footmenOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 1:
-                            if (mercenaryManager.clericsOwned >= this.typeAmount) {
+                            if (gameState.clericsOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 2:
-                            if (mercenaryManager.commandersOwned >= this.typeAmount) {
+                            if (gameState.commandersOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 3:
-                            if (mercenaryManager.magesOwned >= this.typeAmount) {
+                            if (gameState.magesOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 4:
-                            if (mercenaryManager.assassinsOwned >= this.typeAmount) {
+                            if (gameState.assassinsOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                         case 5:
-                            if (mercenaryManager.warlocksOwned >= this.typeAmount) {
+                            if (gameState.warlocksOwned >= this.typeAmount) {
                                 this.complete = true;
                             }
                             break;
                     }
                     break;
                 // Upgrade Quest - Check if the required upgrade has been purchased
-                case QuestType.UPGRADE:
+                case static.QuestType.UPGRADE:
                     if (upgradeManager.upgrades[this.typeId].purchased) {
                         this.complete = true;
                     }

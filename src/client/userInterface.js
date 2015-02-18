@@ -370,42 +370,42 @@ declare("UserInterface", function () {
                 var equippedSlot = -1
                 var twoTrinkets = false;
                 switch (item.type) {
-                    case ItemType.HELM:
+                    case static.ItemType.HELM:
                         if (game.equipment.helm() != null) {
                             equippedSlot = 0
                         }
                         break;
-                    case ItemType.SHOULDERS:
+                    case static.ItemType.SHOULDERS:
                         if (game.equipment.shoulders() != null) {
                             equippedSlot = 1;
                         }
                         break;
-                    case ItemType.CHEST:
+                    case static.ItemType.CHEST:
                         if (game.equipment.chest() != null) {
                             equippedSlot = 2;
                         }
                         break;
-                    case ItemType.LEGS:
+                    case static.ItemType.LEGS:
                         if (game.equipment.legs() != null) {
                             equippedSlot = 3;
                         }
                         break;
-                    case ItemType.WEAPON:
+                    case static.ItemType.WEAPON:
                         if (game.equipment.weapon() != null) {
                             equippedSlot = 4;
                         }
                         break;
-                    case ItemType.GLOVES:
+                    case static.ItemType.GLOVES:
                         if (game.equipment.gloves() != null) {
                             equippedSlot = 5;
                         }
                         break;
-                    case ItemType.BOOTS:
+                    case static.ItemType.BOOTS:
                         if (game.equipment.boots() != null) {
                             equippedSlot = 6;
                         }
                         break;
-                    case ItemType.TRINKET:
+                    case static.ItemType.TRINKET:
                         if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
                             equippedSlot = 7;
                             // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
@@ -414,7 +414,7 @@ declare("UserInterface", function () {
                             }
                         }
                         break;
-                    case ItemType.OFF_HAND:
+                    case static.ItemType.OFF_HAND:
                         if (game.equipment.off_hand() != null) {
                             equippedSlot = 9;
                         }
@@ -882,47 +882,47 @@ declare("UserInterface", function () {
             var upgrade = statUpgradeManager.upgrades[0][index - 1];
 
             switch (upgrade.type) {
-                case StatUpgradeType.DAMAGE:
+                case static.StatUpgradeType.DAMAGE:
                     $("#otherTooltipTitle").html("Damage");
                     $("#otherTooltipDescription").html("Increases the damage you deal with basic attacks.");
                     break;
-                case StatUpgradeType.STRENGTH:
+                case static.StatUpgradeType.STRENGTH:
                     $("#otherTooltipTitle").html("Strength");
                     $("#otherTooltipDescription").html("Increases your Health by 5 and Damage by 1%.");
                     break;
-                case StatUpgradeType.AGILITY:
+                case static.StatUpgradeType.AGILITY:
                     $("#otherTooltipTitle").html("Agility");
                     $("#otherTooltipDescription").html("Increases your Crit Damage by 0.2% and Evasion by 1%.");
                     break;
-                case StatUpgradeType.STAMINA:
+                case static.StatUpgradeType.STAMINA:
                     $("#otherTooltipTitle").html("Stamina");
                     $("#otherTooltipDescription").html("Increases your Hp5 by 1 and your Armour by 1%.");
                     break;
-                case StatUpgradeType.ARMOUR:
+                case static.StatUpgradeType.ARMOUR:
                     $("#otherTooltipTitle").html("Armour");
                     $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
                     break;
-                case StatUpgradeType.EVASION:
+                case static.StatUpgradeType.EVASION:
                     $("#otherTooltipTitle").html("Evasion");
                     $("#otherTooltipDescription").html("Increases your chance to dodge a monster's attack.");
                     break;
-                case StatUpgradeType.HP5:
+                case static.StatUpgradeType.HP5:
                     $("#otherTooltipTitle").html("Hp5");
                     $("#otherTooltipDescription").html("The amount of health you regenerate over 5 seconds.");
                     break;
-                case StatUpgradeType.CRIT_DAMAGE:
+                case static.StatUpgradeType.CRIT_DAMAGE:
                     $("#otherTooltipTitle").html("Crit Damage");
                     $("#otherTooltipDescription").html("The amount of damage your critical strikes will cause");
                     break;
-                case StatUpgradeType.ITEM_RARITY:
+                case static.StatUpgradeType.ITEM_RARITY:
                     $("#otherTooltipTitle").html("Item Rarity");
                     $("#otherTooltipDescription").html("Increases the chance that rarer items will drop from monsters");
                     break;
-                case StatUpgradeType.EXPERIENCE_GAIN:
+                case static.StatUpgradeType.EXPERIENCE_GAIN:
                     $("#otherTooltipTitle").html("Experience Gain");
                     $("#otherTooltipDescription").html("Increases the experience earned from killing monsters");
                     break;
-                case StatUpgradeType.GOLD_GAIN:
+                case static.StatUpgradeType.GOLD_GAIN:
                     $("#otherTooltipTitle").html("Gold Gain");
                     $("#otherTooltipDescription").html("Increases the gold gained from monsters and mercenaries");
                     break;
@@ -946,37 +946,37 @@ declare("UserInterface", function () {
             // Upgrade a player's stat depending on which button was clicked
             var upgrade = statUpgradeManager.upgrades[0][index - 1];
             switch (upgrade.type) {
-                case StatUpgradeType.DAMAGE:
+                case static.StatUpgradeType.DAMAGE:
                     game.player.chosenLevelUpBonuses.damageBonus += upgrade.amount;
                     break;
-                case StatUpgradeType.STRENGTH:
+                case static.StatUpgradeType.STRENGTH:
                     game.player.chosenLevelUpBonuses.strength += upgrade.amount;
                     break;
-                case StatUpgradeType.AGILITY:
+                case static.StatUpgradeType.AGILITY:
                     game.player.chosenLevelUpBonuses.agility += upgrade.amount;
                     break;
-                case StatUpgradeType.STAMINA:
+                case static.StatUpgradeType.STAMINA:
                     game.player.chosenLevelUpBonuses.stamina += upgrade.amount;
                     break;
-                case StatUpgradeType.ARMOUR:
+                case static.StatUpgradeType.ARMOUR:
                     game.player.chosenLevelUpBonuses.armour += upgrade.amount;
                     break;
-                case StatUpgradeType.EVASION:
+                case static.StatUpgradeType.EVASION:
                     game.player.chosenLevelUpBonuses.evasion += upgrade.amount;
                     break;
-                case StatUpgradeType.HP5:
+                case static.StatUpgradeType.HP5:
                     game.player.chosenLevelUpBonuses.hp5 += upgrade.amount;
                     break;
-                case StatUpgradeType.CRIT_DAMAGE:
+                case static.StatUpgradeType.CRIT_DAMAGE:
                     game.player.chosenLevelUpBonuses.critDamage += upgrade.amount;
                     break;
-                case StatUpgradeType.ITEM_RARITY:
+                case static.StatUpgradeType.ITEM_RARITY:
                     game.player.chosenLevelUpBonuses.itemRarity += upgrade.amount;
                     break;
-                case StatUpgradeType.EXPERIENCE_GAIN:
+                case static.StatUpgradeType.EXPERIENCE_GAIN:
                     game.player.chosenLevelUpBonuses.experienceGain += upgrade.amount;
                     break;
-                case StatUpgradeType.GOLD_GAIN:
+                case static.StatUpgradeType.GOLD_GAIN:
                     game.player.chosenLevelUpBonuses.goldGain += upgrade.amount;
                     break;
             }
@@ -1504,7 +1504,10 @@ declare("UserInterface", function () {
             this.setupCloseButton("upgradesWindowCloseButton");
             this.setupCloseButton("questsWindowCloseButton");
             this.setupCloseButton("statUpgradesWindowCloseButton");
-            this.setupCloseButton("abilityUpgradesWindowCloseButton");
+            this.setupCloseButton("abilityUpgradesWindowCloseButton")
+
+            $("#resetConfirmWindowYesButton").mousedown({self: this}, this.resetConfirmWindowYesButtonClick);
+            $("#resetConfirmWindowNoButtonClick").mousedown({self: this}, this.resetConfirmWindowNoButtonClick);
 
             $("#updates").mousedown({self: this}, this.updatesWindowButtonClick);
             $("#options").mousedown({self: this}, this.optionsWindowButtonClick);
@@ -1518,6 +1521,15 @@ declare("UserInterface", function () {
             $("#attackButton").mouseup({self: this}, this.attackButtonHover);
             $("#attackButton").mousedown({self: this}, this.attackButtonClick);
             $("#attackButton").mouseout({self: this}, this.attackButtonReset);
+
+            $("#monsterHealthBarArea").mouseover({self: this}, this.monsterHealthBarAreaMouseOver);
+            $("#monsterHealthBarArea").mouseout({self: this}, this.monsterHealthBarAreaMouseOut);
+
+            $("#playerHealthBarArea").mouseover({self: this}, this.playerHealthBarAreaMouseOver);
+            $("#playerHealthBarArea").mouseout({self: this}, this.playerHealthBarAreaMouseOut);
+
+            $("#expBarAreaMouseOver").mouseover({self: this}, this.expBarAreaMouseOver());
+            $("#expBarAreaMouseOver").mouseout({self: this}, this.expBarAreaMouseOut());
 
             // Set the startup visibility of things
             $("#itemTooltip").hide();

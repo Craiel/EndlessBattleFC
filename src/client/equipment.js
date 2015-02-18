@@ -53,38 +53,38 @@ declare("Equipment", function () {
 
             // Check that the item can be equipped
             var equippable = false;
-            if (item.type == ItemType.HELM || item.type == ItemType.SHOULDERS || item.type == ItemType.CHEST ||
-                item.type == ItemType.LEGS || item.type == ItemType.WEAPON || item.type == ItemType.GLOVES ||
-                item.type == ItemType.BOOTS || item.type == ItemType.TRINKET || item.type == ItemType.TRINKET ||
-                item.type == ItemType.OFF_HAND) {
+            if (item.type == static.ItemType.HELM || item.type == static.ItemType.SHOULDERS || item.type == static.ItemType.CHEST ||
+                item.type == static.ItemType.LEGS || item.type == static.ItemType.WEAPON || item.type == static.ItemType.GLOVES ||
+                item.type == static.ItemType.BOOTS || item.type == static.ItemType.TRINKET || item.type == static.ItemType.TRINKET ||
+                item.type == static.ItemType.OFF_HAND) {
                 equippable = true;
             }
 
             // Calculate which slot this item will go into
             var newSlotIndex = 0;
             switch (item.type) {
-                case ItemType.HELM:
+                case static.ItemType.HELM:
                     newSlotIndex = 0;
                     break;
-                case ItemType.SHOULDERS:
+                case static.ItemType.SHOULDERS:
                     newSlotIndex = 1;
                     break;
-                case ItemType.CHEST:
+                case static.ItemType.CHEST:
                     newSlotIndex = 2;
                     break;
-                case ItemType.LEGS:
+                case static.ItemType.LEGS:
                     newSlotIndex = 3;
                     break;
-                case ItemType.WEAPON:
+                case static.ItemType.WEAPON:
                     newSlotIndex = 4;
                     break;
-                case ItemType.GLOVES:
+                case static.ItemType.GLOVES:
                     newSlotIndex = 5;
                     break;
-                case ItemType.BOOTS:
+                case static.ItemType.BOOTS:
                     newSlotIndex = 6;
                     break;
-                case ItemType.TRINKET:
+                case static.ItemType.TRINKET:
                     // Either select the first empty trinket slot, or the first one if both arre occupied
                     if (this.slots[7] == null) {
                         newSlotIndex = 7;
@@ -96,7 +96,7 @@ declare("Equipment", function () {
                         newSlotIndex = 7;
                     }
                     break;
-                case ItemType.OFF_HAND:
+                case static.ItemType.OFF_HAND:
                     newSlotIndex = 9;
                     break;
             }
@@ -134,42 +134,42 @@ declare("Equipment", function () {
                     var equippedSlot = -1
                     var twoTrinkets = false;
                     switch (item.type) {
-                        case ItemType.HELM:
+                        case static.ItemType.HELM:
                             if (game.equipment.helm() != null) {
                                 equippedSlot = 0
                             }
                             break;
-                        case ItemType.SHOULDERS:
+                        case static.ItemType.SHOULDERS:
                             if (game.equipment.shoulders() != null) {
                                 equippedSlot = 1;
                             }
                             break;
-                        case ItemType.CHEST:
+                        case static.ItemType.CHEST:
                             if (game.equipment.chest() != null) {
                                 equippedSlot = 2;
                             }
                             break;
-                        case ItemType.LEGS:
+                        case static.ItemType.LEGS:
                             if (game.equipment.legs() != null) {
                                 equippedSlot = 3;
                             }
                             break;
-                        case ItemType.WEAPON:
+                        case static.ItemType.WEAPON:
                             if (game.equipment.weapon() != null) {
                                 equippedSlot = 4;
                             }
                             break;
-                        case ItemType.GLOVES:
+                        case static.ItemType.GLOVES:
                             if (game.equipment.gloves() != null) {
                                 equippedSlot = 5;
                             }
                             break;
-                        case ItemType.BOOTS:
+                        case static.ItemType.BOOTS:
                             if (game.equipment.boots() != null) {
                                 equippedSlot = 6;
                             }
                             break;
-                        case ItemType.TRINKET:
+                        case static.ItemType.TRINKET:
                             if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
                                 equippedSlot = 7;
                                 // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
@@ -178,7 +178,7 @@ declare("Equipment", function () {
                                 }
                             }
                             break;
-                        case ItemType.OFF_HAND:
+                        case static.ItemType.OFF_HAND:
                             if (game.equipment.off_hand() != null) {
                                 equippedSlot = 9;
                             }
@@ -209,7 +209,7 @@ declare("Equipment", function () {
 
         // Equip a trinket into the second slot
         this.equipSecondTrinket = function(item, itemSlot) {
-            if (item.type == ItemType.TRINKET) {
+            if (item.type == static.ItemType.TRINKET) {
                 this.equipItemInSlot(item, 8, itemSlot);
 
                 // If there is a new item in the old slot, change the tooltip
@@ -220,42 +220,42 @@ declare("Equipment", function () {
                     var equippedSlot = -1
                     var twoTrinkets = false;
                     switch (item.type) {
-                        case ItemType.HELM:
+                        case static.ItemType.HELM:
                             if (game.equipment.helm() != null) {
                                 equippedSlot = 0
                             }
                             break;
-                        case ItemType.SHOULDERS:
+                        case static.ItemType.SHOULDERS:
                             if (game.equipment.shoulders() != null) {
                                 equippedSlot = 1;
                             }
                             break;
-                        case ItemType.CHEST:
+                        case static.ItemType.CHEST:
                             if (game.equipment.chest() != null) {
                                 equippedSlot = 2;
                             }
                             break;
-                        case ItemType.LEGS:
+                        case static.ItemType.LEGS:
                             if (game.equipment.legs() != null) {
                                 equippedSlot = 3;
                             }
                             break;
-                        case ItemType.WEAPON:
+                        case static.ItemType.WEAPON:
                             if (game.equipment.weapon() != null) {
                                 equippedSlot = 4;
                             }
                             break;
-                        case ItemType.GLOVES:
+                        case static.ItemType.GLOVES:
                             if (game.equipment.gloves() != null) {
                                 equippedSlot = 5;
                             }
                             break;
-                        case ItemType.BOOTS:
+                        case static.ItemType.BOOTS:
                             if (game.equipment.boots() != null) {
                                 equippedSlot = 6;
                             }
                             break;
-                        case ItemType.TRINKET:
+                        case static.ItemType.TRINKET:
                             if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
                                 equippedSlot = 7;
                                 // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
@@ -264,7 +264,7 @@ declare("Equipment", function () {
                                 }
                             }
                             break;
-                        case ItemType.OFF_HAND:
+                        case static.ItemType.OFF_HAND:
                             if (game.equipment.off_hand() != null) {
                                 equippedSlot = 9;
                             }
@@ -298,52 +298,52 @@ declare("Equipment", function () {
             var equippable = false;
             switch (newSlotIndex) {
                 case 0:
-                    if (item.type == ItemType.HELM) {
+                    if (item.type == static.ItemType.HELM) {
                         equippable = true;
                     }
                     break;
                 case 1:
-                    if (item.type == ItemType.SHOULDERS) {
+                    if (item.type == static.ItemType.SHOULDERS) {
                         equippable = true;
                     }
                     break;
                 case 2:
-                    if (item.type == ItemType.CHEST) {
+                    if (item.type == static.ItemType.CHEST) {
                         equippable = true;
                     }
                     break;
                 case 3:
-                    if (item.type == ItemType.LEGS) {
+                    if (item.type == static.ItemType.LEGS) {
                         equippable = true;
                     }
                     break;
                 case 4:
-                    if (item.type == ItemType.WEAPON) {
+                    if (item.type == static.ItemType.WEAPON) {
                         equippable = true;
                     }
                     break;
                 case 5:
-                    if (item.type == ItemType.GLOVES) {
+                    if (item.type == static.ItemType.GLOVES) {
                         equippable = true;
                     }
                     break;
                 case 6:
-                    if (item.type == ItemType.BOOTS) {
+                    if (item.type == static.ItemType.BOOTS) {
                         equippable = true;
                     }
                     break;
                 case 7:
-                    if (item.type == ItemType.TRINKET) {
+                    if (item.type == static.ItemType.TRINKET) {
                         equippable = true;
                     }
                     break;
                 case 8:
-                    if (item.type == ItemType.TRINKET) {
+                    if (item.type == static.ItemType.TRINKET) {
                         equippable = true;
                     }
                     break;
                 case 9:
-                    if (item.type == ItemType.OFF_HAND) {
+                    if (item.type == static.ItemType.OFF_HAND) {
                         equippable = true;
                     }
                     break;

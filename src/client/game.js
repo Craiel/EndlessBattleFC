@@ -66,6 +66,7 @@ declare("Game", function() {
             this.reset();
 
             this.beginLoading();
+            eventManager.init();
             tutorialManager.init();
             mercenaryManager.init();
             upgradeManager.init();
@@ -363,100 +364,100 @@ declare("Game", function() {
                 $("#statUpgradesWindow").show();
 
                 switch (upgrades[0].type) {
-                    case StatUpgradeType.DAMAGE:
+                    case static.StatUpgradeType.DAMAGE:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Damage";
                         break;
-                    case StatUpgradeType.STRENGTH:
+                    case static.StatUpgradeType.STRENGTH:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Strength";
                         break;
-                    case StatUpgradeType.AGILITY:
+                    case static.StatUpgradeType.AGILITY:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Agility";
                         break;
-                    case StatUpgradeType.STAMINA:
+                    case static.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Stamina";
                         break;
-                    case StatUpgradeType.ARMOUR:
+                    case static.StatUpgradeType.ARMOUR:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Armour";
                         break;
-                    case StatUpgradeType.HP5:
+                    case static.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Hp5";
                         break;
-                    case StatUpgradeType.CRIT_DAMAGE:
+                    case static.StatUpgradeType.CRIT_DAMAGE:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Crit Damage";
                         break;
-                    case StatUpgradeType.ITEM_RARITY:
+                    case static.StatUpgradeType.ITEM_RARITY:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Item Rarity";
                         break;
-                    case StatUpgradeType.GOLD_GAIN:
+                    case static.StatUpgradeType.GOLD_GAIN:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Gold Gain";
                         break;
-                    case StatUpgradeType.EXPERIENCE_GAIN:
+                    case static.StatUpgradeType.EXPERIENCE_GAIN:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Experience Gain";
                         break;
                 }
 
                 switch (upgrades[1].type) {
-                    case StatUpgradeType.DAMAGE:
+                    case static.StatUpgradeType.DAMAGE:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Damage";
                         break;
-                    case StatUpgradeType.STRENGTH:
+                    case static.StatUpgradeType.STRENGTH:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Strength";
                         break;
-                    case StatUpgradeType.AGILITY:
+                    case static.StatUpgradeType.AGILITY:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Agility";
                         break;
-                    case StatUpgradeType.STAMINA:
+                    case static.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Stamina";
                         break;
-                    case StatUpgradeType.ARMOUR:
+                    case static.StatUpgradeType.ARMOUR:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Armour";
                         break;
-                    case StatUpgradeType.HP5:
+                    case static.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Hp5";
                         break;
-                    case StatUpgradeType.CRIT_DAMAGE:
+                    case static.StatUpgradeType.CRIT_DAMAGE:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Crit Damage";
                         break;
-                    case StatUpgradeType.ITEM_RARITY:
+                    case static.StatUpgradeType.ITEM_RARITY:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Item Rarity";
                         break;
-                    case StatUpgradeType.GOLD_GAIN:
+                    case static.StatUpgradeType.GOLD_GAIN:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Gold Gain";
                         break;
-                    case StatUpgradeType.EXPERIENCE_GAIN:
+                    case static.StatUpgradeType.EXPERIENCE_GAIN:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Experience Gain";
                         break;
                 }
 
                 switch (upgrades[2].type) {
-                    case StatUpgradeType.DAMAGE:
+                    case static.StatUpgradeType.DAMAGE:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Damage";
                         break;
-                    case StatUpgradeType.STRENGTH:
+                    case static.StatUpgradeType.STRENGTH:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Strength";
                         break;
-                    case StatUpgradeType.AGILITY:
+                    case static.StatUpgradeType.AGILITY:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Agility";
                         break;
-                    case StatUpgradeType.STAMINA:
+                    case static.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Stamina";
                         break;
-                    case StatUpgradeType.ARMOUR:
+                    case static.StatUpgradeType.ARMOUR:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Armour";
                         break;
-                    case StatUpgradeType.HP5:
+                    case static.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Hp5";
                         break;
-                    case StatUpgradeType.CRIT_DAMAGE:
+                    case static.StatUpgradeType.CRIT_DAMAGE:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Crit Damage";
                         break;
-                    case StatUpgradeType.ITEM_RARITY:
+                    case static.StatUpgradeType.ITEM_RARITY:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Item Rarity";
                         break;
-                    case StatUpgradeType.GOLD_GAIN:
+                    case static.StatUpgradeType.GOLD_GAIN:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Gold Gain";
                         break;
-                    case StatUpgradeType.EXPERIENCE_GAIN:
+                    case static.StatUpgradeType.EXPERIENCE_GAIN:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Experience Gain";
                         break;
                 }
@@ -527,9 +528,6 @@ declare("Game", function() {
 
         this.reset = function() {
             localStorage.clear();
-
-            // Other
-            eventManager.init();
 
             // Combat
             this.inBattle = false;
@@ -744,7 +742,7 @@ declare("Game", function() {
                 document.getElementById("questTitle").innerHTML = quest.name;
                 // Create the quest goal
                 switch (quest.type) {
-                    case QuestType.KILL:
+                    case static.QuestType.KILL:
                         if (quest.typeAmount == 1) {
                             newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monster.";
                         }
@@ -752,7 +750,7 @@ declare("Game", function() {
                             newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monsters.";
                         }
                         break;
-                    case QuestType.MERCENARIES:
+                    case static.QuestType.MERCENARIES:
                         switch (quest.typeId) {
                             case 0:
                                 newText = "Own " + quest.typeAmount + " Footmen.";
@@ -774,17 +772,17 @@ declare("Game", function() {
                                 break;
                         }
                         break;
-                    case QuestType.UPGRADE:
+                    case static.QuestType.UPGRADE:
                         newText = "Purchase the " + upgradeManager.upgrades[quest.typeId].name + " upgrade.";
                         break;
                 }
                 document.getElementById("questGoal").innerHTML = newText;
                 // Create the quest progress text
                 switch (quest.type) {
-                    case QuestType.KILL:
+                    case static.QuestType.KILL:
                         newText = quest.killCount + "/" + quest.typeAmount + " Monsters slain.";
                         break;
-                    case QuestType.MERCENARIES:
+                    case static.QuestType.MERCENARIES:
                         switch (quest.typeId) {
                             case 0:
                                 newText = gameState.footmenOwned + "/" + quest.typeAmount + " Footmen owned.";
@@ -806,7 +804,7 @@ declare("Game", function() {
                                 break;
                         }
                         break;
-                    case QuestType.UPGRADE:
+                    case static.QuestType.UPGRADE:
                         break;
                 }
                 document.getElementById("questProgress").innerHTML = newText;

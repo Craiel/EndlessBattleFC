@@ -4,6 +4,7 @@ declare("Monster", function () {
     include('ItemCreator');
     include('ParticleManager');
     include('GameState');
+    include('Loot');
 
     function Monster() {
         this.name = '#ERR';
@@ -26,10 +27,9 @@ declare("Monster", function () {
         this.alive = true;
 
         this.getRandomLoot = function() {
-            var loot = new Loot();
-            loot.gold = this.goldWorth;
-            loot.item = itemCreator.createRandomItem(this.level, itemCreator.getRandomItemRarity(this.rarity));
-            return loot;
+            var item = itemCreator.createRandomItem(this.level, itemCreator.getRandomItemRarity(this.rarity));
+            var result = loot.create(this.goldWorth, item);
+            return result;
         }
 
         this.takeDamage = function(damage, isCritical, displayParticle) {
