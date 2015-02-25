@@ -9,6 +9,7 @@ declare("UserInterface", function () {
     include('GameState');
     include('UpgradeManager');
     include('Resources');
+    include('TutorialManager');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -35,6 +36,7 @@ declare("UserInterface", function () {
         this.updatesWindowShown = false;
         this.statsWindowShown = false;
         this.optionsWindowShown = false;
+        this.questsButtonGlowing = false;
 
         this.fullReset = false;
 
@@ -193,7 +195,7 @@ declare("UserInterface", function () {
         this.upgradeButtonMouseOver = function(obj, buttonId) {
             var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
             var upgrade = upgradeManager.upgrades[upgradeId];
-            $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#upgradePurchaseButton" + buttonId).css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html(upgrade.name);
             $("#otherTooltipCooldown").html('');
@@ -211,14 +213,14 @@ declare("UserInterface", function () {
         this.upgradeButtonMouseDown = function(buttonId) {
             var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
             var upgrade = upgradeManager.upgrades[upgradeId];
-            $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#upgradePurchaseButton" + buttonId).css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             upgradeManager.purchaseUpgrade(buttonId - 1);
         }
 
         this.upgradeButtonMouseOut = function(buttonId) {
             var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
             var upgrade = upgradeManager.upgrades[upgradeId];
-            $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#upgradePurchaseButton" + buttonId).css('background', resources.getImageUrl(resources.ImageBuyButtonBase)+' 0 0');
             $("#otherTooltip").hide();
         }
 
@@ -273,7 +275,7 @@ declare("UserInterface", function () {
             $("#otherTooltip").hide();
         }
 
-        this.attackButtonClick = function() {
+        this.attackButtonClick = function(obj) {
             switch (game.player.attackType) {
                 case static.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 0');
@@ -312,48 +314,51 @@ declare("UserInterface", function () {
         }
 
         this.battleLevelUpButtonClick = function(obj) {
-            obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
+            obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
 
             if (!game.maxBattleLevelReached()) {
                 game.increaseBattleLevel();
                 $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
                 if (game.maxBattleLevelReached()) {
-                    obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
+                    obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
                 }
             }
         }
 
         this.battleLevelDownButtonClick = function(obj) {
-            obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
+            obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
 
             if (game.battleLevel != 1) {
                 game.decreaseBattleLevel();
                 $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
                 if (game.battleLevel == 1) {
-                    obj.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
+                    obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
                 }
             }
         }
 
-        this.equipItemHover = function(obj, index) {
+        this.equipItemHover = function(obj) {
+            var index = obj.data.index;
             var item = game.equipment.slots[index - 1];
             // If there is an item in this slot then show the item tooltip
             if (item != null) {
-                var rect = $(this)[0].getBoundingClientRect();
+                var rect = obj.currentTarget.getBoundingClientRect();
                 tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
             }
         }
 
-        this.equipItemReset = function(obj, index) {
+        this.equipItemReset = function(obj) {
+            var index = obj.data.index;
             $("#itemTooltip").hide();
             $(".equipItem" + index).css('z-index', '1');
         }
 
-        this.equipItemClick = function(obj, index) {
+        this.equipItemClick = function(obj) {
+            var index = obj.data.index;
             // If the left mouse button was clicked
             if (event.which == 1) {
                 // Store the information about this item
-                slotTypeSelected = SLOT_TYPE.EQUIP;
+                slotTypeSelected = static.SLOT_TYPE.EQUIP;
                 slotNumberSelected = index;
 
                 var rect = $(".equipItem" + index).position();
@@ -361,7 +366,8 @@ declare("UserInterface", function () {
             }
         }
 
-        this.inventoryItemHover = function(obj, index) {
+        this.inventoryItemHover = function(obj) {
+            var index = obj.data.index;
             var item = game.inventory.slots[index - 1];
             // If there is an item in this slot then show the item tooltip
             if (item != null) {
@@ -435,22 +441,25 @@ declare("UserInterface", function () {
             }
         }
 
-        this.inventoryItemReset = function(obj, index) {
+        this.inventoryItemReset = function(obj) {
+            var index = obj.data.index;
+
             $("#itemTooltip").hide();
             $("#itemCompareTooltip").hide();
             $("#itemCompareTooltip2").hide();
             $("#inventoryItem" + index).css('z-index', '1');
         }
 
-        this.inventoryItemClick = function(obj, index, event) {
+        this.inventoryItemClick = function(obj) {
+            var index = obj.data.index;
             // If the shift key is down then sell this item
-            if (event.shiftKey == 1) {
+            if (obj.shiftKey == 1) {
                 game.inventory.sellItem(index - 1);
             }
             // If the left mouse button was clicked
-            else if (event.which == 1) {
+            else if (obj.which == 1) {
                 // Store the information about this item
-                slotTypeSelected = SLOT_TYPE.INVENTORY;
+                slotTypeSelected = static.SLOT_TYPE.INVENTORY;
                 slotNumberSelected = index;
 
                 var rect = $("#inventoryItem" + index).position();
@@ -462,9 +471,11 @@ declare("UserInterface", function () {
             game.inventory.sellAll();
         }
 
-        this.equipInventoryItem = function(event, index) {
+        this.equipInventoryItem = function(obj) {
+            var index = obj.data.self;
+
             // If the alt key was pressed try to equip this item as a second trinket
-            if (event.altKey == 1) {
+            if (obj.altKey == 1) {
                 game.equipment.equipSecondTrinket(game.inventory.slots[index - 1], index - 1);
             }
             else {
@@ -510,43 +521,47 @@ declare("UserInterface", function () {
         }
 
         this.characterWindowButtonHover = function(obj) {
-            $(".characterWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 78px');
+            $(".characterWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 78px');
             tooltipManager.displayBasicTooltip(obj, "Character");
         }
 
         this.characterWindowButtonClick = function(obj) {
-            if (characterWindowShown) {
+            var self = obj.data.self;
+
+            if (self.characterWindowShown) {
                 $("#characterWindow").hide();
-                characterWindowShown = false;
+                self.characterWindowShown = false;
             }
             else {
-                updateWindowDepths(document.getElementById("characterWindow"));
+                self.updateWindowDepths(document.getElementById("characterWindow"));
                 $("#characterWindow").show();
-                characterWindowShown = true;
+                self.characterWindowShown = true;
                 // Update the tutorial
                 gameState.equipmentOpened = true;
             }
         }
 
         this.characterWindowButtonReset = function(obj) {
-            $(".characterWindowButton").css('background', 'url("includes/images/windowButtons.png") 0px 78px');
+            $(".characterWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 78px');
             $("#basicTooltip").hide();
         }
 
         this.mercenariesWindowButtonHover = function(obj) {
-            $(".mercenariesWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 117px');
+            $(".mercenariesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 117px');
             tooltipManager.displayBasicTooltip(obj, "Mercenaries");
         }
 
         this.mercenariesWindowButtonClick = function(obj) {
-            if (mercenariesWindowShown) {
+            var self = obj.data.self;
+
+            if (self.mercenariesWindowShown) {
                 $("#mercenariesWindow").hide();
-                mercenariesWindowShown = false;
+                self.mercenariesWindowShown = false;
             }
             else {
                 $("#mercenariesWindow").show();
-                mercenariesWindowShown = true;
-                updateWindowDepths(document.getElementById("mercenariesWindow"));
+                self.mercenariesWindowShown = true;
+                self.updateWindowDepths(document.getElementById("mercenariesWindow"));
             }
 
             if (tutorialManager.currentTutorial == 9) {
@@ -555,26 +570,28 @@ declare("UserInterface", function () {
         }
 
         this.mercenariesWindowButtonReset = function(obj) {
-            $(".mercenariesWindowButton").css('background', 'url("includes/images/windowButtons.png") 0px 117px');
+            $(".mercenariesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 117px');
             $("#basicTooltip").hide();
         }
 
         this.upgradesWindowButtonHover = function(obj) {
-            $("#upgradesWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 39px 0');
-            $(".upgradesWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 0');
+            $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 39px 0');
+            $(".upgradesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 0');
             tooltipManager.displayBasicTooltip(obj, "Upgrades");
         }
 
         this.upgradesWindowButtonClick = function(obj) {
+            var self = obj.data.self;
+
             upgradeManager.stopGlowingUpgradesButton();
-            if (upgradesWindowShown) {
+            if (this.upgradesWindowShown) {
                 $("#upgradesWindow").hide();
-                upgradesWindowShown = false;
+                self.upgradesWindowShown = false;
             }
             else {
                 $("#upgradesWindow").show();
-                upgradesWindowShown = true;
-                updateWindowDepths(document.getElementById("upgradesWindow"));
+                self.upgradesWindowShown = true;
+                self.updateWindowDepths(document.getElementById("upgradesWindow"));
             }
 
             if (tutorialManager.currentTutorial == 10) {
@@ -583,27 +600,29 @@ declare("UserInterface", function () {
         }
 
         this.upgradesWindowButtonReset = function(obj) {
-            $("#upgradesWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 78px 0');
-            $(".upgradesWindowButton").css('background', 'url("includes/images/windowButtons.png") 0px 0');
+            $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 0');
+            $(".upgradesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 0');
             $("#basicTooltip").hide();
         }
 
         this.questsWindowButtonHover = function(obj) {
-            $("#questsWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 39px 195px');
-            $(".questsWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 195px');
+            $("#questsWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 39px 195px');
+            $(".questsWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 195px');
             tooltipManager.displayBasicTooltip(obj, "Quests");
         }
 
         this.questsWindowButtonClick = function(obj) {
+            var self = obj.data.self;
+
             questManager.stopGlowingQuestsButton();
-            if (questsWindowShown) {
+            if (self.questsWindowShown) {
                 $("#questsWindow").hide();
-                questsWindowShown = false;
+                self.questsWindowShown = false;
             }
             else {
                 $("#questsWindow").show();
-                questsWindowShown = true;
-                updateWindowDepths(document.getElementById("questsWindow"));
+                self.questsWindowShown = true;
+                self.updateWindowDepths(document.getElementById("questsWindow"));
             }
 
             // Hide the tutorial if this is the first quests tutorial
@@ -613,8 +632,8 @@ declare("UserInterface", function () {
         }
 
         this.questsWindowButtonReset = function(obj) {
-            $("#questsWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 78px 195px');
-            $(".questsWindowButton").css('background', 'url("includes/images/windowButtons.png") 0px 195px');
+            $("#questsWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 195px');
+            $(".questsWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 195px');
             $("#basicTooltip").hide();
         }
 
@@ -623,31 +642,33 @@ declare("UserInterface", function () {
         }
 
         this.inventoryWindowButtonHover = function(obj) {
-            $(".inventoryWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 39px');
+            $(".inventoryWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 39px');
             tooltipManager.displayBasicTooltip(obj, "Inventory");
         }
 
         this.inventoryWindowButtonClick = function(obj) {
-            if (inventoryWindowShown) {
+            var self = obj.data.self;
+
+            if (self.inventoryWindowShown) {
                 $("#inventoryWindow").hide();
-                inventoryWindowShown = false;
+                self.inventoryWindowShown = false;
             }
             else {
-                updateWindowDepths(document.getElementById("inventoryWindow"));
+                self.updateWindowDepths(document.getElementById("inventoryWindow"));
                 $("#inventoryWindow").show();
-                inventoryWindowShown = true;
+                self.inventoryWindowShown = true;
                 // Update the 6th tutorial
                 gameState.inventoryOpened = true;
             }
         }
 
         this.inventoryWindowButtonReset = function(obj) {
-            $(".inventoryWindowButton").css('background', 'url("includes/images/windowButtons.png") 0px 39px');
+            $(".inventoryWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 39px');
             $("#basicTooltip").hide();
         }
 
         this.closeButtonHover = function(obj) {
-            obj.style.background = 'url("includes/images/closeButton.png") 14px 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageCloseButton) + ' 14px 0';
         }
 
         this.closeButtonClick = function(obj) {
@@ -671,51 +692,51 @@ declare("UserInterface", function () {
                     break;
                 case "characterWindowCloseButton":
                     $("#characterWindow").hide();
-                    characterWindowShown = false;
+                    this.characterWindowShown = false;
                     break;
                 case "mercenariesWindowCloseButton":
                     $("#mercenariesWindow").hide();
-                    mercenariesWindowShown = false;
+                    this.mercenariesWindowShown = false;
                     break;
                 case "upgradesWindowCloseButton":
                     $("#upgradesWindow").hide();
-                    upgradesWindowShown = false;
+                    this.upgradesWindowShown = false;
                     break;
                 case "questsWindowCloseButton":
                     $("#questsWindow").hide();
-                    questsWindowShown = false;
+                    this.questsWindowShown = false;
                     break;
                 case "inventoryWindowCloseButton":
                     $("#inventoryWindow").hide();
-                    inventoryWindowShown = false;
+                    this.inventoryWindowShown = false;
                     break;
             }
         }
 
         this.closeButtonReset = function(obj) {
-            obj.style.background = 'url("includes/images/closeButton.png") 0 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageCloseButton) + ' 0 0';
         }
 
         this.updateWindowDepths = function(obj) {
             // Go through the window order and remove the id
-            for (var x = 0; x < WindowOrder.length; x++) {
-                if (WindowOrder[x] == obj.id) {
-                    WindowOrder.splice(x, 1);
+            for (var x = 0; x < this.WindowOrder.length; x++) {
+                if (this.WindowOrder[x] == obj.id) {
+                    this.WindowOrder.splice(x, 1);
                     break;
                 }
             }
 
             // Add the id again
-            WindowOrder.push(obj.id);
+            this.WindowOrder.push(obj.id);
 
             // Order the window depths
-            for (var x = 0; x < WindowOrder.length; x++) {
-                document.getElementById(WindowOrder[x]).style.zIndex = 5 + x;
+            for (var x = 0; x < this.WindowOrder.length; x++) {
+                document.getElementById(this.WindowOrder[x]).style.zIndex = 5 + x;
             }
         }
 
         this.footmanBuyButtonMouseOver = function(obj) {
-            $("#footmanBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Footman');
             $("#otherTooltipCooldown").html('');
@@ -731,17 +752,17 @@ declare("UserInterface", function () {
         }
 
         this.footmanBuyButtonMouseDown = function(obj) {
-            $("#footmanBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(MercenaryType.FOOTMAN);
         }
 
         this.footmanBuyButtonMouseOut = function(obj) {
-            $("#footmanBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.clericBuyButtonMouseOver = function(obj) {
-            $("#clericBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Cleric');
             $("#otherTooltipCooldown").html('');
@@ -758,17 +779,17 @@ declare("UserInterface", function () {
         }
 
         this.clericBuyButtonMouseDown = function(obj) {
-            $("#clericBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(MercenaryType.CLERIC);
         }
 
         this.clericBuyButtonMouseOut = function(obj) {
-            $("#clericBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.commanderBuyButtonMouseOver = function(obj) {
-            $("#commanderBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Commander');
             $("#otherTooltipCooldown").html('');
@@ -785,17 +806,17 @@ declare("UserInterface", function () {
         }
 
         this.commanderBuyButtonMouseDown = function(obj) {
-            $("#commanderBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(MercenaryType.COMMANDER);
         }
 
         this.commanderBuyButtonMouseOut = function(obj) {
-            $("#commanderBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.mageBuyButtonMouseOver = function(obj) {
-            $("#mageBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Mage');
             $("#otherTooltipCooldown").html('');
@@ -812,17 +833,17 @@ declare("UserInterface", function () {
         }
 
         this.mageBuyButtonMouseDown = function(obj) {
-            $("#mageBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(MercenaryType.MAGE);
         }
 
         this.mageBuyButtonMouseOut = function(obj) {
-            $("#mageBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.assassinBuyButtonMouseOver = function(obj) {
-            $("#assassinBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Assassin');
             $("#otherTooltipCooldown").html('');
@@ -839,17 +860,17 @@ declare("UserInterface", function () {
         }
 
         this.assassinBuyButtonMouseDown = function(obj) {
-            $("#assassinBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(MercenaryType.ASSASSIN);
         }
 
         this.assassinBuyButtonMouseOut = function(obj) {
-            $("#assassinBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.warlockBuyButtonMouseOver = function(obj) {
-            $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+            $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Warlock');
             $("#otherTooltipCooldown").html('');
@@ -866,17 +887,18 @@ declare("UserInterface", function () {
         }
 
         this.warlockBuyButtonMouseDown = function(obj) {
-            $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+            $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(MercenaryType.WARLOCK);
         }
 
         this.warlockBuyButtonMouseOut = function(obj) {
-            $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+            $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
-        this.statUpgradeButtonHover = function(obj, index) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+        this.statUpgradeButtonHover = function(obj) {
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
+            var index = obj.data.index;
 
             // Show a tooltip describing what the hovered stat does if neccessary
             var upgrade = statUpgradeManager.upgrades[0][index - 1];
@@ -940,7 +962,7 @@ declare("UserInterface", function () {
 
         this.statUpgradeButtonClick = function(obj) {
             var index = obj.data.index;
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#statUpgradesWindow").hide();
 
             // Upgrade a player's stat depending on which button was clicked
@@ -998,12 +1020,12 @@ declare("UserInterface", function () {
         }
 
         this.statUpgradeButtonReset = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#otherTooltip").hide();
         }
 
         this.rendUpgradeButtonHover = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Rend');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1031,18 +1053,18 @@ declare("UserInterface", function () {
         }
 
         this.rendUpgradeButtonClick = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(AbilityName.REND);
         }
 
         this.rendUpgradeButtonReset = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
         this.rejuvenatingStrikesUpgradeButtonHover = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Rejuvenating Strikes');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1070,18 +1092,18 @@ declare("UserInterface", function () {
         }
 
         this.rejuvenatingStrikesUpgradeButtonClick = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(AbilityName.REJUVENATING_STRIKES);
         }
 
         this.rejuvenatingStrikesUpgradeButtonReset = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
         this.iceBladeUpgradeButtonHover = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Ice Blade');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1109,18 +1131,18 @@ declare("UserInterface", function () {
         }
 
         this.iceBladeUpgradeButtonClick = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(AbilityName.ICE_BLADE);
         }
 
         this.iceBladeUpgradeButtonReset = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
         this.fireBladeUpgradeButtonHover = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Fire Blade');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1150,13 +1172,13 @@ declare("UserInterface", function () {
         }
 
         this.fireBladeUpgradeButtonClick = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(AbilityName.FIRE_BLADE);
         }
 
         this.fireBladeUpgradeButtonReset = function(obj) {
-            obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
+            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
@@ -1470,8 +1492,8 @@ declare("UserInterface", function () {
         }
 
         this.setupStatUpgradeButton = function(name, index) {
-            $("#" + name).mouseover({self: this}, this.statUpgradeButtonHover);
-            $("#" + name).mouseup({self: this}, this.statUpgradeButtonHover);
+            $("#" + name).mouseover({self: this, index: index}, this.statUpgradeButtonHover);
+            $("#" + name).mouseup({self: this, index: index}, this.statUpgradeButtonHover);
             $("#" + name).mousedown({self: this, index: index}, this.statUpgradeButtonClick);
             $("#" + name).mouseout({self: this}, this.statUpgradeButtonReset);
         }
@@ -1483,12 +1505,38 @@ declare("UserInterface", function () {
             $("#" + name).mouseout({self: this}, this.closeButtonReset);
         }
 
+        this.setupItemSlots = function(index) {
+            $("#equipItem" + index).mouseover({self: this, index: index}, this.equipItemHover);
+            $("#equipItem" + index).mouseout({self: this, index: index}, this.equipItemReset);
+            $("#equipItem" + index).mousedown({self: this, index: index}, this.equipItemClick);
+
+            // TODO:
+            //$("#equipItem" + index).rightContext({self: this, index: index}, this.equipItemRightClick);
+        }
+
+        this.setupInventorySlots = function(index) {
+            $("#inventoryItem" + index).mouseover({self: this, index: index}, this.inventoryItemHover);
+            $("#inventoryItem" + index).mouseout({self: this, index: index}, this.inventoryItemReset);
+            $("#inventoryItem" + index).mousedown({self: this, index: index}, this.inventoryItemClick);
+
+            // TODO
+            //$("#inventoryItem" + index).rightContext({self: this, index: index}, this.equipInventoryItem)
+        }
+
+        this.glowQuestsButton = function() {
+            this.questsButtonGlowing = true;
+            $("#questsWindowButtonGlow").animate({opacity: '+=0.5'}, 400);
+            $("#questsWindowButtonGlow").animate({opacity: '-=0.5'}, 400, function () {
+                include('UserInterface').glowQuestsButton();
+            });
+        }
+
         this.setupWindowState = function() {
             // Wire up all the events
             this.setupStoneButton("enterBattleButton", this.enterBattleButtonClick);
             this.setupStoneButton("leaveBattleButton", this.leaveBattleButtonClick);
-            this.setupStoneButton("battleLevelDown", this.battleLevelDownButtonClick);
-            this.setupStoneButton("battleLevelUp", this.battleLevelUpButtonClick);
+            this.setupStoneButton("battleLevelDownButton", this.battleLevelDownButtonClick);
+            this.setupStoneButton("battleLevelUpButton", this.battleLevelUpButtonClick);
             this.setupStoneButton("levelUpButton", this.levelUpButtonClick);
 
             this.setupStatUpgradeButton("statUpgradeButton1", 1);
@@ -1528,8 +1576,47 @@ declare("UserInterface", function () {
             $("#playerHealthBarArea").mouseover({self: this}, this.playerHealthBarAreaMouseOver);
             $("#playerHealthBarArea").mouseout({self: this}, this.playerHealthBarAreaMouseOut);
 
-            $("#expBarAreaMouseOver").mouseover({self: this}, this.expBarAreaMouseOver());
-            $("#expBarAreaMouseOver").mouseout({self: this}, this.expBarAreaMouseOut());
+            $("#expBarAreaMouseOver").mouseover({self: this}, this.expBarAreaMouseOver);
+            $("#expBarAreaMouseOver").mouseout({self: this}, this.expBarAreaMouseOut);
+
+            $("#tutorialContinueButton").mousedown({self: this}, this.tutorialContinueButtonClick);
+
+            $("#questsWindowButtonGlow").mouseover({self: this}, this.questsWindowButtonHover);
+            $("#questsWindowButtonGlow").mouseout({self: this}, this.questsWindowButtonReset);
+            $("#questsWindowButtonGlow").mousedown({self: this}, this.questsWindowButtonClick);
+            $("#questsWindowButtonGlow").mouseup({self: this}, this.questsWindowButtonHover);
+
+            $("#upgradesWindowButtonGlow").mouseover({self: this}, this.upgradesWindowButtonHover);
+            $("#upgradesWindowButtonGlow").mouseout({self: this}, this.upgradesWindowButtonReset);
+            $("#upgradesWindowButtonGlow").mousedown({self: this}, this.upgradesWindowButtonClick);
+            $("#upgradesWindowButtonGlow").mouseup({self: this}, this.upgradesWindowButtonHover);
+
+            $("#characterWindowButton").mouseover({self: this}, this.characterWindowButtonHover);
+            $("#characterWindowButton").mouseout({self: this}, this.characterWindowButtonReset);
+            $("#characterWindowButton").mousedown({self: this}, this.characterWindowButtonClick);
+            $("#characterWindowButton").mouseup({self: this}, this.characterWindowButtonHover);
+
+            $("#mercenariesWindowButton").mouseover({self: this}, this.mercenariesWindowButtonHover);
+            $("#mercenariesWindowButton").mouseout({self: this}, this.mercenariesWindowButtonReset);
+            $("#mercenariesWindowButton").mousedown({self: this}, this.mercenariesWindowButtonClick);
+            $("#mercenariesWindowButton").mouseup({self: this}, this.mercenariesWindowButtonHover);
+
+            $("#inventoryWindowButton").mouseover({self: this}, this.inventoryWindowButtonHover);
+            $("#inventoryWindowButton").mouseout({self: this}, this.inventoryWindowButtonReset);
+            $("#inventoryWindowButton").mousedown({self: this}, this.inventoryWindowButtonClick);
+            $("#inventoryWindowButton").mouseup({self: this}, this.inventoryWindowButtonHover);
+
+            // item slots in paper doll
+            for(var i = 1; i <= 10; i++) {
+                this.setupItemSlots(i);
+            }
+
+            // item slots in inventory
+            for(var i = 1; i <= 24; i++) {
+                this.setupInventorySlots(i);
+            }
+
+            $("#inventoryWindowSellAllButton").mousedown({self: this}, this.sellAllButtonClick);
 
             // Set the startup visibility of things
             $("#itemTooltip").hide();
@@ -1703,11 +1790,11 @@ declare("UserInterface", function () {
                 });
             }
 
-            $("#characterWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("characterWindow")); }});
-            $("#mercenariesWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("mercenariesWindow")); }});
-            $("#upgradesWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("upgradesWindow")); }});
-            $("#questsWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("questsWindow")); }});
-            $("#inventoryWindow").draggable({drag: function() { updateWindowDepths(document.getElementById("inventoryWindow")); }});
+            $("#characterWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("characterWindow")); }});
+            $("#mercenariesWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("mercenariesWindow")); }});
+            $("#upgradesWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("upgradesWindow")); }});
+            $("#questsWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("questsWindow")); }});
+            $("#inventoryWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("inventoryWindow")); }});
         }
     }
 

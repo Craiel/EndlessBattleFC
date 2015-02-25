@@ -217,6 +217,10 @@ declare("Static", function () {
         this.setRoot = function(value) {
             this.imageRoot = value + 'images/';
         };
+
+        this.getImagePath = function(fileName) {
+            return this.imageRoot + fileName;
+        };
     }
 
     return new Static();

@@ -10,6 +10,7 @@ declare("Game", function() {
     include('UpgradeManager');
     include('ParticleManager');
     include('MonsterCreator');
+    include('ItemCreator');
     include('NameGenerator');
     include('StatUpgradeManager');
     include('QuestManager');
@@ -282,7 +283,7 @@ declare("Game", function() {
                 questManager.updateKillCounts(this.monster.level);
 
                 // Get the loot and experience from the monster and reward it to the player
-                var loot = this.monster.getRandomLoot();
+                var loot = itemCreator.getRandomLoot(this.monster.level, this.monster.rarity, this.monster.goldWorth);
                 this.player.gainGold(loot.gold, true);
                 this.stats.goldFromMonsters += this.player.lastGoldGained;
                 this.player.gainExperience(this.monster.experienceWorth, true);

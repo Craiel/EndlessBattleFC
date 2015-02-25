@@ -24,6 +24,7 @@ declare("MonsterCreator", function () {
             result.level = level;
             result.rarity = rarity;
             result.health = this.calculateMonsterHealth(level, rarity);
+            result.maxHealth = result.health;
             result.damage = this.calculateMonsterDamage(level, rarity);
             result.goldWorth = this.calculateMonsterGoldWorth(level, rarity);
             result.experienceWorth = this.calculateMonsterExperienceWorth(level, rarity);

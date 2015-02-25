@@ -2,6 +2,7 @@ declare("TutorialManager", function () {
     include('Component');
     include('QuestManager');
     include('GameState');
+    include('Static');
 
     TutorialManager.prototype = component.create();
     TutorialManager.prototype.$super = parent;
@@ -162,7 +163,7 @@ declare("TutorialManager", function () {
                         $("#questsWindowButtonGlow").show();
                     }
                 case 6://
-                    if (this.quest1Complete) {
+                    if (gameState.quest1Complete) {
                         this.advanceTutorial();
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").show();
@@ -176,7 +177,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 7://
-                    if (this.inventoryOpened) {
+                    if (gameState.inventoryOpened) {
                         this.advanceTutorial();
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").css('left', '290px');
@@ -188,7 +189,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 8://
-                    if (this.equipmentOpened) {
+                    if (gameState.equipmentOpened) {
                         this.advanceTutorial();
                         questManager.addQuest(questManager.createQuest("A Helping Hand", "You've slain monsters, but if you really want a lot of gold you'll need to hire mercenaries to help you. Hire 5 Footmen to continue the tutorial.", static.QuestType.MERCENARIES, 0, 5, 10, 10, null));
                         $("#tutorialRightArrow").stop(true);
@@ -199,7 +200,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 9:
-                    if (this.quest2Complete) {
+                    if (gameState.quest2Complete) {
                         this.advanceTutorial();
                         questManager.addQuest(questManager.createQuest("Strengthening your Forces", "Purchasing those footmen is a good start, but they can get pricey. To negate this inflation you'll need to upgrade them. Hire a total of 10 Footmen and then buy the Footman Training upgrade.", static.QuestType.UPGRADE, 0, 0, 50, 50, null));
                         $("#tutorialRightArrow").stop(true);
@@ -212,7 +213,7 @@ declare("TutorialManager", function () {
                     }
                     break;
                 case 10:
-                    if (this.quest3Complete) {
+                    if (gameState.quest3Complete) {
                         this.advanceTutorial();
                         $("#tutorialRightArrow").stop(true);
                         $("#tutorialRightArrow").hide();

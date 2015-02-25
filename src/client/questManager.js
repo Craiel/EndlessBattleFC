@@ -2,6 +2,8 @@ declare("QuestManager", function () {
     include('Component');
     include('GameState');
     include('Quest');
+    include('Resources');
+    include('Static');
 
     QuestManager.prototype = component.create();
     QuestManager.prototype.$super = parent;
@@ -12,12 +14,11 @@ declare("QuestManager", function () {
 
         this.quests = new Array();
         this.selectedQuest = 0;
-        this.questsButtonGlowing = false;
 
         this.addQuest = function(quest) {
             this.quests.push(quest);
             game.displayAlert("New quest received!");
-            this.glowQuestsButton();
+            include('UserInterface').glowQuestsButton();
 
             // Create the quest entry in the quest window for this quest
             var newDiv = document.createElement('div');
@@ -67,14 +68,7 @@ declare("QuestManager", function () {
             this.questsButtonGlowing = false;
             $("#questsWindowButtonGlow").stop(true);
             $("#questsWindowButtonGlow").css('opacity', 0);
-            $("#questsWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 78px 195px');
-        }
-        this.glowQuestsButton = function() {
-            this.questsButtonGlowing = true;
-            $("#questsWindowButtonGlow").animate({opacity: '+=0.5'}, 400);
-            $("#questsWindowButtonGlow").animate({opacity: '-=0.5'}, 400, function () {
-                glowQuestsButton();
-            });
+            $("#questsWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 195px');
         }
 
         // Go through every quest and if it is a kill quest and the level required is equal to this one; increase the kill count
@@ -125,6 +119,7 @@ declare("QuestManager", function () {
         {
             var result = quest.create(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward);
             result.displayId = this.quests.length + 1;
+            result.init();
             return result;
         }
 

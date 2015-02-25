@@ -1,7 +1,6 @@
 declare("Monster", function () {
     include('BuffSet');
     include('Static');
-    include('ItemCreator');
     include('ParticleManager');
     include('GameState');
     include('Loot');
@@ -25,12 +24,6 @@ declare("Monster", function () {
 
         this.lastDamageTaken = 0;
         this.alive = true;
-
-        this.getRandomLoot = function() {
-            var item = itemCreator.createRandomItem(this.level, itemCreator.getRandomItemRarity(this.rarity));
-            var result = loot.create(this.goldWorth, item);
-            return result;
-        }
 
         this.takeDamage = function(damage, isCritical, displayParticle) {
             this.health -= damage;

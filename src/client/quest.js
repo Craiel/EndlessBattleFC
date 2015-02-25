@@ -3,13 +3,16 @@ declare("Quest", function () {
     include('MercenaryManager');
     include('UpgradeManager');
     include('GameState');
+    include('Static');
 
     Quest.prototype = component.create();
     Quest.prototype.$super = parent;
     Quest.prototype.constructor = Quest;
 
+    var nextQuestId = 0;
+
     function Quest(name, description, type, typeId, typeAmount, goldReward, expReward, buffReward) {
-        this.id = "Quest";
+        this.id = "Quest" + (nextQuestId++);
 
         this.name = name;
         this.description = description;

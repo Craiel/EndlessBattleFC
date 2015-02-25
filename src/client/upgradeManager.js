@@ -213,7 +213,7 @@ declare("UpgradeManager", function () {
                     var icon = document.createElement('div');
                     icon.id = "upgradeIcon" + this.upgradesAvailable;
                     icon.className = 'buyButtonIcon';
-                    icon.style.background = 'url("includes/images/bigIcons.png") ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
+                    icon.style.background = resources.getImageUrl(resources.ImageBigIcons) + ' ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
                     newDiv2.appendChild(icon);
 
                     // Create the name
@@ -402,7 +402,7 @@ declare("UpgradeManager", function () {
             this.upgradesButtonGlowing = false;
             $("#upgradesWindowButtonGlow").stop(true);
             $("#upgradesWindowButtonGlow").css('opacity', 0);
-            $("#upgradesWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 78px 0');
+            $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 0');
         }
         this.glowUpgradesButton = function() {
             this.upgradesButtonGlowing = true;
@@ -481,7 +481,7 @@ declare("UpgradeManager", function () {
                         // Create the icon
                         var icon = document.createElement('div');
                         icon.className = 'buyButtonIcon button';
-                        icon.style.background = 'url("includes/images/bigIcons.png") ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
+                        icon.style.background = resources.getImageUrl(resources.ImageBigIcons) + ' ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
                         newDiv2.appendChild(icon);
 
                         // Create the name

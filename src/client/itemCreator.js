@@ -7,6 +7,7 @@ declare("ItemCreator", function () {
     include('ItemBonuses');
     include('Item');
     include('UpgradeManager');
+    include('Loot');
 
     ItemCreator.prototype = component.create();
     ItemCreator.prototype.$super = parent;
@@ -14,6 +15,12 @@ declare("ItemCreator", function () {
 
     function ItemCreator() {
         this.id = "ItemCreator";
+
+        this.getRandomLoot = function(level, rarity, goldWorth) {
+            var item = this.createRandomItem(level, this.getRandomItemRarity(rarity));
+            var result = loot.create(goldWorth, item);
+            return result;
+        }
 
         this.getRandomItemRarity = function(monsterRarity) {
             var rand = Math.random();
@@ -215,7 +222,7 @@ declare("ItemCreator", function () {
             amount = suffixAmount;
             while (amount > 0) {
                 // Get the ID of the bonuses; randomly
-                randBonus = Math.floor(Math.random() * SUFFIX_AMOUNT);
+                randBonus = Math.floor(Math.random() * static.SUFFIX_AMOUNT);
 
                 // Add the bonus to the item bonuses
                 switch (randBonus) {

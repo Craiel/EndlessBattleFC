@@ -1,5 +1,6 @@
 declare("TooltipManager", function () {
     include('Component');
+    include('Static');
 
     TooltipManager.prototype = component.create();
     TooltipManager.prototype.$super = parent;
@@ -391,7 +392,7 @@ declare("TooltipManager", function () {
             $("#basicTooltip").show();
 
             // Set the tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
+            var rect = obj.currentTarget.getBoundingClientRect();
             $("#basicTooltip").css('top', rect.top - 70);
             var leftReduction = document.getElementById("basicTooltip").scrollWidth;
             $("#basicTooltip").css('left', (rect.left - leftReduction - 40));

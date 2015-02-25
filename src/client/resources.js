@@ -11,8 +11,6 @@ declare("Resources", function() {
         
         this.componentInit = this.init;
 
-
-        
         // ---------------------------------------------------------------------------
     	// component functions
     	// ---------------------------------------------------------------------------	
@@ -23,6 +21,16 @@ declare("Resources", function() {
             this.ImageAttackButtons = static.imageRoot + "attackButtons.png";
             this.ImageStoneButtons = static.imageRoot + "stoneButton1.png";
             this.ImageBattleLevelButton = static.imageRoot + "battleLevelButton.png";
+            this.ImageBuffIcons = static.imageRoot + "buffIcons.png";
+            this.ImageItemSheet3 = static.imageRoot + "itemSheet3.png";
+            this.ImageWindowButtons = static.imageRoot + "windowButtons.png";
+            this.ImageBigIcons = static.imageRoot + "bigIcons.png";
+            this.ImageBuyButtonBase = static.imageRoot + "buyButtonBase.png";
+            this.ImageCloseButton = static.imageRoot + "closeButton.png";
+        };
+
+        this.getImageUrl = function(imagePath) {
+            return 'url("' + imagePath + '")';
         };
     };
     
