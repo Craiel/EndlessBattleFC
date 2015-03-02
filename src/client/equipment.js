@@ -477,20 +477,9 @@ declare("Equipment", function () {
                 }
 
                 // Display the equipment in the window for all these slots
-                if (localStorage.version != null) {
-                    for (var x = 0; x < this.slots.length; x++) {
-                        if (this.slots[x] != null) {
-                            $(".equipItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                        }
-                    }
-                }
-                else {
-                    for (var x = 0; x < this.slots.length; x++) {
-                        if (this.slots[x] != null) {
-                            this.slots[x].iconSourceX = (this.slots[x].iconSourceX / 4) * 3.5;
-                            this.slots[x].iconSourceY = (this.slots[x].iconSourceY / 4) * 3.5;
-                            $(".equipItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                        }
+                for (var x = 0; x < this.slots.length; x++) {
+                    if (this.slots[x] != null) {
+                        $(".equipItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
                     }
                 }
             }

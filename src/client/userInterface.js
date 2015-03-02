@@ -10,6 +10,8 @@ declare("UserInterface", function () {
     include('UpgradeManager');
     include('Resources');
     include('TutorialManager');
+    include('Save');
+    include('SaveKeys');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -62,6 +64,20 @@ declare("UserInterface", function () {
 
             this.setupWindowState();
         };
+
+        this.componentUpdate = this.update;
+
+        this.update = function(gameTime) {
+            this.componentUpdate(gameTime);
+
+            if (game.inBattle) {
+                $("#enterBattleButton").hide();
+            } else {
+                $("#enterBattleButton").show();
+            }
+
+            $('#version').text("Version " + game[saveKeys.idnGameVersion]);
+        }
 
         // When one of the sell all checkboxes are clicked, update the player's auto sell preferance
         this.sellAllCheckboxClicked = function(checkbox, id) {
@@ -328,10 +344,10 @@ declare("UserInterface", function () {
         this.battleLevelDownButtonClick = function(obj) {
             obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
 
-            if (game.battleLevel != 1) {
+            if (game.idnGameBattleLevel != 1) {
                 game.decreaseBattleLevel();
                 $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
-                if (game.battleLevel == 1) {
+                if (game.idnGameBattleLevel == 1) {
                     obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
                 }
             }
@@ -741,7 +757,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Footman');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.FOOTMAN));
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.FOOTMAN));
             $("#otherTooltip").show();
 
             // Set the item tooltip's location
@@ -753,7 +769,7 @@ declare("UserInterface", function () {
 
         this.footmanBuyButtonMouseDown = function(obj) {
             $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(MercenaryType.FOOTMAN);
+            mercenaryManager.purchaseMercenary(static.MercenaryType.FOOTMAN);
         }
 
         this.footmanBuyButtonMouseOut = function(obj) {
@@ -767,7 +783,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Cleric');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.CLERIC).formatMoney() +
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.CLERIC).formatMoney() +
             '<br>Clerics increase your hp5 by ' + mercenaryManager.getClericHp5PercentBonus() + '%.');
             $("#otherTooltip").show();
 
@@ -780,7 +796,7 @@ declare("UserInterface", function () {
 
         this.clericBuyButtonMouseDown = function(obj) {
             $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(MercenaryType.CLERIC);
+            mercenaryManager.purchaseMercenary(static.MercenaryType.CLERIC);
         }
 
         this.clericBuyButtonMouseOut = function(obj) {
@@ -794,7 +810,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Commander');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.COMMANDER).formatMoney() +
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.COMMANDER).formatMoney() +
             '<br>Commanders increase your health by ' + mercenaryManager.getCommanderHealthPercentBonus() + '%.');
             $("#otherTooltip").show();
 
@@ -807,7 +823,7 @@ declare("UserInterface", function () {
 
         this.commanderBuyButtonMouseDown = function(obj) {
             $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(MercenaryType.COMMANDER);
+            mercenaryManager.purchaseMercenary(static.MercenaryType.COMMANDER);
         }
 
         this.commanderBuyButtonMouseOut = function(obj) {
@@ -821,7 +837,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Mage');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.MAGE).formatMoney() +
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.MAGE).formatMoney() +
             '<br>Mages increase your damage by ' + mercenaryManager.getMageDamagePercentBonus() + '%.');
             $("#otherTooltip").show();
 
@@ -834,7 +850,7 @@ declare("UserInterface", function () {
 
         this.mageBuyButtonMouseDown = function(obj) {
             $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(MercenaryType.MAGE);
+            mercenaryManager.purchaseMercenary(static.MercenaryType.MAGE);
         }
 
         this.mageBuyButtonMouseOut = function(obj) {
@@ -848,7 +864,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Assassin');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.ASSASSIN).formatMoney() +
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.ASSASSIN).formatMoney() +
             '<br>Assassins increase your evasion by ' + mercenaryManager.getAssassinEvasionPercentBonus() + '%.');
             $("#otherTooltip").show();
 
@@ -861,7 +877,7 @@ declare("UserInterface", function () {
 
         this.assassinBuyButtonMouseDown = function(obj) {
             $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(MercenaryType.ASSASSIN);
+            mercenaryManager.purchaseMercenary(static.MercenaryType.ASSASSIN);
         }
 
         this.assassinBuyButtonMouseOut = function(obj) {
@@ -875,7 +891,7 @@ declare("UserInterface", function () {
             $("#otherTooltipTitle").html('Warlock');
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(MercenaryType.WARLOCK).formatMoney() +
+            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.WARLOCK).formatMoney() +
             '<br>Warlocks increase your critical strike damage by ' + mercenaryManager.getWarlockCritDamageBonus() + '%.');
             $("#otherTooltip").show();
 
@@ -888,7 +904,7 @@ declare("UserInterface", function () {
 
         this.warlockBuyButtonMouseDown = function(obj) {
             $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(MercenaryType.WARLOCK);
+            mercenaryManager.purchaseMercenary(static.MercenaryType.WARLOCK);
         }
 
         this.warlockBuyButtonMouseOut = function(obj) {
@@ -1055,7 +1071,7 @@ declare("UserInterface", function () {
         this.rendUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(AbilityName.REND);
+            game.player.increaseAbilityPower(static.AbilityName.REND);
         }
 
         this.rendUpgradeButtonReset = function(obj) {
@@ -1094,7 +1110,7 @@ declare("UserInterface", function () {
         this.rejuvenatingStrikesUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(AbilityName.REJUVENATING_STRIKES);
+            game.player.increaseAbilityPower(static.AbilityName.REJUVENATING_STRIKES);
         }
 
         this.rejuvenatingStrikesUpgradeButtonReset = function(obj) {
@@ -1133,7 +1149,7 @@ declare("UserInterface", function () {
         this.iceBladeUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(AbilityName.ICE_BLADE);
+            game.player.increaseAbilityPower(static.AbilityName.ICE_BLADE);
         }
 
         this.iceBladeUpgradeButtonReset = function(obj) {
@@ -1174,7 +1190,7 @@ declare("UserInterface", function () {
         this.fireBladeUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(AbilityName.FIRE_BLADE);
+            game.player.increaseAbilityPower(static.AbilityName.FIRE_BLADE);
         }
 
         this.fireBladeUpgradeButtonReset = function(obj) {
@@ -1214,7 +1230,7 @@ declare("UserInterface", function () {
 
         this.bleedingIconMouseOver = function(obj) {
             $("#otherTooltipTitle").html("Bleeding");
-            $("#otherTooltipCooldown").html((game.monster.debuffs.bleedMaxDuration - game.monster.debuffs.bleedDuration) + ' rounds remaining');
+            $("#otherTooltipCooldown").html((game.monster.buffs.bleedMaxDuration - game.monster.buffs.bleedDuration) + ' rounds remaining');
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html('This monster is bleeding, causing damage at the end of every round');
             $("#otherTooltip").show();
@@ -1232,7 +1248,7 @@ declare("UserInterface", function () {
 
         this.burningIconMouseOver = function(obj) {
             $("#otherTooltipTitle").html("Burning");
-            $("#otherTooltipCooldown").html((game.monster.debuffs.burningMaxDuration - game.monster.debuffs.burningDuration) + ' rounds remaining');
+            $("#otherTooltipCooldown").html((game.monster.buffs.burningMaxDuration - game.monster.buffs.burningDuration) + ' rounds remaining');
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html('This monster is burning, causing damage at the end of every round');
             $("#otherTooltip").show();
@@ -1250,7 +1266,7 @@ declare("UserInterface", function () {
 
         this.chilledIconMouseOver = function(obj) {
             $("#otherTooltipTitle").html("Chilled");
-            $("#otherTooltipCooldown").html((game.monster.debuffs.chillMaxDuration - game.monster.debuffs.chillDuration) + ' rounds remaining');
+            $("#otherTooltipCooldown").html((game.monster.buffs.chillMaxDuration - game.monster.buffs.chillDuration) + ' rounds remaining');
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html('This monster is chilled, causing it to attack twice as slow');
             $("#otherTooltip").show();
@@ -1272,7 +1288,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases the damage you deal with basic attacks.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.hp5StatHover = function(obj) {
@@ -1281,7 +1297,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("The amount of health you regenerate over 5 seconds.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.armourStatHover = function(obj) {
@@ -1290,7 +1306,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.evasionStatHover = function(obj) {
@@ -1299,7 +1315,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases your chance to dodge a monster's attack.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.strengthStatHover = function(obj) {
@@ -1308,7 +1324,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases your Health by 5 and Damage by 1%.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.agilityStatHover = function(obj) {
@@ -1317,7 +1333,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases your Crit Damage by 0.2% and Evasion by 1%.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.staminaStatHover = function(obj) {
@@ -1326,7 +1342,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases your Hp5 by 1 and Armour by 1%.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.critChanceStatHover = function(obj) {
@@ -1335,7 +1351,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases your chance to get a critical strike.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.critDamageStatHover = function(obj) {
@@ -1344,7 +1360,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("The amount of damage your critical strikes will cause.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.itemRarityStatHover = function(obj) {
@@ -1353,7 +1369,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases the chance that rarer items will drop from monsters.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.goldGainStatHover = function(obj) {
@@ -1362,7 +1378,7 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases the gold gained from monsters and mercenaries.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.expGainStatHover = function(obj) {
@@ -1371,11 +1387,11 @@ declare("UserInterface", function () {
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Increases the experience earned from killing monsters.");
             $("#otherTooltip").show();
-            setTooltipLocation(obj);
+            obj.data.self.setTooltipLocation(obj);
         }
 
         this.setTooltipLocation = function(obj) {
-            var rect = $(this)[0].getBoundingClientRect();
+            var rect = obj.currentTarget.getBoundingClientRect();
             $("#otherTooltip").css('top', rect.top + 10);
             var leftReduction = document.getElementById("otherTooltip").scrollWidth;
             $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
@@ -1616,6 +1632,100 @@ declare("UserInterface", function () {
                 this.setupInventorySlots(i);
             }
 
+            $('#rendUpgradeButton').mouseover({self: this}, this.rendUpgradeButtonHover);
+            $('#rendUpgradeButton').mouseout({self: this}, this.rendUpgradeButtonReset);
+            $('#rendUpgradeButton').mousedown({self: this}, this.rendUpgradeButtonClick);
+            $('#rendUpgradeButton').mouseup({self: this}, this.rendUpgradeButtonReset);
+
+            $('#rejuvenatingStrikesUpgradeButton').mouseover({self: this}, this.rejuvenatingStrikesUpgradeButtonHover);
+            $('#rejuvenatingStrikesUpgradeButton').mouseout({self: this}, this.rejuvenatingStrikesUpgradeButtonReset);
+            $('#rejuvenatingStrikesUpgradeButton').mousedown({self: this}, this.rejuvenatingStrikesUpgradeButtonClick);
+            $('#rejuvenatingStrikesUpgradeButton').mouseup({self: this}, this.rejuvenatingStrikesUpgradeButtonReset);
+
+            $('#iceBladeUpgradeButton').mouseover({self: this}, this.iceBladeUpgradeButtonHover);
+            $('#iceBladeUpgradeButton').mouseout({self: this}, this.iceBladeUpgradeButtonReset);
+            $('#iceBladeUpgradeButton').mousedown({self: this}, this.iceBladeUpgradeButtonClick);
+            $('#iceBladeUpgradeButton').mouseup({self: this}, this.iceBladeUpgradeButtonReset);
+
+            $('#fireBladeUpgradeButton').mouseover({self: this}, this.fireBladeUpgradeButtonHover);
+            $('#fireBladeUpgradeButton').mouseout({self: this}, this.fireBladeUpgradeButtonReset);
+            $('#fireBladeUpgradeButton').mousedown({self: this}, this.fireBladeUpgradeButtonClick);
+            $('#fireBladeUpgradeButton').mouseup({self: this}, this.fireBladeUpgradeButtonReset);
+
+            $('#monsterBleedingIcon').mouseover({self: this}, this.bleedingIconMouseOver);
+            $('#monsterBleedingIcon').mouseout({self: this}, this.bleedingIconMouseOut);
+
+            $('#monsterBurningIcon').mouseover({self: this}, this.burningIconMouseOver);
+            $('#monsterBurningIcon').mouseout({self: this}, this.burningIconMouseOut);
+
+            $('#monsterChilledIcon').mouseover({self: this}, this.chilledIconMouseOver);
+            $('#monsterChilledIcon').mouseout({self: this}, this.chilledIconMouseOut);
+
+            $('#particleOptionsTitle').mousedown({self: this}, this.skullParticlesOptionClick );
+            $('#skullParticlesOption').mousedown({self: this}, this.skullParticlesOptionClick );
+            $('#goldParticlesOption').mousedown({self: this}, this.goldParticlesOptionClick );
+            $('#experienceParticlesOption').mousedown({self: this}, this.experienceParticlesOptionClick );
+            $('#playerDamageParticlesOption').mousedown({self: this}, this.playerDamageParticlesOptionClick );
+            $('#monsterDamageParticlesOption').mousedown({self: this}, this.monsterDamageParticlesOptionClick );
+            $('#playerHealthOption').mousedown({self: this}, this.playerHealthOptionClick );
+            $('#monsterHealthOption').mousedown({self: this}, this.monsterHealthOptionClick );
+            $('#expBarOption').mousedown({self: this}, this.expBarOptionClick );
+
+            $('#statHp5').mouseover({self: this}, this.hp5StatHover );
+            $('#statHp5').mouseout({self: this}, this.statTooltipReset );
+            $('#statDamageBonus').mouseover({self: this}, this.damageBonusStatHover );
+            $('#statDamageBonus').mouseout({self: this}, this.statTooltipReset );
+            $('#statArmour').mouseover({self: this}, this.armourStatHover );
+            $('#statArmour').mouseout({self: this}, this.statTooltipReset );
+            $('#statEvasion').mouseover({self: this}, this.evasionStatHover );
+            $('#statEvasion').mouseout({self: this}, this.statTooltipReset );
+            $('#statStrength').mouseover({self: this}, this.strengthStatHover );
+            $('#statStrength').mouseout({self: this}, this.statTooltipReset );
+            $('#statStamina').mouseover({self: this}, this.staminaStatHover );
+            $('#statStamina').mouseout({self: this}, this.statTooltipReset );
+            $('#statAgility').mouseover({self: this}, this.agilityStatHover );
+            $('#statAgility').mouseout({self: this}, this.statTooltipReset );
+            $('#statCritChance').mouseover({self: this}, this.critChanceStatHover );
+            $('#statCritChance').mouseout({self: this}, this.statTooltipReset );
+            $('#statCritDamage').mouseover({self: this}, this.critDamageStatHover );
+            $('#statCritDamage').mouseout({self: this}, this.statTooltipReset );
+            $('#statItemRarity').mouseover({self: this}, this.itemRarityStatHover );
+            $('#statItemRarity').mouseout({self: this}, this.statTooltipReset );
+            $('#statGoldGain').mouseover({self: this}, this.goldGainStatHover );
+            $('#statGoldGain').mouseout({self: this}, this.statTooltipReset );
+            $('#statExperienceGain').mouseover({self: this}, this.expGainStatHover );
+            $('#statExperienceGain').mouseout({self: this}, this.statTooltipReset );
+
+            $('#footmanBuyButton').mouseover({self: this}, this.footmanBuyButtonMouseOver );
+            $('#footmanBuyButton').mouseout({self: this}, this.footmanBuyButtonMouseOut );
+            $('#footmanBuyButton').mousedown({self: this}, this.footmanBuyButtonMouseDown );
+            $('#footmanBuyButton').mouseup({self: this}, this.footmanBuyButtonMouseOver );
+
+            $('#clericBuyButton').mouseover({self: this}, this.clericBuyButtonMouseOver );
+            $('#clericBuyButton').mouseout({self: this}, this.clericBuyButtonMouseOut );
+            $('#clericBuyButton').mousedown({self: this}, this.clericBuyButtonMouseDown );
+            $('#clericBuyButton').mouseup({self: this}, this.clericBuyButtonMouseOver );
+
+            $('#commanderBuyButton').mouseover({self: this}, this.commanderBuyButtonMouseOver );
+            $('#commanderBuyButton').mouseout({self: this}, this.commanderBuyButtonMouseOut );
+            $('#commanderBuyButton').mousedown({self: this}, this.commanderBuyButtonMouseDown );
+            $('#commanderBuyButton').mouseup({self: this}, this.commanderBuyButtonMouseOver );
+
+            $('#mageBuyButton').mouseover({self: this}, this.mageBuyButtonMouseOver );
+            $('#mageBuyButton').mouseout({self: this}, this.mageBuyButtonMouseOut );
+            $('#mageBuyButton').mousedown({self: this}, this.mageBuyButtonMouseDown );
+            $('#mageBuyButton').mouseup({self: this}, this.mageBuyButtonMouseOver );
+
+            $('#assassinBuyButton').mouseover({self: this}, this.assassinBuyButtonMouseOver );
+            $('#assassinBuyButton').mouseout({self: this}, this.assassinBuyButtonMouseOut );
+            $('#assassinBuyButton').mousedown({self: this}, this.assassinBuyButtonMouseDown );
+            $('#assassinBuyButton').mouseup({self: this}, this.assassinBuyButtonMouseOver );
+
+            $('#warlockBuyButton').mouseover({self: this}, this.warlockBuyButtonMouseOver );
+            $('#warlockBuyButton').mouseout({self: this}, this.warlockBuyButtonMouseOut );
+            $('#warlockBuyButton').mousedown({self: this}, this.warlockBuyButtonMouseDown );
+            $('#warlockBuyButton').mouseup({self: this}, this.warlockBuyButtonMouseOver );
+
             $("#inventoryWindowSellAllButton").mousedown({self: this}, this.sellAllButtonClick);
 
             // Set the startup visibility of things
@@ -1690,43 +1800,8 @@ declare("UserInterface", function () {
             for (var x = 1; x < 11; x++) {
                 $(".equipItem" + x).draggable({
                     // When an equip item is no longer being dragged
-                    stop: function (event, ui) {
-                        // Move the item to a different slot if it was dragged upon one
-                        var top = ui.offset.top;
-                        var left = ui.offset.left;
-
-                        // Check if the mouse is over a inventory slot
-                        var offset;
-                        var itemMoved = false;
-                        for (var y = 1; y < (game.inventory.maxSlots + 1); y++) {
-                            offset = $("#inventoryItem" + y).offset();
-                            // Check if the mouse is within the slot
-                            if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
-                                // If it is; move the item
-                                game.equipment.unequipItemToSlot(slotNumberSelected - 1, y - 1);
-                                itemMoved = true;
-                            }
-                        }
-
-                        // Check if the current slot is a trinket slot and the new slot is the other trinket slot
-                        if (!itemMoved && (slotNumberSelected == 8 || slotNumberSelected == 9)) {
-                            var otherSlot;
-                            if (slotNumberSelected == 9) {
-                                otherSlot = 8;
-                            }
-                            else {
-                                otherSlot = 9;
-                            }
-
-                            offset = $(".equipItem" + otherSlot).offset();
-                            // Check if the mouse is within the slot
-                            if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
-                                // If it is; swap the items
-                                game.equipment.swapTrinkets();
-                                itemMoved = true;
-                            }
-                        }
-                    },
+                    self: this,
+                    stop: this.onItemDragStop,
                     revert: true,
                     scroll: false,
                     revertDuration: 0,
@@ -1736,53 +1811,10 @@ declare("UserInterface", function () {
 
             // Make the inventory slots draggable
             for (var x = 1; x < (game.inventory.maxSlots + 1); x++) {
-                $("#inventoryItem" + x).draggable({
+                $("#inventoryItem" + x).data('self', this).draggable({
                     // When an inventory item is no longer being dragged
-                    stop: function (event, ui) {
-                        // Move the item to a different slot if it was dragged upon one
-                        var top = ui.offset.top;
-                        var left = ui.offset.left;
-
-                        // Check if the mouse is over a new inventory slot
-                        var offset;
-                        var itemMoved = false;
-                        for (var y = 1; y < (game.inventory.maxSlots + 1); y++) {
-                            // If this slot is not the one the item is already in
-                            if (y != slotNumberSelected) {
-                                offset = $("#inventoryItem" + y).offset();
-                                // Check if the mouse is within the slot
-                                if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
-                                    // If it is; move the item
-                                    game.inventory.swapItems(slotNumberSelected - 1, y - 1);
-                                    itemMoved = true;
-                                }
-                            }
-                        }
-
-                        // Check if the mouse is over a new equip slot
-                        if (!itemMoved) {
-                            for (var y = 1; y < 11; y++) {
-                                offset = $(".equipItem" + y).offset();
-                                // Check if the mouse is within the slot
-                                if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
-                                    // If it is; move the item
-                                    game.equipment.equipItemInSlot(game.inventory.slots[slotNumberSelected - 1], y - 1, slotNumberSelected - 1);
-                                    itemMoved = true;
-                                }
-                            }
-                        }
-
-                        // Check if the mouse is over the character icon area
-                        if (!itemMoved) {
-                            offset = $("#characterIconArea").offset();
-                            // Check if the mouse is within the area
-                            if (left >= offset.left && left < offset.left + 124 && mouseY >= top.top && mouseY < top.top + 204) {
-                                // If it is; move the item
-                                game.equipment.equipItem(game.inventory.slots[slotNumberSelected - 1], slotNumberSelected - 1);
-                                itemMoved = true;
-                            }
-                        }
-                    },
+                    self: this,
+                    stop: this.onInventoryDragStop,
                     revert: true,
                     scroll: false,
                     revertDuration: 0,
@@ -1790,11 +1822,98 @@ declare("UserInterface", function () {
                 });
             }
 
-            $("#characterWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("characterWindow")); }});
-            $("#mercenariesWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("mercenariesWindow")); }});
-            $("#upgradesWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("upgradesWindow")); }});
-            $("#questsWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("questsWindow")); }});
-            $("#inventoryWindow").draggable({drag: function() { this.updateWindowDepths(document.getElementById("inventoryWindow")); }});
+            // Todo: redo this part once we are rid of jquery ui
+            $("#characterWindow").draggable({self: this, drag: function() { include('UserInterface'); userInterface.updateWindowDepths(document.getElementById("characterWindow")); }});
+            $("#mercenariesWindow").draggable({self: this, drag: function() { include('UserInterface'); userInterface.updateWindowDepths(document.getElementById("mercenariesWindow")); } });
+            $("#upgradesWindow").draggable({self: this, drag: function() { include('UserInterface'); userInterface.updateWindowDepths(document.getElementById("upgradesWindow")); } });
+            $("#questsWindow").draggable({self: this, drag: function() { include('UserInterface'); userInterface.updateWindowDepths(document.getElementById("questsWindow")); } });
+            $("#inventoryWindow").draggable({self: this, drag: function() { include('UserInterface'); userInterface.updateWindowDepths(document.getElementById("inventoryWindow")); }});
+        }
+
+        this.onItemDragStop = function (event, ui) {
+            // Move the item to a different slot if it was dragged upon one
+            var top = ui.offset.top;
+            var left = ui.offset.left;
+
+            // Check if the mouse is over a inventory slot
+            var offset;
+            var itemMoved = false;
+            for (var y = 1; y < (game.inventory.maxSlots + 1); y++) {
+                offset = $("#inventoryItem" + y).offset();
+                // Check if the mouse is within the slot
+                if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                    // If it is; move the item
+                    game.equipment.unequipItemToSlot(slotNumberSelected - 1, y - 1);
+                    itemMoved = true;
+                }
+            }
+
+            // Check if the current slot is a trinket slot and the new slot is the other trinket slot
+            if (!itemMoved && (slotNumberSelected == 8 || slotNumberSelected == 9)) {
+                var otherSlot;
+                if (slotNumberSelected == 9) {
+                    otherSlot = 8;
+                }
+                else {
+                    otherSlot = 9;
+                }
+
+                offset = $(".equipItem" + otherSlot).offset();
+                // Check if the mouse is within the slot
+                if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                    // If it is; swap the items
+                    game.equipment.swapTrinkets();
+                    itemMoved = true;
+                }
+            }
+        }
+
+        this.onInventoryDragStop = function (event, ui) {
+            // Move the item to a different slot if it was dragged upon one
+            var top = ui.offset.top;
+            var left = ui.offset.left;
+
+            // Check if the mouse is over a new inventory slot
+            var offset;
+            var itemMoved = false;
+            for (var y = 1; y < (game.inventory.maxSlots + 1); y++) {
+                // If this slot is not the one the item is already in
+                if (y != slotNumberSelected) {
+                    offset = $("#inventoryItem" + y).offset();
+                    // Check if the mouse is within the slot
+                    if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                        // If it is; move the item
+                        game.inventory.swapItems(slotNumberSelected - 1, y - 1);
+                        itemMoved = true;
+                    }
+                }
+            }
+
+            // Check if the mouse is over a new equip slot
+            if (!itemMoved) {
+                for (var y = 1; y < 11; y++) {
+                    offset = $(".equipItem" + y).offset();
+                    // Check if the mouse is within the slot
+                    if (left >= offset.left && left < offset.left + 40 && top >= offset.top && top < offset.top + 40) {
+                        // If it is; move the item
+                        game.equipment.equipItemInSlot(game.inventory.slots[slotNumberSelected - 1], y - 1, slotNumberSelected - 1);
+                        itemMoved = true;
+                    }
+                }
+            }
+
+            // Check if the mouse is over the character icon area
+            if (!itemMoved) {
+                offset = $("#characterIconArea").offset();
+                // Check if the mouse is within the area
+                // Todo: This kinda sucks but no choice for now
+                include('UserInterface');
+                if (left >= offset.left && left < offset.left + 124 && userInterface.mouseY >= top.top && userInterface.mouseY < top.top + 204) {
+                    // If it is; move the item
+                    game.equipment.equipItem(game.inventory.slots[slotNumberSelected - 1], slotNumberSelected - 1);
+                    itemMoved = true;
+                }
+            }
         }
     }
 

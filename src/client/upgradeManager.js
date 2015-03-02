@@ -4,6 +4,7 @@ declare("UpgradeManager", function () {
     include('Upgrade');
     include('MonsterCreator');
     include('GameState');
+    include('Resources');
 
     UpgradeManager.prototype = component.create();
     UpgradeManager.prototype.$super = parent;
@@ -314,7 +315,7 @@ declare("UpgradeManager", function () {
                         break;
                     case static.UpgradeType.AUTO_SELL:
                         autoSellUpgradePurchased = true;
-                        this.autoSellUpgradesPurchased++;
+                        gameState.autoSellUpgradesPurchased++;
                         switch (upgrade.name) {
                             case "Vendor":
                                 $("#checkboxWhite").show();
@@ -404,11 +405,13 @@ declare("UpgradeManager", function () {
             $("#upgradesWindowButtonGlow").css('opacity', 0);
             $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 0');
         }
+
         this.glowUpgradesButton = function() {
             this.upgradesButtonGlowing = true;
             $("#upgradesWindowButtonGlow").animate({opacity: '+=0.5'}, 400);
             $("#upgradesWindowButtonGlow").animate({opacity: '-=0.5'}, 400, function () {
-                glowUpgradesButton();
+                include('UserInterface')
+                userInterface.glowUpgradesButton();
             });
         }
 

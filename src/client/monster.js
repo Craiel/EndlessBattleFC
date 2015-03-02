@@ -51,7 +51,7 @@ declare("Monster", function () {
         // Add a debuff to this monster of the specified type, damage and duration
         this.addDebuff = function(type, damage, duration) {
             switch (type) {
-                case DebuffType.BLEED:
+                case static.DebuffType.BLEED:
                     // If the monster is not currently bleeding then show the bleeding icon
                     if (this.buffs.bleeding == false) {
                         $("#monsterBleedingIcon").show();
@@ -86,7 +86,7 @@ declare("Monster", function () {
                     }
                     document.getElementById("monsterBleedingStacks").innerHTML = this.buffs.bleedStacks;
                     break;
-                case DebuffType.BURN:
+                case static.DebuffType.BURN:
                     // If the monster is not currently burning then show the burning icon
                     if (this.buffs.burning == false) {
                         $("#monsterBurningIcon").show();
@@ -124,7 +124,7 @@ declare("Monster", function () {
                     }
                     document.getElementById("monsterBurningStacks").innerHTML = this.buffs.burningStacks;
                     break;
-                case DebuffType.CHILL:
+                case static.DebuffType.CHILL:
                     // If the monster is not currently chilled then show the chilled icon
                     if (this.buffs.chilled == false) {
                         $("#monsterChilledIcon").show();

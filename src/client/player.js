@@ -9,6 +9,7 @@ declare("Player", function () {
     include('ParticleManager');
     include('StatUpgradeManager');
     include('GameState');
+    include('Resources');
 
     Player.prototype = component.create();
     Player.prototype.$super = parent;
@@ -167,16 +168,16 @@ declare("Player", function () {
         this.increaseAbilityPower = function(name) {
             // Increase the level for the ability
             switch (name) {
-                case AbilityName.REND:
+                case static.AbilityName.REND:
                     this.abilities.baseRendLevel++;
                     break;
-                case AbilityName.REJUVENATING_STRIKES:
+                case static.AbilityName.REJUVENATING_STRIKES:
                     this.abilities.baseRejuvenatingStrikesLevel++;
                     break;
-                case AbilityName.ICE_BLADE:
+                case static.AbilityName.ICE_BLADE:
                     this.abilities.baseIceBladeLevel++;
                     break;
-                case AbilityName.FIRE_BLADE:
+                case static.AbilityName.FIRE_BLADE:
                     this.abilities.baseFireBladeLevel++;
                     break;
             }
@@ -199,7 +200,7 @@ declare("Player", function () {
             // REND
             if (this.abilities.getRendLevel() > 0) {
                 // Apply the bleed effect to the monster
-                game.monster.addDebuff(DebuffType.BLEED, this.abilities.getRendDamage(0), this.abilities.rendDuration);
+                game.monster.addDebuff(static.DebuffType.BLEED, this.abilities.getRendDamage(0), this.abilities.rendDuration);
             }
             // REJUVENATING STRIKES
             if (this.abilities.getRejuvenatingStrikesLevel() > 0) {
@@ -219,7 +220,7 @@ declare("Player", function () {
                 game.monster.takeDamage(damage, criticalHappened, false);
 
                 // Apply the chill effect to the monster
-                game.monster.addDebuff(DebuffType.CHILL, 0, this.abilities.iceBladeChillDuration);
+                game.monster.addDebuff(static.DebuffType.CHILL, 0, this.abilities.iceBladeChillDuration);
             }
             // FIRE BLADE
             if (this.abilities.getFireBladeLevel() > 0) {
@@ -234,7 +235,7 @@ declare("Player", function () {
                 game.monster.takeDamage(damage, criticalHappened, false);
 
                 // Apply the burn effect to the monster
-                game.monster.addDebuff(DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
+                game.monster.addDebuff(static.DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
             }
         }
 
@@ -440,19 +441,19 @@ declare("Player", function () {
         // Add a debuff to the player of the specified type, damage and duration
         this.addDebuff = function(type, damage, duration) {
             switch (type) {
-                case DebuffType.BLEED:
+                case static.DebuffType.BLEED:
                     this.buffSet.bleeding = true;
                     this.buffSet.bleedDamage = damage;
                     this.buffSet.bleedDuration = 0;
                     this.buffSet.bleedMaxDuration = duration;
                     this.buffSet.bleedStacks++;
                     break;
-                case DebuffType.CHILL:
+                case static.DebuffType.CHILL:
                     this.buffSet.chilled = true;
                     this.buffSet.chillDuration = 0;
                     this.buffSet.chillMaxDuration = duration;
                     break;
-                case DebuffType.BURN:
+                case static.DebuffType.BURN:
                     this.buffSet.burning = true;
                     this.buffSet.burningDamage = damage;
                     this.buffSet.burningDuration = 0;
@@ -564,36 +565,6 @@ declare("Player", function () {
                 this.level = parseInt(localStorage.playerLevel);
                 this.health = parseFloat(localStorage.playerHealth);
 
-                if (localStorage.version == null) {
-                    this.chosenLevelUpBonuses.health = parseFloat(localStorage.playerBaseHealthStatBonus);
-                    this.chosenLevelUpBonuses.hp5 = parseFloat(localStorage.playerBaseHp5StatBonus);
-                    this.chosenLevelUpBonuses.damageBonus = parseFloat(localStorage.playerBaseDamageBonusStatBonus);
-                    this.chosenLevelUpBonuses.armour = parseFloat(localStorage.playerBaseArmourStatBonus);
-                    this.chosenLevelUpBonuses.strength = parseFloat(localStorage.playerBaseStrengthStatBonus);
-                    this.chosenLevelUpBonuses.stamina = parseFloat(localStorage.playerBaseStaminaStatBonus);
-                    this.chosenLevelUpBonuses.agility = parseFloat(localStorage.playerBaseAgilityStatBonus);
-                    this.chosenLevelUpBonuses.critChance = parseFloat(localStorage.playerBaseCritChanceStatBonus);
-                    this.chosenLevelUpBonuses.critDamage = parseFloat(localStorage.playerBaseCritDamageStatBonus);
-                    this.chosenLevelUpBonuses.itemRarity = parseFloat(localStorage.playerBaseItemRarityStatBonus);
-                    this.chosenLevelUpBonuses.goldGain = parseFloat(localStorage.playerBaseGoldGainStatBonus);
-                    this.chosenLevelUpBonuses.experienceGain = parseFloat(localStorage.playerBaseExperienceGainStatBonus);
-
-                    this.baseItemBonuses.health = parseInt(localStorage.playerBaseHealthFromItems);
-                    this.baseItemBonuses.hp5 = parseInt(localStorage.playerBaseHp5FromItems);
-                    this.baseItemBonuses.minDamage = parseInt(localStorage.playerBaseMinDamageFromItems);
-                    this.baseItemBonuses.maxDamage = parseInt(localStorage.playerBaseMaxDamageFromItems);
-                    this.baseItemBonuses.damageBonus = parseFloat(localStorage.playerBaseDamageBonusFromItems);
-                    this.baseItemBonuses.armour = parseFloat(localStorage.playerBaseArmourFromItems);
-                    this.baseItemBonuses.strength = parseInt(localStorage.playerBaseStrengthFromItems);
-                    this.baseItemBonuses.stamina = parseInt(localStorage.playerBaseStaminaFromItems);
-                    this.baseItemBonuses.agility = parseInt(localStorage.playerBaseAgilityFromItems);
-                    this.baseItemBonuses.critChance = parseFloat(localStorage.playerBaseCritChanceFromItems);
-                    this.baseItemBonuses.critDamage = parseFloat(localStorage.playerBaseCritDamageFromItems);
-                    this.baseItemBonuses.itemRarity = parseFloat(localStorage.playerBaseItemRarityFromItems);
-                    this.baseItemBonuses.goldGain = parseFloat(localStorage.playerBaseGoldGainFromItems);
-                    this.baseItemBonuses.experienceGain = parseFloat(localStorage.playerBaseExperienceGainFromItems);
-                }
-
                 // Add stats to the player for leveling up
                 for (var x = 1; x < this.level; x++) {
                     this.levelUpBonuses.health += Math.floor(this.baseLevelUpBonuses.health * (Math.pow(1.01, x)));
@@ -613,15 +584,13 @@ declare("Player", function () {
                 this.abilities.load();
                 this.changeAttack(localStorage.attackType);
 
-                if (localStorage.version != null) {
-                    this.chosenLevelUpBonuses = JSON.parse(localStorage.chosenLevelUpBonuses);
-                    this.baseItemBonuses = JSON.parse(localStorage.baseItemBonuses);
-                    this.changeAttack(localStorage.attackType);
-                    var newEffects = JSON.parse(localStorage.playerEffects);
-                    if (newEffects != null && newEffects.length > 0) {
-                        for (var x = 0; x < newEffects.length; x++) {
-                            this.effects.push(new Effect(newEffects[x].type, newEffects[x].chance, newEffects[x].value));
-                        }
+                this.chosenLevelUpBonuses = JSON.parse(localStorage.chosenLevelUpBonuses);
+                this.baseItemBonuses = JSON.parse(localStorage.baseItemBonuses);
+                this.changeAttack(localStorage.attackType);
+                var newEffects = JSON.parse(localStorage.playerEffects);
+                if (newEffects != null && newEffects.length > 0) {
+                    for (var x = 0; x < newEffects.length; x++) {
+                        this.effects.push(new Effect(newEffects[x].type, newEffects[x].chance, newEffects[x].value));
                     }
                 }
 

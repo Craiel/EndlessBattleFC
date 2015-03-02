@@ -136,20 +136,9 @@ declare("Inventory", function () {
                 }
 
                 // Go through all the slots and show their image in the inventory
-                if (localStorage.version != null) {
-                    for (var x = 0; x < this.slots.length; x++) {
-                        if (this.slots[x] != null) {
-                            $("#inventoryItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                        }
-                    }
-                }
-                else {
-                    for (var x = 0; x < this.slots.length; x++) {
-                        if (this.slots[x] != null) {
-                            this.slots[x].iconSourceX = (this.slots[x].iconSourceX / 4) * 3.5;
-                            this.slots[x].iconSourceY = (this.slots[x].iconSourceY / 4) * 3.5;
-                            $("#inventoryItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                        }
+                for (var x = 0; x < this.slots.length; x++) {
+                    if (this.slots[x] != null) {
+                        $("#inventoryItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
                     }
                 }
             }

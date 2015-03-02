@@ -18,6 +18,8 @@ declare("Game", function() {
     include('GameState');
     include('TutorialManager');
     include('Resources');
+    include('Save');
+    include('SaveKeys');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -25,10 +27,11 @@ declare("Game", function() {
 
     function Game() {
         this.id = "Game";
-        this.version = 0.3;
-        this.loading = false;
-        this.loadingTextInterval = 0;
-        this.loadInterval = 0;
+
+        save.register(this, saveKeys.idnGameVersion).asFloat().withDefault(0.3);
+        save.register(this, saveKeys.idnGameBattleLevel).asNumber().withDefault(1);
+        save.register(this, saveKeys.idnGameBattleDepth).asNumber().withDefault(1);
+
         this.oldDate = new Date();
 
         // Player
@@ -47,18 +50,16 @@ declare("Game", function() {
 
         // Combat
         this.inBattle = false;
-        this.battleLevel = 1;
-        this.battleDepth = 1;
 
         // Monsters
         this.monster = monsterCreator.createRandomMonster(
-            this.battleLevel,
-            monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+            this[saveKeys.idnGameBattleLevel],
+            monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
         this.displayMonsterHealth = false;
 
         // Saving/Loading
-        this.saveDelay = 10000;
-        this.saveTimeRemaining = this.saveDelay;
+        this.autoSaveDelay = 30000; // 30s default
+        this.autoSaveTime = 0;
 
         this.componentInit = this.init;
         this.init = function() {
@@ -66,7 +67,7 @@ declare("Game", function() {
 
             this.reset();
 
-            this.beginLoading();
+            gameState.init();
             eventManager.init();
             tutorialManager.init();
             mercenaryManager.init();
@@ -75,45 +76,14 @@ declare("Game", function() {
             questManager.init();
 
             this.load();
-
-            document.getElementById("version").innerHTML = "Version " + this.version;
-        }
-
-        this.beginLoading = function() {
-            this.loading = true;
-            this.loadingTextInterval = setInterval(function () {
-                this.loadingInterval++;
-                if (this.loadingInterval > 2) {
-                    this.loadingInterval = 0;
-                    $("#loadingText").html('Loading.');
-                }
-                else {
-                    $("#loadingText").append('.');
-                }
-            }, 500);
-        }
-
-        this.finishLoading = function() {
-            this.loading = false;
-            clearInterval(this.loadingTextInterval);
-            $("#loadingArea").hide();
-        }
-
-        this.allowBattle = function() {
-            enterBattleButtonReset();
-        }
-
-        this.disallowBattle = function() {
-            this.leaveBattle();
-            $("#enterBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 25px');
         }
 
         this.enterBattle = function() {
             this.inBattle = true;
             // Create a new monster
             this.monster = monsterCreator.createRandomMonster(
-                this.battleLevel,
-                monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                this[saveKeys.idnGameBattleLevel],
+                monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
 
             $("#enterBattleButton").css('background', 'url("' + resources.ImageStoneButtons + '") 0 50px');
             $("#leaveBattleButton").show();
@@ -299,8 +269,8 @@ declare("Game", function() {
 
                 // Create a new monster
                 this.monster = monsterCreator.createRandomMonster(
-                    this.battleLevel,
-                    monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                    this[saveKeys.idnGameBattleLevel],
+                    monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
 
                 // Hide the debuff icons for the monster
                 $("#monsterBleedingIcon").hide();
@@ -308,12 +278,12 @@ declare("Game", function() {
                 $("#monsterChilledIcon").hide();
 
                 // Increase the depth of the battle
-                this.battleDepth++;
+                this[saveKeys.idnGameBattleDepth]++;
             }
         }
 
         this.maxBattleLevelReached = function() {
-            if (this.player.level == this.battleLevel) {
+            if (this.player.level == this[saveKeys.idnGameBattleLevel]) {
                 return true;
             }
             else {
@@ -322,21 +292,21 @@ declare("Game", function() {
         }
 
         this.increaseBattleLevel = function() {
-            if (this.player.level > this.battleLevel) {
-                this.battleLevel++;
-                this.displayAlert("Battle Level " + game.battleLevel);
+            if (this.player.level > this[saveKeys.idnGameBattleLevel]) {
+                this[saveKeys.idnGameBattleLevel]++;
+                this.displayAlert("Battle Level " + this[saveKeys.idnGameBattleLevel]);
             }
         }
 
         this.decreaseBattleLevel = function decreaseBattleLevel() {
-            if (this.battleLevel != 1) {
-                this.battleLevel--;
-                this.displayAlert("Battle Level " + game.battleLevel);
+            if (this[saveKeys.idnGameBattleLevel] != 1) {
+                this[saveKeys.idnGameBattleLevel]--;
+                this.displayAlert("Battle Level " + this[saveKeys.idnGameBattleLevel]);
             }
         }
 
         this.resetBattle = function resetBattle() {
-            this.battleDepth = 1;
+            this[saveKeys.idnGameBattleDepth] = 1;
         }
 
         this.displayAlert = function displayAlert(text) {
@@ -474,66 +444,60 @@ declare("Game", function() {
             return powerShardsReward;
         }
 
-        this.save = function save() {
-            if (typeof (Storage) !== "undefined") {
-                localStorage.version = this.version;
-                tutorialManager.save();
-                this.inventory.save();
-                this.equipment.save();
-                this.player.save();
-                questManager.save();
-                mercenaryManager.save();
-                upgradeManager.save();
-                statUpgradeManager.save();
-                this.stats.save();
-                this.options.save();
+        this.save = function() {
+            save.save();
 
-                localStorage.battleLevel = this.battleLevel;
-            }
+            tutorialManager.save();
+            this.inventory.save();
+            this.equipment.save();
+            this.player.save();
+            questManager.save();
+            mercenaryManager.save();
+            upgradeManager.save();
+            statUpgradeManager.save();
+            this.stats.save();
+            this.options.save();
         }
 
-        this.load = function load() {
-            if (typeof (Storage) !== "undefined") {
-                tutorialManager.load();
-                this.inventory.load();
-                this.equipment.load();
-                this.player.load();
-                questManager.load();
-                mercenaryManager.load();
-                upgradeManager.load();
-                statUpgradeManager.load();
-                this.stats.load();
-                this.options.load();
+        this.load = function() {
+            save.load();
 
-                // If the player is higher than level 2 then show the battle level buttons
-                if (this.player.level > 1) {
-                    $("#battleLevelUpButton").show();
-                    $("#battleLevelDownButton").show();
-                }
+            tutorialManager.load();
+            this.inventory.load();
+            this.equipment.load();
+            this.player.load();
+            questManager.load();
+            mercenaryManager.load();
+            upgradeManager.load();
+            statUpgradeManager.load();
+            this.stats.load();
+            this.options.load();
 
-                if (localStorage.battleLevel != null) {
-                    this.battleLevel = parseInt(localStorage.battleLevel);
-                }
-                if (this.battleLevel > 1) {
-                    $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
-                }
-                if (this.maxBattleLevelReached()) {
-                    $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 25px');
-                }
-
-                this.monster = monsterCreator.createRandomMonster(
-                    this.battleLevel,
-                    monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+            // If the player is higher than level 2 then show the battle level buttons
+            if (this.player.level > 1) {
+                $("#battleLevelUpButton").show();
+                $("#battleLevelDownButton").show();
             }
+
+            /*if (localStorage.battleLevel != null) {
+                this.battleLevel = parseInt(localStorage.battleLevel);
+            }
+            if (this.battleLevel > 1) {
+                $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
+            }
+            if (this.maxBattleLevelReached()) {
+                $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 25px');
+            }
+
+            this.monster = monsterCreator.createRandomMonster(
+                this.battleLevel,
+                monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));*/
         }
 
         this.reset = function() {
-            localStorage.clear();
 
             // Combat
-            this.inBattle = false;
-            this.battleLevel = 1;
-            this.battleDepth = 1;
+            save.reset();
 
             // Upgrades
             // Remove all the upgrade purchase buttons
@@ -545,8 +509,8 @@ declare("Game", function() {
 
             // Monsters
             this.monster = monsterCreator.createRandomMonster(
-                this.battleLevel,
-                monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));
+                this[saveKeys.idnGameBattleLevel],
+                monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
 
             // Reset all the inventory and equipment slots
             for (var x = 0; x < this.inventory.slots.length; x++) {
@@ -621,7 +585,7 @@ declare("Game", function() {
                     $("#resurrectionBarArea").show();
                     this.player.resurrecting = true;
                     this.player.resurrectionTimeRemaining = this.player.resurrectionTimer;
-                    this.disallowBattle();
+                    this.leaveBattle();
                     this.player.health = 0;
                     mercenaryManager.addGpsReduction(static.deathGpsReductionAmount, static.deathGpsReductionDuration);
                 }
@@ -644,9 +608,6 @@ declare("Game", function() {
 
                         // Hide the resurrection bar
                         $("#resurrectionBarArea").hide();
-
-                        // Display the other elements
-                        this.allowBattle();
                     }
                 }
             }
@@ -656,6 +617,7 @@ declare("Game", function() {
                 this.player.regenerateHealth(gameTime.elapsed);
             }
 
+            gameState.update(gameTime)
             mercenaryManager.update(gameTime);
             this.inventory.update(gameTime);
             this.updateInterface(gameTime.elapsed);
@@ -667,14 +629,20 @@ declare("Game", function() {
             this.stats.update(gameTime);
             this.player.update(gameTime);
 
-            // Save the progress if enough time has passed
-            game.saveTimeRemaining -= gameTime.elapsed;
-            if (game.saveTimeRemaining <= 0) {
-                game.saveTimeRemaining = game.saveDelay;
-                game.save();
-            }
+            this.updateAutoSave(gameTime);
 
             oldDate = newDate;
+        }
+
+        this.updateAutoSave = function(gameTime) {
+            // Save the progress if enough time has passed
+            if(this.autoSaveTime <= 0) {
+                // Skip the first auto save cycle
+                this.autoSaveTime = gameTime.current;
+            } else if (gameTime.current > this.autoSaveTime + this.autoSaveDelay) {
+                this.save();
+                this.autoSaveTime = gameTime.current;
+            }
         }
 
         this.updateInterface = function(ms) {

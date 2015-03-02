@@ -28,10 +28,6 @@
     <div id="save" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: right">Save</div>
 </div>
 
-<div id="loadingArea" class="gameArea" style="display: none;">
-    <div id="loadingText" class="textShadow">Loading.</div>
-</div>
-
 <div id="gameArea" class="gameArea">
     <canvas id="particleCanvas" width="675" height="550" style="position: absolute; left: 0; right: 0; top: 0px; bottom: 0; margin: auto"></canvas>
 
@@ -171,16 +167,16 @@
         <div id="optionsWindowTitle" class="statsWindowLargeText navBarWindowTitle">Options</div>
         <div id="optionsWindowOptionsArea">
             <div id="particleOptionsTitle" class="optionsWindowOptionsTitle">Particles</div>
-            <div id="skullParticlesOption" class="optionsWindowOption" onmousedown="skullParticlesOptionClick()">Monster death particles: ON</div>
-            <div id="goldParticlesOption" class="optionsWindowOption" onmousedown="goldParticlesOptionClick()">Gold particles: ON</div>
-            <div id="experienceParticlesOption" class="optionsWindowOption" onmousedown="experienceParticlesOptionClick()">Experience particles: ON</div>
-            <div id="playerDamageParticlesOption" class="optionsWindowOption" onmousedown="playerDamageParticlesOptionClick()">Player damage particles: ON</div>
-            <div id="monsterDamageParticlesOption" class="optionsWindowOption" onmousedown="monsterDamageParticlesOptionClick()">Monster damage particles: ON</div>
+            <div id="skullParticlesOption" class="optionsWindowOption">Monster death particles: ON</div>
+            <div id="goldParticlesOption" class="optionsWindowOption">Gold particles: ON</div>
+            <div id="experienceParticlesOption" class="optionsWindowOption">Experience particles: ON</div>
+            <div id="playerDamageParticlesOption" class="optionsWindowOption">Player damage particles: ON</div>
+            <div id="monsterDamageParticlesOption" class="optionsWindowOption">Monster damage particles: ON</div>
 
             <div id="interfaceOptionsTitle" class="optionsWindowOptionsTitle">Interface</div>
-            <div id="playerHealthOption" class="optionsWindowOption" onmousedown="playerHealthOptionClick()">Always display player health: ON</div>
-            <div id="monsterHealthOption" class="optionsWindowOption" onmousedown="monsterHealthOptionClick()">Always display monster health: ON</div>
-            <div id="expBarOption" class="optionsWindowOption" onmousedown="expBarOptionClick()">Always display experience: ON</div>
+            <div id="playerHealthOption" class="optionsWindowOption">Always display player health: ON</div>
+            <div id="monsterHealthOption" class="optionsWindowOption">Always display monster health: ON</div>
+            <div id="expBarOption" class="optionsWindowOption">Always display experience: ON</div>
         </div>
         <div id="optionsWindowCloseButton" class="closeButton button"></div>
     </div>
@@ -239,13 +235,13 @@
 
         <div id="attackButton" class="button" style="display: none; background: url(images/attackButtons.png) 0px 0px;"></div>
 
-        <div id="monsterBleedingIcon" class="bleedingIcon" onmouseover="bleedingIconMouseOver(this)" onmouseout="bleedingIconMouseOut()" style="display: none;">
+        <div id="monsterBleedingIcon" class="bleedingIcon" style="display: none;">
             <div id="monsterBleedingStacks" class="stackAmount"></div>
         </div>
-        <div id="monsterBurningIcon" class="burningIcon" onmouseover="burningIconMouseOver(this)" onmouseout="burningIconMouseOut()" style="display: none;">
+        <div id="monsterBurningIcon" class="burningIcon" style="display: none;">
             <div id="monsterBurningStacks" class="stackAmount"></div>
         </div>
-        <div id="monsterChilledIcon" class="chilledIcon" onmouseover="chilledIconMouseOver(this)" onmouseout="chilledIconMouseOut()" style="display: none;"></div>
+        <div id="monsterChilledIcon" class="chilledIcon" style="display: none;"></div>
     </div>
 
     <div id="levelUpButton" class="stoneButton1 button" style="display: block;">Level Up</div>
@@ -413,7 +409,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="hp5" onmouseover="hp5StatHover(this)" onmouseout="statTooltipReset()">Hp5:</div>
+                        <div id="statHp5">Hp5:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="hp5Value">1089.00</div>
@@ -429,7 +425,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="damageBonus" onmouseover="damageBonusStatHover(this)" onmouseout="statTooltipReset()">Damage Bonus:</div>
+                        <div id="statDamageBonus" >Damage Bonus:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="damageBonusValue">565%</div>
@@ -437,7 +433,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="armour" onmouseover="armourStatHover(this)" onmouseout="statTooltipReset()">Armour:</div>
+                        <div id="statArmour" >Armour:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="armourValue">660.00 (56.33%)</div>
@@ -445,7 +441,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="evasion" onmouseover="evasionStatHover(this)" onmouseout="statTooltipReset()">Evasion:</div>
+                        <div id="statEvasion" >Evasion:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="evasionValue">0.00 (0.00%)</div>
@@ -453,7 +449,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="strength" onmouseover="strengthStatHover(this)" onmouseout="statTooltipReset()">Strength:</div>
+                        <div id="statStrength" >Strength:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="strengthValue">215</div>
@@ -461,7 +457,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="stamina" onmouseover="staminaStatHover(this)" onmouseout="statTooltipReset()">Stamina:</div>
+                        <div id="statStamina" >Stamina:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="staminaValue">130</div>
@@ -469,7 +465,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="agility" onmouseover="agilityStatHover(this)" onmouseout="statTooltipReset()">Agility:</div>
+                        <div id="statAgility" >Agility:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="agilityValue">126</div>
@@ -477,7 +473,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="critChance" onmouseover="critChanceStatHover(this)" onmouseout="statTooltipReset()">Crit Chance:</div>
+                        <div id="statCritChance" >Crit Chance:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="critChanceValue">77.00%</div>
@@ -485,7 +481,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="critDamage" onmouseover="critDamageStatHover(this)" onmouseout="statTooltipReset()">Crit Damage:</div>
+                        <div id="statCritDamage" >Crit Damage:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="critDamageValue">336.00%</div>
@@ -494,7 +490,7 @@
 
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="itemRarity" onmouseover="itemRarityStatHover(this)" onmouseout="statTooltipReset()">Item Rarity:</div>
+                        <div id="statItemRarity" >Item Rarity:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="itemRarityValue">206.00%</div>
@@ -502,7 +498,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="goldGain" onmouseover="goldGainStatHover(this)" onmouseout="statTooltipReset()">Gold Gain:</div>
+                        <div id="statGoldGain" >Gold Gain:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="goldGainValue">271.00%</div>
@@ -510,7 +506,7 @@
                 </div>
                 <div class="statContainer">
                     <div class="statNameContainer">
-                        <div id="experienceGain" onmouseover="expGainStatHover(this)" onmouseout="statTooltipReset()">Exp Gain:</div>
+                        <div id="statExperienceGain" >Exp Gain:</div>
                     </div>
                     <div class="statValueContainer">
                         <div id="experienceGainValue">205.20%</div>
@@ -523,7 +519,7 @@
         <div id="mercenariesWindow" style="display: none;" class="ui-draggable">
             <div id="mercenariesWindowTitle">Mercenaries</div>
             <div id="mercenariesBuyArea">
-                <div id="footmanBuyButton" class="buyButton" onmouseover="footmanBuyButtonMouseOver(this)" onmouseout="footmanBuyButtonMouseOut(this)" onmousedown="footmanBuyButtonMouseDown(this)" onmouseup="footmanBuyButtonMouseOver(this)">
+                <div id="footmanBuyButton" class="buyButton" ">
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="footmanIcon" class="buyButtonIcon"></div>
                         <div id="footmanName" class="mercenaryName">Footman</div>
@@ -532,7 +528,7 @@
                         <div id="footmenOwned" class="mercenaryAmount">71</div>
                     </div>
                 </div>
-                <div id="clericBuyButton" class="buyButton" onmouseover="clericBuyButtonMouseOver(this)" onmouseout="clericBuyButtonMouseOut(this)" onmousedown="clericBuyButtonMouseDown(this)" onmouseup="clericBuyButtonMouseOver(this)">
+                <div id="clericBuyButton" class="buyButton" >
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="clericIcon" class="buyButtonIcon"></div>
                         <div id="clericName" class="mercenaryName">Cleric</div>
@@ -541,7 +537,7 @@
                         <div id="clericsOwned" class="mercenaryAmount">50</div>
                     </div>
                 </div>
-                <div id="commanderBuyButton" class="buyButton" onmouseover="commanderBuyButtonMouseOver(this)" onmouseout="commanderBuyButtonMouseOut(this)" onmousedown="commanderBuyButtonMouseDown(this)" onmouseup="commanderBuyButtonMouseOver(this)">
+                <div id="commanderBuyButton" class="buyButton" >
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="commanderIcon" class="buyButtonIcon"></div>
                         <div id="commanderName" class="mercenaryName">Commander</div>
@@ -550,7 +546,7 @@
                         <div id="commandersOwned" class="mercenaryAmount">31</div>
                     </div>
                 </div>
-                <div id="mageBuyButton" class="buyButton" onmouseover="mageBuyButtonMouseOver(this)" onmouseout="mageBuyButtonMouseOut(this)" onmousedown="mageBuyButtonMouseDown(this)" onmouseup="mageBuyButtonMouseOver(this)">
+                <div id="mageBuyButton" class="buyButton" >
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="mageIcon" class="buyButtonIcon"></div>
                         <div id="mageName" class="mercenaryName">Mage</div>
@@ -559,7 +555,7 @@
                         <div id="magesOwned" class="mercenaryAmount">19</div>
                     </div>
                 </div>
-                <div id="assassinBuyButton" class="buyButton" onmouseover="assassinBuyButtonMouseOver(this)" onmouseout="assassinBuyButtonMouseOut(this)" onmousedown="assassinBuyButtonMouseDown(this)" onmouseup="assassinBuyButtonMouseOver(this)">
+                <div id="assassinBuyButton" class="buyButton">
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="assassinIcon" class="buyButtonIcon"></div>
                         <div id="assassinName" class="mercenaryName">Assassin</div>
@@ -568,7 +564,7 @@
                         <div id="assassinsOwned" class="mercenaryAmount">12</div>
                     </div>
                 </div>
-                <div id="warlockBuyButton" class="buyButton" onmouseover="warlockBuyButtonMouseOver(this)" onmouseout="warlockBuyButtonMouseOut(this)" onmousedown="warlockBuyButtonMouseDown(this)" onmouseup="warlockBuyButtonMouseOver(this)">
+                <div id="warlockBuyButton" class="buyButton">
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="warlockIcon" class="buyButtonIcon"></div>
                         <div id="warlockName" class="mercenaryName">Warlock</div>
@@ -637,25 +633,25 @@
         <div id="abilityUpgradesWindow" style="display: none;">
             <div id="abilityUpgradesWindowTitle">Ability Upgrade</div>
             <div id="abilityUpgradeButtonsContainer">
-                <div id="rendUpgradeButton" class="abilityUpgradeButton button" onmouseover="rendUpgradeButtonHover(this)" onmouseout="rendUpgradeButtonReset(this)" onmousedown="rendUpgradeButtonClick(this)" onmouseup="rendUpgradeButtonReset(this)">
+                <div id="rendUpgradeButton" class="abilityUpgradeButton button">
                     <div id="ablilityIcon1" class="buttonIcon rendIcon"></div>
                     <div id="abilityUpgradeNameContainer1" class="abilityUpgradeNameContainer">
                         <div id="rendUpgradeName" class="abilityUpgradeName">Rend</div>
                     </div>
                 </div>
-                <div id="rejuvenatingStrikesUpgradeButton" class="abilityUpgradeButton button" onmouseover="rejuvenatingStrikesUpgradeButtonHover(this)" onmouseout="rejuvenatingStrikesUpgradeButtonReset(this)" onmousedown="rejuvenatingStrikesUpgradeButtonClick(this)" onmouseup="rejuvenatingStrikesUpgradeButtonReset(this)" style="top: 46px">
+                <div id="rejuvenatingStrikesUpgradeButton" class="abilityUpgradeButton button" style="top: 46px">
                     <div id="ablilityIcon2" class="buttonIcon rejuvenatingStrikesIcon"></div>
                     <div id="abilityUpgradeNameContainer1" class="abilityUpgradeNameContainer">
                         <div id="rejuvenatingStrikesUpgradeName" class="abilityUpgradeName">Rejuvenating Strikes</div>
                     </div>
                 </div>
-                <div id="iceBladeUpgradeButton" class="abilityUpgradeButton button" onmouseover="iceBladeUpgradeButtonHover(this)" onmouseout="iceBladeUpgradeButtonReset(this)" onmousedown="iceBladeUpgradeButtonClick(this)" onmouseup="iceBladeUpgradeButtonReset(this)" style="top: 92px">
+                <div id="iceBladeUpgradeButton" class="abilityUpgradeButton button" style="top: 92px">
                     <div id="ablilityIcon3" class="buttonIcon iceBladeIcon"></div>
                     <div id="abilityUpgradeNameContainer1" class="abilityUpgradeNameContainer">
                         <div id="iceBladeUpgradeName" class="abilityUpgradeName">Ice Blade</div>
                     </div>
                 </div>
-                <div id="fireBladeUpgradeButton" class="abilityUpgradeButton button" onmouseover="fireBladeUpgradeButtonHover(this)" onmouseout="fireBladeUpgradeButtonReset(this)" onmousedown="fireBladeUpgradeButtonClick(this)" onmouseup="fireBladeUpgradeButtonReset(this)" style="top: 138px">
+                <div id="fireBladeUpgradeButton" class="abilityUpgradeButton button" style="top: 138px">
                     <div id="ablilityIcon4" class="buttonIcon fireBladeIcon"></div>
                     <div id="abilityUpgradeNameContainer1" class="abilityUpgradeNameContainer">
                         <div id="fireBladeUpgradeName" class="abilityUpgradeName">Fire Blade</div>

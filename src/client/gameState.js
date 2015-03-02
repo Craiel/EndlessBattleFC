@@ -1,6 +1,8 @@
 declare("GameState", function () {
     include('Component');
     include('Static');
+    include('Save');
+    include('SaveKeys');
 
     GameState.prototype = component.create();
     GameState.prototype.$super = parent;
@@ -8,6 +10,9 @@ declare("GameState", function () {
 
     function GameState() {
         this.id = "GameState";
+
+        //save.register(this, saveKeys.idnMercenariesPurchased).asJson().withDefault({static.MERCENARIES.})
+
 
         this.footmanUpgradesPurchased = 0;
         this.clericUpgradesPurchased = 0;
@@ -69,6 +74,16 @@ declare("GameState", function () {
         // Tutorial 11
         this.quest3Complete = false;
 
+        this.componentUpdate = this.update;
+
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) === false) {
+                return false;
+            }
+
+
+        }
+
         this.save = function() {
             localStorage.footmanUpgradesPurchased = this.footmanUpgradesPurchased;
             localStorage.clericUpgradesPurchased = this.clericUpgradesPurchased;
@@ -98,12 +113,7 @@ declare("GameState", function () {
             this.clericUpgradesPurchased = parseInt(localStorage.clericUpgradesPurchased);
             this.commanderUpgradesPurchased = parseInt(localStorage.commanderUpgradesPurchased);
             this.mageUpgradesPurchased = parseInt(localStorage.mageUpgradesPurchased);
-            if (localStorage.version == null) {
-                this.assassinUpgradesPurchased = parseInt(localStorage.thiefUpgradesPurchased);
-            }
-            else {
-                this.assassinUpgradesPurchased = parseInt(localStorage.assassinUpgradesPurchased);
-            }
+            this.assassinUpgradesPurchased = parseInt(localStorage.assassinUpgradesPurchased);
             this.warlockUpgradesPurchased = parseInt(localStorage.warlockUpgradesPurchased);
 
             if (localStorage.clericSpecialUpgradesPurchased != null) {
@@ -133,12 +143,7 @@ declare("GameState", function () {
             this.clericsOwned = parseInt(localStorage.clericsOwned);
             this.commandersOwned = parseInt(localStorage.commandersOwned);
             this.magesOwned = parseInt(localStorage.magesOwned);
-            if (localStorage.version == null) {
-                this.assassinsOwned = parseInt(localStorage.thiefsOwned);
-            }
-            else {
-                this.assassinsOwned = parseInt(localStorage.assassinsOwned);
-            }
+            this.assassinsOwned = parseInt(localStorage.assassinsOwned);
             this.warlocksOwned = parseInt(localStorage.warlocksOwned);
 
             this.footmanPrice = Math.floor(static.baseFootmanPrice * Math.pow(1.15, this.footmenOwned));

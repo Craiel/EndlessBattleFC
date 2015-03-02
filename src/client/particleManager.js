@@ -2,6 +2,7 @@ declare("ParticleManager", function () {
     include('Component');
     include('Static');
     include('Particle');
+    include('Resources');
 
     ParticleManager.prototype = component.create();
     ParticleManager.prototype.$super = parent;
@@ -13,11 +14,11 @@ declare("ParticleManager", function () {
         this.maxParticles = 50;
         this.particles = new Array();
         this.particleSources = new Object();
-        this.particleSources.SKULL = "images/skull.png";
-        this.particleSources.GOLD = "images/goldCoin.png";
-        this.particleSources.EXP_ORB = "images/expOrb.png";
-        this.particleSources.PLAYER_DAMAGE = "images/sword.png";
-        this.particleSources.PLAYER_CRITICAL = "images/sword.png";
+        this.particleSources.SKULL = resources.ImageIconSkull;
+        this.particleSources.GOLD = resources.ImageIconCoin;
+        this.particleSources.EXP_ORB = resources.ImageIconGlobe;
+        this.particleSources.PLAYER_DAMAGE = resources.ImageIconAttack;
+        this.particleSources.PLAYER_CRITICAL = resources.ImageIconAttack;
 
         this.componentInit = this.init;
         this.init = function() {

@@ -134,21 +134,6 @@ body:hover {
     background-image: linear-gradient(to bottom, #0062FF 0%, #82D1FF 100%);
 }
 
-#loadingArea {
-    z-index: 1000;
-}
-#loadingText {
-    font-size: 16px;
-    color: #fff;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 45%;
-    margin: auto;
-    text-align: center;
-    width: 75px;
-}
-
 .navBarWindow {
     background-image: url("images/updatesWindow2.png");
     position: absolute;

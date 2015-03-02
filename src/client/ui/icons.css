@@ -1,11 +1,11 @@
 .goldCoin {
-    background-image: url("images/goldCoin.png");
+    background-image: url("images/iconGoldCoin.png");
     background-size: 100%;
     position: absolute;
 }
 
 .expOrb {
-    background-image: url("images/expOrb.png");
+    background-image: url("images/iconXp.png");
     background-size: 100%;
     position: absolute;
 }

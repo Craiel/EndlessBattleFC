@@ -27,6 +27,10 @@ declare("Resources", function() {
             this.ImageBigIcons = static.imageRoot + "bigIcons.png";
             this.ImageBuyButtonBase = static.imageRoot + "buyButtonBase.png";
             this.ImageCloseButton = static.imageRoot + "closeButton.png";
+            this.ImageIconGlobe = static.imageRoot + "iconGlobe.png";
+            this.ImageIconCoin = static.imageRoot + "iconCoin.png";
+            this.ImageIconSkull = static.imageRoot + "iconSkull.png";
+            this.ImageIconAttack = static.imageRoot + "iconAttack.png";
         };
 
         this.getImageUrl = function(imagePath) {

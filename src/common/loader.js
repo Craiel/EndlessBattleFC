@@ -13,6 +13,10 @@ function Loader(nameSpace) {
     this.includeCounter = []
 
 	this.include = function(name, source) {
+		if(this.includeCounter === undefined) {
+			return;
+		}
+
         this.includeCounter.push(source + " -> " + name);
         if(this.includeCounter.length > this.includeThreshold) {
             this.includeCounter.shift();

@@ -8,6 +8,7 @@ declare("ItemCreator", function () {
     include('Item');
     include('UpgradeManager');
     include('Loot');
+    include('GameState');
 
     ItemCreator.prototype = component.create();
     ItemCreator.prototype.$super = parent;
@@ -516,7 +517,7 @@ declare("ItemCreator", function () {
             }
             itemBonusAddition.effects = effects;
 
-            sellValue *= Math.pow(2, upgradeManager.autoSellUpgradesPurchased);
+            sellValue *= Math.pow(2, gameState.autoSellUpgradesPurchased);
             var newItem = item.create(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonusAddition);
             return newItem;
         }

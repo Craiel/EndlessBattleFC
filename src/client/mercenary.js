@@ -1,4 +1,4 @@
-declare("BaseGame", function () {
+declare("Mercenary", function () {
 
     function Mercenary(type) {
         this.type = type;
