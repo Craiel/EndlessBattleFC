@@ -497,17 +497,6 @@ declare("Game", function() {
 
         this.updateInterface = function(ms) {
             // Update the player's health bar
-            var hpBar = $("#playerHealthBar");
-            hpBar.css('width', 198 * (this.player.getStat(data.StatDefinition.hp.id) / this.player.getStat(data.StatDefinition.hpMax.id)));
-            hpBar.css('height', '23');
-            document.getElementById("playerHealthBarText").innerHTML = this.player.getStat(data.StatDefinition.hp.id) + '/' + this.player.getStat(data.StatDefinition.hpMax.id);
-
-            // Update the player's exp bar
-            var expBar = $("#expBar");
-            expBar.css('width', 718 * (this.player.getStat(data.StatDefinition.xp.id) / this.player.experienceRequired));
-            expBar.css('height', '13');
-            document.getElementById("expBarText").innerHTML = this.player.getStat(data.StatDefinition.xp.id) + '/' + this.player.experienceRequired;
-
 
 
             // Update the gold and experience amounts

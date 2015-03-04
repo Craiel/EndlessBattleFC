@@ -109,7 +109,12 @@ declare("ProgressBar", function() {
         this._updateProgressDiv = function() {
             var mainBar = $('#' + this.id);
             var progressValue = (this.value / this.maxValue);
-            var progressWidth = Math.floor(progressValue * $('#' + this.id + 'MaxWidth').width());
+            var maxWidth = $('#' + this.id + 'MaxWidth').width();
+            var progressWidth = Math.floor(progressValue * maxWidth);
+            if(progressWidth > maxWidth) {
+                progressWidth = maxWidth;
+            }
+
             if(progressWidth < this.minWidth) {
                 mainBar.hide();
                 return;

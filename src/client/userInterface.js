@@ -40,6 +40,12 @@ declare("UserInterface", function () {
         this.statsWindowShown = false;
         this.optionsWindowShown = false;
 
+        this.playerArea = undefined;
+        this.playerName = undefined;
+        this.playerHealthBar = undefined;
+        this.experienceTitle = undefined;
+        this.experienceBar = undefined;
+
         this.systemArea = undefined;
         this.inventoryWindowButton = undefined;
         this.characterWindowButton = undefined;
@@ -48,7 +54,6 @@ declare("UserInterface", function () {
         this.upgradeWindowButton = undefined;
 
         this.battleArea = undefined;
-
         this.monsterName = undefined;
         this.monsterHealthBar = undefined;
         this.resurrectionBar = undefined;
@@ -68,7 +73,8 @@ declare("UserInterface", function () {
 
             $(document).mousemove({self: this}, this.handleMouseMove);
 
-            this.initSystemMenu();
+            this.initPlayerArea();
+            this.initSystemArea();
             this.initBattleArea();
 
             this.setupWindowState();
@@ -80,12 +86,11 @@ declare("UserInterface", function () {
                 return false;
             }
 
+            this.updatePlayerUI(gameTime);
             this.updateSystemMenu(gameTime);
             this.updateBattleUI(gameTime);
 
             $('#version').text("Version " + game[saveKeys.idnGameVersion]);
-
-
 
             return true;
         }
@@ -104,7 +109,38 @@ declare("UserInterface", function () {
         // ---------------------------------------------------------------------------
         // init functions
         // ---------------------------------------------------------------------------
-        this.initSystemMenu = function() {
+        this.initPlayerArea = function() {
+            this.playerArea = panel.create("playerArea");
+            this.playerArea.init();
+            this.playerArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
+                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
+                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+
+            this.playerName = element.create("playerName");
+            this.playerName.templateName = "textElement";
+            this.playerName.init(this.playerArea.getContentArea());
+            this.playerName.addClass("playerName");
+
+            this.playerHealthBar = progressBar.create("playerHealthBar");
+            this.playerHealthBar.init(this.playerArea.getContentArea());
+            this.playerHealthBar.animate = true;
+            this.playerHealthBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
+            this.playerHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+
+            this.experienceTitle = element.create("experienceTitle");
+            this.experienceTitle.templateName = "textElement";
+            this.experienceTitle.init(this.playerArea.getContentArea());
+            this.experienceTitle.addClass("experienceTitle");
+            this.experienceTitle.setText("XP: ");
+
+            this.experienceBar = progressBar.create("experienceBar");
+            this.experienceBar.init(this.playerArea.getContentArea());
+            this.experienceBar.animate = true;
+            this.experienceBar.setImages(resources.ImageProgressPurpleHorizontalLeft, resources.ImageProgressPurpleHorizontalMid, resources.ImageProgressPurpleHorizontalRight);
+            this.experienceBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        }
+
+        this.initSystemArea = function() {
             this.systemArea = panel.create("systemArea");
             this.systemArea.init();
             this.systemArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
@@ -198,6 +234,24 @@ declare("UserInterface", function () {
         // ---------------------------------------------------------------------------
         // update functions
         // ---------------------------------------------------------------------------
+        this.updatePlayerUI = function(gameTime) {
+            // No reason to hide them atm
+            this.playerHealthBar.show();
+            this.experienceBar.show();
+
+            this.playerName.setText(game.player.name);
+
+            var hp = game.player.getStat(data.StatDefinition.hp.id);
+            var hpMax = game.player.getStat(data.StatDefinition.hpMax.id);
+            this.playerHealthBar.setProgress(hp, hpMax);
+            this.playerHealthBar.setProgressText("{0} / {1}".format(hp, hpMax));
+
+            var requiredXP = game.player.experienceRequired;
+            var xp = game.player.getStat(data.StatDefinition.xp.id);
+            this.experienceBar.setProgress(xp, requiredXP);
+            this.experienceBar.setProgressText("{0} / {1}".format(xp, requiredXP));
+        }
+
         this.updateSystemMenu = function(gameTime) {
             $("#inventoryWindow").hide();
             $("#characterWindow").hide();
@@ -450,42 +504,6 @@ declare("UserInterface", function () {
             }
             else {
                 document.getElementById("monsterDamageParticlesOption").innerHTML = "Monster damage particles: OFF";
-            }
-        }
-
-        this.playerHealthOptionClick = function() {
-            game.options.alwaysDisplayPlayerHealth = !game.options.alwaysDisplayPlayerHealth;
-            if (game.options.alwaysDisplayPlayerHealth) {
-                document.getElementById("playerHealthOption").innerHTML = "Always display player health: ON";
-                $("#playerHealthBarText").show();
-            }
-            else {
-                document.getElementById("playerHealthOption").innerHTML = "Always display player health: OFF";
-                $("#playerHealthBarText").hide();
-            }
-        }
-
-        this.monsterHealthOptionClick = function() {
-            game.options.alwaysDisplayMonsterHealth = !game.options.alwaysDisplayMonsterHealth;
-            if (game.options.alwaysDisplayMonsterHealth) {
-                document.getElementById("monsterHealthOption").innerHTML = "Always display monster health: ON";
-                game.displayMonsterHealth = true;
-            }
-            else {
-                document.getElementById("monsterHealthOption").innerHTML = "Always display monster health: OFF";
-                game.displayMonsterHealth = false;
-            }
-        }
-
-        this.expBarOptionClick = function() {
-            game.options.alwaysDisplayExp = !game.options.alwaysDisplayExp;
-            if (game.options.alwaysDisplayExp) {
-                document.getElementById("expBarOption").innerHTML = "Always display experience: ON";
-                $("#expBarText").show();
-            }
-            else {
-                document.getElementById("expBarOption").innerHTML = "Always display experience: OFF";
-                $("#expBarText").hide();
             }
         }
 
@@ -1428,16 +1446,6 @@ declare("UserInterface", function () {
             }
         }
 
-        this.playerHealthBarAreaMouseOver = function() {
-            $("#playerHealthBarText").show();
-        }
-
-        this.playerHealthBarAreaMouseOut = function() {
-            if (!game.options.alwaysDisplayPlayerHealth) {
-                $("#playerHealthBarText").hide();
-            }
-        }
-
         this.bleedingIconMouseOver = function(obj) {
             $("#otherTooltipTitle").html("Bleeding");
             $("#otherTooltipCooldown").html((game.monster.buffs.bleedMaxDuration - game.monster.buffs.bleedDuration) + ' rounds remaining');
@@ -1780,12 +1788,6 @@ declare("UserInterface", function () {
             $("#attackButton").mousedown({self: this}, this.attackButtonClick);
             $("#attackButton").mouseout({self: this}, this.attackButtonReset);*/
 
-            $("#playerHealthBarArea").mouseover({self: this}, this.playerHealthBarAreaMouseOver);
-            $("#playerHealthBarArea").mouseout({self: this}, this.playerHealthBarAreaMouseOut);
-
-            $("#expBarAreaMouseOver").mouseover({self: this}, this.expBarAreaMouseOver);
-            $("#expBarAreaMouseOver").mouseout({self: this}, this.expBarAreaMouseOut);
-
             /*$("#inventoryWindowButton").mouseover({self: this}, this.inventoryWindowButtonHover);
             $("#inventoryWindowButton").mouseout({self: this}, this.inventoryWindowButtonReset);
             $("#inventoryWindowButton").mousedown({self: this}, this.inventoryWindowButtonClick);
@@ -1910,14 +1912,10 @@ declare("UserInterface", function () {
             $("#otherArea").hide();
             $("#inventoryArea").hide();
 
-            $("#playerHealthBarText").hide();
-
             $("#questTextArea").hide();
             $("#mapWindow").hide();
             $("#actionButtonsContainer").hide();
             $("#actionCooldownsArea").hide();
-            $("#expBarArea").hide();
-            $("#expBarText").hide();
             $("#statUpgradesWindow").hide();
             $("#abilityUpgradesWindow").hide();
             $(".bleedingIcon").hide();

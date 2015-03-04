@@ -1,0 +1,39 @@
+.playerAreaPanel {
+    width: 300px;
+    height: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.playerName {
+    position: absolute;
+    top: 10px;
+    left: 9px;
+    width: calc(100% - 18px);
+    height: 18px;
+}
+
+.playerHealthBarArea {
+    position: absolute;
+    top: 30px;
+    left: 9px;
+    width: calc(100% - 18px);
+    height: 18px;
+}
+
+.experienceTitle {
+    position: absolute;
+    top: 50px;
+    left: 9px;
+    width: calc(100% - 18px);
+    height: 18px;
+}
+
+.experienceBarArea {
+    position: absolute;
+    top: 70px;
+    left: 9px;
+    width: calc(100% - 18px);
+    height: 18px;
+}

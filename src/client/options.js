@@ -59,17 +59,9 @@ declare("Options", function () {
                     document.getElementById("monsterDamageParticlesOption").innerHTML = "Monster damage particles: OFF";
                 }
 
-                if (this.alwaysDisplayPlayerHealth) {
-                    document.getElementById("playerHealthOption").innerHTML = "Always display player health: ON";
-                    $("#playerHealthBarText").show();
-                }
                 if (this.alwaysDisplayMonsterHealth) {
                     document.getElementById("monsterHealthOption").innerHTML = "Always display monster health: ON";
                     game.displayMonsterHealth = true;
-                }
-                if (this.alwaysDisplayExp) {
-                    document.getElementById("expBarOption").innerHTML = "Always display experience: ON";
-                    $("#expBarText").show();
                 }
             }
         }

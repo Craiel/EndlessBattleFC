@@ -470,10 +470,11 @@ declare("UpgradeManager", function () {
                         newDiv.className = 'buyButton'
                         newDiv.style.top = this.nextTopPosition + 'px';
                         var id = this.upgradesAvailable;
-                        newDiv.onmouseover = upgradeButtonMouseOverFactory(newDiv, id);
+                        // TODO:
+                        /*newDiv.onmouseover = userupgradeButtonMouseOverFactory(newDiv, id);
                         newDiv.onmousedown = upgradeButtonMouseDownFactory(id);
                         newDiv.onmouseup = upgradeButtonMouseOverFactory(newDiv, id);
-                        newDiv.onmouseout = upgradeButtonMouseOutFactory(id)
+                        newDiv.onmouseout = upgradeButtonMouseOutFactory(id)*/
                         var container = document.getElementById("upgradesBuyArea");
                         container.appendChild(newDiv);
 

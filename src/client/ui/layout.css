@@ -311,14 +311,6 @@ body:hover {
     text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
-#playerHealthBarArea {
-    top: 10px; 
-    left: 10px; 
-}
-#playerHealthBar {
-    background: url("images/playerHealthBar.png");
-}
-
 /* --------------------------------------------- EVENTS AREA -------------------------------------------- */
 #eventsArea {
     position: absolute;
