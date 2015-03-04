@@ -1,0 +1,30 @@
+.progressBarStart {
+    width: 9px;
+    height: 100%;
+    float: left;
+}
+
+.progressBarArea {
+    padding-left: 9px;
+    padding-right: 9px;
+    width: auto;
+    height: 100%;
+}
+
+.progressBar {
+    width: auto;
+    height: 100%;
+}
+
+.progressBarEnd {
+    width: 9px;
+    height: 100%;
+    float: right;
+}
+
+.progressBarText {
+    font-family: 'Gentium Book Basic';
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+}

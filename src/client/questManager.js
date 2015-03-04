@@ -4,6 +4,7 @@ declare("QuestManager", function () {
     include('Quest');
     include('Resources');
     include('Static');
+    include('CoreUtils');
 
     QuestManager.prototype = component.create();
     QuestManager.prototype.$super = parent;
@@ -17,7 +18,7 @@ declare("QuestManager", function () {
 
         this.addQuest = function(quest) {
             this.quests.push(quest);
-            game.displayAlert("New quest received!");
+            //game.displayAlert("New quest received!");
             include('UserInterface').glowQuestsButton();
 
             // Create the quest entry in the quest window for this quest
@@ -48,27 +49,19 @@ declare("QuestManager", function () {
                 this.quests[x].update(gameTime);
                 if (this.quests[x].complete) {
                     this.quests[x].grantReward();
-                    // If this is a tutorial quest then update the tutorial
-                    if (this.quests[x].name == "A Beginner's Task") {
-                        gameState.quest1Complete = true;
-                    }
-                    else if (this.quests[x].name == "A Helping Hand") {
-                        gameState.quest2Complete = true;
-                    }
-                    else if (this.quests[x].name == "Strengthening your Forces") {
-                        gameState.quest3Complete = true;
-                    }
                     this.removeQuest(x);
                     game.stats.questsCompleted++;
                 }
             }
+
+            return true;
         }
 
         this.stopGlowingQuestsButton = function() {
             this.questsButtonGlowing = false;
             $("#questsWindowButtonGlow").stop(true);
             $("#questsWindowButtonGlow").css('opacity', 0);
-            $("#questsWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 195px');
+            $("#questsWindowButtonGlow").css('background', coreUtils.getImageUrl(resources.ImageWindowButtons) + ' 78px 195px');
         }
 
         // Go through every quest and if it is a kill quest and the level required is equal to this one; increase the kill count

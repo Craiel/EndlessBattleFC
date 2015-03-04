@@ -1,4 +1,5 @@
 declare("UserInterface", function () {
+    include('Assert');
     include('Component');
     include('Static');
     include('EventManager');
@@ -9,9 +10,16 @@ declare("UserInterface", function () {
     include('GameState');
     include('UpgradeManager');
     include('Resources');
-    include('TutorialManager');
     include('Save');
     include('SaveKeys');
+    include('Data');
+    include('CoreUtils');
+
+    // UI Components
+    include('Element');
+    include('ProgressBar');
+    include('Panel');
+    include('Button');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -23,21 +31,337 @@ declare("UserInterface", function () {
         this.mouseX = 0;
         this.mouseY = 0;
 
+        this.characterWindowShown = false;
+        this.mercenaryWindowShown = false;
+        this.upgradeWindowShown = false;
+        this.questWindowShown = false;
+        this.inventoryWindowShown = false;
+        this.updatesWindowShown = false;
+        this.statsWindowShown = false;
+        this.optionsWindowShown = false;
+
+        this.systemArea = undefined;
+        this.inventoryWindowButton = undefined;
+        this.characterWindowButton = undefined;
+        this.questWindowButton = undefined;
+        this.mercenaryWindowButton = undefined;
+        this.upgradeWindowButton = undefined;
+
+        this.battleArea = undefined;
+
+        this.monsterName = undefined;
+        this.monsterHealthBar = undefined;
+        this.resurrectionBar = undefined;
+        this.enterBattleButton = undefined;
+        this.leaveBattleButton = undefined;
+        this.battleLevelDownButton = undefined;
+        this.battleLevelUpButton = undefined;
+        this.levelUpButton = undefined;
+        this.attackButton = undefined;
+
+        // ---------------------------------------------------------------------------
+        // basic functions
+        // ---------------------------------------------------------------------------
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
+            $(document).mousemove({self: this}, this.handleMouseMove);
+
+            this.initSystemMenu();
+            this.initBattleArea();
+
+            this.setupWindowState();
+        };
+
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            this.updateSystemMenu(gameTime);
+            this.updateBattleUI(gameTime);
+
+            $('#version').text("Version " + game[saveKeys.idnGameVersion]);
+
+
+
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------
+        // event handlers
+        // ---------------------------------------------------------------------------
+        this.handleMouseMove = function(obj) {
+            var self = obj.data.self;
+
+            // event.clientX and event.clientY contain the mouse position
+            self.mouseX = obj.clientX;
+            self.mouseY = obj.clientY;
+        }
+
+        // ---------------------------------------------------------------------------
+        // init functions
+        // ---------------------------------------------------------------------------
+        this.initSystemMenu = function() {
+            this.systemArea = panel.create("systemArea");
+            this.systemArea.init();
+            this.systemArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
+                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
+                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+
+            this.inventoryWindowButton = button.create("inventoryWindowButton");
+            this.inventoryWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleInventoryWindow(); };
+            this.inventoryWindowButton.init(this.systemArea.getContentArea());
+            this.inventoryWindowButton.setImages(undefined, resources.ImageIconBackpackHover, resources.ImageIconBackpack);
+
+            this.characterWindowButton = button.create("characterWindowButton");
+            this.characterWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleCharacterWindow(); };
+            this.characterWindowButton.init(this.systemArea.getContentArea());
+            this.characterWindowButton.setImages(undefined, resources.ImageIconCharacterHover, resources.ImageIconCharacter);
+
+            this.questWindowButton = button.create("questWindowButton");
+            this.questWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleQuestWindow(); };
+            this.questWindowButton.init(this.systemArea.getContentArea());
+            this.questWindowButton.setImages(undefined, resources.ImageIconQuestHover, resources.ImageIconQuest);
+
+            this.mercenaryWindowButton = button.create("mercenaryWindowButton");
+            this.mercenaryWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleMercenaryWindow(); };
+            this.mercenaryWindowButton.init(this.systemArea.getContentArea());
+            this.mercenaryWindowButton.setImages(undefined, resources.ImageIconMercenaryHover, resources.ImageIconMercenary);
+
+            this.upgradeWindowButton = button.create("upgradeWindowButton");
+            this.upgradeWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleUpgradeWindow(); };
+            this.upgradeWindowButton.init(this.systemArea.getContentArea());
+            this.upgradeWindowButton.setImages(undefined, resources.ImageIconUpgradeHover, resources.ImageIconUpgrade);
+        }
+
+        this.initBattleArea = function() {
+            this.battleArea = panel.create("battleArea");
+            this.battleArea.init();
+            this.battleArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
+                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
+                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+
+            // Just a plain element for the monster name for now...
+            this.monsterName = element.create("monsterName");
+            this.monsterName.templateName = "textElement";
+            this.monsterName.init(this.battleArea.getContentArea());
+            this.monsterName.addClass("monsterName");
+
+            this.monsterHealthBar = progressBar.create("monsterHealthBar");
+            this.monsterHealthBar.init(this.battleArea.getContentArea());
+            this.monsterHealthBar.animate = true;
+            this.monsterHealthBar.setImages(resources.ImageProgressRedHorizontalLeft, resources.ImageProgressRedHorizontalMid, resources.ImageProgressRedHorizontalRight);
+            this.monsterHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+
+            this.resurrectionBar = progressBar.create("resurrectionBar");
+            this.resurrectionBar.init(this.battleArea.getContentArea());
+            this.resurrectionBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
+            this.resurrectionBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+
+            this.enterBattleButton = button.create('enterBattleButton');
+            this.enterBattleButton.callback = function(obj) { game.enterBattle(); };
+            this.enterBattleButton.init(this.battleArea.getContentArea());
+            this.enterBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+
+            this.leaveBattleButton = button.create('leaveBattleButton');
+            this.leaveBattleButton.callback = function(obj) { game.leaveBattle(); };
+            this.leaveBattleButton.init(this.battleArea.getContentArea());
+            this.leaveBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+
+            this.battleLevelDownButton = button.create('battleLevelDownButton');
+            this.battleLevelDownButton.callback = function(obj) { game.decreaseBattleLevel(); };
+            this.battleLevelDownButton.init(this.battleArea.getContentArea());
+            this.battleLevelDownButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+            this.battleLevelDownButton.setButtonText("-");
+
+            this.battleLevelUpButton = button.create('battleLevelUpButton');
+            this.battleLevelUpButton.callback = function(obj) { game.increaseBattleLevel(); };
+            this.battleLevelUpButton.init(this.battleArea.getContentArea());
+            this.battleLevelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+            this.battleLevelUpButton.setButtonText("+");
+
+            this.attackButton = button.create('attackButton');
+            this.attackButton.callback = function(obj) { game.attack(); };
+            this.attackButton.init(this.battleArea.getContentArea());
+            this.attackButton.setImages(resources.ImageButton, resources.ImageButtonHover, resources.ImageIconAttack);
+
+            this.levelUpButton = button.create('levelUpButton');
+            this.levelUpButton.callback = function(obj) { if(game.player.getSkillPoints() > 0) { include('UserInterface'); userInterface.displayLevelUpWindow(); }};
+            this.levelUpButton.init(this.battleArea.getContentArea());
+            this.levelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+            this.levelUpButton.setButtonText("Level Up");
+        }
+
+        // ---------------------------------------------------------------------------
+        // update functions
+        // ---------------------------------------------------------------------------
+        this.updateSystemMenu = function(gameTime) {
+            $("#inventoryWindow").hide();
+            $("#characterWindow").hide();
+            $("#mercenariesWindow").hide();
+            $("#upgradesWindow").hide();
+            $("#questsWindow").hide();
+            $("#optionsWindow").hide();
+            $("#statsWindow").hide();
+            $("#updatesWindow").hide();
+
+            if(this.inventoryWindowShown === true) {
+                $("#inventoryWindow").show();
+            }
+
+            if(this.characterWindowShown === true) {
+                $("#characterWindow").show();
+            }
+
+            if(this.mercenaryWindowShown === true) {
+                $("#mercenariesWindow").show();
+            }
+
+            if(this.upgradeWindowShown === true) {
+                $("#upgradesWindow").show();
+            }
+
+            if(this.questWindowShown === true) {
+                $("#questsWindow").show();
+            }
+
+            if(this.optionsWindowShown === true) {
+                $("#optionsWindow").show();
+            }
+
+            if(this.statsWindowShown === true) {
+                $("#statsWindow").show();
+            }
+
+            if(this.updatesWindowShown === true) {
+                $("#updatesWindow").show();
+            }
+        }
+
+        this.updateBattleUI = function(gameTime) {
+
+            // First we just hide everything, makes it easier
+            this.resurrectionBar.hide();
+            this.monsterName.hide();
+            this.monsterHealthBar.hide();
+            this.enterBattleButton.hide();
+            this.leaveBattleButton.hide();
+            this.battleLevelDownButton.hide();
+            this.battleLevelUpButton.hide();
+            this.levelUpButton.hide();
+            this.attackButton.hide();
+
+            // Check the alive state
+            var isAlive = game.player.alive === true;
+            if(isAlive === false) {
+                this.resurrectionBar.show();
+
+                var remainingResurrectionTime = game.player.getResurrectionTimeRemaining(gameTime);
+                var totalResurrectionTime = game.player.getResurrectionTime();
+                var progress = totalResurrectionTime - remainingResurrectionTime;
+                this.resurrectionBar.setProgress(progress, totalResurrectionTime);
+                this.resurrectionBar.setProgressText("Resurrecting in " + coreUtils.getDurationDisplay(remainingResurrectionTime));
+            }
+
+            if(isAlive === true && game.player.getSkillPoints() > 0) {
+                this.levelUpButton.show();
+            }
+
+            var currentLevel = game.getBattleLevel();
+            this.enterBattleButton.setButtonText("Enter Level {0}".format(currentLevel));
+            this.leaveBattleButton.setButtonText("Leave Level {0}".format(currentLevel));
+
+            if(game.inBattle === true) {
+                this.monsterName.show();
+                this.monsterHealthBar.show();
+                this.leaveBattleButton.show();
+                this.attackButton.show();
+
+                var monsterRarityColor = this.getMonsterRarityColor(game.monster.rarity);
+                this.monsterName.setText(game.monster.name);
+                this.monsterName.getMainElement().css({ 'color': monsterRarityColor });
+
+                // Update the monster health bar
+                this.monsterHealthBar.setProgress(game.monster.getStat(data.StatDefinition.hp.id), game.monster.maxHealth);
+                this.monsterHealthBar.setProgressText("{0} / {1}".format(game.monster.getStat(data.StatDefinition.hp.id), game.monster.maxHealth));
+
+            } else if(isAlive === true) {
+                this.enterBattleButton.show();
+                this.battleLevelDownButton.show();
+                this.battleLevelUpButton.show();
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------
+        // utility functions
+        // ---------------------------------------------------------------------------
+        this.getMonsterRarityColor = function(rarity) {
+            switch (rarity) {
+                case static.MonsterRarity.COMMON:
+                    return '#ffffff';
+                    break;
+                case static.MonsterRarity.RARE:
+                    return '#00fff0';
+                    break;
+                case static.MonsterRarity.ELITE:
+                    return '#ffd800';
+                    break;
+                case static.MonsterRarity.BOSS:
+                    return '#ff0000';
+                    break;
+            }
+        }
+
+        this.toggleInventoryWindow = function() {
+            this.inventoryWindowShown = !this.inventoryWindowShown;
+        }
+
+        this.toggleCharacterWindow = function() {
+            this.characterWindowShown = !this.characterWindowShown;
+        }
+
+        this.toggleMercenaryWindow = function() {
+            this.mercenaryWindowShown = !this.mercenaryWindowShown;
+        }
+
+        this.toggleUpgradeWindow = function() {
+            this.upgradeWindowShown = !this.upgradeWindowShown;
+        }
+
+        this.toggleQuestWindow = function() {
+            this.questWindowShown = !this.questWindowShown;
+        }
+
+        this.toggleUpdatesWindow = function() {
+            this.updatesWindowShown = !this.updatesWindowShown;
+        }
+
+        this.toggleOptionsWindow = function() {
+            this.optionsWindowShown = !this.optionsWindowShown;
+        }
+
+        this.toggleStatsWindow = function() {
+            this.statsWindowShown = !this.statsWindowShown;
+        }
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Unchecked code below
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
         this.itemTooltipButtonHovered = false;
         this.sellButtonActive = false;
 
         this.slotTypeSelected;
         this.slotNumberSelected;
 
-        this.characterWindowShown = false;
-        this.mercenariesWindowShown = false;
-        this.upgradesWindowShown = false;
-        this.questsWindowShown = false;
-        this.inventoryWindowShown = false;
-        this.inventoryWindowVisible = false;
-        this.updatesWindowShown = false;
-        this.statsWindowShown = false;
-        this.optionsWindowShown = false;
+
         this.questsButtonGlowing = false;
 
         this.fullReset = false;
@@ -45,38 +369,13 @@ declare("UserInterface", function () {
         this.WindowOrder = new Array("characterWindow", "mercenariesWindow", "upgradesWindow", "questsWindow", "inventoryWindow");
         this.WindowIds = new Array("characterWindow", "mercenariesWindow", "upgradesWindow", "questsWindow", "inventoryWindow");
 
-        this.componentInit = this.init;
-
-        this.init = function() {
-            this.componentInit();
-
-            // setup Mouse position tracking
-            (function () {
-                window.onmousemove = handleMouseMove;
-                function handleMouseMove(event) {
-                    include('UserInterface');
-                    event = event || window.event; // IE-ism
-                    // event.clientX and event.clientY contain the mouse position
-                    userInterface.mouseX = event.clientX;
-                    userInterface.mouseY = event.clientY;
-                }
-            })();
-
-            this.setupWindowState();
-        };
-
-        this.componentUpdate = this.update;
-
-        this.update = function(gameTime) {
-            this.componentUpdate(gameTime);
-
-            if (game.inBattle) {
-                $("#enterBattleButton").hide();
-            } else {
-                $("#enterBattleButton").show();
-            }
-
-            $('#version').text("Version " + game[saveKeys.idnGameVersion]);
+        this.displayAlert = function displayAlert(text) {
+            $("#battleLevelText").stop(true);
+            var battleLevelText = document.getElementById("battleLevelText");
+            battleLevelText.style.opacity = '1';
+            battleLevelText.style.top = '600px';
+            battleLevelText.innerHTML = text;
+            $("#battleLevelText").animate({top: '-=50px', opacity: '0'}, 1000);
         }
 
         // When one of the sell all checkboxes are clicked, update the player's auto sell preferance
@@ -211,7 +510,7 @@ declare("UserInterface", function () {
         this.upgradeButtonMouseOver = function(obj, buttonId) {
             var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
             var upgrade = upgradeManager.upgrades[upgradeId];
-            $("#upgradePurchaseButton" + buttonId).css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#upgradePurchaseButton" + buttonId).css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html(upgrade.name);
             $("#otherTooltipCooldown").html('');
@@ -229,18 +528,18 @@ declare("UserInterface", function () {
         this.upgradeButtonMouseDown = function(buttonId) {
             var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
             var upgrade = upgradeManager.upgrades[upgradeId];
-            $("#upgradePurchaseButton" + buttonId).css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#upgradePurchaseButton" + buttonId).css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             upgradeManager.purchaseUpgrade(buttonId - 1);
         }
 
         this.upgradeButtonMouseOut = function(buttonId) {
             var upgradeId = upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
             var upgrade = upgradeManager.upgrades[upgradeId];
-            $("#upgradePurchaseButton" + buttonId).css('background', resources.getImageUrl(resources.ImageBuyButtonBase)+' 0 0');
+            $("#upgradePurchaseButton" + buttonId).css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase)+' 0 0');
             $("#otherTooltip").hide();
         }
 
-        this.attackButtonHover = function(obj) {
+        /*this.attackButtonHover = function(obj) {
             // Display a different tooltip depending on the player's attack
             switch (game.player.attackType) {
                 case static.AttackType.BASIC_ATTACK:
@@ -306,7 +605,7 @@ declare("UserInterface", function () {
             if (game.inBattle == true) {
                 game.attack();
             }
-        }
+        }*/
 
         this.stoneButtonHover = function(obj) {
             $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 75px');
@@ -314,43 +613,6 @@ declare("UserInterface", function () {
 
         this.stoneButtonReset = function(obj) {
             $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
-        }
-
-        this.enterBattleButtonClick = function(obj) {
-            if (game.inBattle == false && game.player.alive) {
-                game.enterBattle();
-            }
-        }
-
-        this.leaveBattleButtonClick = function(obj) {
-            // If a battle is active
-            if (game.inBattle == true) {
-                game.leaveBattle();
-            }
-        }
-
-        this.battleLevelUpButtonClick = function(obj) {
-            obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
-
-            if (!game.maxBattleLevelReached()) {
-                game.increaseBattleLevel();
-                $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
-                if (game.maxBattleLevelReached()) {
-                    obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
-                }
-            }
-        }
-
-        this.battleLevelDownButtonClick = function(obj) {
-            obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 50px';
-
-            if (game.idnGameBattleLevel != 1) {
-                game.decreaseBattleLevel();
-                $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
-                if (game.idnGameBattleLevel == 1) {
-                    obj.currentTarget.style.background = 'url("' + resources.ImageBattleLevelButton + '") 0 25px';
-                }
-            }
         }
 
         this.equipItemHover = function(obj) {
@@ -530,172 +792,138 @@ declare("UserInterface", function () {
             }
         }
 
-        this.levelUpButtonClick = function() {
-            $("#levelUpButton").css("background", 'url("' + resources.ImageStoneButtons + '") 0 50px');
+        // Triggered when the Level Up button is clicked
+        this.displayLevelUpWindow = function displayLevelUpWindow() {
+            // Hide the Level Up button
+            $("#levelUpButton").hide();
 
-            game.displayLevelUpWindow();
-        }
-
-        this.characterWindowButtonHover = function(obj) {
-            $(".characterWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 78px');
-            tooltipManager.displayBasicTooltip(obj, "Character");
-        }
-
-        this.characterWindowButtonClick = function(obj) {
-            var self = obj.data.self;
-
-            if (self.characterWindowShown) {
-                $("#characterWindow").hide();
-                self.characterWindowShown = false;
+            // Display the stat upgrade window or the ability upgrade window depending on the level
+            // If the number is divisible by 5 then the player can choose an ability
+            if ((game.player.skillPointsSpent + 2) % 5 == 0) {
+                $("#abilityUpgradesWindow").show();
             }
+            // Else the player can upgrade a stat
             else {
-                self.updateWindowDepths(document.getElementById("characterWindow"));
-                $("#characterWindow").show();
-                self.characterWindowShown = true;
-                // Update the tutorial
-                gameState.equipmentOpened = true;
+                // Set the upgrade names on the window's buttons
+                var upgrades = statUpgradeManager.upgrades[0];
+                $("#statUpgradesWindow").show();
+
+                switch (upgrades[0].type) {
+                    case static.StatUpgradeType.DAMAGE:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Damage";
+                        break;
+                    case static.StatUpgradeType.STRENGTH:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Strength";
+                        break;
+                    case static.StatUpgradeType.AGILITY:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Agility";
+                        break;
+                    case static.StatUpgradeType.STAMINA:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Stamina";
+                        break;
+                    case static.StatUpgradeType.ARMOUR:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Armour";
+                        break;
+                    case static.StatUpgradeType.HP5:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Hp5";
+                        break;
+                    case static.StatUpgradeType.CRIT_DAMAGE:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Crit Damage";
+                        break;
+                    case static.StatUpgradeType.ITEM_RARITY:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Item Rarity";
+                        break;
+                    case static.StatUpgradeType.GOLD_GAIN:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Gold Gain";
+                        break;
+                    case static.StatUpgradeType.EXPERIENCE_GAIN:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Experience Gain";
+                        break;
+                }
+
+                switch (upgrades[1].type) {
+                    case static.StatUpgradeType.DAMAGE:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Damage";
+                        break;
+                    case static.StatUpgradeType.STRENGTH:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Strength";
+                        break;
+                    case static.StatUpgradeType.AGILITY:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Agility";
+                        break;
+                    case static.StatUpgradeType.STAMINA:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Stamina";
+                        break;
+                    case static.StatUpgradeType.ARMOUR:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Armour";
+                        break;
+                    case static.StatUpgradeType.HP5:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Hp5";
+                        break;
+                    case static.StatUpgradeType.CRIT_DAMAGE:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Crit Damage";
+                        break;
+                    case static.StatUpgradeType.ITEM_RARITY:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Item Rarity";
+                        break;
+                    case static.StatUpgradeType.GOLD_GAIN:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Gold Gain";
+                        break;
+                    case static.StatUpgradeType.EXPERIENCE_GAIN:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Experience Gain";
+                        break;
+                }
+
+                switch (upgrades[2].type) {
+                    case static.StatUpgradeType.DAMAGE:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Damage";
+                        break;
+                    case static.StatUpgradeType.STRENGTH:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Strength";
+                        break;
+                    case static.StatUpgradeType.AGILITY:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Agility";
+                        break;
+                    case static.StatUpgradeType.STAMINA:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Stamina";
+                        break;
+                    case static.StatUpgradeType.ARMOUR:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Armour";
+                        break;
+                    case static.StatUpgradeType.HP5:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Hp5";
+                        break;
+                    case static.StatUpgradeType.CRIT_DAMAGE:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Crit Damage";
+                        break;
+                    case static.StatUpgradeType.ITEM_RARITY:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Item Rarity";
+                        break;
+                    case static.StatUpgradeType.GOLD_GAIN:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Gold Gain";
+                        break;
+                    case static.StatUpgradeType.EXPERIENCE_GAIN:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Experience Gain";
+                        break;
+                }
             }
-        }
-
-        this.characterWindowButtonReset = function(obj) {
-            $(".characterWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 78px');
-            $("#basicTooltip").hide();
-        }
-
-        this.mercenariesWindowButtonHover = function(obj) {
-            $(".mercenariesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 117px');
-            tooltipManager.displayBasicTooltip(obj, "Mercenaries");
-        }
-
-        this.mercenariesWindowButtonClick = function(obj) {
-            var self = obj.data.self;
-
-            if (self.mercenariesWindowShown) {
-                $("#mercenariesWindow").hide();
-                self.mercenariesWindowShown = false;
-            }
-            else {
-                $("#mercenariesWindow").show();
-                self.mercenariesWindowShown = true;
-                self.updateWindowDepths(document.getElementById("mercenariesWindow"));
-            }
-
-            if (tutorialManager.currentTutorial == 9) {
-                tutorialManager.hideTutorial();
-            }
-        }
-
-        this.mercenariesWindowButtonReset = function(obj) {
-            $(".mercenariesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 117px');
-            $("#basicTooltip").hide();
-        }
-
-        this.upgradesWindowButtonHover = function(obj) {
-            $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 39px 0');
-            $(".upgradesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 0');
-            tooltipManager.displayBasicTooltip(obj, "Upgrades");
-        }
-
-        this.upgradesWindowButtonClick = function(obj) {
-            var self = obj.data.self;
-
-            upgradeManager.stopGlowingUpgradesButton();
-            if (this.upgradesWindowShown) {
-                $("#upgradesWindow").hide();
-                self.upgradesWindowShown = false;
-            }
-            else {
-                $("#upgradesWindow").show();
-                self.upgradesWindowShown = true;
-                self.updateWindowDepths(document.getElementById("upgradesWindow"));
-            }
-
-            if (tutorialManager.currentTutorial == 10) {
-                tutorialManager.hideTutorial();
-            }
-        }
-
-        this.upgradesWindowButtonReset = function(obj) {
-            $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 0');
-            $(".upgradesWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 0');
-            $("#basicTooltip").hide();
-        }
-
-        this.questsWindowButtonHover = function(obj) {
-            $("#questsWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 39px 195px');
-            $(".questsWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 195px');
-            tooltipManager.displayBasicTooltip(obj, "Quests");
-        }
-
-        this.questsWindowButtonClick = function(obj) {
-            var self = obj.data.self;
-
-            questManager.stopGlowingQuestsButton();
-            if (self.questsWindowShown) {
-                $("#questsWindow").hide();
-                self.questsWindowShown = false;
-            }
-            else {
-                $("#questsWindow").show();
-                self.questsWindowShown = true;
-                self.updateWindowDepths(document.getElementById("questsWindow"));
-            }
-
-            // Hide the tutorial if this is the first quests tutorial
-            if (tutorialManager.currentTutorial == 6) {
-                tutorialManager.hideTutorial();
-            }
-        }
-
-        this.questsWindowButtonReset = function(obj) {
-            $("#questsWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 195px');
-            $(".questsWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 195px');
-            $("#basicTooltip").hide();
         }
 
         this.questNameClick = function(id) {
             questManager.selectedQuest = id;
         }
 
-        this.inventoryWindowButtonHover = function(obj) {
-            $(".inventoryWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 117px 39px');
-            tooltipManager.displayBasicTooltip(obj, "Inventory");
-        }
-
-        this.inventoryWindowButtonClick = function(obj) {
-            var self = obj.data.self;
-
-            if (self.inventoryWindowShown) {
-                $("#inventoryWindow").hide();
-                self.inventoryWindowShown = false;
-            }
-            else {
-                self.updateWindowDepths(document.getElementById("inventoryWindow"));
-                $("#inventoryWindow").show();
-                self.inventoryWindowShown = true;
-                // Update the 6th tutorial
-                gameState.inventoryOpened = true;
-            }
-        }
-
-        this.inventoryWindowButtonReset = function(obj) {
-            $(".inventoryWindowButton").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 0px 39px');
-            $("#basicTooltip").hide();
-        }
-
         this.closeButtonHover = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageCloseButton) + ' 14px 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageCloseButton) + ' 14px 0';
         }
 
         this.closeButtonClick = function(obj) {
             switch (obj.id) {
                 case "statUpgradesWindowCloseButton":
                     $("#statUpgradesWindow").hide();
-                    $("#levelUpButton").show();
                     break;
                 case "abilityUpgradesWindowCloseButton":
                     $("#abilityUpgradesWindow").hide();
-                    $("#levelUpButton").show();
                     break;
                 case "updatesWindowCloseButton":
                     $("#updatesWindow").hide();
@@ -730,7 +958,7 @@ declare("UserInterface", function () {
         }
 
         this.closeButtonReset = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageCloseButton) + ' 0 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageCloseButton) + ' 0 0';
         }
 
         this.updateWindowDepths = function(obj) {
@@ -752,7 +980,7 @@ declare("UserInterface", function () {
         }
 
         this.footmanBuyButtonMouseOver = function(obj) {
-            $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#footmanBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Footman');
             $("#otherTooltipCooldown").html('');
@@ -768,17 +996,17 @@ declare("UserInterface", function () {
         }
 
         this.footmanBuyButtonMouseDown = function(obj) {
-            $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#footmanBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(static.MercenaryType.FOOTMAN);
         }
 
         this.footmanBuyButtonMouseOut = function(obj) {
-            $("#footmanBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
+            $("#footmanBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.clericBuyButtonMouseOver = function(obj) {
-            $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#clericBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Cleric');
             $("#otherTooltipCooldown").html('');
@@ -795,17 +1023,17 @@ declare("UserInterface", function () {
         }
 
         this.clericBuyButtonMouseDown = function(obj) {
-            $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#clericBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(static.MercenaryType.CLERIC);
         }
 
         this.clericBuyButtonMouseOut = function(obj) {
-            $("#clericBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
+            $("#clericBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.commanderBuyButtonMouseOver = function(obj) {
-            $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#commanderBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Commander');
             $("#otherTooltipCooldown").html('');
@@ -822,17 +1050,17 @@ declare("UserInterface", function () {
         }
 
         this.commanderBuyButtonMouseDown = function(obj) {
-            $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#commanderBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(static.MercenaryType.COMMANDER);
         }
 
         this.commanderBuyButtonMouseOut = function(obj) {
-            $("#commanderBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
+            $("#commanderBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.mageBuyButtonMouseOver = function(obj) {
-            $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#mageBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Mage');
             $("#otherTooltipCooldown").html('');
@@ -849,17 +1077,17 @@ declare("UserInterface", function () {
         }
 
         this.mageBuyButtonMouseDown = function(obj) {
-            $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#mageBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(static.MercenaryType.MAGE);
         }
 
         this.mageBuyButtonMouseOut = function(obj) {
-            $("#mageBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
+            $("#mageBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.assassinBuyButtonMouseOver = function(obj) {
-            $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#assassinBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Assassin');
             $("#otherTooltipCooldown").html('');
@@ -876,17 +1104,17 @@ declare("UserInterface", function () {
         }
 
         this.assassinBuyButtonMouseDown = function(obj) {
-            $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#assassinBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(static.MercenaryType.ASSASSIN);
         }
 
         this.assassinBuyButtonMouseOut = function(obj) {
-            $("#assassinBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
+            $("#assassinBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.warlockBuyButtonMouseOver = function(obj) {
-            $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
+            $("#warlockBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
 
             $("#otherTooltipTitle").html('Warlock');
             $("#otherTooltipCooldown").html('');
@@ -903,17 +1131,17 @@ declare("UserInterface", function () {
         }
 
         this.warlockBuyButtonMouseDown = function(obj) {
-            $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
+            $("#warlockBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
             mercenaryManager.purchaseMercenary(static.MercenaryType.WARLOCK);
         }
 
         this.warlockBuyButtonMouseOut = function(obj) {
-            $("#warlockBuyButton").css('background', resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
+            $("#warlockBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
             $("#otherTooltip").hide();
         }
 
         this.statUpgradeButtonHover = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
             var index = obj.data.index;
 
             // Show a tooltip describing what the hovered stat does if neccessary
@@ -978,7 +1206,7 @@ declare("UserInterface", function () {
 
         this.statUpgradeButtonClick = function(obj) {
             var index = obj.data.index;
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#statUpgradesWindow").hide();
 
             // Upgrade a player's stat depending on which button was clicked
@@ -1023,25 +1251,17 @@ declare("UserInterface", function () {
             statUpgradeManager.upgrades.splice(0, 1);
 
             // Alter the player's skill points
-            game.player.skillPoints--;
+            game.player.modifySkillPoints(-1);
             game.player.skillPointsSpent++;
-
-            // Show the Level Up button if there are still skill points remaining
-            if (game.player.skillPoints > 0) {
-                $("#levelUpButton").show();
-            }
-
-            // Update the 4th tutorial
-            gameState.statUpgradeChosen = true;
         }
 
         this.statUpgradeButtonReset = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#otherTooltip").hide();
         }
 
         this.rendUpgradeButtonHover = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Rend');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1069,18 +1289,18 @@ declare("UserInterface", function () {
         }
 
         this.rendUpgradeButtonClick = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(static.AbilityName.REND);
         }
 
         this.rendUpgradeButtonReset = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
         this.rejuvenatingStrikesUpgradeButtonHover = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Rejuvenating Strikes');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1108,18 +1328,18 @@ declare("UserInterface", function () {
         }
 
         this.rejuvenatingStrikesUpgradeButtonClick = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(static.AbilityName.REJUVENATING_STRIKES);
         }
 
         this.rejuvenatingStrikesUpgradeButtonReset = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
         this.iceBladeUpgradeButtonHover = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Ice Blade');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1147,18 +1367,18 @@ declare("UserInterface", function () {
         }
 
         this.iceBladeUpgradeButtonClick = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(static.AbilityName.ICE_BLADE);
         }
 
         this.iceBladeUpgradeButtonReset = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
         this.fireBladeUpgradeButtonHover = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
 
             $("#abilityUpgradeTooltipTitle").html('Fire Blade');
             $("#abilityUpgradeTooltipCooldown").html('');
@@ -1188,13 +1408,13 @@ declare("UserInterface", function () {
         }
 
         this.fireBladeUpgradeButtonClick = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
             game.player.increaseAbilityPower(static.AbilityName.FIRE_BLADE);
         }
 
         this.fireBladeUpgradeButtonReset = function(obj) {
-            obj.currentTarget.style.background = resources.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
+            obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0';
             $("#abilityUpgradeTooltip").hide();
         }
 
@@ -1215,16 +1435,6 @@ declare("UserInterface", function () {
         this.playerHealthBarAreaMouseOut = function() {
             if (!game.options.alwaysDisplayPlayerHealth) {
                 $("#playerHealthBarText").hide();
-            }
-        }
-
-        this.monsterHealthBarAreaMouseOver = function() {
-            game.displayMonsterHealth = true;
-        }
-
-        this.monsterHealthBarAreaMouseOut = function() {
-            if (!game.options.alwaysDisplayMonsterHealth) {
-                game.displayMonsterHealth = false;
             }
         }
 
@@ -1401,10 +1611,6 @@ declare("UserInterface", function () {
             $("#otherTooltip").hide();
         }
 
-        this.tutorialContinueButtonClick = function() {
-            tutorialManager.continueTutorial();
-        }
-
         this.updatesWindowButtonClick = function(obj) {
             var self = obj.data.self;
             if (!self.updatesWindowShown) {
@@ -1477,9 +1683,9 @@ declare("UserInterface", function () {
                 game.reset();
             }
             else {
-                var powerShards = game.player.powerShards + game.calculatePowerShardReward();
+                var powerShards = game.player.getStat(data.StatDefinition.shards.id) + game.calculatePowerShardReward();
                 game.reset();
-                game.player.powerShards = powerShards;
+                game.player.setStat(data.StatDefinition.shards.id, powerShards);
             }
         }
 
@@ -1498,13 +1704,6 @@ declare("UserInterface", function () {
 
         this.optionsWindowExitButtonClick = function() {
             $("#optionsWindow").hide();
-        }
-
-        this.setupStoneButton = function(name, clickCallback) {
-            $("#" + name).mouseover({self: this}, this.stoneButtonHover);
-            $("#" + name).mouseup({self: this}, this.stoneButtonHover);
-            $("#" + name).mousedown({self: this}, clickCallback);
-            $("#" + name).mouseout({self: this}, this.stoneButtonReset);
         }
 
         this.setupStatUpgradeButton = function(name, index) {
@@ -1549,11 +1748,6 @@ declare("UserInterface", function () {
 
         this.setupWindowState = function() {
             // Wire up all the events
-            this.setupStoneButton("enterBattleButton", this.enterBattleButtonClick);
-            this.setupStoneButton("leaveBattleButton", this.leaveBattleButtonClick);
-            this.setupStoneButton("battleLevelDownButton", this.battleLevelDownButtonClick);
-            this.setupStoneButton("battleLevelUpButton", this.battleLevelUpButtonClick);
-            this.setupStoneButton("levelUpButton", this.levelUpButtonClick);
 
             this.setupStatUpgradeButton("statUpgradeButton1", 1);
             this.setupStatUpgradeButton("statUpgradeButton2", 2);
@@ -1581,13 +1775,10 @@ declare("UserInterface", function () {
             $("#reset").mousedown({self: this}, this.resetButtonClick);
             $("#fullReset").mousedown({self: this}, this.fullResetButtonClick);
 
-            $("#attackButton").mouseover({self: this}, this.attackButtonHover);
+            /*$("#attackButton").mouseover({self: this}, this.attackButtonHover);
             $("#attackButton").mouseup({self: this}, this.attackButtonHover);
             $("#attackButton").mousedown({self: this}, this.attackButtonClick);
-            $("#attackButton").mouseout({self: this}, this.attackButtonReset);
-
-            $("#monsterHealthBarArea").mouseover({self: this}, this.monsterHealthBarAreaMouseOver);
-            $("#monsterHealthBarArea").mouseout({self: this}, this.monsterHealthBarAreaMouseOut);
+            $("#attackButton").mouseout({self: this}, this.attackButtonReset);*/
 
             $("#playerHealthBarArea").mouseover({self: this}, this.playerHealthBarAreaMouseOver);
             $("#playerHealthBarArea").mouseout({self: this}, this.playerHealthBarAreaMouseOut);
@@ -1595,32 +1786,10 @@ declare("UserInterface", function () {
             $("#expBarAreaMouseOver").mouseover({self: this}, this.expBarAreaMouseOver);
             $("#expBarAreaMouseOver").mouseout({self: this}, this.expBarAreaMouseOut);
 
-            $("#tutorialContinueButton").mousedown({self: this}, this.tutorialContinueButtonClick);
-
-            $("#questsWindowButtonGlow").mouseover({self: this}, this.questsWindowButtonHover);
-            $("#questsWindowButtonGlow").mouseout({self: this}, this.questsWindowButtonReset);
-            $("#questsWindowButtonGlow").mousedown({self: this}, this.questsWindowButtonClick);
-            $("#questsWindowButtonGlow").mouseup({self: this}, this.questsWindowButtonHover);
-
-            $("#upgradesWindowButtonGlow").mouseover({self: this}, this.upgradesWindowButtonHover);
-            $("#upgradesWindowButtonGlow").mouseout({self: this}, this.upgradesWindowButtonReset);
-            $("#upgradesWindowButtonGlow").mousedown({self: this}, this.upgradesWindowButtonClick);
-            $("#upgradesWindowButtonGlow").mouseup({self: this}, this.upgradesWindowButtonHover);
-
-            $("#characterWindowButton").mouseover({self: this}, this.characterWindowButtonHover);
-            $("#characterWindowButton").mouseout({self: this}, this.characterWindowButtonReset);
-            $("#characterWindowButton").mousedown({self: this}, this.characterWindowButtonClick);
-            $("#characterWindowButton").mouseup({self: this}, this.characterWindowButtonHover);
-
-            $("#mercenariesWindowButton").mouseover({self: this}, this.mercenariesWindowButtonHover);
-            $("#mercenariesWindowButton").mouseout({self: this}, this.mercenariesWindowButtonReset);
-            $("#mercenariesWindowButton").mousedown({self: this}, this.mercenariesWindowButtonClick);
-            $("#mercenariesWindowButton").mouseup({self: this}, this.mercenariesWindowButtonHover);
-
-            $("#inventoryWindowButton").mouseover({self: this}, this.inventoryWindowButtonHover);
+            /*$("#inventoryWindowButton").mouseover({self: this}, this.inventoryWindowButtonHover);
             $("#inventoryWindowButton").mouseout({self: this}, this.inventoryWindowButtonReset);
             $("#inventoryWindowButton").mousedown({self: this}, this.inventoryWindowButtonClick);
-            $("#inventoryWindowButton").mouseup({self: this}, this.inventoryWindowButtonHover);
+            $("#inventoryWindowButton").mouseup({self: this}, this.inventoryWindowButtonHover);*/
 
             // item slots in paper doll
             for(var i = 1; i <= 10; i++) {
@@ -1742,21 +1911,11 @@ declare("UserInterface", function () {
             $("#inventoryArea").hide();
 
             $("#playerHealthBarText").hide();
-            $("#resurrectionBarArea").hide();
-            $("#monsterHealthBarArea").hide();
-            $("#inventoryWindow").hide();
-            $("#characterWindow").hide();
-            $("#mercenariesWindow").hide();
-            $("#upgradesWindow").hide();
-            $("#questsWindow").hide();
+
             $("#questTextArea").hide();
             $("#mapWindow").hide();
-            $("#leaveBattleButton").hide();
-            $("#battleLevelDownButton").hide();
-            $("#battleLevelUpButton").hide();
             $("#actionButtonsContainer").hide();
             $("#actionCooldownsArea").hide();
-            $("#levelUpButton").hide();
             $("#expBarArea").hide();
             $("#expBarText").hide();
             $("#statUpgradesWindow").hide();
@@ -1765,7 +1924,6 @@ declare("UserInterface", function () {
             $(".burningIcon").hide();
             $(".chilledIcon").hide();
 
-            $("#attackButton").hide();
             $("#healButton").hide();
             $("#iceboltButton").hide();
             $("#fireballButton").hide();
@@ -1776,25 +1934,20 @@ declare("UserInterface", function () {
             $("#fireballCooldownContainer").hide();
             $("#powerStrikeCooldownContainer").hide();
 
-            $(".characterWindowButton").hide();
+            /*$(".characterWindowButton").hide();
             $(".mercenariesWindowButton").hide();
             $(".upgradesWindowButton").hide();
             $("#upgradesWindowButtonGlow").hide();
             $(".questsWindowButton").hide();
-            $("#questsWindowButtonGlow").hide();
-            $(".inventoryWindowButton").hide();
+            $("#questsWindowButtonGlow").hide();*/
             $("#checkboxWhite").hide();
             $("#checkboxGreen").hide();
             $("#checkboxBlue").hide();
             $("#checkboxPurple").hide();
             $("#checkboxOrange").hide();
 
-            $("#updatesWindow").hide();
-            $("#statsWindow").hide();
-            $("#optionsWindow").hide();
             $("#resetConfirmWindow").hide();
 
-            $(".craftingWindowButton").hide();
 
             // Make the equipment slots draggable
             for (var x = 1; x < 11; x++) {

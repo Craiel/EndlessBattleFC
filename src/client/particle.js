@@ -17,6 +17,8 @@ declare("Particle", function () {
             this.duration -= gameTime.elapsed;
             this.x += this.velocityX;
             this.y += this.velocityY;
+
+            return true;
         }
 
         this.draw = function() {

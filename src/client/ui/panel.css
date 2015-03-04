@@ -1,0 +1,54 @@
+.panelLT {
+    height: 9px;
+    width: 9px;
+    float: left;
+}
+
+.panelT {
+    padding-left: 9px;
+    padding-right: 9px;
+    height: 9px;
+    width: auto;
+}
+
+.panelRT {
+    height: 9px;
+    width: 9px;
+    float: right;
+}
+
+.panelL {
+    height: calc(100% - 18px);
+    width: 9px;
+    float: left;
+}
+
+.panelR {
+    height: calc(100% - 18px);
+    width: 9px;
+    float: right;
+}
+
+.panelLB {
+    height: 9px;
+    width: 9px;
+    float: left;
+}
+
+.panelB {
+    padding-left: 9px;
+    padding-right: 9px;
+    height: 9px;
+    width: auto;
+}
+
+.panelRB {
+    height: 9px;
+    width: 9px;
+    float: right;
+}
+
+.panelContent {
+    height: calc(100% - 18px);
+    width: auto;
+}

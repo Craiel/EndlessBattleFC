@@ -1,6 +1,7 @@
 .goldCoin {
     background-image: url("images/iconGoldCoin.png");
     background-size: 100%;
+    background-repeat: no-repeat;
     position: absolute;
 }
 
@@ -53,16 +54,6 @@
     top: 0px;
     width: 15px;
     height: 15px;
-}
-
-#attackButton {
-    background: url("images/attackButtons.png") 0 0;
-    position: absolute;
-    left: 195px;
-    top: 90px;
-    width: 50px;
-    height: 50px;
-    z-index: 1;
 }
 
 .buyButtonIcon {

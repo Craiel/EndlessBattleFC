@@ -77,6 +77,21 @@ declare("CoreUtils", function() {
         this.capitalizeString = function(value) {
         	return value.charAt(0).toUpperCase() + value.slice(1);
         };
+
+        // ---------------------------------------------------------------------------
+        // Html Utils
+        // ---------------------------------------------------------------------------
+        this.getImageUrl = function(imagePath) {
+            return 'url("' + imagePath + '")';
+        };
+
+        this.setBackgroundImage = function(target, resource, repeat) {
+            if(repeat === undefined) {
+                target.css({'background-image': this.getImageUrl(resource), 'background-size': '100% 100%', 'background-repeat': 'no-repeat'});
+            } else {
+                target.css({'background-image': this.getImageUrl(resource), 'background-repeat': repeat});
+            }
+        }
                 
         // ---------------------------------------------------------------------------
         // Time / Date functions

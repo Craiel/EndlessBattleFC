@@ -1,0 +1,48 @@
+.systemAreaPanel {
+    width: 300px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: auto;
+}
+
+.inventoryWindowButton {
+    position: absolute;
+    top: 9px;
+    left: 9px;
+    height: 32px;
+    width: 32px;
+}
+
+.characterWindowButton {
+    position: absolute;
+    top: 9px;
+    left: 42px;
+    height: 32px;
+    width: 32px;
+}
+
+.questWindowButton {
+    position: absolute;
+    top: 9px;
+    left: 75px;
+    height: 32px;
+    width: 32px;
+}
+
+.mercenaryWindowButton {
+    position: absolute;
+    top: 9px;
+    left: 108px;
+    height: 32px;
+    width: 32px;
+}
+
+.upgradeWindowButton {
+    position: absolute;
+    top: 9px;
+    left: 141px;
+    height: 32px;
+    width: 32px;
+}

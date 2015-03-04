@@ -55,33 +55,14 @@ declare("GameState", function () {
         this.gpsReductionTimeRemaining = 0;
         this.gpsReduction = 0;
 
-        // Tutorial 1
-        this.battleButtonClicked = false;
-        // Tutorial 2
-        this.monsterKilled = false;
-        // Tutorial 4
-        this.statUpgradeChosen = false;
-        // Tutorial 5
-        this.leaveBattleButtonPressed = false;
-        // Tutorial 7
-        this.quest1Complete = false;
-        // Tutorial 8
-        this.inventoryOpened = false;
-        // Tutorial 9
-        this.equipmentOpened = false;
-        // Tutorial 10
-        this.quest2Complete = false;
-        // Tutorial 11
-        this.quest3Complete = false;
-
         this.componentUpdate = this.update;
 
         this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) === false) {
+            if(this.componentUpdate(gameTime) !== true) {
                 return false;
             }
 
-
+            return true;
         }
 
         this.save = function() {

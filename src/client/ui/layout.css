@@ -1,5 +1,6 @@
 body {
-    background-image: url("images/background.png");
+    background-color: #3f7cb6;
+    /*background-image: url("images/background.png");*/
     font-family: 'Gentium Book Basic';
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -109,8 +110,6 @@ body:hover {
 
 /* ---------------------------------------------- GAME AREA ---------------------------------------------- */
 .gameArea {
-    border-radius: 5px;
-    border: 2px solid #000;
     z-index: 0;
     opacity: 1;
     left: 1%;
@@ -119,8 +118,8 @@ body:hover {
     top: 8.5%;
     bottom: 8.5%;
     right: 1%;
-    
-    background-image: -webkit-gradient(
+
+    /*background-image: -webkit-gradient(
 	    linear,
 	    left top,
 	    left bottom,
@@ -131,7 +130,7 @@ body:hover {
     background-image: -moz-linear-gradient(bottom, #0062FF 0%, #82D1FF 100%);
     background-image: -webkit-linear-gradient(bottom, #0062FF 0%, #82D1FF 100%);
     background-image: -ms-linear-gradient(bottom, #0062FF 0%, #82D1FF 100%);
-    background-image: linear-gradient(to bottom, #0062FF 0%, #82D1FF 100%);
+    background-image: linear-gradient(to bottom, #0062FF 0%, #82D1FF 100%);*/
 }
 
 .navBarWindow {
@@ -320,22 +319,6 @@ body:hover {
     background: url("images/playerHealthBar.png");
 }
 
-#resurrectionBarArea {
-    top: 0px; 
-    left: 120px; 
-}
-#resurrectionBar {
-    background: url("images/resurrectionBar.png");
-}
-
-#monsterHealthBarArea {
-    top: 0px; 
-    left: 120px; 
-}
-#monsterHealthBar {
-    background: url("images/monsterHealthBar.png");
-}
-
 /* --------------------------------------------- EVENTS AREA -------------------------------------------- */
 #eventsArea {
     position: absolute;
@@ -377,17 +360,7 @@ body:hover {
     height: 9px;
 }
 
-/* --------------------------------------------- BATTLE AREA -------------------------------------------- */
-#battleArea{
-    width: 440px;
-    height: 140px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-}
+
 
 /* ------------------------------------------ BATTLE LEVEL TEXT ----------------------------------------- */
 #battleLevelText {
@@ -453,13 +426,7 @@ body:hover {
 }
 
 /* --------------------------------------------------  -------------------------------------------------- */
-#levelUpButton {
-    bottom: 25px; 
-    left: 0px; 
-    right: 0px;
-    z-index: 1; 
-    margin: auto;
-}
+
 
 /* ----------------------------------------------- BUTTONS ---------------------------------------------- */
 .stoneButton1 {
@@ -475,90 +442,6 @@ body:hover {
     width: 200px;
     height: 25px;
     z-index: 2; 
-}
-
-.battleLevelButton {
-    font-family: 'Gentium Book Basic';
-    font-size: 40px; 
-    text-align: center;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    line-height: 25px;
-    
-    background: url("images/battleLevelButton.png") 0 0;
-    position: absolute; 
-    top: 30px; 
-    left: 90px; 
-    width: 25px;
-    height: 25px;
-    z-index: 1;
-}
-
-.characterWindowButton {
-    background: url("images/windowButtons.png") 0 78px;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    width: 39px;
-    height: 39px;
-}
-.mercenariesWindowButton {
-    background: url("images/windowButtons.png") 0 117px;
-    position: absolute;
-    right: 10px;
-    top: 50px;
-    width: 39px;
-    height: 39px;
-}
-.upgradesWindowButton {
-    background: url("images/windowButtons.png") 0 0;
-    position: absolute;
-    right: 10px;
-    top: 90px;
-    width: 39px;
-    height: 39px;
-}
-#upgradesWindowButtonGlow {
-    background: url("images/windowButtons.png") 78px 0;
-    position: absolute;
-    right: 10px;
-    top: 90px;
-    width: 39px;
-    height: 39px;
-    opacity: 0;
-}
-.questsWindowButton {
-    background: url("images/windowButtons.png") 0 195px;
-    position: absolute;
-    right: 10px;
-    top: 130px;
-    width: 39px;
-    height: 39px;
-}
-#questsWindowButtonGlow {
-    background: url("images/windowButtons.png") 78px 195px;
-    position: absolute;
-    right: 10px;
-    top: 130px;
-    width: 39px;
-    height: 39px;
-    opacity: 0;
-}
-.craftingWindowButton {
-    background: url("images/windowButtons.png") 0 156px;
-    position: absolute;
-    right: 10px;
-    top: 170px;
-    width: 39px;
-    height: 39px;
-}
-.inventoryWindowButton {
-    background: url("images/windowButtons.png") 0 39px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: 39px;
-    height: 39px;
 }
 
 /* ----------------------------------------------- WINDOWS ---------------------------------------------- */
@@ -1039,63 +922,6 @@ windowArea {
     text-align: left;
     color: #fff;
     font-size: 16px;
-}
-
-#tutorialArea {
-    position: absolute;
-    width: 415px;
-    height: 190px;
-}
-#tutorialWindow {
-    background: url("images/tutorialWindow.png");
-    position: absolute;
-    width: 285px;
-    height: 190px;
-}
-#tutorialTitle {
-    font-size: 20px;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 279px;
-    height: 22px;
-    line-height: 22px;
-    text-align: center;
-}
-#tutorialDescription {
-    font-size: 16px;
-    color: #fff; 
-    position: absolute;
-    left: 4px;
-    top: 29px;
-    width: 277px;
-    height: 134px;
-}
-#tutorialContinueButton {
-    font-size: 20px;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    position: absolute;
-    right: 6px;
-    top: 165px;
-    line-height: 22px;
-}
-.tutorialRightArrow {
-    background: url("images/tutorialRightArrow.png");
-    position: absolute;
-    width: 100px;
-    height: 57px;
-}
-
-#button:hover
-{
-    cursor: pointer;
-}
-.button:hover
-{
-    cursor: pointer;
 }
 
 #equipItem:hover {

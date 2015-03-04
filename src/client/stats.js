@@ -2,6 +2,7 @@ declare("Stats", function () {
     include('Component');
     include('MercenaryManager');
     include('UpgradeManager');
+    include('Data');
 
     Stats.prototype = component.create();
     Stats.prototype.$super = parent;
@@ -36,10 +37,6 @@ declare("Stats", function () {
             return upgradeManager.upgradesPurchased;
         }
 
-        this.getExperience = function() {
-            return game.player.experience;
-        }
-
         this.getMercenariesOwned = function() {
             return mercenaryManager.mercenaries.length;
         }
@@ -51,12 +48,12 @@ declare("Stats", function () {
         this.componentUpdate = this.update;
         this.update = function(gameTime) {
             if(this.componentUpdate(gameTime) !== true) {
-                return true;
+                return false;
             }
 
             // Update the stats window
-            document.getElementById("statsWindowPowerShardsValue").innerHTML = game.player.powerShards.formatMoney(2);
-            document.getElementById("statsWindowGoldValue").innerHTML = this.getGold().formatMoney(2);
+            document.getElementById("statsWindowPowerShardsValue").innerHTML = game.player.getStat(data.StatDefinition.shards.id).formatMoney(2);
+            document.getElementById("statsWindowGoldValue").innerHTML = game.player.getStat(data.StatDefinition.gold.id).formatMoney(2);
             document.getElementById("statsWindowGoldEarnedValue").innerHTML = this.goldEarned.formatMoney(2);
             document.getElementById("statsWindowStartDateValue").innerHTML = this.startDate.toDateString() + " " + this.startDate.toLocaleTimeString();
             document.getElementById("statsWindowMercenariesOwnedValue").innerHTML = this.getMercenariesOwned().formatMoney(0);
@@ -65,7 +62,7 @@ declare("Stats", function () {
             document.getElementById("statsWindowGoldFromMercenariesValue").innerHTML = this.goldFromMercenaries.formatMoney(2);
             document.getElementById("statsWindowGoldFromQuestsValue").innerHTML = this.goldFromQuests.formatMoney(0);
             document.getElementById("statsWindowUpgradesUnlockedValue").innerHTML = this.getUpgradesUnlocked().formatMoney(0);
-            document.getElementById("statsWindowExperienceValue").innerHTML = this.getExperience().formatMoney(2);
+            document.getElementById("statsWindowExperienceValue").innerHTML = game.player.getStat(data.StatDefinition.xp.id).formatMoney(2);
             document.getElementById("statsWindowExperienceEarnedValue").innerHTML = this.experienceEarned.formatMoney(2);
             document.getElementById("statsWindowExperienceFromMonstersValue").innerHTML = this.experienceFromMonsters.formatMoney(2);
             document.getElementById("statsWindowExperienceFromQuestsValue").innerHTML = this.experienceFromQuests.formatMoney(0);
@@ -76,6 +73,8 @@ declare("Stats", function () {
             document.getElementById("statsWindowMonstersKilledValue").innerHTML = this.monstersKilled.formatMoney(0);
             document.getElementById("statsWindowDamageDealtValue").innerHTML = (Math.floor(this.damageDealt)).formatMoney(0);
             document.getElementById("statsWindowDamageTakenValue").innerHTML = (Math.floor(this.damageTaken)).formatMoney(0);
+
+            return true;
         }
 
         this.save = function() {

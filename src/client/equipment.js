@@ -3,6 +3,7 @@ declare("Equipment", function () {
     include('TooltipManager');
     include('Resources');
     include('Static');
+    include('CoreUtils');
 
     Equipment.prototype = component.create();
     Equipment.prototype.$super = parent;
@@ -108,7 +109,7 @@ declare("Equipment", function () {
                 // If the slot is empty then just equip it
                 if (this.slots[newSlotIndex] == null) {
                     this.slots[newSlotIndex] = item;
-                    $(".equipItem" + (newSlotIndex + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
+                    $(".equipItem" + (newSlotIndex + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
                     game.inventory.removeItem(currentSlotIndex);
 
                     game.player.gainItemsStats(item);
@@ -120,7 +121,7 @@ declare("Equipment", function () {
 
                     // Change the equipped item
                     this.slots[newSlotIndex] = item;
-                    $(".equipItem" + (newSlotIndex + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
+                    $(".equipItem" + (newSlotIndex + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
                     game.player.gainItemsStats(item);
 
                     // Change the inventory item
@@ -356,7 +357,7 @@ declare("Equipment", function () {
                 // If the slot is empty then just equip it
                 if (this.slots[newSlotIndex] == null) {
                     this.slots[newSlotIndex] = item;
-                    $(".equipItem" + (newSlotIndex + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
+                    $(".equipItem" + (newSlotIndex + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
                     game.inventory.removeItem(currentSlotIndex);
 
                     game.player.gainItemsStats(item);
@@ -368,7 +369,7 @@ declare("Equipment", function () {
 
                     // Change the equipped item
                     this.slots[newSlotIndex] = item;
-                    $(".equipItem" + (newSlotIndex + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
+                    $(".equipItem" + (newSlotIndex + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
                     game.player.gainItemsStats(item);
 
                     // Change the inventory item
@@ -420,7 +421,7 @@ declare("Equipment", function () {
                 // Change the equipped item
                 this.slots[currentSlotIndex] = inventorySlotItem;
                 game.player.gainItemsStats(inventorySlotItem);
-                $(".equipItem" + (currentSlotIndex + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + inventorySlotItem.iconSourceX + 'px ' + inventorySlotItem.iconSourceY + 'px');
+                $(".equipItem" + (currentSlotIndex + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + inventorySlotItem.iconSourceX + 'px ' + inventorySlotItem.iconSourceY + 'px');
 
                 // Change the inventory item
                 game.inventory.addItemToSlot(savedItem, newSlotIndex);
@@ -436,7 +437,7 @@ declare("Equipment", function () {
             // Change the first slot item
             this.slots[7] = this.slots[8];
             if (this.slots[7] != null) {
-                $(".equipItem" + 8).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[7].iconSourceX + 'px ' + this.slots[7].iconSourceY + 'px');
+                $(".equipItem" + 8).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[7].iconSourceX + 'px ' + this.slots[7].iconSourceY + 'px');
             }
             else {
                 $(".equipItem" + 8).css('background', 'url("' + resources.ImageNull + '")');
@@ -445,7 +446,7 @@ declare("Equipment", function () {
             // Change the second slot item
             this.slots[8] = savedItem;
             if (savedItem != null) {
-                $(".equipItem" + 9).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
+                $(".equipItem" + 9).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
             }
             else {
                 $(".equipItem" + 9).css('background', 'url("' + resources.ImageNull + '")');
@@ -479,7 +480,7 @@ declare("Equipment", function () {
                 // Display the equipment in the window for all these slots
                 for (var x = 0; x < this.slots.length; x++) {
                     if (this.slots[x] != null) {
-                        $(".equipItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
+                        $(".equipItem" + (x + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
                     }
                 }
             }

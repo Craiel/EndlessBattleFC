@@ -9,6 +9,7 @@ declare("ItemCreator", function () {
     include('UpgradeManager');
     include('Loot');
     include('GameState');
+    include('Data');
 
     ItemCreator.prototype = component.create();
     ItemCreator.prototype.$super = parent;
@@ -25,20 +26,21 @@ declare("ItemCreator", function () {
 
         this.getRandomItemRarity = function(monsterRarity) {
             var rand = Math.random();
+            var magicFindMultiplier = game.player.getStat(data.StatDefinition.magicFind.id) / 100;
             switch (monsterRarity) {
                 case static.MonsterRarity.COMMON:
                     if (rand < 0.20) {
                         rand = Math.random();
-                        if (rand < (0.00001 * ((game.player.getItemRarity() / 100) + 1))) {
+                        if (rand < (0.00001 * magicFindMultiplier)) {
                             return static.ItemRarity.LEGENDARY;
                         }
-                        else if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) {
+                        else if (rand < (0.0001 * magicFindMultiplier)) {
                             return static.ItemRarity.EPIC;
                         }
-                        else if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
+                        else if (rand < (0.001 * magicFindMultiplier)) {
                             return static.ItemRarity.RARE;
                         }
-                        else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
+                        else if (rand < (0.01 * magicFindMultiplier)) {
                             return static.ItemRarity.UNCOMMON;
                         }
                         else {
@@ -47,13 +49,13 @@ declare("ItemCreator", function () {
                     }
                     break;
                 case static.MonsterRarity.RARE:
-                    if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) {
+                    if (rand < (0.0001 * magicFindMultiplier)) {
                         return static.ItemRarity.LEGENDARY;
                     }
-                    else if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
+                    else if (rand < (0.001 * magicFindMultiplier)) {
                         return static.ItemRarity.EPIC;
                     }
-                    else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
+                    else if (rand < (0.01 * magicFindMultiplier)) {
                         return static.ItemRarity.RARE;
                     }
                     else {
@@ -61,10 +63,10 @@ declare("ItemCreator", function () {
                     }
                     break;
                 case static.MonsterRarity.ELITE:
-                    if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) {
+                    if (rand < (0.001 * magicFindMultiplier)) {
                         return static.ItemRarity.LEGENDARY;
                     }
-                    else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
+                    else if (rand < (0.01 * magicFindMultiplier)) {
                         return static.ItemRarity.EPIC;
                     }
                     else {
@@ -72,7 +74,7 @@ declare("ItemCreator", function () {
                     }
                     break;
                 case static.MonsterRarity.BOSS:
-                    if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) {
+                    if (rand < (0.01 * magicFindMultiplier)) {
                         return static.ItemRarity.LEGENDARY;
                     }
                     else {

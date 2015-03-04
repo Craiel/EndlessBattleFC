@@ -19,7 +19,7 @@ declare("EventManager", function () {
             // Create a random quest
             var name = static.QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + static.QuestNameSuffixes[Math.floor(Math.random() * 5)];
             var amount = Math.floor(Math.random() * 6) + 7;
-            event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), static.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffSet.getRandomQuestRewardBuff());
+            event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), static.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
             this.events.push(event);
 
             var newDiv = document.createElement('div');
@@ -42,7 +42,7 @@ declare("EventManager", function () {
             this.eventSpawnTimeRemaining -= gameTime.elapsed;
             if (this.eventSpawnTimeRemaining <= 0) {
                 this.eventSpawnTimeRemaining = this.eventSpawnTime;
-                this.addRandomEvent(game.player.level);
+                this.addRandomEvent(game.player.getLevel());
             }
 
             // Keep all the event buttons falling down
@@ -60,6 +60,8 @@ declare("EventManager", function () {
                 element.style.bottom = newBottom + 'px';
                 this.events[x].velY += 10;
             }
+
+            return true;
         }
 
         this.startEvent = function(obj, id) {

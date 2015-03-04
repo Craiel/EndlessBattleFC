@@ -24,6 +24,28 @@ declare("Assert", function() {
                 console.assert(false, msg);
             }
         };
+
+        this.isNotNaN = function(arg, msg) {
+            if(Endless.isDebug === false) {
+                return;
+            }
+
+            if(arg === NaN) {
+                this.assertCount++;
+                console.assert(false, msg);
+            }
+        }
+
+        this.isNaN = function(arg, msg) {
+            if(Endless.isDebug === false) {
+                return;
+            }
+
+            if(arg !== NaN) {
+                this.assertCount++;
+                console.assert(false, msg);
+            }
+        }
         
         this.isTrue = function(eval, msg) {
             if(Endless.isDebug === false){
@@ -64,3 +86,8 @@ declare("Assert", function() {
     return new Assert();
     
 });
+
+manualFailAssert = function() {
+    include('Assert');
+    assert.assertCount = 1;
+}

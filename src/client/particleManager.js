@@ -154,6 +154,8 @@ declare("ParticleManager", function () {
                     this.particles.splice(x, 1);
                 }
             }
+
+            return true;
         }
     }
 

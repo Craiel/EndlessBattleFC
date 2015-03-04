@@ -1,32 +1,103 @@
 declare("Monster", function () {
+    include('Actor');
     include('BuffSet');
     include('Static');
     include('ParticleManager');
     include('GameState');
     include('Loot');
+    include('Data');
+
+    Monster.prototype = actor.create();
+    Monster.prototype.$super = parent;
+    Monster.prototype.constructor = Monster;
+
+    var nextId = 1;
 
     function Monster() {
+        this.id = "Monster" + nextId++;
+
+        this.baseStats = {};
+        this.statsChanged = true;
+
+        // ---------------------------------------------------------------------------
+        // basic functions
+        // ---------------------------------------------------------------------------
+        this.actorInit = this.init;
+        this.init = function() {
+            this.actorInit();
+
+            this.initStats(this.baseStats, false);
+        }
+
+        this.actorUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.actorUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            // Check if we need to recompute the actor state
+            if(this.statsChanged === true) {
+                this.computeActorStats();
+            }
+
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------
+        // stats
+        // ---------------------------------------------------------------------------
+        this.getStat = function(stat) {
+            if(this.statsChanged === true) {
+                this.computeActorStats();
+            }
+
+            return this.doGetStat(stat);
+        }
+
+        this.setStat = function(stat, value) {
+            this.statsChanged = this.doSetStat(stat, value, this.baseStats);
+        }
+
+        this.modifyStat = function(stat, value) {
+            this.statsChanged = this.doModifyStat(stat, value, this.baseStats);
+        }
+
+        this.computeActorStats = function() {
+            // Todo: compute the state from items
+
+            var states = [];
+            states.push(this.baseStats);
+            this.mergeIntoActorStats(states);
+            this.statsChanged = false;
+        }
+
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Unchecked code below
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
         this.name = '#ERR';
         this.level = 0;
         this.rarity = static.MonsterRarity.COMMON;
-        this.health = 0;
+
         this.maxHealth = 0;
-        this.canAttack = true;
         this.damage = 0;
         this.armour = 0;
         this.goldWorth = 0;
         this.experienceWorth = 0;
 
-        this.buffs = buffSet.create();
         this.buffIconLeftPositionBase = 325;
         this.buffIconTopPosition = 0;
         this.buffLeftPositionIncrement = 30;
 
-        this.lastDamageTaken = 0;
-        this.alive = true;
-
         this.takeDamage = function(damage, isCritical, displayParticle) {
-            this.health -= damage;
+            this.modifyStat(data.StatDefinition.hp.id, -damage);
             this.lastDamageTaken = damage;
             game.stats.damageDealt += damage;
 
@@ -40,11 +111,9 @@ declare("Monster", function () {
                 }
             }
 
-            if (this.health <= 0) {
+            if (this.getStat(data.StatDefinition.hp.id) <= 0) {
                 this.alive = false;
                 game.stats.monstersKilled++;
-                // Update the 2nd tutorial
-                gameState.monsterKilled = true;
             }
         }
 

@@ -2,6 +2,8 @@ declare("Inventory", function () {
     include('Component');
     include('Static');
     include('Resources');
+    include('Data');
+    include('CoreUtils');
 
     Inventory.prototype = component.create();
     Inventory.prototype.$super = parent;
@@ -29,7 +31,7 @@ declare("Inventory", function () {
             for (var x = 0; x < this.maxSlots; x++) {
                 if (this.slots[x] == null) {
                     this.slots[x] = item;
-                    $("#inventoryItem" + (x + 1)).css('background', (resources.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px'));
+                    $("#inventoryItem" + (x + 1)).css('background', (coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px'));
                     game.stats.itemsLooted++;
                     break;
                 }
@@ -42,31 +44,31 @@ declare("Inventory", function () {
 
             this.slots[index1] = this.slots[index2];
             if (this.slots[index1] != null) {
-                $("#inventoryItem" + (index1 + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[index1].iconSourceX + 'px ' + this.slots[index1].iconSourceY + 'px');
+                $("#inventoryItem" + (index1 + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[index1].iconSourceX + 'px ' + this.slots[index1].iconSourceY + 'px');
             }
             else {
-                $("#inventoryItem" + (index1 + 1)).css('background', resources.getImageUrl(resources.ImageNull));
+                $("#inventoryItem" + (index1 + 1)).css('background', coreUtils.getImageUrl(resources.ImageNull));
             }
 
             this.slots[index2] = savedItem;
             if (this.slots[index2] != null) {
-                $("#inventoryItem" + (index2 + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
+                $("#inventoryItem" + (index2 + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
             }
             else {
-                $("#inventoryItem" + (index2 + 1)).css('background', resources.getImageUrl(resources.ImageNull));
+                $("#inventoryItem" + (index2 + 1)).css('background', coreUtils.getImageUrl(resources.ImageNull));
             }
         }
 
         // Remove an item from the inventory
         this.removeItem = function(index) {
             this.slots[index] = null;
-            $("#inventoryItem" + (index + 1)).css('background', resources.getImageUrl(resources.ImageNull));
+            $("#inventoryItem" + (index + 1)).css('background', coreUtils.getImageUrl(resources.ImageNull));
         }
 
         // Add an item to a specified slot
         this.addItemToSlot = function(item, index) {
             this.slots[index] = item;
-            $("#inventoryItem" + (index + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
+            $("#inventoryItem" + (index + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
         }
 
         // Sell an item in a specified slot
@@ -74,7 +76,7 @@ declare("Inventory", function () {
             if (this.slots[slot] != null) {
                 // Get the sell value and give the gold to the player; don't use the gainGold function as it will include gold gain bonuses
                 var value = this.slots[slot].sellValue;
-                game.player.gold += value;
+                game.player.modifyStat(data.StatDefinition.gold.id, value);
                 // Remove the item and hide the tooltip
                 this.removeItem(slot);
                 $('#itemTooltip').hide();
@@ -138,7 +140,7 @@ declare("Inventory", function () {
                 // Go through all the slots and show their image in the inventory
                 for (var x = 0; x < this.slots.length; x++) {
                     if (this.slots[x] != null) {
-                        $("#inventoryItem" + (x + 1)).css('background', resources.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
+                        $("#inventoryItem" + (x + 1)).css('background', coreUtils.getImageUrl(resources.ImageItemSheet3) + ' ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
                     }
                 }
             }
@@ -164,6 +166,8 @@ declare("Inventory", function () {
                     }
                 }
             }
+
+            return true;
         }
     }
 

@@ -1,16 +1,12 @@
 declare("BuffSet", function () {
-    include('Component');
     include('Buff');
     include('Static');
     include('Resources');
+    include('CoreUtils');
 
-    BuffSet.prototype = component.create();
-    BuffSet.prototype.$super = parent;
-    BuffSet.prototype.constructor = BuffSet;
+    var nextId = 1;
 
-    function BuffSet() {
-        this.id = "BuffSet";
-
+    function BuffSet(id) {
         this.buffs = new Array();
 
         // These are for debuffs
@@ -33,7 +29,7 @@ declare("BuffSet", function () {
         this.addBuff = function(buff) {
             buff.id = this.buffs.length + 1;
             this.buffs.push(buff);
-            game.displayAlert(buff.name);
+            //game.displayAlert(buff.name);
 
             var newDiv = document.createElement('div');
             newDiv.id = 'buffContainer' + buff.id;
@@ -44,7 +40,7 @@ declare("BuffSet", function () {
             var newDiv2 = document.createElement('div');
             newDiv2.id = 'buffIcon' + buff.id;
             newDiv2.className = 'buffIcon';
-            newDiv2.style.background = resources.getImageUrl(resources.ImageBuffIcons) + ' ' + buff.leftPos + 'px ' + buff.topPos + 'px';
+            newDiv2.style.background = coreUtils.getImageUrl(resources.ImageBuffIcons) + ' ' + buff.leftPos + 'px ' + buff.topPos + 'px';
             newDiv.appendChild(newDiv2);
 
             var newDiv3 = document.createElement('div');
@@ -91,11 +87,7 @@ declare("BuffSet", function () {
             return multiplier;
         }
 
-        this.componentUpdate = this.update;
         this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
-            }
 
             // Update all the buff durations
             for (var x = this.buffs.length - 1; x >= 0; x--) {
@@ -115,6 +107,8 @@ declare("BuffSet", function () {
                     buffBar.style.width = (175 * (this.buffs[x].currentDuration / this.buffs[x].maxDuration)) + 'px';
                 }
             }
+
+            return true;
         }
 
         this.getRandomQuestRewardBuff = function() {

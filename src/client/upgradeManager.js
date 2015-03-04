@@ -5,6 +5,7 @@ declare("UpgradeManager", function () {
     include('MonsterCreator');
     include('GameState');
     include('Resources');
+    include('CoreUtils');
 
     UpgradeManager.prototype = component.create();
     UpgradeManager.prototype.$super = parent;
@@ -170,7 +171,7 @@ declare("UpgradeManager", function () {
                             }
                             break;
                         case static.UpgradeRequirementType.LEVEL:
-                            if (game.player.level >= currentUpgrade.requirementAmount) {
+                            if (game.player.getLevel() >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
@@ -179,7 +180,7 @@ declare("UpgradeManager", function () {
 
                 // If the upgrade is now available, then add it to the interface
                 if (available) {
-                    game.displayAlert("New upgrade available!");
+                    //game.displayAlert("New upgrade available!");
                     // Set the upgrade to available
                     currentUpgrade.available = true;
                     this.upgradesAvailable++;
@@ -214,7 +215,7 @@ declare("UpgradeManager", function () {
                     var icon = document.createElement('div');
                     icon.id = "upgradeIcon" + this.upgradesAvailable;
                     icon.className = 'buyButtonIcon';
-                    icon.style.background = resources.getImageUrl(resources.ImageBigIcons) + ' ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
+                    icon.style.background = coreUtils.getImageUrl(resources.ImageBigIcons) + ' ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
                     newDiv2.appendChild(icon);
 
                     // Create the name
@@ -253,14 +254,16 @@ declare("UpgradeManager", function () {
                     break;
                 }
             }
+
+            return true;
         }
 
         this.purchaseUpgrade = function(id) {
             // If the player can afford the upgrade
-            if (game.player.gold >= this.upgrades[this.purchaseButtonUpgradeIds[id]].cost) {
+            if (game.player.getStat(data.StatDefinition.gold.id) >= this.upgrades[this.purchaseButtonUpgradeIds[id]].cost) {
                 // Purchase the upgrade
                 var upgrade = this.upgrades[this.purchaseButtonUpgradeIds[id]];
-                game.player.gold -= upgrade.cost;
+                game.player.modifyStat(data.StatDefinition.gold.id, -upgrade.cost);
                 upgrade.purchased = true;
                 upgrade.available = false;
                 this.upgradesAvailable--;
@@ -403,7 +406,7 @@ declare("UpgradeManager", function () {
             this.upgradesButtonGlowing = false;
             $("#upgradesWindowButtonGlow").stop(true);
             $("#upgradesWindowButtonGlow").css('opacity', 0);
-            $("#upgradesWindowButtonGlow").css('background', resources.getImageUrl(resources.ImageWindowButtons) + ' 78px 0');
+            $("#upgradesWindowButtonGlow").css('background', coreUtils.getImageUrl(resources.ImageWindowButtons) + ' 78px 0');
         }
 
         this.glowUpgradesButton = function() {
@@ -484,7 +487,7 @@ declare("UpgradeManager", function () {
                         // Create the icon
                         var icon = document.createElement('div');
                         icon.className = 'buyButtonIcon button';
-                        icon.style.background = resources.getImageUrl(resources.ImageBigIcons) + ' ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
+                        icon.style.background = coreUtils.getImageUrl(resources.ImageBigIcons) + ' ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
                         newDiv2.appendChild(icon);
 
                         // Create the name

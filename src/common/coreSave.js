@@ -110,7 +110,6 @@ declare("CoreSave", function(require) {
         	assert.isDefined(value);
         	var formattedValue = type.getReadValueByType(value, this.type);
         	assert.isDefined(formattedValue, StrLoc("Value {0} did not match the selected mapping type {1}").format(value, this.type));
-            
             this.host[this.name] = formattedValue;
         };
         

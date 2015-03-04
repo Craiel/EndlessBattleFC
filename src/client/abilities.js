@@ -26,7 +26,7 @@ declare("Abilities", function () {
             return level;
         }
         this.getRendDamage = function(levelBonus) {
-            return Math.ceil((game.player.getAverageDamage() / 17) + (game.player.level / 1.5)) * (this.getRendLevel() + levelBonus);
+            return Math.ceil((game.player.getAverageDamage() / 17) + (game.player.getLevel() / 1.5)) * (this.getRendLevel() + levelBonus);
         }
         this.getRejuvenatingStrikesLevel = function() {
             var level = this.baseRejuvenatingStrikesLevel;
@@ -37,7 +37,7 @@ declare("Abilities", function () {
             return level;
         }
         this.getRejuvenatingStrikesHealAmount = function(levelBonus) {
-            return Math.ceil((game.player.getAverageDamage() / 54) + (game.player.level / 2)) * (this.getRejuvenatingStrikesLevel() + levelBonus);
+            return Math.ceil((game.player.getAverageDamage() / 54) + (game.player.getLevel() / 2)) * (this.getRejuvenatingStrikesLevel() + levelBonus);
         }
         this.getIceBladeLevel = function() {
             var level = this.baseIceBladeLevel;
@@ -48,7 +48,7 @@ declare("Abilities", function () {
             return level;
         }
         this.getIceBladeDamage = function(levelBonus) {
-            return Math.ceil((game.player.getAverageDamage() / 12) + game.player.level) * (this.getIceBladeLevel() + levelBonus);
+            return Math.ceil((game.player.getAverageDamage() / 12) + game.player.getLevel()) * (this.getIceBladeLevel() + levelBonus);
         }
         this.getFireBladeLevel = function() {
             var level = this.baseFireBladeLevel;
@@ -59,10 +59,10 @@ declare("Abilities", function () {
             return level;
         }
         this.getFireBladeDamage = function(levelBonus) {
-            return Math.ceil((game.player.getAverageDamage() / 12) + game.player.level) * (this.getFireBladeLevel() + levelBonus);
+            return Math.ceil((game.player.getAverageDamage() / 12) + game.player.getLevel()) * (this.getFireBladeLevel() + levelBonus);
         }
         this.getFireBladeBurnDamage = function(levelBonus) {
-            return Math.ceil((game.player.getAverageDamage() / 9) + game.player.level) * (this.getFireBladeLevel() + levelBonus);
+            return Math.ceil((game.player.getAverageDamage() / 9) + game.player.getLevel()) * (this.getFireBladeLevel() + levelBonus);
         }
 
         this.save = function() {

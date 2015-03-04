@@ -3,6 +3,9 @@ declare("MercenaryManager", function () {
     include('Static');
     include('GameState');
     include('Mercenary');
+    include('Data');
+    include('Save');
+    include('SaveKeys');
 
     MercenaryManager.prototype = component.create();
     MercenaryManager.prototype.$super = parent;
@@ -11,9 +14,65 @@ declare("MercenaryManager", function () {
     function MercenaryManager() {
         this.id = "MercenaryManager";
 
-        // The interval at which mercenaries give gold, in miliseconds
+        save.register(this, saveKeys.idnMercenaryUpdateTime).asNumber().withDefault(0);
+
+        // The interval at which mercenary income is updated
         this.gpsUpdateDelay = 1000;
-        this.gpsUpdateTime = 0;
+
+        // ---------------------------------------------------------------------------
+        // basic functions
+        // ---------------------------------------------------------------------------
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if (this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            this.processMercenaryIncome(gameTime);
+
+            this.legacyUpdate(gameTime);
+
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------
+        // mercenary functions
+        // ---------------------------------------------------------------------------
+        this.processMercenaryIncome = function(gameTime) {
+            if(this[saveKeys.idnMercenaryUpdateTime] === 0) {
+                this[saveKeys.idnMercenaryUpdateTime] = gameTime.current;
+                return;
+            }
+
+            var incomeCount = Math.floor((gameTime.current - this[saveKeys.idnMercenaryUpdateTime]) / this.gpsUpdateDelay);
+            if(incomeCount <= 0) {
+                return;
+            }
+
+            var income = incomeCount * this.getGps();
+            game.player.modifyStat(data.StatDefinition.gold.id, income);
+            game.stats.goldFromMercenaries += income;
+            this[saveKeys.idnMercenaryUpdateTime] = gameTime.current;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Unchecked code below
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // All the mercenaries the player owns
         this.mercenaries = new Array();
@@ -96,24 +155,25 @@ declare("MercenaryManager", function () {
 
         // Get the amount of Gps a mercenary will grant
         this.getMercenariesGps = function(type) {
+            var goldMultiplier = game.player.getStat(data.StatDefinition.goldMult.id);
             switch (type) {
                 case static.MercenaryType.FOOTMAN:
-                    return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - gameState.gpsReduction) / 100)) * game.player.buffSet.getGoldMultiplier();
+                    return (this.getMercenaryBaseGps(type) * goldMultiplier * ((100 - gameState.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
                     break;
                 case static.MercenaryType.CLERIC:
-                    return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - gameState.gpsReduction) / 100)) * game.player.buffSet.getGoldMultiplier();
+                    return (this.getMercenaryBaseGps(type) * goldMultiplier * ((100 - gameState.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
                     break;
                 case static.MercenaryType.COMMANDER:
-                    return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - gameState.gpsReduction) / 100)) * game.player.buffSet.getGoldMultiplier();
+                    return (this.getMercenaryBaseGps(type) * goldMultiplier * ((100 - gameState.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
                     break;
                 case static.MercenaryType.MAGE:
-                    return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - gameState.gpsReduction) / 100)) * game.player.buffSet.getGoldMultiplier();
+                    return (this.getMercenaryBaseGps(type) * goldMultiplier * ((100 - gameState.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
                     break;
                 case static.MercenaryType.ASSASSIN:
-                    return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - gameState.gpsReduction) / 100)) * game.player.buffSet.getGoldMultiplier();
+                    return (this.getMercenaryBaseGps(type) * goldMultiplier * ((100 - gameState.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
                     break;
                 case static.MercenaryType.WARLOCK:
-                    return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - gameState.gpsReduction) / 100)) * game.player.buffSet.getGoldMultiplier();
+                    return (this.getMercenaryBaseGps(type) * goldMultiplier * ((100 - gameState.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
                     break;
             }
         }
@@ -138,11 +198,7 @@ declare("MercenaryManager", function () {
             return gps.formatMoney(2);
         }
 
-        this.componentUpdate = this.update;
-        this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
-            }
+        this.legacyUpdate = function(gameTime) {
 
             // Update the gps reduction if there is a reduction active
             if (gameState.gpsReduction > 0) {
@@ -153,19 +209,6 @@ declare("MercenaryManager", function () {
 
                     $("#gps").css('color', '#ffd800');
                 }
-            }
-
-            // Give the player gold from each mercenary if enough time has passed
-            var diff = gameTime.current - this.gpsUpdateTime;
-            if (diff >= this.gpsUpdateDelay) {
-                var gainTimes = Math.floor(diff / this.gpsUpdateDelay);
-
-                for (var x = 0; x < this.mercenaries.length; x++) {
-                    game.player.gainGold(this.getMercenariesGps(this.mercenaries[x].type) * gainTimes, false);
-                    game.stats.goldFromMercenaries += game.player.lastGoldGained;
-                }
-
-                this.gpsUpdateTime = gameTime.current;
             }
 
             gps = this.getGps();
@@ -201,9 +244,9 @@ declare("MercenaryManager", function () {
                     break;
             }
             // Can the player afford it?
-            if (game.player.gold >= price) {
+            if (game.player.getStat(data.StatDefinition.gold.id) >= price) {
                 // Remove the gold from the player
-                game.player.gold -= price;
+                game.player.modifyStat(data.StatDefinition.gold.id, -price);
 
                 // Add the mercenary
                 this.addMercenary(type);

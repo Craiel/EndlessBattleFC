@@ -38,7 +38,7 @@ Endless.main = function() {
 	function onUpdate() {
 		if(assert.hasAsserted() === true) {
 			clearInterval(intervalHook);
-			log("Aborting update cycle, asserts occured!");
+			console.assert(false, "Aborting update cycle, asserts occured!");
 			return;
 		}
 
@@ -51,7 +51,7 @@ Endless.main = function() {
 	
 	function onUIUpdate() {
 		if(assert.hasAsserted() === true) {
-			log("Aborting UI update cycle, asserts occured!");
+			console.assert(false, "Aborting UI update cycle, asserts occured!");
 			return;
 		}
 

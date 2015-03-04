@@ -1,0 +1,88 @@
+.battleAreaPanel {
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.enterBattleButton {
+    width: 200px;
+    height: 25px;
+
+    position: absolute;
+    top: 180px;
+    left: 150px;
+}
+
+.leaveBattleButton {
+    width: 200px;
+    height: 25px;
+
+    position: absolute;
+    top: 180px;
+    left: 150px;
+}
+
+.battleLevelUpButton {
+    width: 25px;
+    height: 25px;
+
+    position: absolute;
+    top: 180px;
+    left: 360px;
+}
+
+.battleLevelDownButton {
+    width: 25px;
+    height: 25px;
+
+    position: absolute;
+    top: 180px;
+    left: 120px;
+}
+
+.levelUpButton {
+    width: 200px;
+    height: 25px;
+
+    position: absolute;
+    top: 210px;
+    left: 150px;
+}
+
+.attackButton {
+    position: absolute;
+    left: 225px;
+    top: 90px;
+    width: 50px;
+    height: 50px;
+    z-index: 1;
+}
+
+.resurrectionBarArea {
+    position: absolute;
+    top: 50px;
+    left: 141px;
+    width: 218px;
+    height: 18px;
+}
+
+.monsterName {
+    position: absolute;
+    top: 30px;
+    left: 141px;
+    width: 218px;
+    height: 18px;
+}
+
+.monsterHealthBarArea {
+    position: absolute;
+    top: 50px;
+    left: 141px;
+    width: 218px;
+    height: 18px;
+}

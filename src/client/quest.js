@@ -87,6 +87,8 @@ declare("Quest", function () {
                     }
                     break;
             }
+
+            return true;
         }
 
         this.grantReward = function() {

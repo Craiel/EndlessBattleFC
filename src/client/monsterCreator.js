@@ -3,6 +3,7 @@ declare("MonsterCreator", function () {
     include('Utils');
     include('Static');
     include('Monster');
+    include('Data');
 
     MonsterCreator.prototype = component.create();
     MonsterCreator.prototype.$super = parent;
@@ -23,8 +24,8 @@ declare("MonsterCreator", function () {
             result.name = this.names[Math.floor(Math.random() * this.names.length)];
             result.level = level;
             result.rarity = rarity;
-            result.health = this.calculateMonsterHealth(level, rarity);
-            result.maxHealth = result.health;
+            result.setStat(data.StatDefinition.hp.id, this.calculateMonsterHealth(level, rarity));
+            result.maxHealth = result.getStat(data.StatDefinition.hp.id);
             result.damage = this.calculateMonsterDamage(level, rarity);
             result.goldWorth = this.calculateMonsterGoldWorth(level, rarity);
             result.experienceWorth = this.calculateMonsterExperienceWorth(level, rarity);
@@ -147,24 +148,6 @@ declare("MonsterCreator", function () {
                 return static.MonsterRarity.RARE;
             }
             else return static.MonsterRarity.COMMON;
-        }
-
-        // Get the name colour of a rarity
-        this.getRarityColour = function(rarity) {
-            switch (rarity) {
-                case static.MonsterRarity.COMMON:
-                    return '#ffffff';
-                    break;
-                case static.MonsterRarity.RARE:
-                    return '#00fff0';
-                    break;
-                case static.MonsterRarity.ELITE:
-                    return '#ffd800';
-                    break;
-                case static.MonsterRarity.BOSS:
-                    return '#ff0000';
-                    break;
-            }
         }
     }
 
