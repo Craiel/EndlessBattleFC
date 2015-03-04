@@ -1,7 +1,5 @@
-# Eclipse
-.settings
-.project
-.externalToolBuilders
+# Webstorm
+.idea
 
 # system
 Thumbs.db
