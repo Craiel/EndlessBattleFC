@@ -8,7 +8,7 @@ declare("StorageSlot", function() {
 		// Metadata is used for things like socketing, enchanting or other per-item extra information
 		//  this info will be attached to the item in the slot and moved around with it
 		this.metadata = undefined;
-			
+
 		// ---------------------------------------------------------------------------
 		// slot functions
 		// ---------------------------------------------------------------------------

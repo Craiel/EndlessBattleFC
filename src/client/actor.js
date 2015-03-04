@@ -1,11 +1,13 @@
 declare("Actor", function () {
     include('Assert');
+    include('Log');
     include('Component');
     include('Save');
     include('SaveKeys');
     include('Static');
     include('BuffSet');
     include('Data');
+    include('Storage');
 
     Actor.prototype = component.create();
     Actor.prototype.$super = parent;
@@ -16,6 +18,7 @@ declare("Actor", function () {
 
         // General
         this.actorStats = {};
+        this.storage = undefined;
 
         // Combat
         this.lastDamageTaken = 0;
@@ -33,7 +36,8 @@ declare("Actor", function () {
         this.init = function() {
             this.componentInit();
 
-            //this.buffs.init();
+            this.storage = storage.create(this.id);
+            this.storage.init();
         }
 
         this.componentUpdate = this.update;
@@ -52,6 +56,18 @@ declare("Actor", function () {
         // ---------------------------------------------------------------------------
         this.getLevel = function() {
             return this.level;
+        }
+
+        // ---------------------------------------------------------------------------
+        // Item functions
+        // ---------------------------------------------------------------------------
+        this.giveItem = function(item, count) {
+            if(this.storage.canAdd(item) === false) {
+                log.warning("Could not add item " + item);
+                return;
+            }
+
+            this.storage.add(item, count)
         }
 
         // ---------------------------------------------------------------------------

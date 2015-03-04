@@ -1,5 +1,8 @@
 declare("Storage", function() {
-	
+	include('Assert');
+	include('Component');
+	include('StorageSlot');
+
 	// ---------------------------------------------------------------------------
 	// internal functions
 	// ---------------------------------------------------------------------------	
@@ -8,12 +11,12 @@ declare("Storage", function() {
 	}
 	
 	var getSlot = function(self, id) {
-		if(!self.itemSlotMap[id]) {
+		if(self.itemSlotMap[id] === undefined) {
 			return undefined;
 		}
 		
 		var slotNumber = self.itemSlotMap(id);
-		if(self.itemSlots[slotNumber][0] != id) {
+		if(self.itemSlots[slotNumber][0] !== id) {
 			throw new Error("SlotMap is out of sync!");
 		}
 		
@@ -21,10 +24,11 @@ declare("Storage", function() {
 	}
 	
 	var assignSlot = function(self, id) {
+		updateFreeSlot(self);
+
 		var slot = self.itemSlots[self.nextFreeSlot++];
 		slot.setItem(id);
-		
-		updateFreeSlot(self);
+
 		return slot;
 	}
 	
@@ -40,18 +44,18 @@ declare("Storage", function() {
 	
 	var updateFreeSlot = function(self) {
 		var found = false;
-		while(!found) {
+		while(found === false) {
 			assert.isFalse(self.nextFreeSlot >= self.allocationLimit, "Slot count reached allocation limit: " + self.nextFreeSlot + " >= " + self.allocationLimit);
 			
 			if(self.itemSlots.length <= self.nextFreeSlot) {
 				// Allocate a new set of slots, we reached the end
 				for(var i = 0; i < self.allocationCount; i++) {
-					self.itemSlots.push(MultiverseMiner.createStorageSlot());
+					self.itemSlots.push(storageSlot.create());
 				};
 			}
 			
 			var slot = self.itemSlots[self.nextFreeSlot];
-			if(!slot.getItem()) {
+			if(slot.getItem() === undefined) {
 				found = true;
 			} else {
 				self.nextFreeSlot++;
@@ -63,7 +67,7 @@ declare("Storage", function() {
 		self.itemSlotMap = {};
 		for(var i = 0; i < self.itemSlots.length; i++) {
 			var item = self.itemSlots[i].getItem();
-			if(!item) {
+			if(item === undefined) {
 				continue;
 			}
 			
@@ -78,12 +82,12 @@ declare("Storage", function() {
 	Storage.prototype.$super = parent;
 	Storage.prototype.constructor = Storage;
 
-	function Storage() {
-		this.id = "Storage";
+	function Storage(id) {
+		this.id = "Storage" + id;
 
 		// Allocate slots in multiples of 6 by default
 		this.allocationCount = 6;
-		this.allocationLimit = 1000; // Hard-limit the storage to 1k slots for now
+		this.allocationLimit = 36; // Hard-limit the storage to 36 slots for now
 		
 		// Items are stored in a slot like system as a 2 dim array with [id, count]
 		this.itemSlots = [];
@@ -98,6 +102,18 @@ declare("Storage", function() {
 		this.limitOverrides = {};
 
 		this.changed = false;
+
+		// ---------------------------------------------------------------------------
+		// basic functions
+		// ---------------------------------------------------------------------------
+		this.componentInit = this.init;
+		this.init = function(limit) {
+			this.componentInit();
+
+			if(limit !== undefined) {
+				this.allocationLimit = limit;
+			}
+		}
 
 		// ---------------------------------------------------------------------------
 		// storage functions
@@ -127,7 +143,7 @@ declare("Storage", function() {
 			
 			// Find the slot of the item
 			var slot = getSlot(this, id);
-			if (!slot) {
+			if (slot === undefined) {
 				// We don't have the item but we are allowed to store so accept
 				return true;
 			}
@@ -160,11 +176,13 @@ declare("Storage", function() {
 			assert.isTrue(this.canAdd(id), "Item can not be added, call canAdd(<id>) before calling add(<id>)");
 			
 			// Calling add(<id>) will add exactly 1
-			if(!value) value = 1;
+			if(value === undefined) {
+				value = 1;
+			}
 	
 			// Get the target slot
 			var slot = getSlot(this, id);
-			if(!slot) {
+			if(slot === undefined) {
 				slot = assignSlot(this, id);
 				assert.isDefined(slot, "assignSlot failed!");
 				this.needDictionaryUpdate = true;
@@ -182,7 +200,9 @@ declare("Storage", function() {
 			assert.isTrue(this.hasItem(id), "remove(<id>) called with non-existing item, call hasItem(<id>) first!");
 			
 			// Calling remove(<id>) will remove exactly 1
-			if(!value) value = 1;
+			if(value === undefined) {
+				value = 1;
+			}
 			
 			// Get the target slot
 			var slot = getSlot(this, id);
@@ -195,9 +215,26 @@ declare("Storage", function() {
 			this.needDictionaryUpdate = true;
 			this.changed = true;
 		};
-		
+
+		this.getLimit = function() {
+			return this.allocationLimit;
+		}
+
+		// We don't allow lowering the limit for now
+		this.raiseLimit = function(count) {
+			if(count === undefined) {
+				count = this.allocationCount;
+			}
+
+			this.allocationLimit += count;
+		}
+
+		this.getAllocationCount = function() {
+			return this.allocationCount;
+		}
+
 		this.getSlotCount = function() {
-			return this.slotCount;
+			return this.itemSlots.length;
 		};
 		
 		this.getSlotAt = function(index) {
@@ -217,7 +254,7 @@ declare("Storage", function() {
 	
 		this.getItemCount = function(id) {
 			var slot = getSlot(this, id);
-			if(!slot) {
+			if(slot === undefined) {
 				return 0;
 			}
 	
@@ -273,6 +310,6 @@ declare("Storage", function() {
 	};
 
 	return {
-		create: function() { return new Storage(); }
+		create: function(id) { return new Storage(id); }
 	}
 });
