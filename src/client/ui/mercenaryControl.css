@@ -4,11 +4,18 @@
     padding-right: 12px;
     padding-bottom: 2px;
     padding-top: 2px;
+    height: 80px;
+}
+
+.mercenaryBackground {
+    width: 100%;
+    height: 100%;
 }
 
 .mercenaryImage {
-    top: 9px;
-    left: 9px;
+    position: absolute;
+    top: 12px;
+    left: 12px;
     width: 64px;
     height: 64px;
 }
@@ -18,5 +25,33 @@
     top: 9px;
     left: 77px;
     height: 20px;
-    width: 100px;
+    font-weight: bold;
+}
+
+.mercenaryCurrencyTitle {
+    position: absolute;
+    top: 30px;
+    left: 80px;
+    height: 20px;
+}
+
+.mercenaryCurrency {
+    position: absolute;
+    top: 30px;
+    left: 125px;
+    height: 20px;
+}
+
+.mercenaryCountTitle {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    height: 20px;
+}
+
+.mercenaryCount {
+    position: absolute;
+    top: 50px;
+    left: 143px;
+    height: 20px;
 }

@@ -7,6 +7,11 @@ declare('SaveKeys', function() {
 		idnLevel: StrSha('level'),
 		idnPlayerBaseStats: StrSha('playerBaseStats'),
 		idnPlayerSkillPoints: StrSha('playerSkillPoints'),
-		idnMercenaryUpdateTime: StrSha('mercUpdateTime')
+		idnMercenariesPurchased: StrSha('mercPurchased'),
+
+
+
+		///// Potentially remove:
+		idnMercenaryUpdateTime: StrSha('mercUpdateTime'),
 	};
 });

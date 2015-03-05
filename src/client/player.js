@@ -16,6 +16,7 @@ declare('Player', function () {
     include('SaveKeys');
     include('Data');
     include('StatUtils');
+    include('CoreUtils');
 
     Player.prototype = actor.create();
     Player.prototype.$super = parent;
@@ -64,10 +65,10 @@ declare('Player', function () {
             // Perform some basic operations that happen when the player is alive
             if(this.alive === true) {
                 // Hp5
-                this.hp5Time = this.processStatTick(gameTime, data.StatDefinition.hp5.id, this.hp5Time, this.hp5Delay, function(self, value) { self.heal(value); });
+                this.hp5Time = coreUtils.processInterval(gameTime, this.hp5Time, this.hp5Delay, this, function(self, value) { self.heal(value); }, this.getStat(data.StatDefinition.hp5.id));
 
                 // Mp5
-                this.mp5Time = this.processStatTick(gameTime, data.StatDefinition.mp5.id, this.mp5Time, this.mp5Delay, function(self, value) { self.healMp(value); });
+                this.mp5Time = coreUtils.processInterval(gameTime, this.mp5Time, this.mp5Delay, this, function(self, value) { self.healMp(value); }, this.getStat(data.StatDefinition.mp5.id));
 
                 this.processResurrectionDelay(gameTime);
             } else {
@@ -127,25 +128,6 @@ declare('Player', function () {
             this.modifyStat(data.StatDefinition.mp.id, amount);
             if(this.getStat(data.StatDefinition.mp.id) > this.getStat(data.StatDefinition.mpMax.id)) {
                 this.setStat(data.StatDefinition.mp.id, this.getStat(data.StatDefinition.mpMax.id));
-            }
-        }
-
-        // Process a tick for a given stat and values, ticks for how many time passed and returns the tickTime back
-        this.processStatTick = function(gameTime, statId, tickTime, delay, tickCallback) {
-            if(tickTime === 0) {
-                return gameTime.current;
-            }
-
-            var tickValue = this.getStat(statId);
-            var timeMissed = Math.floor(Math.abs(gameTime.current - (tickTime + delay)) / delay);
-            if(timeMissed > 0) {
-                for (var i = 0; i < timeMissed; i++) {
-                    tickCallback(this, tickValue);
-                }
-
-                return gameTime.current;
-            } else {
-                return tickTime;
             }
         }
 

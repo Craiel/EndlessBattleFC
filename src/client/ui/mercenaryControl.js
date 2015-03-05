@@ -6,6 +6,7 @@ declare('MercenaryControl', function() {
     include('CoreUtils');
     include('Resources');
     include('Panel');
+    include('CurrencyControl');
 
     MercenaryControl.prototype = element.create();
     MercenaryControl.prototype.$super = parent;
@@ -19,6 +20,12 @@ declare('MercenaryControl', function() {
         this.backgroundPanel = undefined;
         this.imageElement = undefined;
         this.nameElement = undefined;
+        this.currencyElement = undefined;
+        this.countElement = undefined;
+
+        this.mercenaryKey = undefined;
+        this.callback = undefined;
+        this.callbackArgument = undefined;
 
         // ---------------------------------------------------------------------------
         // overrides
@@ -31,8 +38,12 @@ declare('MercenaryControl', function() {
         this.init = function(parent, attributes) {
             this.elementInit(parent, attributes);
 
+            assert.isDefined(this.mercenaryKey, "Mercenary key must be set");
+            assert.isDefined(this.callback, "Callback must be set");
+
             this.backgroundPanel = panel.create(this.id + "Background");
             this.backgroundPanel.init(this);
+            this.backgroundPanel.addClass("mercenaryBackground");
 
             this.imageElement = element.create(this.id + "Image");
             this.imageElement.templateName = "mercenaryControlImage";
@@ -42,6 +53,18 @@ declare('MercenaryControl', function() {
             this.nameElement.templateName = "textElement";
             this.nameElement.init(this.backgroundPanel.getContentArea());
             this.nameElement.addClass("mercenaryName");
+
+            this.currencyElement = currencyControl.create(this.id + "Currency");
+            this.currencyElement.init(this.backgroundPanel.getContentArea());
+            this.currencyElement.addClass("mercenaryCurrency");
+            this.currencyElement.setImage(resources.ImageIconCoin);
+
+            this.countElement = element.create(this.id + "Count");
+            this.countElement.templateName = "textElement";
+            this.countElement.init(this.backgroundPanel.getContentArea());
+            this.countElement.addClass("mercenaryCount");
+
+            this.getMainElement().mousedown({self: this, arg: this.callbackArgument}, this.callback);
 
             this._setupEvents();
         };
@@ -80,11 +103,11 @@ declare('MercenaryControl', function() {
         }
 
         this.setMercenaryCost = function(value) {
-
+            this.currencyElement.setValue(value);
         }
 
         this.setMercenaryCount = function(value) {
-
+            this.countElement.setText(value);
         }
     };
 

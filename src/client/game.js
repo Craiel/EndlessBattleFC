@@ -1,4 +1,5 @@
 declare('Game', function() {
+    include('Log');
     include('Component');
     include('Player');
     include('Inventory');
@@ -20,6 +21,7 @@ declare('Game', function() {
     include('Save');
     include('SaveKeys');
     include('Data');
+    include('CoreUtils');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -31,6 +33,143 @@ declare('Game', function() {
         save.register(this, saveKeys.idnGameVersion).asFloat().withDefault(0.3);
         save.register(this, saveKeys.idnGameBattleLevel).asNumber().withDefault(1);
         save.register(this, saveKeys.idnGameBattleDepth).asNumber().withDefault(1);
+
+        save.register(this, saveKeys.idnMercenariesPurchased).asJson().withDefault({}).withCallback(false, true, false);
+
+        this.mercenaryGps = 0;
+        this.mercenaryGpsTime = 0;
+        this.mercenaryGpsDelay = 1000;
+
+        // ---------------------------------------------------------------------------
+        // basic functions
+        // ---------------------------------------------------------------------------
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
+            ////////////////////// TODO: Remove / refactor below
+            this.reset();
+
+            this.spawnMonster();
+
+            gameState.init();
+            eventManager.init();
+            mercenaryManager.init();
+            upgradeManager.init();
+            particleManager.init();
+            questManager.init();
+
+            this.load();
+        }
+
+        this.componentUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.componentUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            this.mercenaryGpsTime = coreUtils.processInterval(gameTime, this.mercenaryGpsTime, this.mercenaryGpsDelay, this, function(self, value) { self.gainMercenaryGold(value); }, this.mercenaryGps);
+
+            /////////////////////TODO: Remove / refactor below
+            var newDate = new Date();
+            this.oldDate = newDate;
+
+            if(this.player.alive !== true) {
+                this.leaveBattle();
+            }
+
+            gameState.update(gameTime)
+            //mercenaryManager.update(gameTime);
+            this.inventory.update(gameTime);
+            this.updateInterface(gameTime.elapsed);
+            questManager.update(gameTime);
+            eventManager.update(gameTime);
+            upgradeManager.update(gameTime);
+            particleManager.update(gameTime);
+            this.stats.update(gameTime);
+            this.player.update(gameTime);
+
+            if(this.monster !== undefined) {
+                this.monster.update(gameTime);
+            }
+
+            this.updateAutoSave(gameTime);
+
+            oldDate = newDate;
+
+            return true;
+        }
+
+        // ---------------------------------------------------------------------------
+        // player functions
+        // ---------------------------------------------------------------------------
+        this.gainMercenaryGold = function(value) {
+            this.player.modifyStat(data.StatDefinition.gold.id, value);
+        }
+
+        // ---------------------------------------------------------------------------
+        // mercenary functions
+        // ---------------------------------------------------------------------------
+        this.purchaseMercenary = function(key) {
+            log.info("Purchase Mercenary: " + key);
+            var cost = this.getMercenaryCost(key);
+            if(this.player.getStat(data.StatDefinition.gold.id) < cost) {
+                return;
+            }
+
+            this.player.modifyStat(data.StatDefinition.gold.id, -cost);
+
+            if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
+                this[saveKeys.idnMercenariesPurchased][key] = 0;
+            }
+
+            this[saveKeys.idnMercenariesPurchased][key]++;
+            this.calculateMercenaryGps();
+        }
+
+        this.getMercenaryCost = function(key) {
+            var owned = this.getMercenaryCount(key);
+            return Math.floor(data.Mercenaries[key].gold * Math.pow(static.mercenaryPriceIncreaseFactor, owned));
+        }
+
+        this.getMercenaryCount = function(key) {
+            if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
+                return 0;
+            }
+
+            return this[saveKeys.idnMercenariesPurchased][key];
+        }
+
+        this.mercenaryGps = function(key) {
+            return this.mercenaryGps;
+        }
+
+        this.calculateMercenaryGps = function() {
+            var gps = 0;
+            for(key in this[saveKeys.idnMercenariesPurchased]) {
+                var baseValue = data.Mercenaries[key].gps * this[saveKeys.idnMercenariesPurchased][key];
+                gps += baseValue;
+            }
+
+            this.mercenaryGps = gps;
+        }
+
+        this.updateProcessMercenaryGps = function(gameTime) {
+
+        }
+
+        // ---------------------------------------------------------------------------
+        // save / load functions
+        // ---------------------------------------------------------------------------
+        this.onLoad = function() {
+            // Perform some initial operation after being loaded
+            this.calculateMercenaryGps();
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Unchecked code below
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         this.oldDate = new Date();
 
@@ -65,23 +204,7 @@ declare('Game', function() {
             this.monster.init();
         }
 
-        this.componentInit = this.init;
-        this.init = function() {
-            this.componentInit();
 
-            this.reset();
-
-            this.spawnMonster();
-
-            gameState.init();
-            eventManager.init();
-            mercenaryManager.init();
-            upgradeManager.init();
-            particleManager.init();
-            questManager.init();
-
-            this.load();
-        }
 
         this.enterBattle = function() {
             this.inBattle = true;
@@ -409,75 +532,7 @@ declare('Game', function() {
             document.getElementById("warlocksOwned").innerHTML = gameState.warlocksOwned;
         }
 
-        this.componentUpdate = this.update;
-        this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
-            }
 
-            var newDate = new Date();
-            this.oldDate = newDate;
-
-            if(this.player.alive !== true) {
-                this.leaveBattle();
-            }
-
-            // old death mechanic
-            // Check if the player is dead
-            /*if (!this.player.alive) {
-                this.leaveBattle();
-
-                // If the player is not already resurrecting then start resurrection
-                if (!this.player.resurrecting) {
-
-                    this.player.resurrecting = true;
-                    this.player.resurrectionTimeRemaining = this.player.resurrectionTimer;
-                    this.leaveBattle();
-                    this.player.setStat(data.StatDefinition.hp.id, 0);
-                    mercenaryManager.addGpsReduction(static.deathGpsReductionAmount, static.deathGpsReductionDuration);
-                }
-                // Else update the resurrecting
-                else {
-                    // Update the timer
-                    this.player.resurrectionTimeRemaining -= (gameTime.elapsed / 1000);
-
-                    // Update the bar
-
-
-                    // Check if the player is now alive
-                    if (this.player.resurrectionTimeRemaining <= 0) {
-                        // Make the player alive
-                        this.player.resurrecting = false;
-                        this.player.setStat(data.StatDefinition.hp.id, 1);
-                        this.player.alive = true;
-
-                        // Hide the resurrection bar
-
-                    }
-                }
-            }*/
-
-            gameState.update(gameTime)
-            mercenaryManager.update(gameTime);
-            this.inventory.update(gameTime);
-            this.updateInterface(gameTime.elapsed);
-            questManager.update(gameTime);
-            eventManager.update(gameTime);
-            upgradeManager.update(gameTime);
-            particleManager.update(gameTime);
-            this.stats.update(gameTime);
-            this.player.update(gameTime);
-
-            if(this.monster !== undefined) {
-                this.monster.update(gameTime);
-            }
-
-            this.updateAutoSave(gameTime);
-
-            oldDate = newDate;
-
-            return true;
-        }
 
         this.updateAutoSave = function(gameTime) {
             // Save the progress if enough time has passed

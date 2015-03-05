@@ -252,11 +252,12 @@ declare('UserInterface', function () {
             // Create the control for each mercenary...
             for(key in data.Mercenaries) {
                 var control = mercenaryControl.create("Mercenary_" + key);
+                control.mercenaryKey = key;
+                control.callback = function(obj) { obj.data.arg.purchaseMercenary(obj.data.self.mercenaryKey); };
+                control.callbackArgument = game;
                 control.init(this.mercenaryArea.getContentArea());
                 control.setMercenaryName(data.Mercenaries[key].name);
                 control.setMercenaryImage(static.imageRoot + data.Mercenaries[key].icon);
-                control.setMercenaryCost(0);
-                control.setMercenaryCount(0);
                 this.mercenaryControls[key] = control;
             }
         }
@@ -385,7 +386,11 @@ declare('UserInterface', function () {
         }
 
         this.updateMercenaryDialog = function(gameTime) {
-            //Todo
+            for(key in data.Mercenaries) {
+                var control = this.mercenaryControls[key];
+                control.setMercenaryCost(game.getMercenaryCost(key));
+                control.setMercenaryCount(game.getMercenaryCount(key));
+            }
         }
 
 

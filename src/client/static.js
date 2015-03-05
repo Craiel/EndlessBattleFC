@@ -11,6 +11,7 @@ declare('Static', function () {
         this.dialogDefaultZIndex = 5;
         this.dragZIndex = 100;
 
+        this.mercenaryPriceIncreaseFactor = 1.15;
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

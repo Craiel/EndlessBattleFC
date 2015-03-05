@@ -32,7 +32,7 @@ declare('Resources', function() {
             this.ImageBuyButtonBase = static.imageRoot + "buyButtonBase.png";
             this.ImageCloseButton = static.imageRoot + "closeButton.png";
             this.ImageIconGlobe = static.imageRoot + "iconGlobe.png";
-            this.ImageIconCoin = static.imageRoot + "iconCoin.png";
+            this.ImageIconCoin = static.imageRoot + "iconGoldCoin.png";
             this.ImageIconXp = static.imageRoot + "iconXp.png";
             this.ImageIconSkull = static.imageRoot + "iconSkull.png";
             this.ImageIconAttack = static.imageRoot + "iconAttack.png";

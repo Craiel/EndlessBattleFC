@@ -1,4 +1,5 @@
-declare("CoreUtils", function() {
+declare('CoreUtils', function() {
+    include('Assert');
 
     // Get the global namespace and register the local namespace root
     var global = Function('return this')() || (42, eval)('this');
@@ -154,6 +155,26 @@ declare("CoreUtils", function() {
             var seconds = this.pad(timeSplit[4], 2);
             return hours + minutes + seconds + suffix;
         };
+
+        // Process a tick for a given stat and values, ticks for how many time passed and returns the tickTime back
+        this.processInterval = function(gameTime, tickTime, delay, target, callback, value) {
+            assert.isDefined(callback);
+
+            if(tickTime === 0) {
+                return gameTime.current;
+            }
+
+            var timeMissed = Math.floor(Math.abs(gameTime.current - (tickTime + delay)) / delay);
+            if(timeMissed > 0) {
+                for (var i = 0; i < timeMissed; i++) {
+                    callback(target, value);
+                }
+
+                return gameTime.current;
+            } else {
+                return tickTime;
+            }
+        }
         
         // ---------------------------------------------------------------------------
         // Formatting
