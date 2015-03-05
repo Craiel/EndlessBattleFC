@@ -30,7 +30,7 @@ declare('Player', function () {
         save.register(this, saveKeys.idnName).withDefault("#ERR");
         save.register(this, saveKeys.idnLevel).asNumber().withDefault(1);
         save.register(this, saveKeys.idnPlayerBaseStats).asJson();
-        save.register(this, saveKeys.idnPlayerSkillPoints).asNumber().withDefault(0);
+        save.register(this, saveKeys.idnPlayerSkillPoints).asNumber().withDefault(0).withCallback(false, true, false);
 
         this.hp5Delay = 5000;
         this.hp5Time = 0;
@@ -208,6 +208,11 @@ declare('Player', function () {
             return this.resurrectionTime - gameTime.current;
         }
 
+        this.onLoad = function() {
+            // TODO:
+            this.baseExperienceRequired = 10;
+            this.experienceRequired = Math.ceil(utils.Sigma(this[saveKeys.idnLevel] * 2) * Math.pow(1.05, this[saveKeys.idnLevel]) + this.baseExperienceRequired);
+        }
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,8 +241,7 @@ declare('Player', function () {
 
         // Resources
         this.lastGoldGained = 0;
-        this.baseExperienceRequired = 10;
-        this.experienceRequired = Math.ceil(utils.Sigma(this[saveKeys.idnLevel] * 2) * Math.pow(1.05, this[saveKeys.idnLevel]) + this.baseExperienceRequired);
+
         this.lastExperienceGained = 0;
 
         // Death

@@ -251,7 +251,6 @@ declare('UserInterface', function () {
 
             // Create the control for each mercenary...
             for(key in data.Mercenaries) {
-                console.log(key);
                 var control = mercenaryControl.create("Mercenary_" + key);
                 control.init(this.mercenaryArea.getContentArea());
                 control.setMercenaryName(data.Mercenaries[key].name);
