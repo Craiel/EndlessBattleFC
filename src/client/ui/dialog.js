@@ -8,6 +8,8 @@ declare('Dialog', function() {
     include('Panel');
     include('Button');
 
+
+
     Dialog.prototype = element.create();
     Dialog.prototype.$super = parent;
     Dialog.prototype.constructor = Dialog;
@@ -16,6 +18,11 @@ declare('Dialog', function() {
         this.id = id;
 
         this.setTemplate("dialog");
+
+        this.isVisible = true;
+        this.canClose = true;
+        this.canDrag = true;
+        this.canScroll = false;
 
         this.headerPanel = undefined;
         this.contentPanel = undefined;
@@ -52,13 +59,25 @@ declare('Dialog', function() {
                 resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
                 resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
             this.contentPanel.addClass("dialogContentPanel");
+            this.contentPanel.addClass("noDrag");
+            if(this.canScroll === true) {
+                this.contentPanel.getContentArea().setStyle({"overflow-y": "scroll"});
+            }
 
-            this.closeButton = button.create(this.id + "Close");
-            this.closeButton.callback = function(obj) { obj.data.arg.onDialogClose(); };
-            this.closeButton.callbackArgument = this;
-            this.closeButton.init(this);
-            this.closeButton.setImages(undefined, undefined, resources.ImageCloseButton);
-            this.closeButton.addClass("dialogCloseButton");
+            if(this.canClose === true) {
+                this.closeButton = button.create(this.id + "Close");
+                this.closeButton.callback = function (obj) { obj.data.arg.onDialogClose(); };
+                this.closeButton.callbackArgument = this;
+                this.closeButton.init(this);
+                this.closeButton.setImages(resources.ImageIconClose, resources.ImageIconCloseHover, undefined);
+                this.closeButton.addClass("dialogCloseButton");
+                this.closeButton.addClass("noDrag");
+            }
+
+            if(this.canDrag === true) {
+                this.setStyle({"zIndex": static.dialogDefaultZIndex});
+                this.getMainElement().draggable({ self: this, cancel: ".noDrag", zIndex: static.dragZIndex, drag: function () { }});
+            }
         };
 
         // ---------------------------------------------------------------------------
@@ -73,7 +92,18 @@ declare('Dialog', function() {
         }
 
         this.onDialogClose = function(obj) {
-            log.warning("onDialogClose not implemented for " + this.id);
+            this.getMainElement().hide();
+            this.isVisible = false;
+        }
+
+        this.toggle = function(obj) {
+            if(this.isVisible === true) {
+                this.getMainElement().hide();
+                this.isVisible = false;
+            } else {
+                this.getMainElement().show();
+                this.isVisible = true;
+            }
         }
     };
 

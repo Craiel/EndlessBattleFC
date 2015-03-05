@@ -20,6 +20,8 @@ declare('Button', function() {
         this.callback = undefined;
         this.callbackArgument = undefined;
 
+        this.foregroundImageElement = undefined;
+
         // ---------------------------------------------------------------------------
         // overrides
         // ---------------------------------------------------------------------------
@@ -34,6 +36,9 @@ declare('Button', function() {
             assert.isDefined(this.callback, "Callback must be set before init");
 
             this.getMainElement().mousedown({self: this, arg: this.callbackArgument}, this.callback);
+
+            this.foregroundImageElement = element.create(this.id + 'Text');
+            this.foregroundImageElement.init(this);
 
             this._setupEvents();
         };
@@ -56,7 +61,7 @@ declare('Button', function() {
 
         this._updateImages = function() {
             if(this.foregroundImage !== undefined) {
-                $('#' + this.id + 'Image').css({ 'background-image': coreUtils.getImageUrl(this.foregroundImage) });
+                this.foregroundImageElement.setStyle({ 'background-image': coreUtils.getImageUrl(this.foregroundImage), 'background-repeat': 'no-repeat', 'background-size': '70% 70%', "background-position": "center" });
             }
 
             this.getMainElement().mouseout();

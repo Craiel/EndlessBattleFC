@@ -3,10 +3,5 @@
     font-size: 16px;
 }
 
-.DialogTest {
-    position: absolute;
-    width: 300px;
-    height: 500px;
-    top: 50px;
-    left: 10px;
+.noDrag {
 }

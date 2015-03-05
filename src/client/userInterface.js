@@ -21,6 +21,7 @@ declare('UserInterface', function () {
     include('Panel');
     include('Button');
     include('Dialog');
+    include('MercenaryControl');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -42,8 +43,8 @@ declare('UserInterface', function () {
         this.optionsWindowShown = false;
 
         this.playerArea = undefined;
-        this.playerName = undefined;
         this.playerHealthBar = undefined;
+        this.playerManaBar = undefined;
         this.experienceTitle = undefined;
         this.experienceBar = undefined;
 
@@ -65,7 +66,8 @@ declare('UserInterface', function () {
         this.levelUpButton = undefined;
         this.attackButton = undefined;
 
-        this.testDialog = undefined;
+        this.mercenaryArea = undefined;
+        this.mercenaryControls = {}
 
         // ---------------------------------------------------------------------------
         // basic functions
@@ -80,10 +82,8 @@ declare('UserInterface', function () {
             this.initSystemArea();
             this.initBattleArea();
 
-            this.testDialog = dialog.create("DialogTest");
-            this.testDialog.init();
-            this.testDialog.setHeaderText("Test Dialog");
-            this.testDialog.onClose = this.onDialogClose;
+            // Dialogs
+            this.initMercenaryDialog();
 
             this.setupWindowState();
         };
@@ -97,6 +97,8 @@ declare('UserInterface', function () {
             this.updatePlayerUI(gameTime);
             this.updateSystemMenu(gameTime);
             this.updateBattleUI(gameTime);
+
+            this.updateMercenaryDialog(gameTime);
 
             $('#version').text("Version " + game[saveKeys.idnGameVersion]);
 
@@ -118,16 +120,9 @@ declare('UserInterface', function () {
         // init functions
         // ---------------------------------------------------------------------------
         this.initPlayerArea = function() {
-            this.playerArea = panel.create("playerArea");
+            this.playerArea = dialog.create("playerArea");
+            this.playerArea.canClose = false;
             this.playerArea.init();
-            this.playerArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
-
-            this.playerName = element.create("playerName");
-            this.playerName.templateName = "textElement";
-            this.playerName.init(this.playerArea.getContentArea());
-            this.playerName.addClass("playerName");
 
             this.playerHealthBar = progressBar.create("playerHealthBar");
             this.playerHealthBar.init(this.playerArea.getContentArea());
@@ -135,11 +130,17 @@ declare('UserInterface', function () {
             this.playerHealthBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
             this.playerHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
 
+            this.playerManaBar = progressBar.create("playerManaBar");
+            this.playerManaBar.init(this.playerArea.getContentArea());
+            this.playerManaBar.animate = true;
+            this.playerManaBar.setImages(resources.ImageProgressBlueHorizontalLeft, resources.ImageProgressBlueHorizontalMid, resources.ImageProgressBlueHorizontalRight);
+            this.playerManaBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+
             this.experienceTitle = element.create("experienceTitle");
             this.experienceTitle.templateName = "textElement";
             this.experienceTitle.init(this.playerArea.getContentArea());
             this.experienceTitle.addClass("experienceTitle");
-            this.experienceTitle.setText("XP: ");
+            this.experienceTitle.setText("XP to next Level: ");
 
             this.experienceBar = progressBar.create("experienceBar");
             this.experienceBar.init(this.playerArea.getContentArea());
@@ -149,49 +150,47 @@ declare('UserInterface', function () {
         }
 
         this.initSystemArea = function() {
-            this.systemArea = panel.create("systemArea");
+            this.systemArea = dialog.create("systemArea");
+            this.systemArea.canClose = false;
             this.systemArea.init();
-            this.systemArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+            this.systemArea.setHeaderText("System Menu");
 
             this.inventoryWindowButton = button.create("inventoryWindowButton");
             this.inventoryWindowButton.callback = function(obj) { obj.data.arg.toggleInventoryWindow(); };
             this.inventoryWindowButton.callbackArgument = this;
             this.inventoryWindowButton.init(this.systemArea.getContentArea());
-            this.inventoryWindowButton.setImages(undefined, resources.ImageIconBackpackHover, resources.ImageIconBackpack);
+            this.inventoryWindowButton.setImages(resources.ImageIconBackpack, resources.ImageIconBackpackHover, undefined);
 
             this.characterWindowButton = button.create("characterWindowButton");
             this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
             this.characterWindowButton.callbackArgument = this;
             this.characterWindowButton.init(this.systemArea.getContentArea());
-            this.characterWindowButton.setImages(undefined, resources.ImageIconCharacterHover, resources.ImageIconCharacter);
+            this.characterWindowButton.setImages(resources.ImageIconCharacter, resources.ImageIconCharacterHover, undefined);
 
             this.questWindowButton = button.create("questWindowButton");
             this.questWindowButton.callback = function(obj) { obj.data.arg.toggleQuestWindow(); };
             this.questWindowButton.callbackArgument = this;
             this.questWindowButton.init(this.systemArea.getContentArea());
-            this.questWindowButton.setImages(undefined, resources.ImageIconQuestHover, resources.ImageIconQuest);
+            this.questWindowButton.setImages(resources.ImageIconQuest, resources.ImageIconQuestHover, undefined);
 
             this.mercenaryWindowButton = button.create("mercenaryWindowButton");
             this.mercenaryWindowButton.callback = function(obj) { obj.data.arg.toggleMercenaryWindow(); };
             this.mercenaryWindowButton.callbackArgument = this;
             this.mercenaryWindowButton.init(this.systemArea.getContentArea());
-            this.mercenaryWindowButton.setImages(undefined, resources.ImageIconMercenaryHover, resources.ImageIconMercenary);
+            this.mercenaryWindowButton.setImages(resources.ImageIconMercenary, resources.ImageIconMercenaryHover, undefined);
 
             this.upgradeWindowButton = button.create("upgradeWindowButton");
             this.upgradeWindowButton.callback = function(obj) { obj.data.arg.toggleUpgradeWindow(); };
             this.upgradeWindowButton.callbackArgument = this;
             this.upgradeWindowButton.init(this.systemArea.getContentArea());
-            this.upgradeWindowButton.setImages(undefined, resources.ImageIconUpgradeHover, resources.ImageIconUpgrade);
+            this.upgradeWindowButton.setImages(resources.ImageIconUpgrade, resources.ImageIconUpgradeHover, undefined);
         }
 
         this.initBattleArea = function() {
-            this.battleArea = panel.create("battleArea");
+            this.battleArea = dialog.create("battleArea");
+            this.battleArea.canClose = false;
             this.battleArea.init();
-            this.battleArea.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+            this.battleArea.setHeaderText("Battle");
 
             // Just a plain element for the monster name for now...
             this.monsterName = element.create("monsterName");
@@ -244,6 +243,25 @@ declare('UserInterface', function () {
             this.levelUpButton.setButtonText("Level Up");
         }
 
+        this.initMercenaryDialog = function() {
+            this.mercenaryArea = dialog.create("mercenaryDialog");
+            this.mercenaryArea.canScroll = true;
+            this.mercenaryArea.init();
+            this.mercenaryArea.setHeaderText("Mercenaries");
+
+            // Create the control for each mercenary...
+            for(key in data.Mercenaries) {
+                console.log(key);
+                var control = mercenaryControl.create("Mercenary_" + key);
+                control.init(this.mercenaryArea.getContentArea());
+                control.setMercenaryName(data.Mercenaries[key].name);
+                control.setMercenaryImage(static.imageRoot + data.Mercenaries[key].icon);
+                control.setMercenaryCost(0);
+                control.setMercenaryCount(0);
+                this.mercenaryControls[key] = control;
+            }
+        }
+
         // ---------------------------------------------------------------------------
         // update functions
         // ---------------------------------------------------------------------------
@@ -252,12 +270,17 @@ declare('UserInterface', function () {
             this.playerHealthBar.show();
             this.experienceBar.show();
 
-            this.playerName.setText(game.player.name);
+            this.playerArea.setHeaderText(game.player.name);
 
             var hp = game.player.getStat(data.StatDefinition.hp.id);
             var hpMax = game.player.getStat(data.StatDefinition.hpMax.id);
             this.playerHealthBar.setProgress(hp, hpMax);
             this.playerHealthBar.setProgressText("{0} / {1}".format(hp, hpMax));
+
+            var mp = game.player.getStat(data.StatDefinition.mp.id);
+            var mpMax = game.player.getStat(data.StatDefinition.mpMax.id);
+            this.playerManaBar.setProgress(mp, mpMax);
+            this.playerManaBar.setProgressText("{0} / {1}".format(mp, mpMax));
 
             var requiredXP = game.player.experienceRequired;
             var xp = game.player.getStat(data.StatDefinition.xp.id);
@@ -362,6 +385,10 @@ declare('UserInterface', function () {
             }
         }
 
+        this.updateMercenaryDialog = function(gameTime) {
+            //Todo
+        }
+
 
         // ---------------------------------------------------------------------------
         // utility functions
@@ -393,6 +420,7 @@ declare('UserInterface', function () {
 
         this.toggleMercenaryWindow = function() {
             this.mercenaryWindowShown = !this.mercenaryWindowShown;
+            this.mercenaryArea.toggle();
         }
 
         this.toggleUpgradeWindow = function() {

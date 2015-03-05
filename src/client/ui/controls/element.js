@@ -203,6 +203,10 @@ declare('Element', function() {
         this.getText = function() {
         	return this._mainDiv.text();
         };
+
+        this.setStyle = function(style) {
+            this._mainDiv.css(style);
+        }
         
         this.setAttribute = function(name, content) {
         	this._mainDiv.attr(name, content);

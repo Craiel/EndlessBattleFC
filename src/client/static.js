@@ -8,6 +8,15 @@ declare('Static', function () {
     function Static() {
         this.id = "Static";
 
+        this.dialogDefaultZIndex = 5;
+        this.dragZIndex = 100;
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Unchecked code below
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         this.AttackType = new Object();
         this.AttackType.BASIC_ATTACK = "BASIC_ATTACK";
         this.AttackType.POWER_STRIKE = "POWER_STRIKE";

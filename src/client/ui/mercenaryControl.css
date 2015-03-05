@@ -1,0 +1,22 @@
+.mercenaryControl {
+    position: relative;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.mercenaryImage {
+    top: 9px;
+    left: 9px;
+    width: 64px;
+    height: 64px;
+}
+
+.mercenaryName {
+    position: absolute;
+    top: 9px;
+    left: 77px;
+    height: 20px;
+    width: 100px;
+}

@@ -46,6 +46,8 @@ declare('Resources', function() {
             this.ImageIconUpgradeHover = static.imageRoot + "iconUpgradeHover.png";
             this.ImageIconMercenary = static.imageRoot + "iconMercenary.png";
             this.ImageIconMercenaryHover = static.imageRoot + "iconMercenaryHover.png";
+            this.ImageIconClose = static.imageRoot + "iconClose.png";
+            this.ImageIconCloseHover = static.imageRoot + "iconCloseHover.png";
             this.ImageResurrectionBar = static.imageRoot + "resurrectionBar.png";
             this.ImageMonsterHealthBar = static.imageRoot + "monsterHealthBar.png";
 
@@ -59,6 +61,26 @@ declare('Resources', function() {
             this.ImagePanelBeigeLB = static.imageRoot + "panelBeigeLB.png";
             this.ImagePanelBeigeB = static.imageRoot + "panelBeigeB.png";
             this.ImagePanelBeigeRB = static.imageRoot + "panelBeigeRB.png";
+
+            this.ImagePanelBeigeInsetLT = static.imageRoot + "panelBeigeInsetLT.png";
+            this.ImagePanelBeigeInsetT = static.imageRoot + "panelBeigeInsetT.png";
+            this.ImagePanelBeigeInsetRT = static.imageRoot + "panelBeigeInsetRT.png";
+            this.ImagePanelBeigeInsetL = static.imageRoot + "panelBeigeInsetL.png";
+            this.ImagePanelBeigeInsetContent = static.imageRoot + "panelBeigeInsetContent.png";
+            this.ImagePanelBeigeInsetR = static.imageRoot + "panelBeigeInsetR.png";
+            this.ImagePanelBeigeInsetLB = static.imageRoot + "panelBeigeInsetLB.png";
+            this.ImagePanelBeigeInsetB = static.imageRoot + "panelBeigeInsetB.png";
+            this.ImagePanelBeigeInsetRB = static.imageRoot + "panelBeigeInsetRB.png";
+
+            this.ImagePanelBeigeLightInsetLT = static.imageRoot + "panelBeigeLightInsetLT.png";
+            this.ImagePanelBeigeLightInsetT = static.imageRoot + "panelBeigeLightInsetT.png";
+            this.ImagePanelBeigeLightInsetRT = static.imageRoot + "panelBeigeLightInsetRT.png";
+            this.ImagePanelBeigeLightInsetL = static.imageRoot + "panelBeigeLightInsetL.png";
+            this.ImagePanelBeigeLightInsetContent = static.imageRoot + "panelBeigeLightInsetContent.png";
+            this.ImagePanelBeigeLightInsetR = static.imageRoot + "panelBeigeLightInsetR.png";
+            this.ImagePanelBeigeLightInsetLB = static.imageRoot + "panelBeigeLightInsetLB.png";
+            this.ImagePanelBeigeLightInsetB = static.imageRoot + "panelBeigeLightInsetB.png";
+            this.ImagePanelBeigeLightInsetRB = static.imageRoot + "panelBeigeLightInsetRB.png";
 
             this.ImagePanelBrownLT = static.imageRoot + "panelBrownLT.png";
             this.ImagePanelBrownT = static.imageRoot + "panelBrownT.png";

@@ -582,16 +582,16 @@ windowArea {
     width: 160px;
     height: 42px;
 }
-.mercenaryName {
+.mercenaryNameOld {
     position: absolute;
     left: 41px;
 }
-.mercenaryCost {
+.mercenaryCostOld {
     position: absolute;
     top: 14px;
     left: 53px;
 }
-.mercenaryAmount {
+.mercenaryAmountOld {
     position: absolute;
     top: 28px;
     left: 41px;
