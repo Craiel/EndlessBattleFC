@@ -1,4 +1,4 @@
-declare("StatGenerator", function () {
+declare('StatGenerator', function () {
     include('Component');
 
     StatGenerator.prototype = component.create();

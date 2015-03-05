@@ -2,3 +2,11 @@
     font-family: 'Gentium Book Basic';
     font-size: 16px;
 }
+
+.DialogTest {
+    position: absolute;
+    width: 300px;
+    height: 500px;
+    top: 50px;
+    left: 10px;
+}

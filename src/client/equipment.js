@@ -1,4 +1,4 @@
-declare("Equipment", function () {
+declare('Equipment', function () {
     include('Component');
     include('TooltipManager');
     include('Resources');

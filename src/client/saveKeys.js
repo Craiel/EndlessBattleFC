@@ -1,4 +1,4 @@
-declare("SaveKeys", function() {
+declare('SaveKeys', function() {
 	return {
 		idnGameVersion: StrSha('version'),
 		idnGameBattleLevel: StrSha('battleLevel'),

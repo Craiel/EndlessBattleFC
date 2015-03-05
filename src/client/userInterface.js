@@ -1,4 +1,4 @@
-declare("UserInterface", function () {
+declare('UserInterface', function () {
     include('Assert');
     include('Component');
     include('Static');
@@ -20,6 +20,7 @@ declare("UserInterface", function () {
     include('ProgressBar');
     include('Panel');
     include('Button');
+    include('Dialog');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -64,6 +65,8 @@ declare("UserInterface", function () {
         this.levelUpButton = undefined;
         this.attackButton = undefined;
 
+        this.testDialog = undefined;
+
         // ---------------------------------------------------------------------------
         // basic functions
         // ---------------------------------------------------------------------------
@@ -76,6 +79,11 @@ declare("UserInterface", function () {
             this.initPlayerArea();
             this.initSystemArea();
             this.initBattleArea();
+
+            this.testDialog = dialog.create("DialogTest");
+            this.testDialog.init();
+            this.testDialog.setHeaderText("Test Dialog");
+            this.testDialog.onClose = this.onDialogClose;
 
             this.setupWindowState();
         };
@@ -148,27 +156,32 @@ declare("UserInterface", function () {
                 resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
 
             this.inventoryWindowButton = button.create("inventoryWindowButton");
-            this.inventoryWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleInventoryWindow(); };
+            this.inventoryWindowButton.callback = function(obj) { obj.data.arg.toggleInventoryWindow(); };
+            this.inventoryWindowButton.callbackArgument = this;
             this.inventoryWindowButton.init(this.systemArea.getContentArea());
             this.inventoryWindowButton.setImages(undefined, resources.ImageIconBackpackHover, resources.ImageIconBackpack);
 
             this.characterWindowButton = button.create("characterWindowButton");
-            this.characterWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleCharacterWindow(); };
+            this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
+            this.characterWindowButton.callbackArgument = this;
             this.characterWindowButton.init(this.systemArea.getContentArea());
             this.characterWindowButton.setImages(undefined, resources.ImageIconCharacterHover, resources.ImageIconCharacter);
 
             this.questWindowButton = button.create("questWindowButton");
-            this.questWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleQuestWindow(); };
+            this.questWindowButton.callback = function(obj) { obj.data.arg.toggleQuestWindow(); };
+            this.questWindowButton.callbackArgument = this;
             this.questWindowButton.init(this.systemArea.getContentArea());
             this.questWindowButton.setImages(undefined, resources.ImageIconQuestHover, resources.ImageIconQuest);
 
             this.mercenaryWindowButton = button.create("mercenaryWindowButton");
-            this.mercenaryWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleMercenaryWindow(); };
+            this.mercenaryWindowButton.callback = function(obj) { obj.data.arg.toggleMercenaryWindow(); };
+            this.mercenaryWindowButton.callbackArgument = this;
             this.mercenaryWindowButton.init(this.systemArea.getContentArea());
             this.mercenaryWindowButton.setImages(undefined, resources.ImageIconMercenaryHover, resources.ImageIconMercenary);
 
             this.upgradeWindowButton = button.create("upgradeWindowButton");
-            this.upgradeWindowButton.callback = function(obj) { include('UserInterface'); userInterface.toggleUpgradeWindow(); };
+            this.upgradeWindowButton.callback = function(obj) { obj.data.arg.toggleUpgradeWindow(); };
+            this.upgradeWindowButton.callbackArgument = this;
             this.upgradeWindowButton.init(this.systemArea.getContentArea());
             this.upgradeWindowButton.setImages(undefined, resources.ImageIconUpgradeHover, resources.ImageIconUpgrade);
         }
@@ -430,27 +443,6 @@ declare("UserInterface", function () {
             battleLevelText.style.top = '600px';
             battleLevelText.innerHTML = text;
             $("#battleLevelText").animate({top: '-=50px', opacity: '0'}, 1000);
-        }
-
-        // When one of the sell all checkboxes are clicked, update the player's auto sell preferance
-        this.sellAllCheckboxClicked = function(checkbox, id) {
-            switch (id) {
-                case 1:
-                    game.inventory.autoSellCommons = checkbox.checked;
-                    break;
-                case 2:
-                    game.inventory.autoSellUncommons = checkbox.checked;
-                    break;
-                case 3:
-                    game.inventory.autoSellRares = checkbox.checked;
-                    break;
-                case 4:
-                    game.inventory.autoSellEpics = checkbox.checked;
-                    break;
-                case 5:
-                    game.inventory.autoSellLegendaries = checkbox.checked;
-                    break;
-            }
         }
 
         this.clickEventButton = function(obj, id) {
@@ -1671,10 +1663,6 @@ declare("UserInterface", function () {
             }
         }
 
-        this.saveButtonClick = function() {
-            game.save();
-        }
-
         this.resetButtonClick = function() {
             fullReset = false;
             var powerShardsAvailable = game.calculatePowerShardReward();
@@ -1779,7 +1767,7 @@ declare("UserInterface", function () {
             $("#options").mousedown({self: this}, this.optionsWindowButtonClick);
             $("#stats").mousedown({self: this}, this.statsWindowButtonClick);
 
-            $("#saveButton").mousedown({self: this}, this.saveButtonClick);
+            $("#save").mousedown({self: this}, function(obj) { game.save(); });
             $("#reset").mousedown({self: this}, this.resetButtonClick);
             $("#fullReset").mousedown({self: this}, this.fullResetButtonClick);
 
@@ -1938,11 +1926,6 @@ declare("UserInterface", function () {
             $("#upgradesWindowButtonGlow").hide();
             $(".questsWindowButton").hide();
             $("#questsWindowButtonGlow").hide();*/
-            $("#checkboxWhite").hide();
-            $("#checkboxGreen").hide();
-            $("#checkboxBlue").hide();
-            $("#checkboxPurple").hide();
-            $("#checkboxOrange").hide();
 
             $("#resetConfirmWindow").hide();
 

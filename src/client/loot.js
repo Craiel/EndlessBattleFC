@@ -1,4 +1,4 @@
-declare("Loot", function () {
+declare('Loot', function () {
 
     function Loot(gold, item) {
         this.gold = gold;

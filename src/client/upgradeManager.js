@@ -1,4 +1,4 @@
-declare("UpgradeManager", function () {
+declare('UpgradeManager', function () {
     include('Component');
     include('Static');
     include('Upgrade');
@@ -108,13 +108,6 @@ declare("UpgradeManager", function () {
             // Attack Upgrades
             this.upgrades.push(upgrade.create("Power Strike",monsterCreator.calculateMonsterGoldWorth(50, static.MonsterRarity.COMMON) * 400, static.UpgradeType.ATTACK, static.UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
             this.upgrades.push(upgrade.create("Double Strike",monsterCreator.calculateMonsterGoldWorth(100, static.MonsterRarity.COMMON) * 400, static.UpgradeType.ATTACK, static.UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
-
-            // Auto Loot Upgrades
-            this.upgrades.push(upgrade.create("Vendor",monsterCreator.calculateMonsterGoldWorth(25, static.MonsterRarity.COMMON) * 200, static.UpgradeType.AUTO_SELL, static.UpgradeRequirementType.ITEMS_LOOTED, 100, "Doubles the amount of gold items are worth and allows you to automatically sell common items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(upgrade.create("Trader",monsterCreator.calculateMonsterGoldWorth(50, static.MonsterRarity.COMMON) * 200, static.UpgradeType.AUTO_SELL, static.UpgradeRequirementType.ITEMS_LOOTED, 200, "Doubles the amount of gold items are worth and allows you to automatically sell uncommon items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(upgrade.create("Merchant",monsterCreator.calculateMonsterGoldWorth(100, static.MonsterRarity.COMMON) * 200, static.UpgradeType.AUTO_SELL, static.UpgradeRequirementType.ITEMS_LOOTED, 400, "Doubles the amount of gold items are worth and allows you to automatically sell rare items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(upgrade.create("Storekeeper",monsterCreator.calculateMonsterGoldWorth(150, static.MonsterRarity.COMMON) * 200, static.UpgradeType.AUTO_SELL, static.UpgradeRequirementType.ITEMS_LOOTED, 800, "Doubles the amount of gold items are worth and allows you to automatically sell epic items. This can be set in your inventory.", 200, 40));
-            this.upgrades.push(upgrade.create("Operator",monsterCreator.calculateMonsterGoldWorth(250, static.MonsterRarity.COMMON) * 200, static.UpgradeType.AUTO_SELL, static.UpgradeRequirementType.ITEMS_LOOTED, 1600, "Doubles the amount of gold items are worth and allows you to automatically sell legendary items. This can be set in your inventory.", 200, 40));
         }
 
         this.componentUpdate = this.update;
@@ -270,7 +263,6 @@ declare("UpgradeManager", function () {
                 this.upgradesPurchased++;
                 this.purchaseButtonUpgradeIds.splice(id, 1);
 
-                var autoSellUpgradePurchased = false;
                 // Apply the bonus
                 switch (upgrade.type) {
                     case static.UpgradeType.GPS:
@@ -316,27 +308,6 @@ declare("UpgradeManager", function () {
                                 break;
                         }
                         break;
-                    case static.UpgradeType.AUTO_SELL:
-                        autoSellUpgradePurchased = true;
-                        gameState.autoSellUpgradesPurchased++;
-                        switch (upgrade.name) {
-                            case "Vendor":
-                                $("#checkboxWhite").show();
-                                break;
-                            case "Trader":
-                                $("#checkboxGreen").show();
-                                break;
-                            case "Merchant":
-                                $("#checkboxBlue").show();
-                                break;
-                            case "Storekeeper":
-                                $("#checkboxPurple").show();
-                                break;
-                            case "Operator":
-                                $("#checkboxOrange").show();
-                                break;
-                        }
-                        break;
                     case static.UpgradeType.ATTACK:
                         switch (upgrade.name) {
                             case "Power Strike":
@@ -348,20 +319,6 @@ declare("UpgradeManager", function () {
                                 game.player.changeAttack(static.AttackType.DOUBLE_STRIKE);
                                 break;
                         }
-                }
-
-                // If an auto sell upgrade was purchased then upgrade the gold value on all items the player currently has
-                if (autoSellUpgradePurchased) {
-                    for (var x = 0; x < game.inventory.slots.length; x++) {
-                        if (game.inventory.slots[x] != null) {
-                            game.inventory.slots[x].sellValue *= 2;
-                        }
-                    }
-                    for (var x = 0; x < game.equipment.slots.length; x++) {
-                        if (game.equipment.slots[x] != null) {
-                            game.equipment.slots[x].sellValue *= 2;
-                        }
-                    }
                 }
 
                 // Remove the button and organise the others
@@ -522,24 +479,6 @@ declare("UpgradeManager", function () {
                         newDiv2.appendChild(newDiv3);
                     }
                 }
-
-                // Show the auto selling checkboxes the player has unlocked
-                if (this.upgrades[57].purchased) {
-                    $("#checkboxWhite").show();
-                }
-                if (this.upgrades[58].purchased) {
-                    $("#checkboxGreen").show();
-                }
-                if (this.upgrades[59].purchased) {
-                    $("#checkboxBlue").show();
-                }
-                if (this.upgrades[60].purchased) {
-                    $("#checkboxPurple").show();
-                }
-                if (this.upgrades[61].purchased) {
-                    $("#checkboxOrange").show();
-                }
-
             }
         }
     }

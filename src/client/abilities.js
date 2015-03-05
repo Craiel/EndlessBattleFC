@@ -1,4 +1,4 @@
-declare("Abilities", function () {
+declare('Abilities', function () {
     include('Component');
     include('Static');
 

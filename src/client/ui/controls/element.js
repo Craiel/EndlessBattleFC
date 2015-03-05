@@ -1,9 +1,8 @@
-declare("Element", function() {
-	include("$");
-	include("Log");
-	include("Assert");
-	include("TemplateProvider");
-	include("Component");
+declare('Element', function() {
+	include('Log');
+	include('Assert');
+	include('TemplateProvider');
+	include('Component');
     
     var RootParentKey = "__ROOT__";
         

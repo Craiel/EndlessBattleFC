@@ -1,4 +1,4 @@
-declare("Upgrade", function () {
+declare('Upgrade', function () {
 
      function Upgrade(name, cost, type, requirementType, requirementAmount, description, iconSourceLeft, iconSourceTop) {
         this.name = name;

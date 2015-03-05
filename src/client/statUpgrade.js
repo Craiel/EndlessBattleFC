@@ -1,4 +1,4 @@
-declare("StatUpgrade", function () {
+declare('StatUpgrade', function () {
 
     // A random stat the player can choose when they level up
     function StatUpgrade() {

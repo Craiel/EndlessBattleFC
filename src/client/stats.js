@@ -1,4 +1,4 @@
-declare("Stats", function () {
+declare('Stats', function () {
     include('Component');
     include('MercenaryManager');
     include('UpgradeManager');

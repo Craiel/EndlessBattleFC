@@ -1,9 +1,9 @@
-declare("ProgressBar", function() {
-	include("Log");
-	include("Assert");
-	include("Static");
-	include("Element");
-    include("CoreUtils");
+declare('ProgressBar', function() {
+	include('Log');
+	include('Assert');
+	include('Static');
+	include('Element');
+    include('CoreUtils');
     
     ProgressBar.prototype = element.create();
     ProgressBar.prototype.$super = parent;

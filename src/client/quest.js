@@ -1,4 +1,4 @@
-declare("Quest", function () {
+declare('Quest', function () {
     include('Component');
     include('MercenaryManager');
     include('UpgradeManager');

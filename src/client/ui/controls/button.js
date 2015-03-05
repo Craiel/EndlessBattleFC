@@ -1,9 +1,9 @@
-declare("Button", function() {
-    include("Log");
-    include("Assert");
-    include("Static");
-    include("Element");
-    include("CoreUtils");
+declare('Button', function() {
+    include('Log');
+    include('Assert');
+    include('Static');
+    include('Element');
+    include('CoreUtils');
 
     Button.prototype = element.create();
     Button.prototype.$super = parent;
@@ -18,6 +18,7 @@ declare("Button", function() {
         this.hoverImage = undefined;
         this.foregroundImage = undefined;
         this.callback = undefined;
+        this.callbackArgument = undefined;
 
         // ---------------------------------------------------------------------------
         // overrides
@@ -32,7 +33,7 @@ declare("Button", function() {
 
             assert.isDefined(this.callback, "Callback must be set before init");
 
-            this.getMainElement().mousedown({self: this}, this.callback);
+            this.getMainElement().mousedown({self: this, arg: this.callbackArgument}, this.callback);
 
             this._setupEvents();
         };

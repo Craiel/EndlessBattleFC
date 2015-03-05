@@ -1,5 +1,5 @@
-declare("Effect", function () {
-    include("Static");
+declare('Effect', function () {
+    include('Static');
 
     function Effect(type, chance, value) {
         this.type = type;

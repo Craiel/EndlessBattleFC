@@ -1,4 +1,4 @@
-declare("BuffSet", function () {
+declare('BuffSet', function () {
     include('Buff');
     include('Static');
     include('Resources');

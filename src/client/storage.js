@@ -1,4 +1,4 @@
-declare("Storage", function() {
+declare('Storage', function() {
 	include('Assert');
 	include('Component');
 	include('StorageSlot');

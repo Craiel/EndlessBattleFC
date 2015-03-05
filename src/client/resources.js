@@ -1,6 +1,6 @@
-declare("Resources", function() {
-	include("Static");
-	include("Component");
+declare('Resources', function() {
+	include('Static');
+	include('Component');
 
 	Resources.prototype = component.create();
     Resources.prototype.$super = parent;

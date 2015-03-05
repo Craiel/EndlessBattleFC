@@ -1,6 +1,6 @@
-declare("Save", function() {
-    include("Log");
-    include("CoreSave");
+declare('Save', function() {
+    include('Log');
+    include('CoreSave');
     
     Save.prototype = coreSave.create();
     Save.prototype.$super = parent;

@@ -1,4 +1,4 @@
-declare("Mercenary", function () {
+declare('Mercenary', function () {
 
     function Mercenary(type) {
         this.type = type;

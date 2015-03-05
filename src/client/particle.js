@@ -1,4 +1,4 @@
-declare("Particle", function () {
+declare('Particle', function () {
 
     function Particle(image, text, textColour, x, y, width, height, velocityX, velocityY, duration) {
         this.image = image;

@@ -930,15 +930,6 @@ windowArea {
     font-size: 16px;
 }
 
-
-
-
-#checkboxWhite { left: 4px; }
-#checkboxGreen { left: 18px; }
-#checkboxBlue { left: 32px; }
-#checkboxPurple { left: 46px; }
-#checkboxOrange { left: 60px; }
-
 .checkbox {
     position: absolute;
 	width: 11px;

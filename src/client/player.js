@@ -1,4 +1,4 @@
-declare("Player", function () {
+declare('Player', function () {
     include('Assert');
     include('Log');
     include('Actor');
@@ -15,6 +15,7 @@ declare("Player", function () {
     include('Save');
     include('SaveKeys');
     include('Data');
+    include('StatUtils');
 
     Player.prototype = actor.create();
     Player.prototype.$super = parent;
@@ -33,6 +34,8 @@ declare("Player", function () {
 
         this.hp5Delay = 5000;
         this.hp5Time = 0;
+        this.mp5Delay = 5000;
+        this.mp5Time = 0;
 
         this.resurrectionTime = 0;
         this.resurrectionDelay = 10000;
@@ -47,9 +50,9 @@ declare("Player", function () {
         // ---------------------------------------------------------------------------
         this.actorInit = this.init;
         this.init = function() {
-            this.actorInit();
+            this.actorInit(this[saveKeys.idnPlayerBaseStats]);
 
-            this.initStats(this[saveKeys.idnPlayerBaseStats]);
+            statUtils.initStats(this[saveKeys.idnPlayerBaseStats]);
         }
 
         this.actorUpdate = this.update;
@@ -58,14 +61,14 @@ declare("Player", function () {
                 return false;
             }
 
-            // Check if we need to recompute the actor state
-            if(this.statsChanged === true) {
-                this.computeActorStats();
-            }
-
             // Perform some basic operations that happen when the player is alive
             if(this.alive === true) {
-                this.processHP5(gameTime);
+                // Hp5
+                this.hp5Time = this.processStatTick(gameTime, data.StatDefinition.hp5.id, this.hp5Time, this.hp5Delay, function(self, value) { self.heal(value); });
+
+                // Mp5
+                this.mp5Time = this.processStatTick(gameTime, data.StatDefinition.mp5.id, this.mp5Time, this.mp5Delay, function(self, value) { self.healMp(value); });
+
                 this.processResurrectionDelay(gameTime);
             } else {
                 this.processResurrection(gameTime);
@@ -77,16 +80,12 @@ declare("Player", function () {
         // ---------------------------------------------------------------------------
         // getters / setters
         // ---------------------------------------------------------------------------
-        this.getLevel = function() {
-            return this[saveKeys.idnLevel];
+        this.getBaseStats = function() {
+            return this[saveKeys.idnPlayerBaseStats];
         }
 
-        this.getBaseStatValue = function(stat) {
-            if(this[saveKeys.idnPlayerBaseStats][stat] === undefined) {
-                return 0;
-            }
-
-            return this[saveKeys.idnPlayerBaseStats][stat];
+        this.getLevel = function() {
+            return this[saveKeys.idnLevel];
         }
 
         this.getAverageDamage = function() {
@@ -106,33 +105,6 @@ declare("Player", function () {
         }
 
         // ---------------------------------------------------------------------------
-        // stats
-        // ---------------------------------------------------------------------------
-        this.getStat = function(stat) {
-            if(this.statsChanged === true) {
-                this.computeActorStats();
-            }
-
-            return this.doGetStat(stat);
-        }
-        this.setStat = function(stat, value) {
-            this.statsChanged = this.doSetStat(stat, value, this[saveKeys.idnPlayerBaseStats]);
-        }
-
-        this.modifyStat = function(stat, value) {
-            this.statsChanged = this.doModifyStat(stat, value, this[saveKeys.idnPlayerBaseStats]);
-        }
-
-        this.computeActorStats = function() {
-            // Todo: compute the state from items
-
-            var states = [];
-            states.push(this[saveKeys.idnPlayerBaseStats]);
-            this.mergeIntoActorStats(states);
-            this.statsChanged = false;
-        }
-
-        // ---------------------------------------------------------------------------
         // player functions
         // ---------------------------------------------------------------------------
         this.levelUp = function() {
@@ -144,7 +116,6 @@ declare("Player", function () {
             this.legacyLevelUp();
         }
 
-        // Heal the player for a specified amount
         this.heal = function(amount) {
             this.modifyStat(data.StatDefinition.hp.id, amount);
             if (this.getStat(data.StatDefinition.hp.id) > this.getStat(data.StatDefinition.hpMax.id)) {
@@ -152,21 +123,29 @@ declare("Player", function () {
             }
         }
 
-        // Regenerate the players health depending on how much time has passed
-        this.processHP5 = function(gameTime) {
-            if(this.hp5Time === 0) {
-                this.hp5Time = gameTime.current;
-                return;
+        this.healMp = function(amount) {
+            this.modifyStat(data.StatDefinition.mp.id, amount);
+            if(this.getStat(data.StatDefinition.mp.id) > this.getStat(data.StatDefinition.mpMax.id)) {
+                this.setStat(data.StatDefinition.mp.id, this.getStat(data.StatDefinition.mpMax.id));
+            }
+        }
+
+        // Process a tick for a given stat and values, ticks for how many time passed and returns the tickTime back
+        this.processStatTick = function(gameTime, statId, tickTime, delay, tickCallback) {
+            if(tickTime === 0) {
+                return gameTime.current;
             }
 
-            var hp5 = this.getStat(data.StatDefinition.hp5.id);
-            var timeMissed = Math.floor(Math.abs(gameTime.current - (this.hp5Time + this.hp5Delay)) / this.hp5Delay);
+            var tickValue = this.getStat(statId);
+            var timeMissed = Math.floor(Math.abs(gameTime.current - (tickTime + delay)) / delay);
             if(timeMissed > 0) {
                 for (var i = 0; i < timeMissed; i++) {
-                    this.heal(hp5);
+                    tickCallback(this, tickValue);
                 }
 
-                this.hp5Time = gameTime.current;
+                return gameTime.current;
+            } else {
+                return tickTime;
             }
         }
 
@@ -236,21 +215,21 @@ declare("Player", function () {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Stat bonuses automatically gained when leveling up
         this.baseLevelUpBonuses = {};
-        this.initStats(this.baseLevelUpBonuses);
+        statUtils.initStats(this.baseLevelUpBonuses);
         this.baseLevelUpBonuses.health = 5;
         this.baseLevelUpBonuses.hp5 = 1;
 
         // The amount of stats the player has gained from leveling up
         this.levelUpBonuses = {};
-        this.initStats(this.levelUpBonuses);
+        statUtils.initStats(this.levelUpBonuses);
 
         // Stat bonuses chosen when leveling up
         this.chosenLevelUpBonuses = {};
-        this.initStats(this.chosenLevelUpBonuses);
+        statUtils.initStats(this.chosenLevelUpBonuses);
 
         // Item stat bonuses; this does not include increases to these stats
         this.baseItemBonuses = {};
-        this.initStats(this.baseItemBonuses);
+        statUtils.initStats(this.baseItemBonuses);
 
         // All the special effects from items the player has
         this.effects = new Array();

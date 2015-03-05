@@ -1,6 +1,6 @@
-declare("TemplateProvider", function() {
-	include("Log");
-    include("Assert");
+declare('TemplateProvider', function() {
+	include('Log');
+    include('Assert');
     
 	var data = undefined;
 	

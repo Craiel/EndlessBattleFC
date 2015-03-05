@@ -1,4 +1,4 @@
-declare("ParticleManager", function () {
+declare('ParticleManager', function () {
     include('Component');
     include('Static');
     include('Particle');

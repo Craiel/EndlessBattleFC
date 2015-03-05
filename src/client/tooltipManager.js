@@ -1,4 +1,4 @@
-declare("TooltipManager", function () {
+declare('TooltipManager', function () {
     include('Component');
     include('Static');
 

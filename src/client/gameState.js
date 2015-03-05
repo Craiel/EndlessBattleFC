@@ -1,4 +1,4 @@
-declare("GameState", function () {
+declare('GameState', function () {
     include('Component');
     include('Static');
     include('Save');
@@ -26,8 +26,6 @@ declare("GameState", function () {
         this.mageSpecialUpgradesPurchased = 0;
         this.assassinSpecialUpgradesPurchased = 0;
         this.warlockSpecialUpgradesPurchased = 0;
-
-        this.autoSellUpgradesPurchased = 0;
 
         // The amount of gps mercenaries will give without any buffs
         this.footmanGps = static.baseFootmanGps;
@@ -79,8 +77,6 @@ declare("GameState", function () {
             localStorage.assassinSpecialUpgradesPurchased = this.assassinSpecialUpgradesPurchased;
             localStorage.warlockSpecialUpgradesPurchased = this.warlockSpecialUpgradesPurchased;
 
-            localStorage.autoSellUpgradesPurchased = this.autoSellUpgradesPurchased;
-
             localStorage.footmenOwned = this.footmenOwned;
             localStorage.clericsOwned = this.clericsOwned;
             localStorage.commandersOwned = this.commandersOwned;
@@ -114,10 +110,6 @@ declare("GameState", function () {
             }
             if (localStorage.warlockSpecialUpgradesPurchased != null) {
                 this.warlockSpecialUpgradesPurchased = localStorage.warlockSpecialUpgradesPurchased;
-            }
-
-            if (localStorage.autoSellUpgradesPurchased != null) {
-                this.autoSellUpgradesPurchased = parseInt(localStorage.autoSellUpgradesPurchased);
             }
 
             this.footmenOwned = parseInt(localStorage.footmenOwned);

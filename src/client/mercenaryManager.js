@@ -1,4 +1,4 @@
-declare("MercenaryManager", function () {
+declare('MercenaryManager', function () {
     include('Component');
     include('Static');
     include('GameState');

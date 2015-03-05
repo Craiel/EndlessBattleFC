@@ -1,4 +1,4 @@
-declare("Actor", function () {
+declare('Actor', function () {
     include('Assert');
     include('Log');
     include('Component');
@@ -8,6 +8,7 @@ declare("Actor", function () {
     include('BuffSet');
     include('Data');
     include('Storage');
+    include('StatUtils');
 
     Actor.prototype = component.create();
     Actor.prototype.$super = parent;
@@ -18,6 +19,7 @@ declare("Actor", function () {
 
         // General
         this.actorStats = {};
+        this.statsChanged = true;
         this.storage = undefined;
 
         // Combat
@@ -33,8 +35,10 @@ declare("Actor", function () {
         // basic functions
         // ---------------------------------------------------------------------------
         this.componentInit = this.init;
-        this.init = function() {
+        this.init = function(baseStats) {
             this.componentInit();
+
+            assert.isDefined(this.getBaseStats, "Actor needs to have a getBaseStats() function");
 
             this.storage = storage.create(this.id);
             this.storage.init();
@@ -44,6 +48,11 @@ declare("Actor", function () {
         this.update = function(gameTime) {
             if(this.componentUpdate(gameTime) !== true) {
                 return false;
+            }
+
+            // Check if we need to recompute the actor state
+            if(this.statsChanged === true) {
+                this.computeActorStats();
             }
 
             this.buffs.update(gameTime);
@@ -73,49 +82,11 @@ declare("Actor", function () {
         // ---------------------------------------------------------------------------
         // Stats functions
         // ---------------------------------------------------------------------------
-        this.initStats = function(stats, useDefaults) {
-            for (stat in data.StatDefinition) {
-                if(useDefaults === undefined || useDefaults === true) {
-                    stats[stat] = data.StatDefinition[stat].default;
-                }
-
-                // Ensure each stat is assigned with at least 0
-                if(stats[stat] === undefined) {
-                    if(data.StatDefinition[stat].isMultiplier !== true) {
-                        stats[stat] = 0;
-                    } else {
-                        stats[stat] = 1.0;
-                    }
-                }
-            }
-        }
-
-        this.mergeIntoActorStats = function(statObjects) {
-            this.actorStats = {};
-            this.initStats(this.actorStats, false);
-            var trickleDowns = {};
-            this.initStats(trickleDowns, false);
-
-            for(var i = 0; i < statObjects.length; i++) {
-                this.getTrickleDownStats(statObjects[i], trickleDowns);
-                this.doMergeActorStats(statObjects[i]);
+        this.getStat = function(stat) {
+            if(this.statsChanged === true) {
+                this.computeActorStats();
             }
 
-            this.doMergeActorStats(trickleDowns);
-        }
-
-        this.doMergeActorStats = function(stats) {
-            for(var stat in stats) {
-                var value = stats[stat];
-                if(data.StatDefinition[stat].isMultiplier !== 1) {
-                    this.actorStats[stat] += value;
-                } else {
-                    this.actorStats[stat] += (value - 1.0);
-                }
-            }
-        }
-
-        this.doGetStat = function(stat) {
             if(this.actorStats[stat] === undefined) {
                 return 0;
             }
@@ -123,68 +94,27 @@ declare("Actor", function () {
             return this.actorStats[stat];
         }
 
-        this.doSetStat = function(stat, value, target) {
-            assert.isDefined(value);
-            assert.isNotNaN(value);
-
-            // Avoid changing if it's the same
-            if(target[stat] !== value) {
-                target[stat] = value;
-                if(data.StatDefinition[stat].isMultiplier !== true) {
-                    target[stat] = Math.floor(target[stat]);
-                }
-
-                return true;
-            } else {
-                return false;
+        this.getBaseStat = function(stat) {
+            if(this.getBaseStats()[stat] === undefined) {
+                return 0;
             }
+
+            return this.getBaseStats()[stat];
         }
 
-        this.doModifyStat = function(stat, value, target) {
-            assert.isDefined(value);
-            assert.isNotNaN(value);
-
-            // Avoid modifying by zero
-            if(value === 0) {
-                return false;
-            }
-
-            // Modify the value and ensure its in the valid range
-            target[stat] += value;
-            if(data.StatDefinition[stat].isMultiplier !== true) {
-                target[stat] = Math.floor(target[stat]);
-            }
-
-            return true;
+        this.setStat = function(stat, value) {
+            this.statsChanged = statUtils.doSetStat(stat, value, this.getBaseStats());
         }
 
-        this.getTrickleDownStats = function(sourceStats, target) {
-            for(stat in sourceStats) {
-                var value = sourceStats[stat];
-                switch (stat) {
-                    case data.StatDefinition.str.id:
-                    {
-                        this.doModifyStat(data.StatDefinition.hpMax.id, value * 2, target);
-                        this.doModifyStat(data.StatDefinition.dmgMin.id, value, target);
-                        this.doModifyStat(data.StatDefinition.dmgMax.id, value, target);
-                        break;
-                    }
+        this.modifyStat = function(stat, value) {
+            this.statsChanged = statUtils.doModifyStat(stat, value, this.getBaseStats());
+        }
 
-                    case data.StatDefinition.agi.id:
-                    {
-                        this.doModifyStat(data.StatDefinition.critDmg.id, (value * 2) / 100, target);
-                        this.doModifyStat(data.StatDefinition.evaRate.id, value, target);
-                        break;
-                    }
-
-                    case data.StatDefinition.sta.id:
-                    {
-                        this.doModifyStat(data.StatDefinition.hpMax.id, value * 5, target);
-                        this.doModifyStat(data.StatDefinition.hp5.id, value, target);
-                        break;
-                    }
-                }
-            }
+        this.computeActorStats = function() {
+            var stats = [];
+            stats.push(this.getBaseStats());
+            this.actorStats = statUtils.mergeStats(stats);
+            this.statsChanged = false;
         }
     }
 

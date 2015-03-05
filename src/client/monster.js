@@ -1,4 +1,4 @@
-declare("Monster", function () {
+declare('Monster', function () {
     include('Actor');
     include('BuffSet');
     include('Static');
@@ -6,6 +6,7 @@ declare("Monster", function () {
     include('GameState');
     include('Loot');
     include('Data');
+    include('StatUtils');
 
     Monster.prototype = actor.create();
     Monster.prototype.$super = parent;
@@ -17,7 +18,6 @@ declare("Monster", function () {
         this.id = "Monster" + nextId++;
 
         this.baseStats = {};
-        this.statsChanged = true;
 
         // ---------------------------------------------------------------------------
         // basic functions
@@ -26,7 +26,7 @@ declare("Monster", function () {
         this.init = function() {
             this.actorInit();
 
-            this.initStats(this.baseStats, false);
+            statUtils.initStats(this.baseStats, false);
         }
 
         this.actorUpdate = this.update;
@@ -35,45 +35,15 @@ declare("Monster", function () {
                 return false;
             }
 
-            // Check if we need to recompute the actor state
-            if(this.statsChanged === true) {
-                this.computeActorStats();
-            }
-
             return true;
         }
 
         // ---------------------------------------------------------------------------
-        // stats
+        // getters / setters
         // ---------------------------------------------------------------------------
-        this.getStat = function(stat) {
-            if(this.statsChanged === true) {
-                this.computeActorStats();
-            }
-
-            return this.doGetStat(stat);
+        this.getBaseStats = function() {
+            return this.baseStats;
         }
-
-        this.setStat = function(stat, value) {
-            this.statsChanged = this.doSetStat(stat, value, this.baseStats);
-        }
-
-        this.modifyStat = function(stat, value) {
-            this.statsChanged = this.doModifyStat(stat, value, this.baseStats);
-        }
-
-        this.computeActorStats = function() {
-            // Todo: compute the state from items
-
-            var states = [];
-            states.push(this.baseStats);
-            this.mergeIntoActorStats(states);
-            this.statsChanged = false;
-        }
-
-
-
-
 
 
 

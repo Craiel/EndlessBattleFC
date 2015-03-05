@@ -1,4 +1,4 @@
-declare("ItemBonuses", function () {
+declare('ItemBonuses', function () {
 
     function ItemBonuses() {
         this.minDamage = 0;

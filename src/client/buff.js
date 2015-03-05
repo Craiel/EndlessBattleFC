@@ -1,4 +1,4 @@
-declare("Buff", function () {
+declare('Buff', function () {
 
     function Buff(name, type, multiplier, duration, leftPos, topPos) {
         this.id = null;

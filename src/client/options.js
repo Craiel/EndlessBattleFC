@@ -1,4 +1,4 @@
-declare("Options", function () {
+declare('Options', function () {
     include('Component');
 
     Options.prototype = component.create();

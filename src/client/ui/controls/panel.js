@@ -1,9 +1,9 @@
-declare("Panel", function() {
-    include("Log");
-    include("Assert");
-    include("Static");
-    include("Element");
-    include("CoreUtils");
+declare('Panel', function() {
+    include('Log');
+    include('Assert');
+    include('Static');
+    include('Element');
+    include('CoreUtils');
 
     Panel.prototype = element.create();
     Panel.prototype.$super = parent;
@@ -43,7 +43,7 @@ declare("Panel", function() {
         };
 
         // ---------------------------------------------------------------------------
-        // progress bar functions
+        // panel functions
         // ---------------------------------------------------------------------------
         this.setImages = function(topLeft, top, topRight, left, mid, right, bottomLeft, bottom, bottomRight) {
             this.topLeftImage = topLeft;

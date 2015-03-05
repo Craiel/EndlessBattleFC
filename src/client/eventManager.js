@@ -1,4 +1,4 @@
-declare("EventManager", function () {
+declare('EventManager', function () {
     include('Component');
     include('QuestManager');
     include('Static');

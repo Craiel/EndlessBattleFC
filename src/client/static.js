@@ -1,4 +1,4 @@
-declare("Static", function () {
+declare('Static', function () {
     include('Component');
 
     Static.prototype = component.create();
@@ -164,7 +164,6 @@ declare("Static", function () {
         this.UpgradeType.GPS = "GPS";
         this.UpgradeType.SPECIAL = "SPECIAL";
         this.UpgradeType.ATTACK = "ATTACK";
-        this.UpgradeType.AUTO_SELL = "AUTO_SELL";
 
         this.UpgradeRequirementType = new Object();
         this.UpgradeRequirementType.FOOTMAN = "FOOTMAN";

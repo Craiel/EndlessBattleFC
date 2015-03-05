@@ -1,4 +1,4 @@
-declare("Game", function() {
+declare('Game', function() {
     include('Component');
     include('Player');
     include('Inventory');
@@ -243,6 +243,7 @@ declare("Game", function() {
                 this.player.gainExperience(this.monster.experienceWorth, true);
                 this.stats.experienceFromMonsters += this.player.lastExperienceGained;
                 if (loot.item != null) {
+                    game.player.giveItem(loot.item);
                     this.inventory.lootItem(loot.item);
                 }
 
@@ -392,12 +393,6 @@ declare("Game", function() {
             $("#questsWindow").hide();*/
 
             $("#gps").css('color', '#ffd800');
-
-            /*$("#checkboxWhite").hide();
-            $("#checkboxGreen").hide();
-            $("#checkboxBlue").hide();
-            $("#checkboxPurple").hide();
-            $("#checkboxOrange").hide();*/
 
             // Reset the mercenary amounts and prices to default
             document.getElementById("footmanCost").innerHTML = gameState.footmanPrice.formatMoney(0);

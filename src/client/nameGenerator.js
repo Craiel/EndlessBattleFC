@@ -1,4 +1,4 @@
-declare("NameGenerator", function () {
+declare('NameGenerator', function () {
     include('Component');
     include('Static');
 

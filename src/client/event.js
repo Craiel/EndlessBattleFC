@@ -1,4 +1,4 @@
-declare("Event", function () {
+declare('Event', function () {
 
     function Event(id) {
         this.id = id;

@@ -1,4 +1,4 @@
-declare("ItemCreator", function () {
+declare('ItemCreator', function () {
     include('Component');
     include('Utils');
     include('Static');
@@ -519,7 +519,8 @@ declare("ItemCreator", function () {
             }
             itemBonusAddition.effects = effects;
 
-            sellValue *= Math.pow(2, gameState.autoSellUpgradesPurchased);
+            // Todo:
+            sellValue = 100;
             var newItem = item.create(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonusAddition);
             return newItem;
         }

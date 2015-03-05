@@ -1,4 +1,4 @@
-declare("QuestManager", function () {
+declare('QuestManager', function () {
     include('Component');
     include('GameState');
     include('Quest');

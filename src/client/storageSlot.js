@@ -1,4 +1,4 @@
-declare("StorageSlot", function() {
+declare('StorageSlot', function() {
 	
 	function StorageSlot() {
 		

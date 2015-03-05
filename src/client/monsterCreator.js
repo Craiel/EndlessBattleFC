@@ -1,4 +1,4 @@
-declare("MonsterCreator", function () {
+declare('MonsterCreator', function () {
     include('Component');
     include('Utils');
     include('Static');

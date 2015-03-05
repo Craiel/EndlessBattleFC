@@ -1,4 +1,4 @@
-declare("StatUpgradeManager", function () {
+declare('StatUpgradeManager', function () {
     include('Component');
     include('StatUpgrade');
     include('StatGenerator');

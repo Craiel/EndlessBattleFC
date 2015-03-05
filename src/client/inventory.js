@@ -1,4 +1,4 @@
-declare("Inventory", function () {
+declare('Inventory', function () {
     include('Component');
     include('Static');
     include('Resources');
@@ -13,13 +13,6 @@ declare("Inventory", function () {
         this.id = "Inventory";
         this.slots = new Array();
         this.maxSlots = 25;
-        this.autoSellCommons = false;
-        this.autoSellUncommons = false;
-        this.autoSellRares = false;
-        this.autoSellEpics = false;
-        this.autoSellLegendaries = false;
-        this.autoSellTimeRemaining = 5000;
-        this.autoSellInterval = 5000;
 
         // Initialize the slots
         for (var x = 0; x < this.maxSlots; x++) {
@@ -92,27 +85,6 @@ declare("Inventory", function () {
             }
         }
 
-        // Unlock the ability to auto sell an item rarity
-        this.unlockAutoSell = function(rarity) {
-            switch (rarity) {
-                case static.ItemRarity.COMMON:
-                    $("#checkboxWhite").show();
-                    break;
-                case static.ItemRarity.UNCOMMON:
-                    $("#checkboxGreen").show();
-                    break;
-                case static.ItemRarity.RARE:
-                    $("#checkboxBlue").show();
-                    break;
-                case static.ItemRarity.EPIC:
-                    $("#checkboxPurple").show();
-                    break;
-                case static.ItemRarity.LEGENDARY:
-                    $("#checkboxOrange").show();
-                    break;
-            }
-        }
-
         this.save = function() {
             localStorage.inventorySaved = true;
             localStorage.inventorySlots = JSON.stringify(this.slots);
@@ -144,30 +116,6 @@ declare("Inventory", function () {
                     }
                 }
             }
-        }
-
-        this.componentUpdate = this.update;
-        this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
-            }
-
-            // If enough time has passed ell any items the player wants auto selling
-            this.autoSellTimeRemaining -= gameTime.elapsed;
-            if (this.autoSellTimeRemaining <= 0) {
-                this.autoSellTimeRemaining = this.autoSellInterval;
-                for (var x = 0; x < this.slots.length; x++) {
-                    if (this.slots[x] != null) {
-                        if ((this.slots[x].rarity == static.ItemRarity.COMMON && this.autoSellCommons) || (this.slots[x].rarity == static.ItemRarity.UNCOMMON && this.autoSellUncommons) ||
-                            (this.slots[x].rarity == static.ItemRarity.RARE && this.autoSellRares) || (this.slots[x].rarity == static.ItemRarity.EPIC && this.autoSellEpics) ||
-                            (this.slots[x].rarity == static.ItemRarity.LEGENDARY && this.autoSellLegendaries)) {
-                            this.sellItem(x);
-                        }
-                    }
-                }
-            }
-
-            return true;
         }
     }
 

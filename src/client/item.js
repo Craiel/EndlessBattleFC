@@ -1,4 +1,4 @@
-declare("Item", function () {
+declare('Item', function () {
 
     function Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses) {
         this.name = name;

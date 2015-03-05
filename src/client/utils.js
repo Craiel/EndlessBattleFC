@@ -1,4 +1,4 @@
-declare("Utils", function () {
+declare('Utils', function () {
 
     function Utils() {
         this.Sigma = function(number) {
