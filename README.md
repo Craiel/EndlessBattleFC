@@ -15,7 +15,7 @@ Sources
 * [Game Icons](http://game-icons.net/)
   (Creative Commons 3.0)
 
-* [UI Pack: RPG Extension](http://opengameart.org/content/ui-pack-rpg-extension)
+* [UI Pack: RPG Extension by Kenney](http://opengameart.org/content/ui-pack-rpg-extension)
   (CC0 1.0 Universal)
 
 * [Fantasy Icon Pack by Ravenmore](http://opengameart.org/content/fantasy-icon-pack-by-ravenmore-20)
