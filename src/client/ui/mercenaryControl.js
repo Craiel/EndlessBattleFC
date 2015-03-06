@@ -47,28 +47,20 @@ declare('MercenaryControl', function() {
             this.backgroundPanel.addClass("globalNoDrag");
 
             this.imageElement = element.create(this.id + "Image");
-            this.imageElement.templateName = "mercenaryControlImage";
-            this.imageElement.init(this.backgroundPanel.getContentArea());
-            this.imageElement.addClass("globalNoDrag");
+            this.imageElement.init(this);
 
             this.nameElement = element.create(this.id + "Name");
-            this.nameElement.templateName = "globalTextElement";
-            this.nameElement.init(this.backgroundPanel.getContentArea());
-            this.nameElement.addClass("mercenaryName");
-            this.nameElement.addClass("globalNoDrag");
+            this.nameElement.init(this);
 
             this.currencyElement = currencyControl.create(this.id + "Currency");
             this.currencyElement.showAffordable = true;
-            this.currencyElement.init(this.backgroundPanel.getContentArea());
+            this.currencyElement.init(this);
             this.currencyElement.addClass("mercenaryCurrency");
             this.currencyElement.addClass("globalNoDrag");
             this.currencyElement.setImage(resources.ImageIconCoin);
 
             this.countElement = element.create(this.id + "Count");
-            this.countElement.templateName = "globalTextElement";
-            this.countElement.init(this.backgroundPanel.getContentArea());
-            this.countElement.addClass("mercenaryCount");
-            this.countElement.addClass("globalNoDrag");
+            this.countElement.init(this);
 
             this.getMainElement().mousedown({self: this, arg: this.callbackArgument}, this.callback);
 

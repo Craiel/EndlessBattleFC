@@ -16,6 +16,8 @@
     position: absolute;
     width: 64px;
     height: 64px;
+    top: 9px;
+    z-index: 1;
 }
 
 .mercenaryName {
@@ -24,6 +26,8 @@
     left: 77px;
     height: 20px;
     font-weight: bold;
+    top: 9px;
+    z-index: 1;
 }
 
 .mercenaryCurrency {
@@ -41,4 +45,6 @@
     right: 0px;
     height: 20px;
     width: 40px;
+    top: 9px;
+    z-index: 1;
 }

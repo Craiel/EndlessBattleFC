@@ -16,6 +16,7 @@ declare('Player', function () {
     include('Data');
     include('StatUtils');
     include('CoreUtils');
+    include('Storage');
 
     Player.prototype = actor.create();
     Player.prototype.$super = parent;
@@ -28,9 +29,12 @@ declare('Player', function () {
         this.statsChanged = true;
 
         save.register(this, saveKeys.idnName).withDefault("#ERR");
-        save.register(this, saveKeys.idnLevel).asNumber().withDefault(1);
         save.register(this, saveKeys.idnPlayerBaseStats).asJson();
-        save.register(this, saveKeys.idnPlayerSkillPoints).asNumber().withDefault(0).withCallback(false, true, false);
+        save.register(this, saveKeys.idnPlayerSkillPoints).asNumber().withDefault(0);
+        save.register(this, saveKeys.idnPlayerStorageSlots).asJsonArray().withDefault([]);
+        save.register(this, saveKeys.idnLevel).asNumber().withDefault(1).withCallback(false, true, false);
+
+        this.storage = undefined;
 
         this.hp5Delay = 5000;
         this.hp5Time = 0;
@@ -53,6 +57,9 @@ declare('Player', function () {
             this.actorInit(this[saveKeys.idnPlayerBaseStats]);
 
             statUtils.initStats(this[saveKeys.idnPlayerBaseStats]);
+
+            this.storage = storage.create(this.id);
+            this.storage.init();
         }
 
         this.actorUpdate = this.update;
@@ -95,6 +102,10 @@ declare('Player', function () {
 
         this.getSkillPoints = function() {
             return this[saveKeys.idnPlayerSkillPoints];
+        }
+
+        this.getStorage = function() {
+            return this.storage;
         }
 
         this.modifySkillPoints = function(value) {
@@ -190,6 +201,9 @@ declare('Player', function () {
         }
 
         this.onLoad = function() {
+            // Update the storage slot data with the object from the save
+            this.storage.setSlotData(this[saveKeys.idnPlayerStorageSlots]);
+
             // TODO:
             this.baseExperienceRequired = 10;
             this.experienceRequired = Math.ceil(utils.Sigma(this[saveKeys.idnLevel] * 2) * Math.pow(1.05, this[saveKeys.idnLevel]) + this.baseExperienceRequired);

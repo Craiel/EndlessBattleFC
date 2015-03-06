@@ -1,107 +1,22 @@
 declare('Storage', function() {
 	include('Assert');
 	include('Component');
-	include('StorageSlot');
 
-	// ---------------------------------------------------------------------------
-	// internal functions
-	// ---------------------------------------------------------------------------	
-	var getStorageKey = function(id) {
-		return 'storage_' + id + '_';
-	}
-	
-	var getSlot = function(self, id) {
-		if(self.itemSlotMap[id] === undefined) {
-			return undefined;
-		}
-		
-		var slotNumber = self.itemSlotMap(id);
-		if(self.itemSlots[slotNumber][0] !== id) {
-			throw new Error("SlotMap is out of sync!");
-		}
-		
-		return self.itemSlots[slotNumber];
-	}
-	
-	var assignSlot = function(self, id) {
-		updateFreeSlot(self);
-
-		var slot = self.itemSlots[self.nextFreeSlot++];
-		slot.setItem(id);
-
-		return slot;
-	}
-	
-	var releaseSlot = function(self, slot) {
-		var itemId = slot.getItem();
-		var slotNumber = self.itemSlotMap(itemId);
-		
-		slot.clear();
-		
-		self.nextFreeSlot = slotNumber;
-
-		log.error("TODO: Find proper way to delete, closure does not like this:")
-		//delete self.itemSlotMap(itemId);
-	}
-	
-	var updateFreeSlot = function(self) {
-		var found = false;
-		while(found === false) {
-			assert.isFalse(self.nextFreeSlot >= self.allocationLimit, "Slot count reached allocation limit: " + self.nextFreeSlot + " >= " + self.allocationLimit);
-			
-			if(self.itemSlots.length <= self.nextFreeSlot) {
-				// Allocate a new set of slots, we reached the end
-				for(var i = 0; i < self.allocationCount; i++) {
-					self.itemSlots.push(storageSlot.create());
-				};
-			}
-			
-			var slot = self.itemSlots[self.nextFreeSlot];
-			if(slot.getItem() === undefined) {
-				found = true;
-			} else {
-				self.nextFreeSlot++;
-			};
-		};
-	};
-	
-	var rebuildSlotMap = function(self) {
-		self.itemSlotMap = {};
-		for(var i = 0; i < self.itemSlots.length; i++) {
-			var item = self.itemSlots[i].getItem();
-			if(item === undefined) {
-				continue;
-			}
-			
-			itemSlotMap[item] = i;
-		};
-	};
-	
-	// ---------------------------------------------------------------------------
-	// Storage object
-	// ---------------------------------------------------------------------------
 	Storage.prototype = component.create();
 	Storage.prototype.$super = parent;
 	Storage.prototype.constructor = Storage;
 
 	function Storage(id) {
-		this.id = "Storage" + id;
+		this.id = id + "Storage";
 
 		// Allocate slots in multiples of 6 by default
 		this.allocationCount = 6;
 		this.allocationLimit = 36; // Hard-limit the storage to 36 slots for now
 		
 		// Items are stored in a slot like system as a 2 dim array with [id, count]
-		this.itemSlots = [];
+		this.itemSlots = undefined;
 		this.itemSlotMap = {};
 		this.nextFreeSlot = 0;
-		
-		// Global limit will make the storage hold only n amount of items total and refuse any more after
-		this.globalCount = 0;
-		this.globalLimit = undefined;
-		
-		// Overrides can change the limit for an individual item and ignore the native limit set on the item
-		this.limitOverrides = {};
 
 		this.changed = false;
 
@@ -130,42 +45,14 @@ declare('Storage', function() {
 
 		this.canAdd = function(id) {
 			assert.isDefined(id);
-			
-			// Check global limit first since it's the easiest test
-			if(this.globalLimit && this.globalCount >= this.globalLimit) {
-				return false;
-			}
-			
-			// Get the individual override
-			var limitOverride = this.limitOverrides[id];
-			if(limitOverride && limitOverride <= 0) {
-				// If we are not allowed to store this item at all bail out right away
-				return false;
-			}
-			
+
 			// Find the slot of the item
-			var slot = getSlot(this, id);
+			var slot = this._getSlot(id);
 			if (slot === undefined) {
 				// We don't have the item but we are allowed to store so accept
 				return true;
 			}
-			
-			var currentCount = slot.getCount();
-			if(limitOverride && currentCount >= limitOverride) {
-				// Check if we already have as much as the override allows and bail
-				return false;
-			}
-			
-			// Now we need the item-info to go on
-			var itemInfo = game.getItem(id);
-	
-			// See if this item has limited storage capacity
-			var limit = itemInfo.storageLimit;
-			if (limit && currentCount >= limit) {
-				// We have reached the default storage capacity
-				return false;
-			}
-	
+
 			// Item is good to add
 			return true;
 		};
@@ -183,15 +70,15 @@ declare('Storage', function() {
 			}
 	
 			// Get the target slot
-			var slot = getSlot(this, id);
+			var slot = this._getSlot(id);
 			if(slot === undefined) {
-				slot = assignSlot(this, id);
+				slot = this._assignSlot(id);
 				assert.isDefined(slot, "assignSlot failed!");
 				this.needDictionaryUpdate = true;
 			}
 			
 			// Add the item count to the slot
-			slot.add(value);
+			slot.count++;
 			this.changed = true;
 		};
 		
@@ -209,7 +96,7 @@ declare('Storage', function() {
 			// Get the target slot
 			var slot = getSlot(this, id);
 			if(slot.getCount() <= value) {
-				releaseSlot(this, slot);
+				this._releaseSlot(slot);
 			} else {
 				slot.remove(value);
 			}
@@ -255,7 +142,7 @@ declare('Storage', function() {
 		};
 	
 		this.getItemCount = function(id) {
-			var slot = getSlot(this, id);
+			var slot = this._getSlot(id);
 			if(slot === undefined) {
 				return 0;
 			}
@@ -276,39 +163,101 @@ declare('Storage', function() {
 			
 			return slot.getMetadata();
 		};
-	
+
 		// ---------------------------------------------------------------------------
-		// loading / saving
+		// loading / saving / reset
 		// ---------------------------------------------------------------------------
-		/*this.save = function() {
-			var storageKey = getStorageKey(this.id);
-			
-			localStorage[storageKey + '_slot'] = JSON.stringify(this.itemSlots);
-		};
-	
-		this.load = function() {
-			var storageKey = getStorageKey(this.id);	
-			var data = localStorage[storageKey + '_slot'];
-			
-			if(data) {
-				this.itemSlots = JSON.parse(data) || [];
-			}
-			
-		    this.nextFreeSlot = 0;
-		    
-		    updateFreeSlot(this);
-		    rebuildSlotMap(this);
-		    
-		    this.changed = true;
-		};
-	
-		this.reset = function(fullReset) {
-			this.itemSlots = [];
+		this.setSlotData = function(data) {
+			assert.isDefined(data);
+
+			this.itemSlots = data;
+			this.nextFreeSlot = 0;
+
+			this._updateFreeSlot();
+			this._rebuildSlotMap();
+
+			this.changed = true;
+		}
+
+		this.reset = function() {
+			this.itemSlots.length = 0;
 			this.itemSlotMap = {};
-		    
-		    this.changed = true;
-		    this.nextFreeSlot = 0;
-		};*/
+
+			this.changed = true;
+			this.nextFreeSlot = 0;
+		}
+
+		// ---------------------------------------------------------------------------
+		// internal functions
+		// ---------------------------------------------------------------------------
+		this._getSlot = function(id) {
+			if(this.itemSlotMap[id] === undefined) {
+				return undefined;
+			}
+
+			var slotNumber = this.itemSlotMap[id];
+			if(this.itemSlots[slotNumber][0] !== id) {
+				throw new Error("SlotMap is out of sync!");
+			}
+
+			return this.itemSlots[slotNumber];
+		}
+
+		this._assignSlot = function(id) {
+			this._updateFreeSlot();
+
+			var slot = this.itemSlots[this.nextFreeSlot++];
+			slot.itemId = id;
+			slot.count++;
+
+			return slot;
+		}
+
+		this._releaseSlot = function(slot) {
+			var itemId = slot.itemId;
+			var slotNumber = this.itemSlotMap[itemId];
+
+			slot.clear();
+
+			this.nextFreeSlot = slotNumber;
+
+			log.error("TODO: Find proper way to delete, closure does not like this:")
+			delete self.itemSlotMap[itemId];
+		}
+
+		this._updateFreeSlot = function() {
+			var found = false;
+			while(found === false) {
+				assert.isFalse(this.nextFreeSlot >= this.allocationLimit, "Slot count reached allocation limit: " + this.nextFreeSlot + " >= " + this.allocationLimit);
+
+				if(this.itemSlots.length <= this.nextFreeSlot) {
+					// Allocate a new set of slots, we reached the end
+					for(var i = 0; i < this.allocationCount; i++) {
+						var newSlot = { count: 0 };
+						this.itemSlots.push(newSlot);
+					};
+				}
+
+				var slot = this.itemSlots[this.nextFreeSlot];
+				if(slot.itemId === undefined) {
+					found = true;
+				} else {
+					this.nextFreeSlot++;
+				};
+			};
+		};
+
+		this._rebuildSlotMap = function() {
+			this.itemSlotMap = {};
+			for(var i = 0; i < this.itemSlots.length; i++) {
+				var item = this.itemSlots[i].itemId;
+				if(item === undefined) {
+					continue;
+				}
+
+				this.itemSlotMap[item] = i;
+			};
+		};
 	};
 
 	return {

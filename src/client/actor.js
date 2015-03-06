@@ -20,7 +20,6 @@ declare('Actor', function () {
         // General
         this.actorStats = {};
         this.statsChanged = true;
-        this.storage = undefined;
 
         // Combat
         this.lastDamageTaken = 0;
@@ -39,9 +38,6 @@ declare('Actor', function () {
             this.componentInit();
 
             assert.isDefined(this.getBaseStats, "Actor needs to have a getBaseStats() function");
-
-            this.storage = storage.create(this.id);
-            this.storage.init();
         }
 
         this.componentUpdate = this.update;
@@ -71,12 +67,18 @@ declare('Actor', function () {
         // Item functions
         // ---------------------------------------------------------------------------
         this.giveItem = function(item, count) {
-            if(this.storage.canAdd(item) === false) {
+            var storage = this.getStorage();
+            if(storage === undefined) {
+                log.error("Actor {0} has no Storage".format(this.id));
+                return;
+            }
+
+            if(storage.canAdd(item) === false) {
                 log.warning("Could not add item " + item);
                 return;
             }
 
-            this.storage.add(item, count)
+            storage.add(item, count);
         }
 
         // ---------------------------------------------------------------------------
