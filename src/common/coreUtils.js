@@ -150,10 +150,10 @@ declare('CoreUtils', function() {
             	}
             }
             
-            var hours = this.pad(timeSplit[2], 2) + ':';
-            var minutes = this.pad(timeSplit[3], 2) + ':';
-            var seconds = this.pad(timeSplit[4], 2);
-            return hours + minutes + seconds + suffix;
+            var hourResult = this.pad(timeSplit[2], 2) + ':';
+            var minuteResult = this.pad(timeSplit[3], 2) + ':';
+            var secondResult = this.pad(timeSplit[4], 2);
+            return hourResult + minuteResult + secondResult + suffix;
         };
 
         // Process a tick for a given stat and values, ticks for how many time passed and returns the tickTime back
@@ -248,68 +248,6 @@ declare('CoreUtils', function() {
                 'shortName': this.formatEveryThirdPower(['', StrLoc(' M'), StrLoc(' B'), StrLoc(' T'), StrLoc(' Qa'), StrLoc(' Qi'), StrLoc(' Sx'),StrLoc(' Sp'), StrLoc(' Oc'), StrLoc(' No'), StrLoc(' De') ]),
                 'shortName2': this.formatEveryThirdPower(['', StrLoc(' M'), StrLoc(' G'), StrLoc(' T'), StrLoc(' P'), StrLoc(' E'), StrLoc(' Z'), StrLoc(' Y')]),
                 'scientific': this.formatScientificNotation
-        };
-        
-        // ---------------------------------------------------------------------------
-        // LZW Compression
-        // ---------------------------------------------------------------------------
-        this.lzwEncode = function(source) {
-        	var dict = {};
-            var data = (source + "").split("");
-            var out = [];
-            var currChar;
-            var phrase = data[0];
-            var code = 256;
-            for (var i=1; i<data.length; i++) {
-                currChar=data[i];
-                if (dict[phrase + currChar] != null) {
-                    phrase += currChar;
-                }
-                else {
-                    out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-                    dict[phrase + currChar] = code;
-                    code++;
-                    phrase=currChar;
-                }
-            }
-            out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
-            for (var i=0; i<out.length; i++) {
-                out[i] = String.fromCharCode(out[i]);
-            }
-            return out.join("");
-        };
-
-        this.lzwDecode = function(source) {
-        	var dict = {};
-            var data = (source + "").split("");
-            var currChar = data[0];
-            var oldPhrase = currChar;
-            var out = [currChar];
-            var code = 256;
-            var phrase;
-            for (var i=1; i<data.length; i++) {
-                var currCode = data[i].charCodeAt(0);
-                if (currCode < 256) {
-                    phrase = data[i];
-                }
-                else {
-                   phrase = dict[currCode] ? dict[currCode] : (oldPhrase + currChar);
-                }
-                out.push(phrase);
-                currChar = phrase.charAt(0);
-                dict[code] = oldPhrase + currChar;
-                code++;
-                oldPhrase = phrase;
-            }
-            return out.join("");
-        };
-        
-        this.utf8Encode = function(s) {
-          return unescape(encodeURIComponent(s));
-        };
-         
-        this.utf8Decode = function(s) {
-          return decodeURIComponent(escape(s));
         };
     };
         

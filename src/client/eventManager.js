@@ -1,7 +1,7 @@
 declare('EventManager', function () {
     include('Component');
     include('QuestManager');
-    include('Static');
+    include('StaticData');
 
     EventManager.prototype = component.create();
     EventManager.prototype.$super = parent;
@@ -15,11 +15,11 @@ declare('EventManager', function () {
 
         this.addRandomEvent = function(level) {
             var event = new Event(this.events.length + 1);
-            event.type = static.EventType.QUEST;
+            event.type = staticData.EventType.QUEST;
             // Create a random quest
-            var name = static.QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + static.QuestNameSuffixes[Math.floor(Math.random() * 5)];
+            var name = staticData.QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + staticData.QuestNameSuffixes[Math.floor(Math.random() * 5)];
             var amount = Math.floor(Math.random() * 6) + 7;
-            event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), static.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
+            event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), staticData.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
             this.events.push(event);
 
             var newDiv = document.createElement('div');

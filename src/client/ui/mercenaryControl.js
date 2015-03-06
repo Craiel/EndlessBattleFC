@@ -1,7 +1,7 @@
 declare('MercenaryControl', function() {
     include('Log');
     include('Assert');
-    include('Static');
+    include('StaticData');
     include('Element');
     include('CoreUtils');
     include('Resources');
@@ -44,30 +44,47 @@ declare('MercenaryControl', function() {
             this.backgroundPanel = panel.create(this.id + "Background");
             this.backgroundPanel.init(this);
             this.backgroundPanel.addClass("mercenaryBackground");
+            this.backgroundPanel.addClass("globalNoDrag");
 
             this.imageElement = element.create(this.id + "Image");
             this.imageElement.templateName = "mercenaryControlImage";
             this.imageElement.init(this.backgroundPanel.getContentArea());
+            this.imageElement.addClass("globalNoDrag");
 
             this.nameElement = element.create(this.id + "Name");
-            this.nameElement.templateName = "textElement";
+            this.nameElement.templateName = "globalTextElement";
             this.nameElement.init(this.backgroundPanel.getContentArea());
             this.nameElement.addClass("mercenaryName");
+            this.nameElement.addClass("globalNoDrag");
 
             this.currencyElement = currencyControl.create(this.id + "Currency");
+            this.currencyElement.showAffordable = true;
             this.currencyElement.init(this.backgroundPanel.getContentArea());
             this.currencyElement.addClass("mercenaryCurrency");
+            this.currencyElement.addClass("globalNoDrag");
             this.currencyElement.setImage(resources.ImageIconCoin);
 
             this.countElement = element.create(this.id + "Count");
-            this.countElement.templateName = "textElement";
+            this.countElement.templateName = "globalTextElement";
             this.countElement.init(this.backgroundPanel.getContentArea());
             this.countElement.addClass("mercenaryCount");
+            this.countElement.addClass("globalNoDrag");
 
             this.getMainElement().mousedown({self: this, arg: this.callbackArgument}, this.callback);
 
             this._setupEvents();
         };
+
+        this.elementUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.elementUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            this.currencyElement.update(gameTime);
+
+            return true;
+        }
 
         this._setupEvents = function() {
             var hoverCallback = function (obj) {
@@ -108,6 +125,10 @@ declare('MercenaryControl', function() {
 
         this.setMercenaryCount = function(value) {
             this.countElement.setText(value);
+        }
+
+        this.setPlayerGold = function(value) {
+            this.currencyElement.setOwnedValue(value);
         }
     };
 

@@ -1,7 +1,7 @@
 declare('Monster', function () {
     include('Actor');
     include('BuffSet');
-    include('Static');
+    include('StaticData');
     include('ParticleManager');
     include('GameState');
     include('Loot');
@@ -54,7 +54,7 @@ declare('Monster', function () {
 
         this.name = '#ERR';
         this.level = 0;
-        this.rarity = static.MonsterRarity.COMMON;
+        this.rarity = staticData.MonsterRarity.COMMON;
 
         this.maxHealth = 0;
         this.damage = 0;
@@ -74,10 +74,10 @@ declare('Monster', function () {
             // Create the player's damage particle
             if (displayParticle) {
                 if (isCritical) {
-                    particleManager.createParticle(Math.round(this.lastDamageTaken), static.ParticleType.PLAYER_CRITICAL);
+                    particleManager.createParticle(Math.round(this.lastDamageTaken), staticData.ParticleType.PLAYER_CRITICAL);
                 }
                 else {
-                    particleManager.createParticle(Math.round(this.lastDamageTaken), static.ParticleType.PLAYER_DAMAGE);
+                    particleManager.createParticle(Math.round(this.lastDamageTaken), staticData.ParticleType.PLAYER_DAMAGE);
                 }
             }
 
@@ -90,7 +90,7 @@ declare('Monster', function () {
         // Add a debuff to this monster of the specified type, damage and duration
         this.addDebuff = function(type, damage, duration) {
             switch (type) {
-                case static.DebuffType.BLEED:
+                case staticData.DebuffType.BLEED:
                     // If the monster is not currently bleeding then show the bleeding icon
                     if (this.buffs.bleeding == false) {
                         $("#monsterBleedingIcon").show();
@@ -108,7 +108,7 @@ declare('Monster', function () {
                         $("#monsterBleedingIcon").css('left', left + 'px');
                     }
                     // Check to see if the player has any Rupture effects
-                    var effects = game.player.getEffectsOfType(static.EffectType.RUPTURE);
+                    var effects = game.player.getEffectsOfType(staticData.EffectType.RUPTURE);
                     var maxStacks = 5;
                     if (effects.length > 0) {
                         for (var x = 0; x < effects.length; x++) {
@@ -125,7 +125,7 @@ declare('Monster', function () {
                     }
                     document.getElementById("monsterBleedingStacks").innerHTML = this.buffs.bleedStacks;
                     break;
-                case static.DebuffType.BURN:
+                case staticData.DebuffType.BURN:
                     // If the monster is not currently burning then show the burning icon
                     if (this.buffs.burning == false) {
                         $("#monsterBurningIcon").show();
@@ -147,7 +147,7 @@ declare('Monster', function () {
                     this.buffs.burningDuration = 0;
                     this.buffs.burningMaxDuration = duration;
                     // Check to see if the player has any Combustion effects allowing them to stack burning
-                    var effects = game.player.getEffectsOfType(static.EffectType.COMBUSTION);
+                    var effects = game.player.getEffectsOfType(staticData.EffectType.COMBUSTION);
                     var maxStacks = 0;
                     if (effects.length > 0) {
                         for (var x = 0; x < effects.length; x++) {
@@ -163,7 +163,7 @@ declare('Monster', function () {
                     }
                     document.getElementById("monsterBurningStacks").innerHTML = this.buffs.burningStacks;
                     break;
-                case static.DebuffType.CHILL:
+                case staticData.DebuffType.CHILL:
                     // If the monster is not currently chilled then show the chilled icon
                     if (this.buffs.chilled == false) {
                         $("#monsterChilledIcon").show();

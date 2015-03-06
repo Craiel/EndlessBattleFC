@@ -3,46 +3,38 @@
     height: 80px;
     position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     margin: auto;
 }
 
-.inventoryWindowButton {
+.inventoryWindowIcon {
     position: absolute;
-    top: 9px;
-    left: 9px;
     height: 32px;
     width: 32px;
+}
+
+.inventoryWindowButton {
+    include: inventoryWindowIcon;
+    position: relative;
+    left: 9px;
 }
 
 .characterWindowButton {
-    position: absolute;
-    top: 9px;
+    include: inventoryWindowIcon;
     left: 42px;
-    height: 32px;
-    width: 32px;
 }
 
 .questWindowButton {
-    position: absolute;
-    top: 9px;
+    include: inventoryWindowIcon;
     left: 75px;
-    height: 32px;
-    width: 32px;
 }
 
 .mercenaryWindowButton {
-    position: absolute;
-    top: 9px;
+    include: inventoryWindowIcon;
     left: 108px;
-    height: 32px;
-    width: 32px;
 }
 
 .upgradeWindowButton {
-    position: absolute;
-    top: 9px;
+    include: inventoryWindowIcon;
     left: 141px;
-    height: 32px;
-    width: 32px;
 }

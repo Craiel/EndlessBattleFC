@@ -1,6 +1,6 @@
 declare('BuffSet', function () {
     include('Buff');
-    include('Static');
+    include('StaticData');
     include('Resources');
     include('CoreUtils');
 
@@ -53,7 +53,7 @@ declare('BuffSet', function () {
         this.getDamageMultiplier = function() {
             var multiplier = 0;
             for (var x = 0; x < this.buffs.length; x++) {
-                if (this.buffs[x].type == static.BuffType.DAMAGE) {
+                if (this.buffs[x].type == staticData.BuffType.DAMAGE) {
                     multiplier += this.buffs[x].multiplier;
                 }
             }
@@ -65,7 +65,7 @@ declare('BuffSet', function () {
         this.getGoldMultiplier = function() {
             var multiplier = 0;
             for (var x = 0; x < this.buffs.length; x++) {
-                if (this.buffs[x].type == static.BuffType.GOLD) {
+                if (this.buffs[x].type == staticData.BuffType.GOLD) {
                     multiplier += this.buffs[x].multiplier;
                 }
             }
@@ -77,7 +77,7 @@ declare('BuffSet', function () {
         this.getExperienceMultiplier = function() {
             var multiplier = 0;
             for (var x = 0; x < this.buffs.length; x++) {
-                if (this.buffs[x].type == static.BuffType.EXPERIENCE) {
+                if (this.buffs[x].type == staticData.BuffType.EXPERIENCE) {
                     multiplier += this.buffs[x].multiplier;
                 }
             }
@@ -114,31 +114,31 @@ declare('BuffSet', function () {
         this.getRandomQuestRewardBuff = function() {
             switch (Math.floor(Math.random() * 9)) {
                 case 0:
-                    return buff.create("Damage x2", static.BuffType.DAMAGE, 2, 60, 0, 0);
+                    return buff.create("Damage x2", staticData.BuffType.DAMAGE, 2, 60, 0, 0);
                     break;
                 case 1:
-                    return buff.create("Damage x4", static.BuffType.DAMAGE, 4, 60, 30, 0);
+                    return buff.create("Damage x4", staticData.BuffType.DAMAGE, 4, 60, 30, 0);
                     break;
                 case 2:
-                    return buff.create("Damage x7", static.BuffType.DAMAGE, 7, 60, 15, 0);
+                    return buff.create("Damage x7", staticData.BuffType.DAMAGE, 7, 60, 15, 0);
                     break;
                 case 3:
-                    return buff.create("Gold x2", static.BuffType.GOLD, 2, 60, 0, 30);
+                    return buff.create("Gold x2", staticData.BuffType.GOLD, 2, 60, 0, 30);
                     break;
                 case 4:
-                    return buff.create("Gold x4", static.BuffType.GOLD, 4, 60, 30, 30);
+                    return buff.create("Gold x4", staticData.BuffType.GOLD, 4, 60, 30, 30);
                     break;
                 case 5:
-                    return buff.create("Gold x7", static.BuffType.GOLD, 7, 60, 15, 30);
+                    return buff.create("Gold x7", staticData.BuffType.GOLD, 7, 60, 15, 30);
                     break;
                 case 6:
-                    return buff.create("Experience x2", static.BuffType.EXPERIENCE, 2, 60, 0, 15);
+                    return buff.create("Experience x2", staticData.BuffType.EXPERIENCE, 2, 60, 0, 15);
                     break;
                 case 7:
-                    return buff.create("Experience x4", static.BuffType.EXPERIENCE, 4, 60, 30, 15);
+                    return buff.create("Experience x4", staticData.BuffType.EXPERIENCE, 4, 60, 30, 15);
                     break;
                 case 8:
-                    return buff.create("Experience x7", static.BuffType.EXPERIENCE, 7, 60, 15, 15);
+                    return buff.create("Experience x7", staticData.BuffType.EXPERIENCE, 7, 60, 15, 15);
                     break;
             }
         }

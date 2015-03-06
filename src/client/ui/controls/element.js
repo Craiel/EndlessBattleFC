@@ -110,10 +110,10 @@ declare('Element', function() {
         };
         
         this.update = function(currentTime) {
-            if(!this.isVisible) {
+            if(this.isVisible !== true) {
                 return false;
             }
-    
+
             return this.componentUpdate(currentTime);
         };
         

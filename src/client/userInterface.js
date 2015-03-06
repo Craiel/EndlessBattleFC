@@ -1,9 +1,8 @@
 declare('UserInterface', function () {
     include('Assert');
     include('Component');
-    include('Static');
+    include('StaticData');
     include('EventManager');
-    include('MercenaryManager');
     include('QuestManager');
     include('StatUpgradeManager');
     include('TooltipManager');
@@ -21,6 +20,7 @@ declare('UserInterface', function () {
     include('Panel');
     include('Button');
     include('Dialog');
+    include('CurrencyControl');
     include('MercenaryControl');
 
     UserInterface.prototype = component.create();
@@ -47,6 +47,9 @@ declare('UserInterface', function () {
         this.playerManaBar = undefined;
         this.experienceTitle = undefined;
         this.experienceBar = undefined;
+
+        this.currencyArea = undefined;
+        this.currencyGoldControl = undefined;
 
         this.systemArea = undefined;
         this.inventoryWindowButton = undefined;
@@ -79,6 +82,7 @@ declare('UserInterface', function () {
             $(document).mousemove({self: this}, this.handleMouseMove);
 
             this.initPlayerArea();
+            this.initCurrencyArea();
             this.initSystemArea();
             this.initBattleArea();
 
@@ -95,6 +99,7 @@ declare('UserInterface', function () {
             }
 
             this.updatePlayerUI(gameTime);
+            this.updateCurrencyUI(gameTime);
             this.updateSystemMenu(gameTime);
             this.updateBattleUI(gameTime);
 
@@ -137,7 +142,7 @@ declare('UserInterface', function () {
             this.playerManaBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
 
             this.experienceTitle = element.create("experienceTitle");
-            this.experienceTitle.templateName = "textElement";
+            this.experienceTitle.templateName = "globalTextElement";
             this.experienceTitle.init(this.playerArea.getContentArea());
             this.experienceTitle.addClass("experienceTitle");
             this.experienceTitle.setText("XP to next Level: ");
@@ -147,6 +152,19 @@ declare('UserInterface', function () {
             this.experienceBar.animate = true;
             this.experienceBar.setImages(resources.ImageProgressPurpleHorizontalLeft, resources.ImageProgressPurpleHorizontalMid, resources.ImageProgressPurpleHorizontalRight);
             this.experienceBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        }
+
+        this.initCurrencyArea = function() {
+            this.currencyArea = dialog.create("currencyArea");
+            this.currencyArea.canClose = false;
+            this.currencyArea.init();
+            this.currencyArea.setHeaderText("Currencies");
+
+            this.currencyGoldControl = currencyControl.create("currencyGold");
+            this.currencyGoldControl.trackChanges = true;
+            this.currencyGoldControl.init(this.currencyArea.getContentArea());
+            this.currencyGoldControl.setImage(resources.ImageIconCoin);
+            this.currencyGoldControl.addClass("currencyGoldControl");
         }
 
         this.initSystemArea = function() {
@@ -194,7 +212,7 @@ declare('UserInterface', function () {
 
             // Just a plain element for the monster name for now...
             this.monsterName = element.create("monsterName");
-            this.monsterName.templateName = "textElement";
+            this.monsterName.templateName = "globalTextElement";
             this.monsterName.init(this.battleArea.getContentArea());
             this.monsterName.addClass("monsterName");
 
@@ -257,7 +275,7 @@ declare('UserInterface', function () {
                 control.callbackArgument = game;
                 control.init(this.mercenaryArea.getContentArea());
                 control.setMercenaryName(data.Mercenaries[key].name);
-                control.setMercenaryImage(static.imageRoot + data.Mercenaries[key].icon);
+                control.setMercenaryImage(staticData.imageRoot + data.Mercenaries[key].icon);
                 this.mercenaryControls[key] = control;
             }
         }
@@ -286,6 +304,11 @@ declare('UserInterface', function () {
             var xp = game.player.getStat(data.StatDefinition.xp.id);
             this.experienceBar.setProgress(xp, requiredXP);
             this.experienceBar.setProgressText("{0} / {1}".format(xp, requiredXP));
+        }
+
+        this.updateCurrencyUI = function(gameTime) {
+            this.currencyGoldControl.setValue(game.player.getStat(data.StatDefinition.gold.id));
+            this.currencyGoldControl.update(gameTime);
         }
 
         this.updateSystemMenu = function(gameTime) {
@@ -390,6 +413,8 @@ declare('UserInterface', function () {
                 var control = this.mercenaryControls[key];
                 control.setMercenaryCost(game.getMercenaryCost(key));
                 control.setMercenaryCount(game.getMercenaryCount(key));
+                control.setPlayerGold(game.player.getStat(data.StatDefinition.gold.id));
+                control.update(gameTime);
             }
         }
 
@@ -399,16 +424,16 @@ declare('UserInterface', function () {
         // ---------------------------------------------------------------------------
         this.getMonsterRarityColor = function(rarity) {
             switch (rarity) {
-                case static.MonsterRarity.COMMON:
+                case staticData.MonsterRarity.COMMON:
                     return '#ffffff';
                     break;
-                case static.MonsterRarity.RARE:
+                case staticData.MonsterRarity.RARE:
                     return '#00fff0';
                     break;
-                case static.MonsterRarity.ELITE:
+                case staticData.MonsterRarity.ELITE:
                     return '#ffd800';
                     break;
-                case static.MonsterRarity.BOSS:
+                case staticData.MonsterRarity.BOSS:
                     return '#ff0000';
                     break;
             }
@@ -457,9 +482,7 @@ declare('UserInterface', function () {
         this.itemTooltipButtonHovered = false;
         this.sellButtonActive = false;
 
-        this.slotTypeSelected;
-        this.slotNumberSelected;
-
+        this.slotNumberSelected = false;
 
         this.questsButtonGlowing = false;
 
@@ -584,7 +607,7 @@ declare('UserInterface', function () {
         /*this.attackButtonHover = function(obj) {
             // Display a different tooltip depending on the player's attack
             switch (game.player.attackType) {
-                case static.AttackType.BASIC_ATTACK:
+                case staticData.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 0');
                     $("#otherTooltipTitle").html('Attack');
                     $("#otherTooltipCooldown").html('');
@@ -592,7 +615,7 @@ declare('UserInterface', function () {
                     $("#otherTooltipDescription").html('A basic attack.');
                     $("#otherTooltip").show();
                     break;
-                case static.AttackType.POWER_STRIKE:
+                case staticData.AttackType.POWER_STRIKE:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 100px');
                     $("#otherTooltipTitle").html('Power Strike');
                     $("#otherTooltipCooldown").html('');
@@ -600,7 +623,7 @@ declare('UserInterface', function () {
                     $("#otherTooltipDescription").html('Strike your target with a powerful blow, dealing 1.5x normal damage.');
                     $("#otherTooltip").show();
                     break;
-                case static.AttackType.DOUBLE_STRIKE:
+                case staticData.AttackType.DOUBLE_STRIKE:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 150px 50px');
                     $("#otherTooltipTitle").html('Double Strike');
                     $("#otherTooltipCooldown").html('');
@@ -619,13 +642,13 @@ declare('UserInterface', function () {
 
         this.attackButtonReset = function() {
             switch (game.player.attackType) {
-                case static.AttackType.BASIC_ATTACK:
+                case staticData.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 0');
                     break;
-                case static.AttackType.POWER_STRIKE:
+                case staticData.AttackType.POWER_STRIKE:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 100px');
                     break;
-                case static.AttackType.DOUBLE_STRIKE:
+                case staticData.AttackType.DOUBLE_STRIKE:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 50px');
                     break;
             }
@@ -634,13 +657,13 @@ declare('UserInterface', function () {
 
         this.attackButtonClick = function(obj) {
             switch (game.player.attackType) {
-                case static.AttackType.BASIC_ATTACK:
+                case staticData.AttackType.BASIC_ATTACK:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 0');
                     break;
-                case static.AttackType.POWER_STRIKE:
+                case staticData.AttackType.POWER_STRIKE:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 100px');
                     break;
-                case static.AttackType.DOUBLE_STRIKE:
+                case staticData.AttackType.DOUBLE_STRIKE:
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 100px 50px');
                     break;
             }
@@ -678,7 +701,7 @@ declare('UserInterface', function () {
             // If the left mouse button was clicked
             if (event.which == 1) {
                 // Store the information about this item
-                slotTypeSelected = static.SLOT_TYPE.EQUIP;
+                slotTypeSelected = staticData.SLOT_TYPE.EQUIP;
                 slotNumberSelected = index;
 
                 var rect = $(".equipItem" + index).position();
@@ -696,42 +719,42 @@ declare('UserInterface', function () {
                 var equippedSlot = -1
                 var twoTrinkets = false;
                 switch (item.type) {
-                    case static.ItemType.HELM:
+                    case staticData.ItemType.HELM:
                         if (game.equipment.helm() != null) {
                             equippedSlot = 0
                         }
                         break;
-                    case static.ItemType.SHOULDERS:
+                    case staticData.ItemType.SHOULDERS:
                         if (game.equipment.shoulders() != null) {
                             equippedSlot = 1;
                         }
                         break;
-                    case static.ItemType.CHEST:
+                    case staticData.ItemType.CHEST:
                         if (game.equipment.chest() != null) {
                             equippedSlot = 2;
                         }
                         break;
-                    case static.ItemType.LEGS:
+                    case staticData.ItemType.LEGS:
                         if (game.equipment.legs() != null) {
                             equippedSlot = 3;
                         }
                         break;
-                    case static.ItemType.WEAPON:
+                    case staticData.ItemType.WEAPON:
                         if (game.equipment.weapon() != null) {
                             equippedSlot = 4;
                         }
                         break;
-                    case static.ItemType.GLOVES:
+                    case staticData.ItemType.GLOVES:
                         if (game.equipment.gloves() != null) {
                             equippedSlot = 5;
                         }
                         break;
-                    case static.ItemType.BOOTS:
+                    case staticData.ItemType.BOOTS:
                         if (game.equipment.boots() != null) {
                             equippedSlot = 6;
                         }
                         break;
-                    case static.ItemType.TRINKET:
+                    case staticData.ItemType.TRINKET:
                         if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
                             equippedSlot = 7;
                             // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
@@ -740,7 +763,7 @@ declare('UserInterface', function () {
                             }
                         }
                         break;
-                    case static.ItemType.OFF_HAND:
+                    case staticData.ItemType.OFF_HAND:
                         if (game.equipment.off_hand() != null) {
                             equippedSlot = 9;
                         }
@@ -779,7 +802,7 @@ declare('UserInterface', function () {
             // If the left mouse button was clicked
             else if (obj.which == 1) {
                 // Store the information about this item
-                slotTypeSelected = static.SLOT_TYPE.INVENTORY;
+                slotTypeSelected = staticData.SLOT_TYPE.INVENTORY;
                 slotNumberSelected = index;
 
                 var rect = $("#inventoryItem" + index).position();
@@ -851,100 +874,100 @@ declare('UserInterface', function () {
                 $("#statUpgradesWindow").show();
 
                 switch (upgrades[0].type) {
-                    case static.StatUpgradeType.DAMAGE:
+                    case staticData.StatUpgradeType.DAMAGE:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Damage";
                         break;
-                    case static.StatUpgradeType.STRENGTH:
+                    case staticData.StatUpgradeType.STRENGTH:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Strength";
                         break;
-                    case static.StatUpgradeType.AGILITY:
+                    case staticData.StatUpgradeType.AGILITY:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Agility";
                         break;
-                    case static.StatUpgradeType.STAMINA:
+                    case staticData.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Stamina";
                         break;
-                    case static.StatUpgradeType.ARMOUR:
+                    case staticData.StatUpgradeType.ARMOUR:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Armour";
                         break;
-                    case static.StatUpgradeType.HP5:
+                    case staticData.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Hp5";
                         break;
-                    case static.StatUpgradeType.CRIT_DAMAGE:
+                    case staticData.StatUpgradeType.CRIT_DAMAGE:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Crit Damage";
                         break;
-                    case static.StatUpgradeType.ITEM_RARITY:
+                    case staticData.StatUpgradeType.ITEM_RARITY:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Item Rarity";
                         break;
-                    case static.StatUpgradeType.GOLD_GAIN:
+                    case staticData.StatUpgradeType.GOLD_GAIN:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Gold Gain";
                         break;
-                    case static.StatUpgradeType.EXPERIENCE_GAIN:
+                    case staticData.StatUpgradeType.EXPERIENCE_GAIN:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + "% Experience Gain";
                         break;
                 }
 
                 switch (upgrades[1].type) {
-                    case static.StatUpgradeType.DAMAGE:
+                    case staticData.StatUpgradeType.DAMAGE:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Damage";
                         break;
-                    case static.StatUpgradeType.STRENGTH:
+                    case staticData.StatUpgradeType.STRENGTH:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Strength";
                         break;
-                    case static.StatUpgradeType.AGILITY:
+                    case staticData.StatUpgradeType.AGILITY:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Agility";
                         break;
-                    case static.StatUpgradeType.STAMINA:
+                    case staticData.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Stamina";
                         break;
-                    case static.StatUpgradeType.ARMOUR:
+                    case staticData.StatUpgradeType.ARMOUR:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Armour";
                         break;
-                    case static.StatUpgradeType.HP5:
+                    case staticData.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Hp5";
                         break;
-                    case static.StatUpgradeType.CRIT_DAMAGE:
+                    case staticData.StatUpgradeType.CRIT_DAMAGE:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Crit Damage";
                         break;
-                    case static.StatUpgradeType.ITEM_RARITY:
+                    case staticData.StatUpgradeType.ITEM_RARITY:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Item Rarity";
                         break;
-                    case static.StatUpgradeType.GOLD_GAIN:
+                    case staticData.StatUpgradeType.GOLD_GAIN:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Gold Gain";
                         break;
-                    case static.StatUpgradeType.EXPERIENCE_GAIN:
+                    case staticData.StatUpgradeType.EXPERIENCE_GAIN:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + "% Experience Gain";
                         break;
                 }
 
                 switch (upgrades[2].type) {
-                    case static.StatUpgradeType.DAMAGE:
+                    case staticData.StatUpgradeType.DAMAGE:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Damage";
                         break;
-                    case static.StatUpgradeType.STRENGTH:
+                    case staticData.StatUpgradeType.STRENGTH:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Strength";
                         break;
-                    case static.StatUpgradeType.AGILITY:
+                    case staticData.StatUpgradeType.AGILITY:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Agility";
                         break;
-                    case static.StatUpgradeType.STAMINA:
+                    case staticData.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Stamina";
                         break;
-                    case static.StatUpgradeType.ARMOUR:
+                    case staticData.StatUpgradeType.ARMOUR:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Armour";
                         break;
-                    case static.StatUpgradeType.HP5:
+                    case staticData.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Hp5";
                         break;
-                    case static.StatUpgradeType.CRIT_DAMAGE:
+                    case staticData.StatUpgradeType.CRIT_DAMAGE:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Crit Damage";
                         break;
-                    case static.StatUpgradeType.ITEM_RARITY:
+                    case staticData.StatUpgradeType.ITEM_RARITY:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Item Rarity";
                         break;
-                    case static.StatUpgradeType.GOLD_GAIN:
+                    case staticData.StatUpgradeType.GOLD_GAIN:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Gold Gain";
                         break;
-                    case static.StatUpgradeType.EXPERIENCE_GAIN:
+                    case staticData.StatUpgradeType.EXPERIENCE_GAIN:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + "% Experience Gain";
                         break;
                 }
@@ -979,10 +1002,6 @@ declare('UserInterface', function () {
                 case "characterWindowCloseButton":
                     $("#characterWindow").hide();
                     this.characterWindowShown = false;
-                    break;
-                case "mercenariesWindowCloseButton":
-                    $("#mercenariesWindow").hide();
-                    this.mercenariesWindowShown = false;
                     break;
                 case "upgradesWindowCloseButton":
                     $("#upgradesWindow").hide();
@@ -1021,167 +1040,6 @@ declare('UserInterface', function () {
             }
         }
 
-        this.footmanBuyButtonMouseOver = function(obj) {
-            $("#footmanBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
-
-            $("#otherTooltipTitle").html('Footman');
-            $("#otherTooltipCooldown").html('');
-            $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.FOOTMAN));
-            $("#otherTooltip").show();
-
-            // Set the item tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
-            $("#otherTooltip").css('top', rect.top - 70);
-            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
-            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
-        }
-
-        this.footmanBuyButtonMouseDown = function(obj) {
-            $("#footmanBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(static.MercenaryType.FOOTMAN);
-        }
-
-        this.footmanBuyButtonMouseOut = function(obj) {
-            $("#footmanBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
-            $("#otherTooltip").hide();
-        }
-
-        this.clericBuyButtonMouseOver = function(obj) {
-            $("#clericBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
-
-            $("#otherTooltipTitle").html('Cleric');
-            $("#otherTooltipCooldown").html('');
-            $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.CLERIC).formatMoney() +
-            '<br>Clerics increase your hp5 by ' + mercenaryManager.getClericHp5PercentBonus() + '%.');
-            $("#otherTooltip").show();
-
-            // Set the item tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
-            $("#otherTooltip").css('top', rect.top - 70);
-            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
-            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
-        }
-
-        this.clericBuyButtonMouseDown = function(obj) {
-            $("#clericBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(static.MercenaryType.CLERIC);
-        }
-
-        this.clericBuyButtonMouseOut = function(obj) {
-            $("#clericBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
-            $("#otherTooltip").hide();
-        }
-
-        this.commanderBuyButtonMouseOver = function(obj) {
-            $("#commanderBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
-
-            $("#otherTooltipTitle").html('Commander');
-            $("#otherTooltipCooldown").html('');
-            $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.COMMANDER).formatMoney() +
-            '<br>Commanders increase your health by ' + mercenaryManager.getCommanderHealthPercentBonus() + '%.');
-            $("#otherTooltip").show();
-
-            // Set the item tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
-            $("#otherTooltip").css('top', rect.top - 70);
-            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
-            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
-        }
-
-        this.commanderBuyButtonMouseDown = function(obj) {
-            $("#commanderBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(static.MercenaryType.COMMANDER);
-        }
-
-        this.commanderBuyButtonMouseOut = function(obj) {
-            $("#commanderBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
-            $("#otherTooltip").hide();
-        }
-
-        this.mageBuyButtonMouseOver = function(obj) {
-            $("#mageBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
-
-            $("#otherTooltipTitle").html('Mage');
-            $("#otherTooltipCooldown").html('');
-            $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.MAGE).formatMoney() +
-            '<br>Mages increase your damage by ' + mercenaryManager.getMageDamagePercentBonus() + '%.');
-            $("#otherTooltip").show();
-
-            // Set the item tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
-            $("#otherTooltip").css('top', rect.top - 70);
-            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
-            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
-        }
-
-        this.mageBuyButtonMouseDown = function(obj) {
-            $("#mageBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(static.MercenaryType.MAGE);
-        }
-
-        this.mageBuyButtonMouseOut = function(obj) {
-            $("#mageBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
-            $("#otherTooltip").hide();
-        }
-
-        this.assassinBuyButtonMouseOver = function(obj) {
-            $("#assassinBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
-
-            $("#otherTooltipTitle").html('Assassin');
-            $("#otherTooltipCooldown").html('');
-            $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.ASSASSIN).formatMoney() +
-            '<br>Assassins increase your evasion by ' + mercenaryManager.getAssassinEvasionPercentBonus() + '%.');
-            $("#otherTooltip").show();
-
-            // Set the item tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
-            $("#otherTooltip").css('top', rect.top - 70);
-            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
-            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
-        }
-
-        this.assassinBuyButtonMouseDown = function(obj) {
-            $("#assassinBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(static.MercenaryType.ASSASSIN);
-        }
-
-        this.assassinBuyButtonMouseOut = function(obj) {
-            $("#assassinBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
-            $("#otherTooltip").hide();
-        }
-
-        this.warlockBuyButtonMouseOver = function(obj) {
-            $("#warlockBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px');
-
-            $("#otherTooltipTitle").html('Warlock');
-            $("#otherTooltipCooldown").html('');
-            $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html('GPS: ' + mercenaryManager.getMercenaryBaseGps(static.MercenaryType.WARLOCK).formatMoney() +
-            '<br>Warlocks increase your critical strike damage by ' + mercenaryManager.getWarlockCritDamageBonus() + '%.');
-            $("#otherTooltip").show();
-
-            // Set the item tooltip's location
-            var rect = $(this)[0].getBoundingClientRect();
-            $("#otherTooltip").css('top', rect.top - 70);
-            var leftReduction = document.getElementById("otherTooltip").scrollWidth;
-            $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
-        }
-
-        this.warlockBuyButtonMouseDown = function(obj) {
-            $("#warlockBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px');
-            mercenaryManager.purchaseMercenary(static.MercenaryType.WARLOCK);
-        }
-
-        this.warlockBuyButtonMouseOut = function(obj) {
-            $("#warlockBuyButton").css('background', coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 0');
-            $("#otherTooltip").hide();
-        }
-
         this.statUpgradeButtonHover = function(obj) {
             obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 92px';
             var index = obj.data.index;
@@ -1190,47 +1048,47 @@ declare('UserInterface', function () {
             var upgrade = statUpgradeManager.upgrades[0][index - 1];
 
             switch (upgrade.type) {
-                case static.StatUpgradeType.DAMAGE:
+                case staticData.StatUpgradeType.DAMAGE:
                     $("#otherTooltipTitle").html("Damage");
                     $("#otherTooltipDescription").html("Increases the damage you deal with basic attacks.");
                     break;
-                case static.StatUpgradeType.STRENGTH:
+                case staticData.StatUpgradeType.STRENGTH:
                     $("#otherTooltipTitle").html("Strength");
                     $("#otherTooltipDescription").html("Increases your Health by 5 and Damage by 1%.");
                     break;
-                case static.StatUpgradeType.AGILITY:
+                case staticData.StatUpgradeType.AGILITY:
                     $("#otherTooltipTitle").html("Agility");
                     $("#otherTooltipDescription").html("Increases your Crit Damage by 0.2% and Evasion by 1%.");
                     break;
-                case static.StatUpgradeType.STAMINA:
+                case staticData.StatUpgradeType.STAMINA:
                     $("#otherTooltipTitle").html("Stamina");
                     $("#otherTooltipDescription").html("Increases your Hp5 by 1 and your Armour by 1%.");
                     break;
-                case static.StatUpgradeType.ARMOUR:
+                case staticData.StatUpgradeType.ARMOUR:
                     $("#otherTooltipTitle").html("Armour");
                     $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
                     break;
-                case static.StatUpgradeType.EVASION:
+                case staticData.StatUpgradeType.EVASION:
                     $("#otherTooltipTitle").html("Evasion");
                     $("#otherTooltipDescription").html("Increases your chance to dodge a monster's attack.");
                     break;
-                case static.StatUpgradeType.HP5:
+                case staticData.StatUpgradeType.HP5:
                     $("#otherTooltipTitle").html("Hp5");
                     $("#otherTooltipDescription").html("The amount of health you regenerate over 5 seconds.");
                     break;
-                case static.StatUpgradeType.CRIT_DAMAGE:
+                case staticData.StatUpgradeType.CRIT_DAMAGE:
                     $("#otherTooltipTitle").html("Crit Damage");
                     $("#otherTooltipDescription").html("The amount of damage your critical strikes will cause");
                     break;
-                case static.StatUpgradeType.ITEM_RARITY:
+                case staticData.StatUpgradeType.ITEM_RARITY:
                     $("#otherTooltipTitle").html("Item Rarity");
                     $("#otherTooltipDescription").html("Increases the chance that rarer items will drop from monsters");
                     break;
-                case static.StatUpgradeType.EXPERIENCE_GAIN:
+                case staticData.StatUpgradeType.EXPERIENCE_GAIN:
                     $("#otherTooltipTitle").html("Experience Gain");
                     $("#otherTooltipDescription").html("Increases the experience earned from killing monsters");
                     break;
-                case static.StatUpgradeType.GOLD_GAIN:
+                case staticData.StatUpgradeType.GOLD_GAIN:
                     $("#otherTooltipTitle").html("Gold Gain");
                     $("#otherTooltipDescription").html("Increases the gold gained from monsters and mercenaries");
                     break;
@@ -1254,37 +1112,37 @@ declare('UserInterface', function () {
             // Upgrade a player's stat depending on which button was clicked
             var upgrade = statUpgradeManager.upgrades[0][index - 1];
             switch (upgrade.type) {
-                case static.StatUpgradeType.DAMAGE:
+                case staticData.StatUpgradeType.DAMAGE:
                     game.player.chosenLevelUpBonuses.damageBonus += upgrade.amount;
                     break;
-                case static.StatUpgradeType.STRENGTH:
+                case staticData.StatUpgradeType.STRENGTH:
                     game.player.chosenLevelUpBonuses.strength += upgrade.amount;
                     break;
-                case static.StatUpgradeType.AGILITY:
+                case staticData.StatUpgradeType.AGILITY:
                     game.player.chosenLevelUpBonuses.agility += upgrade.amount;
                     break;
-                case static.StatUpgradeType.STAMINA:
+                case staticData.StatUpgradeType.STAMINA:
                     game.player.chosenLevelUpBonuses.stamina += upgrade.amount;
                     break;
-                case static.StatUpgradeType.ARMOUR:
+                case staticData.StatUpgradeType.ARMOUR:
                     game.player.chosenLevelUpBonuses.armour += upgrade.amount;
                     break;
-                case static.StatUpgradeType.EVASION:
+                case staticData.StatUpgradeType.EVASION:
                     game.player.chosenLevelUpBonuses.evasion += upgrade.amount;
                     break;
-                case static.StatUpgradeType.HP5:
+                case staticData.StatUpgradeType.HP5:
                     game.player.chosenLevelUpBonuses.hp5 += upgrade.amount;
                     break;
-                case static.StatUpgradeType.CRIT_DAMAGE:
+                case staticData.StatUpgradeType.CRIT_DAMAGE:
                     game.player.chosenLevelUpBonuses.critDamage += upgrade.amount;
                     break;
-                case static.StatUpgradeType.ITEM_RARITY:
+                case staticData.StatUpgradeType.ITEM_RARITY:
                     game.player.chosenLevelUpBonuses.itemRarity += upgrade.amount;
                     break;
-                case static.StatUpgradeType.EXPERIENCE_GAIN:
+                case staticData.StatUpgradeType.EXPERIENCE_GAIN:
                     game.player.chosenLevelUpBonuses.experienceGain += upgrade.amount;
                     break;
-                case static.StatUpgradeType.GOLD_GAIN:
+                case staticData.StatUpgradeType.GOLD_GAIN:
                     game.player.chosenLevelUpBonuses.goldGain += upgrade.amount;
                     break;
             }
@@ -1333,7 +1191,7 @@ declare('UserInterface', function () {
         this.rendUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(static.AbilityName.REND);
+            game.player.increaseAbilityPower(staticData.AbilityName.REND);
         }
 
         this.rendUpgradeButtonReset = function(obj) {
@@ -1372,7 +1230,7 @@ declare('UserInterface', function () {
         this.rejuvenatingStrikesUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(static.AbilityName.REJUVENATING_STRIKES);
+            game.player.increaseAbilityPower(staticData.AbilityName.REJUVENATING_STRIKES);
         }
 
         this.rejuvenatingStrikesUpgradeButtonReset = function(obj) {
@@ -1411,7 +1269,7 @@ declare('UserInterface', function () {
         this.iceBladeUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(static.AbilityName.ICE_BLADE);
+            game.player.increaseAbilityPower(staticData.AbilityName.ICE_BLADE);
         }
 
         this.iceBladeUpgradeButtonReset = function(obj) {
@@ -1452,7 +1310,7 @@ declare('UserInterface', function () {
         this.fireBladeUpgradeButtonClick = function(obj) {
             obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageBuyButtonBase) + ' 0 46px';
             $("#abilityUpgradesWindow").hide();
-            game.player.increaseAbilityPower(static.AbilityName.FIRE_BLADE);
+            game.player.increaseAbilityPower(staticData.AbilityName.FIRE_BLADE);
         }
 
         this.fireBladeUpgradeButtonReset = function(obj) {

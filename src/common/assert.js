@@ -30,7 +30,7 @@ declare("Assert", function() {
                 return;
             }
 
-            if(arg === NaN) {
+            if(isNaN(arg)) {
                 this.assertCount++;
                 console.assert(false, msg);
             }
@@ -41,7 +41,7 @@ declare("Assert", function() {
                 return;
             }
 
-            if(arg !== NaN) {
+            if(!isNaN(arg)) {
                 this.assertCount++;
                 console.assert(false, msg);
             }

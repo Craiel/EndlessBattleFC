@@ -1,0 +1,12 @@
+.currencyArea {
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    left: 0px;
+    top: 300px;
+}
+
+.currencyGoldControl {
+    top: 9px;
+    left: 9px;
+}

@@ -1,7 +1,7 @@
 declare('ProgressBar', function() {
 	include('Log');
 	include('Assert');
-	include('Static');
+	include('StaticData');
 	include('Element');
     include('CoreUtils');
     

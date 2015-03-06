@@ -1,14 +1,12 @@
 declare('Dialog', function() {
     include('Log');
     include('Assert');
-    include('Static');
+    include('StaticData');
     include('Element');
     include('CoreUtils');
     include('Resources');
     include('Panel');
     include('Button');
-
-
 
     Dialog.prototype = element.create();
     Dialog.prototype.$super = parent;
@@ -49,7 +47,7 @@ declare('Dialog', function() {
             this.headerPanel.addClass("dialogHeaderPanel");
 
             this.headerText = element.create(this.id + "HeaderText");
-            this.headerText.templateName = "textElement";
+            this.headerText.templateName = "globalTextElement";
             this.headerText.init(this.headerPanel.getContentArea());
             this.headerText.addClass("dialogHeaderText");
 
@@ -59,7 +57,7 @@ declare('Dialog', function() {
                 resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
                 resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
             this.contentPanel.addClass("dialogContentPanel");
-            this.contentPanel.addClass("noDrag");
+            this.contentPanel.addClass("globalNoDrag");
             if(this.canScroll === true) {
                 this.contentPanel.getContentArea().setStyle({"overflow-y": "scroll"});
             }
@@ -71,12 +69,11 @@ declare('Dialog', function() {
                 this.closeButton.init(this);
                 this.closeButton.setImages(resources.ImageIconClose, resources.ImageIconCloseHover, undefined);
                 this.closeButton.addClass("dialogCloseButton");
-                this.closeButton.addClass("noDrag");
             }
 
             if(this.canDrag === true) {
-                this.setStyle({"zIndex": static.dialogDefaultZIndex});
-                this.getMainElement().draggable({ self: this, cancel: ".noDrag", zIndex: static.dragZIndex, drag: function () { }});
+                this.setStyle({"zIndex": staticData.dialogDefaultZIndex});
+                this.getMainElement().draggable({ self: this, cancel: ".globalNoDrag", zIndex: staticData.dragZIndex, drag: function () { }});
             }
         };
 

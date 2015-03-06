@@ -11,7 +11,7 @@ String.prototype.format = function() {
 	for (var i = 0; i < arguments.length; i++) {
 		var key = '{' + i.toString() + '}';
 		if(formatted.indexOf(key) < 0) {
-			throw new Exeption(StrLoc("Index {0} was not defined in string: {1}").format(i, formatted));
+			throw new Error(StrLoc("Index {0} was not defined in string: {1}").format(i, formatted));
 		}
 		
     	formatted = formatted.replace(key, arguments[i]);

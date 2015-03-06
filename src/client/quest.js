@@ -1,9 +1,8 @@
 declare('Quest', function () {
     include('Component');
-    include('MercenaryManager');
     include('UpgradeManager');
     include('GameState');
-    include('Static');
+    include('StaticData');
 
     Quest.prototype = component.create();
     Quest.prototype.$super = parent;
@@ -40,48 +39,13 @@ declare('Quest', function () {
             // Update this quest depending on the type that it is
             switch (this.type) {
                 // Kill Quest - Check if the amount of monsters required has been met
-                case static.QuestType.KILL:
+                case staticData.QuestType.KILL:
                     if (this.killCount >= this.typeAmount) {
                         this.complete = true;
                     }
                     break;
-                // Mercenary Quest - Check if the amount of mercenaries required has been met
-                case static.QuestType.MERCENARIES:
-                    switch (this.typeId) {
-                        case 0:
-                            if (gameState.footmenOwned >= this.typeAmount) {
-                                this.complete = true;
-                            }
-                            break;
-                        case 1:
-                            if (gameState.clericsOwned >= this.typeAmount) {
-                                this.complete = true;
-                            }
-                            break;
-                        case 2:
-                            if (gameState.commandersOwned >= this.typeAmount) {
-                                this.complete = true;
-                            }
-                            break;
-                        case 3:
-                            if (gameState.magesOwned >= this.typeAmount) {
-                                this.complete = true;
-                            }
-                            break;
-                        case 4:
-                            if (gameState.assassinsOwned >= this.typeAmount) {
-                                this.complete = true;
-                            }
-                            break;
-                        case 5:
-                            if (gameState.warlocksOwned >= this.typeAmount) {
-                                this.complete = true;
-                            }
-                            break;
-                    }
-                    break;
                 // Upgrade Quest - Check if the required upgrade has been purchased
-                case static.QuestType.UPGRADE:
+                case staticData.QuestType.UPGRADE:
                     if (upgradeManager.upgrades[this.typeId].purchased) {
                         this.complete = true;
                     }

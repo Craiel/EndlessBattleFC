@@ -39,7 +39,9 @@ declare('Storage', function() {
 		slot.clear();
 		
 		self.nextFreeSlot = slotNumber;
-		delete self.itemSlotMap(itemId);
+
+		log.error("TODO: Find proper way to delete, closure does not like this:")
+		//delete self.itemSlotMap(itemId);
 	}
 	
 	var updateFreeSlot = function(self) {

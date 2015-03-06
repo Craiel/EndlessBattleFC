@@ -4,7 +4,7 @@ declare('Actor', function () {
     include('Component');
     include('Save');
     include('SaveKeys');
-    include('Static');
+    include('StaticData');
     include('BuffSet');
     include('Data');
     include('Storage');
@@ -26,7 +26,7 @@ declare('Actor', function () {
         this.lastDamageTaken = 0;
         this.alive = true;
         this.canAttack = true;
-        this.attackType = static.AttackType.BASIC_ATTACK;
+        this.attackType = staticData.AttackType.BASIC_ATTACK;
 
         // Buffs/Debuffs
         this.buffs = buffSet.create();

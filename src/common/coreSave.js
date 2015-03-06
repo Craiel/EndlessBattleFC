@@ -1,8 +1,9 @@
-declare("CoreSave", function(require) {
-    include("Log");
-    include("Assert");
-    include("CoreUtils");
-    include("Type");
+declare('CoreSave', function(require) {
+    include('Log');
+    include('Assert');
+    include('CoreUtils');
+    include('Type');
+    include('Lzw');
     
     // ---------------------------------------------------------------------------
     // save mapping entry, internal use only
@@ -206,8 +207,8 @@ declare("CoreSave", function(require) {
             }
             
             // compress the save
-            var compressedData = coreUtils.lzwEncode(coreUtils.utf8Encode(JSON.stringify(data)));
-            
+            var compressedData = lzw.compress(encodeURIComponent(JSON.stringify(data)));
+
             // Transfer the save into the storage slot
             if(this.doSave(compressedData) === true)
             {
@@ -222,7 +223,7 @@ declare("CoreSave", function(require) {
             var compressedData = this.doLoad();
             if(compressedData !== undefined) {
             	log.debug(StrLoc("Loaded {0} bytes").format(compressedData.length));
-            	data = JSON.parse(coreUtils.utf8Decode(coreUtils.lzwDecode(compressedData)));
+            	data = JSON.parse(decodeURIComponent(lzw.decompress(compressedData)));
             }
             
             for(var i = 0; i < this.mappings.length; i++) {

@@ -23,8 +23,8 @@
 }
 
 .progressBarText {
-    font-family: 'Gentium Book Basic';
+    include: globalTextElement;
+    include: globalColorWhite;
     font-size: 16px;
     text-align: center;
-    color: #fff;
 }

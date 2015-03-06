@@ -6,8 +6,7 @@ declare('Game', function() {
     include('Equipment');
     include('Stats');
     include('Options');
-    include('Static');
-    include('MercenaryManager');
+    include('StaticData');
     include('UpgradeManager');
     include('ParticleManager');
     include('MonsterCreator');
@@ -54,7 +53,6 @@ declare('Game', function() {
 
             gameState.init();
             eventManager.init();
-            mercenaryManager.init();
             upgradeManager.init();
             particleManager.init();
             questManager.init();
@@ -79,7 +77,6 @@ declare('Game', function() {
             }
 
             gameState.update(gameTime)
-            //mercenaryManager.update(gameTime);
             this.inventory.update(gameTime);
             this.updateInterface(gameTime.elapsed);
             questManager.update(gameTime);
@@ -104,6 +101,10 @@ declare('Game', function() {
         // player functions
         // ---------------------------------------------------------------------------
         this.gainMercenaryGold = function(value) {
+            if(isNaN(value) || value === undefined) {
+                return;
+            }
+
             this.player.modifyStat(data.StatDefinition.gold.id, value);
         }
 
@@ -111,7 +112,6 @@ declare('Game', function() {
         // mercenary functions
         // ---------------------------------------------------------------------------
         this.purchaseMercenary = function(key) {
-            log.info("Purchase Mercenary: " + key);
             var cost = this.getMercenaryCost(key);
             if(this.player.getStat(data.StatDefinition.gold.id) < cost) {
                 return;
@@ -129,7 +129,7 @@ declare('Game', function() {
 
         this.getMercenaryCost = function(key) {
             var owned = this.getMercenaryCount(key);
-            return Math.floor(data.Mercenaries[key].gold * Math.pow(static.mercenaryPriceIncreaseFactor, owned));
+            return Math.floor(data.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
         }
 
         this.getMercenaryCount = function(key) {
@@ -244,7 +244,7 @@ declare('Game', function() {
                 // Calculate how many attacks the player will do
                 var attackAmount = 1;
                 var successfulAttacks = 0;
-                if (this.player.attackType == static.AttackType.DOUBLE_STRIKE) {
+                if (this.player.attackType == staticData.AttackType.DOUBLE_STRIKE) {
                     attackAmount++;
                 }
 
@@ -255,7 +255,7 @@ declare('Game', function() {
                     var playerDamage = playerMinDamage + (Math.random() * (playerMaxDamage - playerMinDamage));
 
                     // If the player is using power strike, multiply the damage
-                    if (this.player.attackType == static.AttackType.POWER_STRIKE) {
+                    if (this.player.attackType == staticData.AttackType.POWER_STRIKE) {
                         playerDamage *= 1.5;
                     }
 
@@ -267,7 +267,7 @@ declare('Game', function() {
                     }
 
                     // If the player has any crushing blows effects then deal the damage from those effects
-                    var crushingBlowsEffects = game.player.getEffectsOfType(static.EffectType.CRUSHING_BLOWS);
+                    var crushingBlowsEffects = game.player.getEffectsOfType(staticData.EffectType.CRUSHING_BLOWS);
                     var crushingBlowsDamage = 0;
                     if (crushingBlowsEffects.length > 0) {
                         for (var y = 0; y < crushingBlowsEffects.length; y++) {
@@ -282,7 +282,7 @@ declare('Game', function() {
                     successfulAttacks++;
 
                     // If the player has any Swiftness effects, see if the player generates any extra attacks
-                    var swiftnessEffects = game.player.getEffectsOfType(static.EffectType.SWIFTNESS);
+                    var swiftnessEffects = game.player.getEffectsOfType(staticData.EffectType.SWIFTNESS);
                     for (var z = 0; z < swiftnessEffects.length; z++) {
                         // Try to generate an extra attack
                         if (Math.random() < swiftnessEffects[z].chance / 100) {
@@ -292,7 +292,7 @@ declare('Game', function() {
                             playerDamage = playerMinDamage + (Math.random() * (playerMaxDamage - playerMinDamage));
 
                             // If the player is using power strike, multiply the damage
-                            if (this.player.attackType == static.AttackType.POWER_STRIKE) {
+                            if (this.player.attackType == staticData.AttackType.POWER_STRIKE) {
                                 playerDamage *= 1.5;
                             }
 
@@ -304,7 +304,7 @@ declare('Game', function() {
                             }
 
                             // If the player has any crushing blows effects then deal the damage from those effects
-                            crushingBlowsEffects = game.player.getEffectsOfType(static.EffectType.CRUSHING_BLOWS);
+                            crushingBlowsEffects = game.player.getEffectsOfType(staticData.EffectType.CRUSHING_BLOWS);
                             crushingBlowsDamage = 0;
                             if (crushingBlowsEffects.length > 0) {
                                 for (var y = 0; y < crushingBlowsEffects.length; y++) {
@@ -322,9 +322,9 @@ declare('Game', function() {
                 }
 
                 // Try to trigger on-hit effects for every attack
-                var pillagingEffects = this.player.getEffectsOfType(static.EffectType.PILLAGING);
-                var nourishmentEffects = this.player.getEffectsOfType(static.EffectType.NOURISHMENT);
-                var berserkingEffects = this.player.getEffectsOfType(static.EffectType.BERSERKING);
+                var pillagingEffects = this.player.getEffectsOfType(staticData.EffectType.PILLAGING);
+                var nourishmentEffects = this.player.getEffectsOfType(staticData.EffectType.NOURISHMENT);
+                var berserkingEffects = this.player.getEffectsOfType(staticData.EffectType.BERSERKING);
                 for (var x = 0; x < successfulAttacks; x++) {
                     for (var y = 0; y < pillagingEffects.length; y++) {
                         if (Math.random() < pillagingEffects[y].chance / 100) {
@@ -371,9 +371,9 @@ declare('Game', function() {
                 }
 
                 // Create particles for the loot, experience and kill
-                particleManager.createParticle(this.player.lastGoldGained.toFixed(2), static.ParticleType.GOLD);
-                particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), static.ParticleType.EXP_ORB);
-                particleManager.createParticle(null, static.ParticleType.SKULL);
+                particleManager.createParticle(this.player.lastGoldGained.toFixed(2), staticData.ParticleType.GOLD);
+                particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), staticData.ParticleType.EXP_ORB);
+                particleManager.createParticle(null, staticData.ParticleType.SKULL);
 
                 // Create a new monster
                 this.spawnMonster();
@@ -441,7 +441,6 @@ declare('Game', function() {
             this.inventory.save();
             this.equipment.save();
             questManager.save();
-            mercenaryManager.save();
             upgradeManager.save();
             statUpgradeManager.save();
             this.stats.save();
@@ -454,7 +453,6 @@ declare('Game', function() {
             this.inventory.load();
             this.equipment.load();
             questManager.load();
-            mercenaryManager.load();
             upgradeManager.load();
             statUpgradeManager.load();
             this.stats.load();
@@ -500,36 +498,7 @@ declare('Game', function() {
                 $(".equipItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
             }
 
-            /*$("#expBarArea").hide();
-            $("#powerStrikeButton").hide();
-            $(".characterWindowButton").hide();
-            $(".mercenariesWindowButton").hide();
-            $(".upgradesWindowButton").hide();
-            $("#upgradesWindowButtonGlow").hide();
-            $(".questsWindowButton").hide();
-            $("#questsWindowButtonGlow").hide();
-
-            $("#inventoryWindow").hide();
-            $("#characterWindow").hide();
-            $("#upgradesWindow").hide();
-            $("#mercenariesWindow").hide();
-            $("#questsWindow").hide();*/
-
             $("#gps").css('color', '#ffd800');
-
-            // Reset the mercenary amounts and prices to default
-            document.getElementById("footmanCost").innerHTML = gameState.footmanPrice.formatMoney(0);
-            document.getElementById("footmenOwned").innerHTML = gameState.footmenOwned;
-            document.getElementById("clericCost").innerHTML = gameState.clericPrice.formatMoney(0);
-            document.getElementById("clericsOwned").innerHTML = gameState.clericsOwned;
-            document.getElementById("commanderCost").innerHTML = gameState.commanderPrice.formatMoney(0);
-            document.getElementById("commandersOwned").innerHTML = gameState.commandersOwned;
-            document.getElementById("mageCost").innerHTML = gameState.magePrice.formatMoney(0);
-            document.getElementById("magesOwned").innerHTML = gameState.magesOwned;
-            document.getElementById("assassinCost").innerHTML = gameState.assassinPrice.formatMoney(0);
-            document.getElementById("assassinsOwned").innerHTML = gameState.assassinsOwned;
-            document.getElementById("warlockCost").innerHTML = gameState.warlockPrice.formatMoney(0);
-            document.getElementById("warlocksOwned").innerHTML = gameState.warlocksOwned;
         }
 
 
@@ -546,16 +515,6 @@ declare('Game', function() {
         }
 
         this.updateInterface = function(ms) {
-            // Update the player's health bar
-
-
-            // Update the gold and experience amounts
-            document.getElementById("goldAmount").innerHTML = this.player.getStat(data.StatDefinition.gold.id).formatMoney(2);
-
-            // Move the gold icon and gold depending on the amount of gold the player has
-            var leftReduction = document.getElementById("goldAmount").scrollWidth / 2;
-            $("#goldAmount").css('left', (($("#gameArea").width() / 2) - leftReduction) + 'px');
-            $("#goldCoin").css('left', (($("#gameArea").width() / 2) - leftReduction - 21) + 'px');
 
             // Update the player's stats
             document.getElementById("levelValue").innerHTML = this.player.getLevel();
@@ -584,7 +543,7 @@ declare('Game', function() {
                 document.getElementById("questTitle").innerHTML = quest.name;
                 // Create the quest goal
                 switch (quest.type) {
-                    case static.QuestType.KILL:
+                    case staticData.QuestType.KILL:
                         if (quest.typeAmount == 1) {
                             newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monster.";
                         }
@@ -592,61 +551,17 @@ declare('Game', function() {
                             newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monsters.";
                         }
                         break;
-                    case static.QuestType.MERCENARIES:
-                        switch (quest.typeId) {
-                            case 0:
-                                newText = "Own " + quest.typeAmount + " Footmen.";
-                                break;
-                            case 1:
-                                newText = "Own " + quest.typeAmount + " Clerics.";
-                                break;
-                            case 2:
-                                newText = "Own " + quest.typeAmount + " Commanders.";
-                                break;
-                            case 3:
-                                newText = "Own " + quest.typeAmount + " Mages.";
-                                break;
-                            case 4:
-                                newText = "Own " + quest.typeAmount + " Assassins.";
-                                break;
-                            case 5:
-                                newText = "Own " + quest.typeAmount + " Warlocks.";
-                                break;
-                        }
-                        break;
-                    case static.QuestType.UPGRADE:
+                    case staticData.QuestType.UPGRADE:
                         newText = "Purchase the " + upgradeManager.upgrades[quest.typeId].name + " upgrade.";
                         break;
                 }
                 document.getElementById("questGoal").innerHTML = newText;
                 // Create the quest progress text
                 switch (quest.type) {
-                    case static.QuestType.KILL:
+                    case staticData.QuestType.KILL:
                         newText = quest.killCount + "/" + quest.typeAmount + " Monsters slain.";
                         break;
-                    case static.QuestType.MERCENARIES:
-                        switch (quest.typeId) {
-                            case 0:
-                                newText = gameState.footmenOwned + "/" + quest.typeAmount + " Footmen owned.";
-                                break;
-                            case 1:
-                                newText = gameState.clericsOwned + "/" + quest.typeAmount + " Clerics owned.";
-                                break;
-                            case 2:
-                                newText = gameState.commandersOwned + "/" + quest.typeAmount + " Commanders owned.";
-                                break;
-                            case 3:
-                                newText = gameState.magesOwned + "/" + quest.typeAmount + " Mages owned.";
-                                break;
-                            case 4:
-                                newText = gameState.assassinsOwned + "/" + quest.typeAmount + " Assassins owned.";
-                                break;
-                            case 5:
-                                newText = gameState.warlocksOwned + "/" + quest.typeAmount + " Warlocks owned.";
-                                break;
-                        }
-                        break;
-                    case static.QuestType.UPGRADE:
+                    case staticData.QuestType.UPGRADE:
                         break;
                 }
                 document.getElementById("questProgress").innerHTML = newText;

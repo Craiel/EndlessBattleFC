@@ -1,6 +1,5 @@
 declare('Stats', function () {
     include('Component');
-    include('MercenaryManager');
     include('UpgradeManager');
     include('Data');
 
@@ -37,14 +36,6 @@ declare('Stats', function () {
             return upgradeManager.upgradesPurchased;
         }
 
-        this.getMercenariesOwned = function() {
-            return mercenaryManager.mercenaries.length;
-        }
-
-        this.getGps = function() {
-            return mercenaryManager.getGps();
-        }
-
         this.componentUpdate = this.update;
         this.update = function(gameTime) {
             if(this.componentUpdate(gameTime) !== true) {
@@ -56,10 +47,7 @@ declare('Stats', function () {
             document.getElementById("statsWindowGoldValue").innerHTML = game.player.getStat(data.StatDefinition.gold.id).formatMoney(2);
             document.getElementById("statsWindowGoldEarnedValue").innerHTML = this.goldEarned.formatMoney(2);
             document.getElementById("statsWindowStartDateValue").innerHTML = this.startDate.toDateString() + " " + this.startDate.toLocaleTimeString();
-            document.getElementById("statsWindowMercenariesOwnedValue").innerHTML = this.getMercenariesOwned().formatMoney(0);
-            document.getElementById("statsWindowGpsValue").innerHTML = this.getGps();
             document.getElementById("statsWindowGoldFromMonstersValue").innerHTML = this.goldFromMonsters.formatMoney(2);
-            document.getElementById("statsWindowGoldFromMercenariesValue").innerHTML = this.goldFromMercenaries.formatMoney(2);
             document.getElementById("statsWindowGoldFromQuestsValue").innerHTML = this.goldFromQuests.formatMoney(0);
             document.getElementById("statsWindowUpgradesUnlockedValue").innerHTML = this.getUpgradesUnlocked().formatMoney(0);
             document.getElementById("statsWindowExperienceValue").innerHTML = game.player.getStat(data.StatDefinition.xp.id).formatMoney(2);

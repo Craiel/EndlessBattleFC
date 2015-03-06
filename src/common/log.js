@@ -35,8 +35,8 @@ declare("Log", function() {
     };
     
     var logFormat = function(time, level, message) {
-        var time = '[' + coreUtils.getTimeDisplay(time || Date.now()) + ']: ';
-        var fullMessage = time + getLevelDisplay(level) + ' ' + message;
+        var timeDisplay = '[' + coreUtils.getTimeDisplay(time || Date.now()) + ']: ';
+        var fullMessage = timeDisplay + getLevelDisplay(level) + ' ' + message;
     
         switch(level) {
             case level.error: {

@@ -3,7 +3,7 @@ declare('QuestManager', function () {
     include('GameState');
     include('Quest');
     include('Resources');
-    include('Static');
+    include('StaticData');
     include('CoreUtils');
 
     QuestManager.prototype = component.create();
@@ -67,7 +67,7 @@ declare('QuestManager', function () {
         // Go through every quest and if it is a kill quest and the level required is equal to this one; increase the kill count
         this.updateKillCounts = function(level) {
             for (var x = 0; x < this.quests.length; x++) {
-                if (this.quests[x].type == static.QuestType.KILL && this.quests[x].typeId == level) {
+                if (this.quests[x].type == staticData.QuestType.KILL && this.quests[x].typeId == level) {
                     this.quests[x].killCount++;
                 }
             }

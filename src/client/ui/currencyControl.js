@@ -15,18 +15,24 @@ declare('CurrencyControl', function() {
         this.canClose = true;
         this.canDrag = true;
         this.canScroll = false;
+        this.showAffordable = false;
+        this.trackChanges = false;
 
         this.imageControl = undefined;
         this.textControl = undefined;
 
-        // ---------------------------------------------------------------------------
-        // overrides
-        // ---------------------------------------------------------------------------
-        this.elementInit = this.init;
+        this.currentValue = undefined;
+        this.canAffordValue = false;
+
+        this.changeTrackingStartValue = 0;
+        this.changeTrackingTime = 0;
+        this.changeTrackingDelay = 1000;
+        this.changeTrackingValue = 0;
 
         // ---------------------------------------------------------------------------
         // main functions
         // ---------------------------------------------------------------------------
+        this.elementInit = this.init;
         this.init = function(parent, attributes) {
             this.elementInit(parent, attributes);
 
@@ -35,7 +41,32 @@ declare('CurrencyControl', function() {
 
             this.textControl = element.create(this.id + "Value");
             this.textControl.init(this);
+
+            if(this.showAffordable === true) {
+                this.textControl.addClass("currencyControlCantAfford");
+            }
         };
+
+        this.elementUpdate = this.update;
+        this.update = function(gameTime) {
+            if(this.elementUpdate(gameTime) !== true) {
+                return false;
+            }
+
+            var formattedCurrency = coreUtils.formatters['shortName'](this.currentValue);
+            if(this.trackChanges === true) {
+                this._trackChange(gameTime);
+                if(this.changeTrackingValue >= 0) {
+                    formattedCurrency = "{0} (+{1}/s)".format(formattedCurrency, this.changeTrackingValue);
+                } else {
+                    formattedCurrency = "{0} ({1}/s)".format(formattedCurrency, this.changeTrackingValue);
+                }
+
+            }
+
+            this.textControl.setText(formattedCurrency);
+            return true;
+        }
 
         // ---------------------------------------------------------------------------
         // dialog functions
@@ -45,7 +76,34 @@ declare('CurrencyControl', function() {
         }
 
         this.setValue = function(value) {
-            this.textControl.setText(coreUtils.formatters['shortName'](value));
+            this.currentValue = value;
+        }
+
+        this.setOwnedValue = function(value) {
+            if(this.showAffordable !== true || this.currentValue === undefined) {
+                return;
+            }
+
+            var canAfford = value >= this.currentValue;
+            if(canAfford !== this.canAffordValue) {
+                this.textControl.toggleClass("currencyControlCanAfford");
+                this.textControl.toggleClass("currencyControlCantAfford");
+                this.canAffordValue = canAfford;
+            }
+        }
+
+        this._trackChange = function(gameTime) {
+            if(this.changeTrackingTime === 0) {
+                this.changeTrackingTime = gameTime.current + this.changeTrackingDelay;
+                this.changeTrackingStartValue = this.currentValue;
+                return;
+            }
+
+            if(this.changeTrackingTime < gameTime.current) {
+                this.changeTrackingValue = this.currentValue - this.changeTrackingStartValue;
+                this.changeTrackingStartValue = this.currentValue;
+                this.changeTrackingTime = gameTime.current + this.changeTrackingDelay;
+            }
         }
     };
 

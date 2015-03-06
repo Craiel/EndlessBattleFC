@@ -1,6 +1,6 @@
 declare('ParticleManager', function () {
     include('Component');
-    include('Static');
+    include('StaticData');
     include('Particle');
     include('Resources');
 
@@ -33,32 +33,32 @@ declare('ParticleManager', function () {
         this.createParticle = function(text, imageType) {
             // If the type should not be displayed, end this function
             switch (imageType) {
-                case static.ParticleType.SKULL:
+                case staticData.ParticleType.SKULL:
                     if (game.options.displaySkullParticles == false) {
                         return;
                     }
                     break;
-                case static.ParticleType.GOLD:
+                case staticData.ParticleType.GOLD:
                     if (game.options.displayGoldParticles == false) {
                         return;
                     }
                     break;
-                case static.ParticleType.EXP_ORB:
+                case staticData.ParticleType.EXP_ORB:
                     if (game.options.displayExpParticles == false) {
                         return;
                     }
                     break;
-                case static.ParticleType.PLAYER_DAMAGE:
+                case staticData.ParticleType.PLAYER_DAMAGE:
                     if (game.options.displayPlayerDamageParticles == false) {
                         return;
                     }
                     break;
-                case static.ParticleType.PLAYER_CRITICAL:
+                case staticData.ParticleType.PLAYER_CRITICAL:
                     if (game.options.displayPlayerDamageParticles == false) {
                         return;
                     }
                     break;
-                case static.ParticleType.MONSTER_DAMAGE:
+                case staticData.ParticleType.MONSTER_DAMAGE:
                     if (game.options.displayMonsterDamageParticles == false) {
                         return;
                     }
@@ -73,26 +73,26 @@ declare('ParticleManager', function () {
 
             // Set the text colour and image source
             switch (imageType) {
-                case static.ParticleType.SKULL:
+                case staticData.ParticleType.SKULL:
                     source = this.particleSources.SKULL;
                     break;
-                case static.ParticleType.GOLD:
+                case staticData.ParticleType.GOLD:
                     textColour = '#fcd200';
                     source = this.particleSources.GOLD;
                     break;
-                case static.ParticleType.EXP_ORB:
+                case staticData.ParticleType.EXP_ORB:
                     textColour = '#00ff00';
                     source = this.particleSources.EXP_ORB;
                     break;
-                case static.ParticleType.PLAYER_DAMAGE:
+                case staticData.ParticleType.PLAYER_DAMAGE:
                     textColour = '#ffffff';
                     source = this.particleSources.PLAYER_DAMAGE;
                     break;
-                case static.ParticleType.PLAYER_CRITICAL:
+                case staticData.ParticleType.PLAYER_CRITICAL:
                     textColour = '#fcff00';
                     source = this.particleSources.PLAYER_CRITICAL;
                     break;
-                case static.ParticleType.MONSTER_DAMAGE:
+                case staticData.ParticleType.MONSTER_DAMAGE:
                     textColour = '#ff0000';
                     source = this.particleSources.MONSTER_DAMAGE;
                     break;
@@ -103,16 +103,16 @@ declare('ParticleManager', function () {
             if (text != null) {
                 // Calcuate the final text and set it
                 finalText = '';
-                if (imageType == static.ParticleType.GOLD || imageType == static.ParticleType.EXP_ORB) {
+                if (imageType == staticData.ParticleType.GOLD || imageType == staticData.ParticleType.EXP_ORB) {
                     finalText += '+';
                 }
-                else if (imageType == static.ParticleType.MONSTER_DAMAGE) {
+                else if (imageType == staticData.ParticleType.MONSTER_DAMAGE) {
                     finalText += '-';
                 }
                 finalText += text;
 
                 // If this was a player critical add an exclamation on the end
-                if (imageType == static.ParticleType.PLAYER_CRITICAL) {
+                if (imageType == staticData.ParticleType.PLAYER_CRITICAL) {
                     finalText += '!';
                 }
             }
@@ -120,7 +120,7 @@ declare('ParticleManager', function () {
             // If there is an image; create one
             var image = null;
             if (source != null) {
-                var image = new Image();
+                image = new Image();
                 image.src = source;
             }
 

@@ -3,11 +3,10 @@ declare('Player', function () {
     include('Log');
     include('Actor');
     include('Component');
-    include('Static');
+    include('StaticData');
     include('Utils');
     include('Abilities');
     include('BuffSet');
-    include('MercenaryManager');
     include('ParticleManager');
     include('StatUpgradeManager');
     include('GameState');
@@ -312,16 +311,16 @@ declare('Player', function () {
         this.increaseAbilityPower = function(name) {
             // Increase the level for the ability
             switch (name) {
-                case static.AbilityName.REND:
+                case staticData.AbilityName.REND:
                     this.abilities.baseRendLevel++;
                     break;
-                case static.AbilityName.REJUVENATING_STRIKES:
+                case staticData.AbilityName.REJUVENATING_STRIKES:
                     this.abilities.baseRejuvenatingStrikesLevel++;
                     break;
-                case static.AbilityName.ICE_BLADE:
+                case staticData.AbilityName.ICE_BLADE:
                     this.abilities.baseIceBladeLevel++;
                     break;
-                case static.AbilityName.FIRE_BLADE:
+                case staticData.AbilityName.FIRE_BLADE:
                     this.abilities.baseFireBladeLevel++;
                     break;
             }
@@ -339,7 +338,7 @@ declare('Player', function () {
             // REND
             if (this.abilities.getRendLevel() > 0) {
                 // Apply the bleed effect to the monster
-                game.monster.addDebuff(static.DebuffType.BLEED, this.abilities.getRendDamage(0), this.abilities.rendDuration);
+                game.monster.addDebuff(staticData.DebuffType.BLEED, this.abilities.getRendDamage(0), this.abilities.rendDuration);
             }
             // REJUVENATING STRIKES
             if (this.abilities.getRejuvenatingStrikesLevel() > 0) {
@@ -359,7 +358,7 @@ declare('Player', function () {
                 game.monster.takeDamage(damage, criticalHappened, false);
 
                 // Apply the chill effect to the monster
-                game.monster.addDebuff(static.DebuffType.CHILL, 0, this.abilities.iceBladeChillDuration);
+                game.monster.addDebuff(staticData.DebuffType.CHILL, 0, this.abilities.iceBladeChillDuration);
             }
             // FIRE BLADE
             if (this.abilities.getFireBladeLevel() > 0) {
@@ -374,23 +373,23 @@ declare('Player', function () {
                 game.monster.takeDamage(damage, criticalHappened, false);
 
                 // Apply the burn effect to the monster
-                game.monster.addDebuff(static.DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
+                game.monster.addDebuff(staticData.DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
             }
         }
 
         // Change the player's attack
         /*this.changeAttack = function(type) {
             switch (type) {
-                case static.AttackType.BASIC_ATTACK:
-                    this.attackType = static.AttackType.BASIC_ATTACK;
+                case staticData.AttackType.BASIC_ATTACK:
+                    this.attackType = staticData.AttackType.BASIC_ATTACK;
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 0');
                     break;
-                case static.AttackType.POWER_STRIKE:
-                    this.attackType = static.AttackType.POWER_STRIKE;
+                case staticData.AttackType.POWER_STRIKE:
+                    this.attackType = staticData.AttackType.POWER_STRIKE;
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 100px');
                     break;
-                case static.AttackType.DOUBLE_STRIKE:
-                    this.attackType = static.AttackType.DOUBLE_STRIKE;
+                case staticData.AttackType.DOUBLE_STRIKE:
+                    this.attackType = staticData.AttackType.DOUBLE_STRIKE;
                     $("#attackButton").css('background', 'url("' + resources.ImageAttackButtons + '") 0 50px');
                     break;
             }
@@ -455,7 +454,7 @@ declare('Player', function () {
 
             // Reflect a percentage of the damage if the player has any Barrier effects
             var reflectAmount = 0;
-            var barrierEffects = this.getEffectsOfType(static.EffectType.BARRIER);
+            var barrierEffects = this.getEffectsOfType(staticData.EffectType.BARRIER);
             for (var x = 0; x < barrierEffects.length; x++) {
                 reflectAmount += barrierEffects[x].value;
             }
@@ -470,7 +469,7 @@ declare('Player', function () {
             }
 
             // Create the monster's damage particle
-            particleManager.createParticle(newDamage, static.ParticleType.MONSTER_DAMAGE);
+            particleManager.createParticle(newDamage, staticData.ParticleType.MONSTER_DAMAGE);
         }
 
         // Calculate the amount of reduction granted by armour
@@ -563,19 +562,19 @@ declare('Player', function () {
         // Add a debuff to the player of the specified type, damage and duration
         this.addDebuff = function(type, damage, duration) {
             switch (type) {
-                case static.DebuffType.BLEED:
+                case staticData.DebuffType.BLEED:
                     this.buffs.bleeding = true;
                     this.buffs.bleedDamage = damage;
                     this.buffs.bleedDuration = 0;
                     this.buffs.bleedMaxDuration = duration;
                     this.buffs.bleedStacks++;
                     break;
-                case static.DebuffType.CHILL:
+                case staticData.DebuffType.CHILL:
                     this.buffs.chilled = true;
                     this.buffs.chillDuration = 0;
                     this.buffs.chillMaxDuration = duration;
                     break;
-                case static.DebuffType.BURN:
+                case staticData.DebuffType.BURN:
                     this.buffs.burning = true;
                     this.buffs.burningDamage = damage;
                     this.buffs.burningDuration = 0;

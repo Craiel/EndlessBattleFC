@@ -1,7 +1,41 @@
-.textElement {
-    font-family: 'Gentium Book Basic';
-    font-size: 16px;
+.globalTextFont {
+	font-family: 'Gentium Book Basic';
 }
 
-.noDrag {
+.globalColorLightText {
+	color: #5b5548;
+}
+
+.globalColorWhite {
+	color: #FFFFFF;
+}
+
+.globalColorRed {
+	color: #FF0000;
+}
+
+.globalColorUIRed {
+	color: #e0732c;
+}
+
+.globalColorUIGreen {
+	color: #7ac956;
+}
+
+.globalColorUIBlue {
+	color: #2fa7da;
+}
+
+.globalColorGreen {
+	color: #10FF10;
+}
+
+.globalBlueBackgroundColor {
+	background-color: #3f7cb6;
+}
+
+.globalTextElement {
+	include: globalTextFont;
+	include: globalColorLightText;
+    font-size: 16px;
 }

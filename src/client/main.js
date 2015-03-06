@@ -1,7 +1,7 @@
 Endless.main = function() {
 	include('Assert');
 	include('Log');
-	include('Static');
+	include('StaticData');
 	include('Game');
 	include('GameTime');
 	include('UserInterface');
@@ -13,14 +13,14 @@ Endless.main = function() {
 	window.game = game;
 	
 	// override our data root if we have it stored somewhere else
-	static.setRoot("");
+	staticData.setRoot("");
 	resources.init();
 	
 	// Set the template data
 	include('TemplateProvider').SetData(include('TemplateContent'));
 	
 	// Initialize components
-    static.init();
+	staticData.init();
     game.init();
     userInterface.init();
 
@@ -45,7 +45,7 @@ Endless.main = function() {
 		gameTime.update();
 	
 	    Endless.resetFrame();
-	    static.update(gameTime);
+		staticData.update(gameTime);
 	    game.update(gameTime);
 	};
 	

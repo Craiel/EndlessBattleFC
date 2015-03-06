@@ -1,6 +1,6 @@
 declare('Inventory', function () {
     include('Component');
-    include('Static');
+    include('StaticData');
     include('Resources');
     include('Data');
     include('CoreUtils');

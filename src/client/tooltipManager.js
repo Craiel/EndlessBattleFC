@@ -1,6 +1,6 @@
 declare('TooltipManager', function () {
     include('Component');
-    include('Static');
+    include('StaticData');
 
     TooltipManager.prototype = component.create();
     TooltipManager.prototype.$super = parent;
@@ -13,31 +13,31 @@ declare('TooltipManager', function () {
             // Get the item type
             var type = '';
             switch (item1.type) {
-                case static.ItemType.HELM:
+                case staticData.ItemType.HELM:
                     type = "Helmet ";
                     break;
-                case static.ItemType.SHOULDERS:
+                case staticData.ItemType.SHOULDERS:
                     type = "Shoulders ";
                     break;
-                case static.ItemType.CHEST:
+                case staticData.ItemType.CHEST:
                     type = "Chest ";
                     break;
-                case static.ItemType.LEGS:
+                case staticData.ItemType.LEGS:
                     type = "Legs ";
                     break;
-                case static.ItemType.WEAPON:
+                case staticData.ItemType.WEAPON:
                     type = "Weapon ";
                     break;
-                case static.ItemType.GLOVES:
+                case staticData.ItemType.GLOVES:
                     type = "Gloves ";
                     break;
-                case static.ItemType.BOOTS:
+                case staticData.ItemType.BOOTS:
                     type = "Boots ";
                     break;
-                case static.ItemType.TRINKET:
+                case staticData.ItemType.TRINKET:
                     type = "Trinket ";
                     break;
-                case static.ItemType.OFF_HAND:
+                case staticData.ItemType.OFF_HAND:
                     type = "Off-Hand ";
                     break;
             }
@@ -92,27 +92,27 @@ declare('TooltipManager', function () {
             }
 
             // Set the item tooltip's colours to reflect the item's rarity
-            if (item1.rarity == static.ItemRarity.COMMON) {
+            if (item1.rarity == staticData.ItemRarity.COMMON) {
                 $("#itemTooltip").css('border-color', '#fff');
                 $(".equipButton").css('border-color', '#fff');
                 $("#itemTooltipTitle").html('<span class="whiteText">' + item1.name + '<br></span>');
             }
-            if (item1.rarity == static.ItemRarity.UNCOMMON) {
+            if (item1.rarity == staticData.ItemRarity.UNCOMMON) {
                 $("#itemTooltip").css('border-color', '#00ff05');
                 $(".equipButton").css('border-color', '#00ff05');
                 $("#itemTooltipTitle").html('<span class="greenText">' + item1.name + '<br></span>');
             }
-            if (item1.rarity == static.ItemRarity.RARE) {
+            if (item1.rarity == staticData.ItemRarity.RARE) {
                 $("#itemTooltip").css('border-color', '#0005ff');
                 $(".equipButton").css('border-color', '#0005ff');
                 $("#itemTooltipTitle").html('<span class="blueText">' + item1.name + '<br></span>');
             }
-            if (item1.rarity == static.ItemRarity.EPIC) {
+            if (item1.rarity == staticData.ItemRarity.EPIC) {
                 $("#itemTooltip").css('border-color', '#b800af');
                 $(".equipButton").css('border-color', '#b800af');
                 $("#itemTooltipTitle").html('<span class="purpleText">' + item1.name + '<br></span>');
             }
-            if (item1.rarity == static.ItemRarity.LEGENDARY) {
+            if (item1.rarity == staticData.ItemRarity.LEGENDARY) {
                 $("#itemTooltip").css('border-color', '#ff6a00');
                 $(".equipButton").css('border-color', '#ff6a00');
                 $("#itemTooltipTitle").html('<span class="orangeText">' + item1.name + '<br></span>');
@@ -155,31 +155,31 @@ declare('TooltipManager', function () {
                 // Set the text of the item tooltip
                 var type2 = '';
                 switch (item2.type) {
-                    case static.ItemType.HELM:
+                    case staticData.ItemType.HELM:
                         type2 = "Helmet ";
                         break;
-                    case static.ItemType.SHOULDERS:
+                    case staticData.ItemType.SHOULDERS:
                         type2 = "Shoulders ";
                         break;
-                    case static.ItemType.CHEST:
+                    case staticData.ItemType.CHEST:
                         type2 = "Chest ";
                         break;
-                    case static.ItemType.LEGS:
+                    case staticData.ItemType.LEGS:
                         type2 = "Legs ";
                         break;
-                    case static.ItemType.WEAPON:
+                    case staticData.ItemType.WEAPON:
                         type2 = "Weapon ";
                         break;
-                    case static.ItemType.GLOVES:
+                    case staticData.ItemType.GLOVES:
                         type2 = "Gloves ";
                         break;
-                    case static.ItemType.BOOTS:
+                    case staticData.ItemType.BOOTS:
                         type2 = "Boots ";
                         break;
-                    case static.ItemType.TRINKET:
+                    case staticData.ItemType.TRINKET:
                         type2 = "Trinket ";
                         break;
-                    case static.ItemType.OFF_HAND:
+                    case staticData.ItemType.OFF_HAND:
                         type2 = "Off-Hand ";
                         break;
                 }
@@ -233,27 +233,27 @@ declare('TooltipManager', function () {
 
                 $("#itemCompareTooltipExtra").html('Currently equipped');
                 // Set the item tooltip's colours to reflect the item's rarity
-                if (item2.rarity == static.ItemRarity.COMMON) {
+                if (item2.rarity == staticData.ItemRarity.COMMON) {
                     $("#itemCompareTooltip").css('border-color', '#fff');
                     $(".equipButton").css('border-color', '#fff');
                     $("#itemCompareTooltipTitle").html('<span class="whiteText">' + item2.name + '<br></span>');
                 }
-                if (item2.rarity == static.ItemRarity.UNCOMMON) {
+                if (item2.rarity == staticData.ItemRarity.UNCOMMON) {
                     $("#itemCompareTooltip").css('border-color', '#00ff05');
                     $(".equipButton").css('border-color', '#00ff05');
                     $("#itemCompareTooltipTitle").html('<span class="greenText">' + item2.name + '<br></span>');
                 }
-                if (item2.rarity == static.ItemRarity.RARE) {
+                if (item2.rarity == staticData.ItemRarity.RARE) {
                     $("#itemCompareTooltip").css('border-color', '#0005ff');
                     $(".equipButton").css('border-color', '#0005ff');
                     $("#itemCompareTooltipTitle").html('<span class="blueText">' + item2.name + '<br></span>');
                 }
-                if (item2.rarity == static.ItemRarity.EPIC) {
+                if (item2.rarity == staticData.ItemRarity.EPIC) {
                     $("#itemCompareTooltip").css('border-color', '#b800af');
                     $(".equipButton").css('border-color', '#b800af');
                     $("#itemCompareTooltipTitle").html('<span class="purpleText">' + item2.name + '<br></span>');
                 }
-                if (item2.rarity == static.ItemRarity.LEGENDARY) {
+                if (item2.rarity == staticData.ItemRarity.LEGENDARY) {
                     $("#itemCompareTooltip").css('border-color', '#ff6a00');
                     $(".equipButton").css('border-color', '#ff6a00');
                     $("#itemCompareTooltipTitle").html('<span class="orangeText">' + item2.name + '<br></span>');
@@ -336,27 +336,27 @@ declare('TooltipManager', function () {
 
                     $("#itemCompareTooltip2Extra").html('Currently equipped');
                     // Set the item tooltip's colours to reflect the item's rarity
-                    if (item3.rarity == static.ItemRarity.COMMON) {
+                    if (item3.rarity == staticData.ItemRarity.COMMON) {
                         $("#itemCompareTooltip2").css('border-color', '#fff');
                         $(".equipButton").css('border-color', '#fff');
                         $("#itemCompareTooltip2Title").html('<span class="whiteText">' + item3.name + '<br></span>');
                     }
-                    if (item3.rarity == static.ItemRarity.UNCOMMON) {
+                    if (item3.rarity == staticData.ItemRarity.UNCOMMON) {
                         $("#itemCompareTooltip2").css('border-color', '#00ff05');
                         $(".equipButton").css('border-color', '#00ff05');
                         $("#itemCompareTooltip2Title").html('<span class="greenText">' + item3.name + '<br></span>');
                     }
-                    if (item3.rarity == static.ItemRarity.RARE) {
+                    if (item3.rarity == staticData.ItemRarity.RARE) {
                         $("#itemCompareTooltip2").css('border-color', '#0005ff');
                         $(".equipButton").css('border-color', '#0005ff');
                         $("#itemCompareTooltip2Title").html('<span class="blueText">' + item3.name + '<br></span>');
                     }
-                    if (item3.rarity == static.ItemRarity.EPIC) {
+                    if (item3.rarity == staticData.ItemRarity.EPIC) {
                         $("#itemCompareTooltip2").css('border-color', '#b800af');
                         $(".equipButton").css('border-color', '#b800af');
                         $("#itemCompareTooltip2Title").html('<span class="purpleText">' + item3.name + '<br></span>');
                     }
-                    if (item3.rarity == static.ItemRarity.LEGENDARY) {
+                    if (item3.rarity == staticData.ItemRarity.LEGENDARY) {
                         $("#itemCompareTooltip2").css('border-color', '#ff6a00');
                         $(".equipButton").css('border-color', '#ff6a00');
                         $("#itemCompareTooltip2Title").html('<span class="orangeText">' + item3.name + '<br></span>');

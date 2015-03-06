@@ -1,7 +1,7 @@
 declare('ItemCreator', function () {
     include('Component');
     include('Utils');
-    include('Static');
+    include('StaticData');
     include('NameGenerator');
     include('StatGenerator');
     include('ItemBonuses');
@@ -28,57 +28,57 @@ declare('ItemCreator', function () {
             var rand = Math.random();
             var magicFindMultiplier = game.player.getStat(data.StatDefinition.magicFind.id) / 100;
             switch (monsterRarity) {
-                case static.MonsterRarity.COMMON:
+                case staticData.MonsterRarity.COMMON:
                     if (rand < 0.20) {
                         rand = Math.random();
                         if (rand < (0.00001 * magicFindMultiplier)) {
-                            return static.ItemRarity.LEGENDARY;
+                            return staticData.ItemRarity.LEGENDARY;
                         }
                         else if (rand < (0.0001 * magicFindMultiplier)) {
-                            return static.ItemRarity.EPIC;
+                            return staticData.ItemRarity.EPIC;
                         }
                         else if (rand < (0.001 * magicFindMultiplier)) {
-                            return static.ItemRarity.RARE;
+                            return staticData.ItemRarity.RARE;
                         }
                         else if (rand < (0.01 * magicFindMultiplier)) {
-                            return static.ItemRarity.UNCOMMON;
+                            return staticData.ItemRarity.UNCOMMON;
                         }
                         else {
-                            return static.ItemRarity.COMMON;
+                            return staticData.ItemRarity.COMMON;
                         }
                     }
                     break;
-                case static.MonsterRarity.RARE:
+                case staticData.MonsterRarity.RARE:
                     if (rand < (0.0001 * magicFindMultiplier)) {
-                        return static.ItemRarity.LEGENDARY;
+                        return staticData.ItemRarity.LEGENDARY;
                     }
                     else if (rand < (0.001 * magicFindMultiplier)) {
-                        return static.ItemRarity.EPIC;
+                        return staticData.ItemRarity.EPIC;
                     }
                     else if (rand < (0.01 * magicFindMultiplier)) {
-                        return static.ItemRarity.RARE;
+                        return staticData.ItemRarity.RARE;
                     }
                     else {
-                        return static.ItemRarity.UNCOMMON;
+                        return staticData.ItemRarity.UNCOMMON;
                     }
                     break;
-                case static.MonsterRarity.ELITE:
+                case staticData.MonsterRarity.ELITE:
                     if (rand < (0.001 * magicFindMultiplier)) {
-                        return static.ItemRarity.LEGENDARY;
+                        return staticData.ItemRarity.LEGENDARY;
                     }
                     else if (rand < (0.01 * magicFindMultiplier)) {
-                        return static.ItemRarity.EPIC;
+                        return staticData.ItemRarity.EPIC;
                     }
                     else {
-                        return static.ItemRarity.RARE;
+                        return staticData.ItemRarity.RARE;
                     }
                     break;
-                case static.MonsterRarity.BOSS:
+                case staticData.MonsterRarity.BOSS:
                     if (rand < (0.01 * magicFindMultiplier)) {
-                        return static.ItemRarity.LEGENDARY;
+                        return staticData.ItemRarity.LEGENDARY;
                     }
                     else {
-                        return static.ItemRarity.EPIC;
+                        return staticData.ItemRarity.EPIC;
                     }
                     break;
             }
@@ -91,35 +91,35 @@ declare('ItemCreator', function () {
             }
 
             // Get a random item type
-            var rand = Math.floor(Math.random() * static.ItemType.count);
+            var rand = Math.floor(Math.random() * staticData.ItemType.count);
             var type;
             switch (rand) {
                 case 0:
-                    type = static.ItemType.HELM;
+                    type = staticData.ItemType.HELM;
                     break;
                 case 1:
-                    type = static.ItemType.SHOULDERS;
+                    type = staticData.ItemType.SHOULDERS;
                     break;
                 case 2:
-                    type = static.ItemType.CHEST;
+                    type = staticData.ItemType.CHEST;
                     break;
                 case 3:
-                    type = static.ItemType.LEGS;
+                    type = staticData.ItemType.LEGS;
                     break;
                 case 4:
-                    type = static.ItemType.WEAPON;
+                    type = staticData.ItemType.WEAPON;
                     break;
                 case 5:
-                    type = static.ItemType.GLOVES;
+                    type = staticData.ItemType.GLOVES;
                     break;
                 case 6:
-                    type = static.ItemType.BOOTS;
+                    type = staticData.ItemType.BOOTS;
                     break;
                 case 7:
-                    type = static.ItemType.TRINKET;
+                    type = staticData.ItemType.TRINKET;
                     break;
                 case 8:
-                    type = static.ItemType.OFF_HAND;
+                    type = staticData.ItemType.OFF_HAND;
                     break;
             }
 
@@ -127,23 +127,23 @@ declare('ItemCreator', function () {
             var prefixAmount;
             var suffixAmount;
             switch (rarity) {
-                case static.ItemRarity.COMMON:
+                case staticData.ItemRarity.COMMON:
                     prefixAmount = 1;
                     suffixAmount = 0;
                     break;
-                case static.ItemRarity.UNCOMMON:
+                case staticData.ItemRarity.UNCOMMON:
                     prefixAmount = 1;
                     suffixAmount = 1;
                     break;
-                case static.ItemRarity.RARE:
+                case staticData.ItemRarity.RARE:
                     prefixAmount = 2;
                     suffixAmount = 1;
                     break;
-                case static.ItemRarity.EPIC:
+                case staticData.ItemRarity.EPIC:
                     prefixAmount = 2;
                     suffixAmount = 2;
                     break;
-                case static.ItemRarity.LEGENDARY:
+                case staticData.ItemRarity.LEGENDARY:
                     prefixAmount = 3;
                     suffixAmount = 3;
                     break;
@@ -160,12 +160,12 @@ declare('ItemCreator', function () {
 
             while (amount > 0) {
                 // Get the ID of the bonuses; randomly
-                randBonus = Math.floor(Math.random() * static.PREFIX_AMOUNT);
+                randBonus = Math.floor(Math.random() * staticData.PREFIX_AMOUNT);
 
                 // Add the bonus to the item bonuses
                 switch (randBonus) {
                     case 0:
-                        if (itemBonusAddition.damageBonus == 0 && type == static.ItemType.WEAPON) {
+                        if (itemBonusAddition.damageBonus == 0 && type == staticData.ItemType.WEAPON) {
                             itemBonusAddition.damageBonus = statGenerator.getRandomDamageBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomDamageBonusName();
@@ -183,7 +183,7 @@ declare('ItemCreator', function () {
                         }
                         break;
                     case 2:
-                        if (itemBonusAddition.armourBonus == 0 && type != static.ItemType.WEAPON) {
+                        if (itemBonusAddition.armourBonus == 0 && type != staticData.ItemType.WEAPON) {
                             itemBonusAddition.armourBonus = statGenerator.getRandomArmourBonus(level);
                             if (prefix == "") {
                                 prefix = nameGenerator.getRandomArmourBonusName();
@@ -225,7 +225,7 @@ declare('ItemCreator', function () {
             amount = suffixAmount;
             while (amount > 0) {
                 // Get the ID of the bonuses; randomly
-                randBonus = Math.floor(Math.random() * static.SUFFIX_AMOUNT);
+                randBonus = Math.floor(Math.random() * staticData.SUFFIX_AMOUNT);
 
                 // Add the bonus to the item bonuses
                 switch (randBonus) {
@@ -296,24 +296,24 @@ declare('ItemCreator', function () {
             }
 
             // If it's a weapon; add weapon damage
-            if (type == static.ItemType.WEAPON) {
+            if (type == staticData.ItemType.WEAPON) {
                 itemBonusAddition.minDamage = statGenerator.getRandomMinDamage(level);
                 itemBonusAddition.maxDamage = statGenerator.getRandomMaxDamage(level, itemBonusAddition.minDamage);
                 // Add damage depending on the rarity
                 switch (rarity) {
-                    case static.ItemRarity.UNCOMMON:
+                    case staticData.ItemRarity.UNCOMMON:
                         itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1);
                         itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1);
                         break;
-                    case static.ItemRarity.RARE:
+                    case staticData.ItemRarity.RARE:
                         itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 2;
                         itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 2;
                         break;
-                    case static.ItemRarity.EPIC:
+                    case staticData.ItemRarity.EPIC:
                         itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 3;
                         itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 3;
                         break;
-                    case static.ItemRarity.LEGENDARY:
+                    case staticData.ItemRarity.LEGENDARY:
                         itemBonusAddition.minDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 4;
                         itemBonusAddition.maxDamage += Math.ceil(((2 * level) * Math.pow(1.001, level) * 0.75) + (level / 5) + 1) * 4;
                         break;
@@ -327,31 +327,31 @@ declare('ItemCreator', function () {
             // Create the name
             var name = prefix;
             switch (type) {
-                case static.ItemType.HELM:
+                case staticData.ItemType.HELM:
                     name += " Helmet ";
                     break;
-                case static.ItemType.SHOULDERS:
+                case staticData.ItemType.SHOULDERS:
                     name += " Shoulders ";
                     break;
-                case static.ItemType.CHEST:
+                case staticData.ItemType.CHEST:
                     name += " Chest ";
                     break;
-                case static.ItemType.LEGS:
+                case staticData.ItemType.LEGS:
                     name += " Legs ";
                     break;
-                case static.ItemType.WEAPON:
+                case staticData.ItemType.WEAPON:
                     name += " Weapon ";
                     break;
-                case static.ItemType.GLOVES:
+                case staticData.ItemType.GLOVES:
                     name += " Gloves ";
                     break;
-                case static.ItemType.BOOTS:
+                case staticData.ItemType.BOOTS:
                     name += " Boots ";
                     break;
-                case static.ItemType.TRINKET:
+                case staticData.ItemType.TRINKET:
                     name += " Trinket ";
                     break;
-                case static.ItemType.OFF_HAND:
+                case staticData.ItemType.OFF_HAND:
                     name += " Shield ";
                     break;
             }
@@ -362,46 +362,46 @@ declare('ItemCreator', function () {
             var iconSourceY = 0;
             // x coordinate
             switch (type) {
-                case static.ItemType.HELM:
+                case staticData.ItemType.HELM:
                     iconSourceX = 0;
                     break;
-                case static.ItemType.SHOULDERS:
+                case staticData.ItemType.SHOULDERS:
                     iconSourceX = 280;
                     break;
-                case static.ItemType.CHEST:
+                case staticData.ItemType.CHEST:
                     iconSourceX = 245;
                     break;
-                case static.ItemType.LEGS:
+                case staticData.ItemType.LEGS:
                     iconSourceX = 210;
                     break;
-                case static.ItemType.WEAPON:
+                case staticData.ItemType.WEAPON:
                     iconSourceX = 175;
                     break;
-                case static.ItemType.GLOVES:
+                case staticData.ItemType.GLOVES:
                     iconSourceX = 140;
                     break;
-                case static.ItemType.BOOTS:
+                case staticData.ItemType.BOOTS:
                     iconSourceX = 105;
                     break;
-                case static.ItemType.TRINKET:
+                case staticData.ItemType.TRINKET:
                     iconSourceX = 70;
                     break;
-                case static.ItemType.OFF_HAND:
+                case staticData.ItemType.OFF_HAND:
                     iconSourceX = 35;
                     break;
             }
             // y coordinate
             switch (rarity) {
-                case static.ItemRarity.UNCOMMON:
+                case staticData.ItemRarity.UNCOMMON:
                     iconSourceY = 140;
                     break;
-                case static.ItemRarity.RARE:
+                case staticData.ItemRarity.RARE:
                     iconSourceY = 105;
                     break;
-                case static.ItemRarity.EPIC:
+                case staticData.ItemRarity.EPIC:
                     iconSourceY = 70;
                     break;
-                case static.ItemRarity.LEGENDARY:
+                case staticData.ItemRarity.LEGENDARY:
                     iconSourceY = 35;
                     break;
             }
@@ -409,31 +409,31 @@ declare('ItemCreator', function () {
             // Calculate the sell value
             var multiple = 0;
             switch (type) {
-                case static.ItemType.HELM:
+                case staticData.ItemType.HELM:
                     multiple = 2.3;
                     break;
-                case static.ItemType.SHOULDERS:
+                case staticData.ItemType.SHOULDERS:
                     multiple = 2.5;
                     break;
-                case static.ItemType.CHEST:
+                case staticData.ItemType.CHEST:
                     multiple = 3.3;
                     break;
-                case static.ItemType.LEGS:
+                case staticData.ItemType.LEGS:
                     multiple = 3.1;
                     break;
-                case static.ItemType.WEAPON:
+                case staticData.ItemType.WEAPON:
                     multiple = 2.9;
                     break;
-                case static.ItemType.GLOVES:
+                case staticData.ItemType.GLOVES:
                     multiple = 2.1;
                     break;
-                case static.ItemType.BOOTS:
+                case staticData.ItemType.BOOTS:
                     multiple = 2.1;
                     break;
-                case static.ItemType.TRINKET:
+                case staticData.ItemType.TRINKET:
                     multiple = 2.9;
                     break;
-                case static.ItemType.OFF_HAND:
+                case staticData.ItemType.OFF_HAND:
                     multiple = 2.7;
                     break;
             }
@@ -445,10 +445,10 @@ declare('ItemCreator', function () {
             var effectOwned = false;
             var effectsAmount = 0;
             switch (rarity) {
-                case static.ItemRarity.EPIC:
+                case staticData.ItemRarity.EPIC:
                     effectsAmount = Math.floor(Math.random() * 2);
                     break;
-                case static.ItemRarity.LEGENDARY:
+                case staticData.ItemRarity.LEGENDARY:
                     effectsAmount = Math.floor(Math.random() * 2) + 1;
                     break;
             }
@@ -459,48 +459,48 @@ declare('ItemCreator', function () {
                     case ItemType.WEAPON:
                         switch (Math.floor(Math.random() * 3)) {
                             case 0:
-                                newEffect = new Effect(static.EffectType.CRUSHING_BLOWS, 100, 5);
+                                newEffect = new Effect(staticData.EffectType.CRUSHING_BLOWS, 100, 5);
                                 break;
                             case 1:
-                                newEffect = new Effect(static.EffectType.COMBUSTION, 100, 5);
+                                newEffect = new Effect(staticData.EffectType.COMBUSTION, 100, 5);
                                 break;
                             case 2:
-                                newEffect = new Effect(static.EffectType.RUPTURE, 100, 5);
+                                newEffect = new Effect(staticData.EffectType.RUPTURE, 100, 5);
                                 break;
                         }
                         break;
                     case ItemType.TRINKET:
                         switch (Math.floor(Math.random() * 4)) {
                             case 0:
-                                newEffect = new Effect(static.EffectType.SWIFTNESS, 10, 0);
+                                newEffect = new Effect(staticData.EffectType.SWIFTNESS, 10, 0);
                                 break;
                             case 1:
-                                newEffect = new Effect(static.EffectType.PILLAGING, 10, Math.floor(((utils.Sigma(level) * Math.pow(1.01, level)) / 4 + 1) * 15));
+                                newEffect = new Effect(staticData.EffectType.PILLAGING, 10, Math.floor(((utils.Sigma(level) * Math.pow(1.01, level)) / 4 + 1) * 15));
                                 break;
                             case 2:
-                                newEffect = new Effect(static.EffectType.NOURISHMENT, 10, Math.floor((10 * level) * Math.pow(1.001, level) * 0.75));
+                                newEffect = new Effect(staticData.EffectType.NOURISHMENT, 10, Math.floor((10 * level) * Math.pow(1.001, level) * 0.75));
                                 break;
                             case 3:
-                                newEffect = new Effect(static.EffectType.BERSERKING, 10, Math.floor((level) * Math.pow(1.001, level) * 3));
+                                newEffect = new Effect(staticData.EffectType.BERSERKING, 10, Math.floor((level) * Math.pow(1.001, level) * 3));
                                 break;
                         }
                         break;
                     default:
                         switch (Math.floor(Math.random() * 5)) {
                             case 0:
-                                newEffect = new Effect(static.EffectType.WOUNDING, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(staticData.EffectType.WOUNDING, 100, Math.ceil(level / 35));
                                 break;
                             case 1:
-                                newEffect = new Effect(static.EffectType.CURING, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(staticData.EffectType.CURING, 100, Math.ceil(level / 35));
                                 break;
                             case 2:
-                                newEffect = new Effect(static.EffectType.FROST_SHARDS, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(staticData.EffectType.FROST_SHARDS, 100, Math.ceil(level / 35));
                                 break;
                             case 3:
-                                newEffect = new Effect(static.EffectType.FLAME_IMBUED, 100, Math.ceil(level / 35));
+                                newEffect = new Effect(staticData.EffectType.FLAME_IMBUED, 100, Math.ceil(level / 35));
                                 break;
                             case 4:
-                                newEffect = new Effect(static.EffectType.BARRIER, 100, Math.floor((Math.random() * 15) + 20));
+                                newEffect = new Effect(staticData.EffectType.BARRIER, 100, Math.floor((Math.random() * 15) + 20));
                                 break;
                         }
                         break;

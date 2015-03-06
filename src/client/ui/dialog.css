@@ -8,6 +8,7 @@
 }
 
 .dialogContentPanel {
+    include: globalNoDrag;
     position: absolute;
     top: 35px;
     left: 0px;
@@ -16,6 +17,7 @@
 }
 
 .dialogCloseButton {
+    include: globalNoDrag;
     position: absolute;
     top: -15px;
     right: -15px;

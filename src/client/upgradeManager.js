@@ -1,6 +1,6 @@
 declare('UpgradeManager', function () {
     include('Component');
-    include('Static');
+    include('StaticData');
     include('Upgrade');
     include('MonsterCreator');
     include('GameState');
@@ -29,85 +29,85 @@ declare('UpgradeManager', function () {
             this.componentInit();
 
             // Footman Basic Upgrades
-            this.upgrades.push(upgrade.create("Footman Training", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 9)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 10, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training II", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 19)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 20, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training III", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 29)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 30, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training IV", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 49)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 50, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training V", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 74)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 75, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training VI", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 99)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 100, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training VII", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 149)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 150, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training VIII", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 200, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training IX", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 249)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 250, "Doubles the GPS of your Footmen", 0, 0));
-            this.upgrades.push(upgrade.create("Footman Training X", Math.floor((static.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.FOOTMAN, 300, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 9)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 10, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training II", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 19)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 20, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training III", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 29)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 30, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training IV", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 49)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 50, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training V", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 74)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 75, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training VI", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 99)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 100, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training VII", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 149)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 150, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training VIII", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 200, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training IX", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 249)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 250, "Doubles the GPS of your Footmen", 0, 0));
+            this.upgrades.push(upgrade.create("Footman Training X", Math.floor((staticData.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.FOOTMAN, 300, "Doubles the GPS of your Footmen", 0, 0));
 
             // Cleric Basic Upgrades
-            this.upgrades.push(upgrade.create("Cleric Training", Math.floor((static.baseClericPrice * Math.pow(1.15, 9)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.CLERIC, 10, "Doubles the GPS of your Clerics", 200, 0));
-            this.upgrades.push(upgrade.create("Cleric Training II", Math.floor((static.baseClericPrice * Math.pow(1.15, 24)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.CLERIC, 25, "Doubles the GPS of your Clerics", 200, 0));
-            this.upgrades.push(upgrade.create("Cleric Training III", Math.floor((static.baseClericPrice * Math.pow(1.15, 49)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.CLERIC, 50, "Doubles the GPS of your Clerics", 200, 0));
-            this.upgrades.push(upgrade.create("Cleric Training IV", Math.floor((static.baseClericPrice * Math.pow(1.15, 99)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.CLERIC, 100, "Doubles the GPS of your Clerics", 200, 0));
-            this.upgrades.push(upgrade.create("Cleric Training V", Math.floor((static.baseClericPrice * Math.pow(1.15, 149)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.CLERIC, 150, "Doubles the GPS of your Clerics", 200, 0));
+            this.upgrades.push(upgrade.create("Cleric Training", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 9)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.CLERIC, 10, "Doubles the GPS of your Clerics", 200, 0));
+            this.upgrades.push(upgrade.create("Cleric Training II", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 24)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.CLERIC, 25, "Doubles the GPS of your Clerics", 200, 0));
+            this.upgrades.push(upgrade.create("Cleric Training III", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 49)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.CLERIC, 50, "Doubles the GPS of your Clerics", 200, 0));
+            this.upgrades.push(upgrade.create("Cleric Training IV", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 99)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.CLERIC, 100, "Doubles the GPS of your Clerics", 200, 0));
+            this.upgrades.push(upgrade.create("Cleric Training V", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 149)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.CLERIC, 150, "Doubles the GPS of your Clerics", 200, 0));
 
             // Commander Basic Upgrades
-            this.upgrades.push(upgrade.create("Commander Training", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 9)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.COMMANDER, 10, "Doubles the GPS of your Commanders", 160, 0));
-            this.upgrades.push(upgrade.create("Commander Training II", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 24)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.COMMANDER, 25, "Doubles the GPS of your Commanders", 160, 0));
-            this.upgrades.push(upgrade.create("Commander Training III", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 49)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.COMMANDER, 50, "Doubles the GPS of your Commanders", 160, 0));
-            this.upgrades.push(upgrade.create("Commander Training IV", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 99)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.COMMANDER, 100, "Doubles the GPS of your Commanders", 160, 0));
-            this.upgrades.push(upgrade.create("Commander Training V", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 149)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.COMMANDER, 150, "Doubles the GPS of your Commanders", 160, 0));
+            this.upgrades.push(upgrade.create("Commander Training", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 9)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.COMMANDER, 10, "Doubles the GPS of your Commanders", 160, 0));
+            this.upgrades.push(upgrade.create("Commander Training II", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 24)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.COMMANDER, 25, "Doubles the GPS of your Commanders", 160, 0));
+            this.upgrades.push(upgrade.create("Commander Training III", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 49)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.COMMANDER, 50, "Doubles the GPS of your Commanders", 160, 0));
+            this.upgrades.push(upgrade.create("Commander Training IV", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 99)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.COMMANDER, 100, "Doubles the GPS of your Commanders", 160, 0));
+            this.upgrades.push(upgrade.create("Commander Training V", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 149)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.COMMANDER, 150, "Doubles the GPS of your Commanders", 160, 0));
 
             // Mage Basic Upgrades
-            this.upgrades.push(upgrade.create("Mage Training", Math.floor((static.baseMagePrice * Math.pow(1.15, 9)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.MAGE, 10, "Doubles the GPS of your Mages", 120, 0));
-            this.upgrades.push(upgrade.create("Mage Training II", Math.floor((static.baseMagePrice * Math.pow(1.15, 24)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.MAGE, 25, "Doubles the GPS of your Mages", 120, 0));
-            this.upgrades.push(upgrade.create("Mage Training III", Math.floor((static.baseMagePrice * Math.pow(1.15, 49)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.MAGE, 50, "Doubles the GPS of your Mages", 120, 0));
-            this.upgrades.push(upgrade.create("Mage Training IV", Math.floor((static.baseMagePrice * Math.pow(1.15, 99)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.MAGE, 100, "Doubles the GPS of your Mages", 120, 0));
-            this.upgrades.push(upgrade.create("Mage Training V", Math.floor((static.baseMagePrice * Math.pow(1.15, 149)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.MAGE, 150, "Doubles the GPS of your Mages", 120, 0));
+            this.upgrades.push(upgrade.create("Mage Training", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 9)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.MAGE, 10, "Doubles the GPS of your Mages", 120, 0));
+            this.upgrades.push(upgrade.create("Mage Training II", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 24)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.MAGE, 25, "Doubles the GPS of your Mages", 120, 0));
+            this.upgrades.push(upgrade.create("Mage Training III", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 49)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.MAGE, 50, "Doubles the GPS of your Mages", 120, 0));
+            this.upgrades.push(upgrade.create("Mage Training IV", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 99)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.MAGE, 100, "Doubles the GPS of your Mages", 120, 0));
+            this.upgrades.push(upgrade.create("Mage Training V", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 149)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.MAGE, 150, "Doubles the GPS of your Mages", 120, 0));
 
             // Assassin Basic Upgrades
-            this.upgrades.push(upgrade.create("Assassin Training", Math.floor((static.baseAssassinPrice * Math.pow(1.15, 9)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.ASSASSIN, 10, "Doubles the GPS of your Assassin", 80, 0));
-            this.upgrades.push(upgrade.create("Assassin Training II", Math.floor((static.baseAssassinPrice * Math.pow(1.15, 24)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.ASSASSIN, 25, "Doubles the GPS of your Assassin", 80, 0));
-            this.upgrades.push(upgrade.create("Assassin Training III", Math.floor((static.baseAssassinPrice * Math.pow(1.15, 49)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.ASSASSIN, 50, "Doubles the GPS of your Assassin", 80, 0));
-            this.upgrades.push(upgrade.create("Assassin Training IV", Math.floor((static.baseAssassinPrice * Math.pow(1.15, 99)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.ASSASSIN, 100, "Doubles the GPS of your Assassin", 80, 0));
-            this.upgrades.push(upgrade.create("Assassin Training V", Math.floor((static.baseAssassinPrice * Math.pow(1.15, 149)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.ASSASSIN, 150, "Doubles the GPS of your Assassin", 80, 0));
+            this.upgrades.push(upgrade.create("Assassin Training", Math.floor((staticData.baseAssassinPrice * Math.pow(1.15, 9)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.ASSASSIN, 10, "Doubles the GPS of your Assassin", 80, 0));
+            this.upgrades.push(upgrade.create("Assassin Training II", Math.floor((staticData.baseAssassinPrice * Math.pow(1.15, 24)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.ASSASSIN, 25, "Doubles the GPS of your Assassin", 80, 0));
+            this.upgrades.push(upgrade.create("Assassin Training III", Math.floor((staticData.baseAssassinPrice * Math.pow(1.15, 49)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.ASSASSIN, 50, "Doubles the GPS of your Assassin", 80, 0));
+            this.upgrades.push(upgrade.create("Assassin Training IV", Math.floor((staticData.baseAssassinPrice * Math.pow(1.15, 99)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.ASSASSIN, 100, "Doubles the GPS of your Assassin", 80, 0));
+            this.upgrades.push(upgrade.create("Assassin Training V", Math.floor((staticData.baseAssassinPrice * Math.pow(1.15, 149)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.ASSASSIN, 150, "Doubles the GPS of your Assassin", 80, 0));
 
             // Warlock Basic Upgrades
-            this.upgrades.push(upgrade.create("Warlock Training", ((static.baseWarlockPrice * Math.pow(1.15, 9)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.WARLOCK, 10, "Doubles the GPS of your Warlocks", 40, 0));
-            this.upgrades.push(upgrade.create("Warlock Training II", ((static.baseWarlockPrice * Math.pow(1.15, 24)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.WARLOCK, 25, "Doubles the GPS of your Warlocks", 40, 0));
-            this.upgrades.push(upgrade.create("Warlock Training III", ((static.baseWarlockPrice * Math.pow(1.15, 49)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.WARLOCK, 50, "Doubles the GPS of your Warlocks", 40, 0));
-            this.upgrades.push(upgrade.create("Warlock Training IV", ((static.baseWarlockPrice * Math.pow(1.15, 99)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.WARLOCK, 100, "Doubles the GPS of your Warlocks", 40, 0));
-            this.upgrades.push(upgrade.create("Warlock Training V", ((static.baseWarlockPrice * Math.pow(1.15, 149)) * 1.5), static.UpgradeType.GPS, static.UpgradeRequirementType.WARLOCK, 150, "Doubles the GPS of your Warlocks", 40, 0));
+            this.upgrades.push(upgrade.create("Warlock Training", ((staticData.baseWarlockPrice * Math.pow(1.15, 9)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.WARLOCK, 10, "Doubles the GPS of your Warlocks", 40, 0));
+            this.upgrades.push(upgrade.create("Warlock Training II", ((staticData.baseWarlockPrice * Math.pow(1.15, 24)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.WARLOCK, 25, "Doubles the GPS of your Warlocks", 40, 0));
+            this.upgrades.push(upgrade.create("Warlock Training III", ((staticData.baseWarlockPrice * Math.pow(1.15, 49)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.WARLOCK, 50, "Doubles the GPS of your Warlocks", 40, 0));
+            this.upgrades.push(upgrade.create("Warlock Training IV", ((staticData.baseWarlockPrice * Math.pow(1.15, 99)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.WARLOCK, 100, "Doubles the GPS of your Warlocks", 40, 0));
+            this.upgrades.push(upgrade.create("Warlock Training V", ((staticData.baseWarlockPrice * Math.pow(1.15, 149)) * 1.5), staticData.UpgradeType.GPS, staticData.UpgradeRequirementType.WARLOCK, 150, "Doubles the GPS of your Warlocks", 40, 0));
 
             // Cleric Ability Upgrades
-            this.upgrades.push(upgrade.create("Holy Imbuement", Math.floor((static.baseClericPrice * Math.pow(1.15, 49)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.CLERIC, 50, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
-            this.upgrades.push(upgrade.create("Holy Imbuement II", Math.floor((static.baseClericPrice * Math.pow(1.15, 99)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.CLERIC, 100, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
-            this.upgrades.push(upgrade.create("Holy Imbuement III", Math.floor((static.baseClericPrice * Math.pow(1.15, 149)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.CLERIC, 150, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
-            this.upgrades.push(upgrade.create("Holy Imbuement IV", Math.floor((static.baseClericPrice * Math.pow(1.15, 199)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.CLERIC, 200, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+            this.upgrades.push(upgrade.create("Holy Imbuement", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 49)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.CLERIC, 50, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+            this.upgrades.push(upgrade.create("Holy Imbuement II", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 99)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.CLERIC, 100, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+            this.upgrades.push(upgrade.create("Holy Imbuement III", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 149)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.CLERIC, 150, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+            this.upgrades.push(upgrade.create("Holy Imbuement IV", Math.floor((staticData.baseClericPrice * Math.pow(1.15, 199)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.CLERIC, 200, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
 
             // Commander Ability Upgrades
-            this.upgrades.push(upgrade.create("Battle Morale", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 49)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.COMMANDER, 50, "Increases the health bonus from your Commanders by " + static.commanderHealthPercentUpgradeValue + "%.", 160, 0));
-            this.upgrades.push(upgrade.create("Battle Morale II", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 99)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.COMMANDER, 100, "Increases the health bonus from your Commanders by " + static.commanderHealthPercentUpgradeValue + "%.", 160, 0));
-            this.upgrades.push(upgrade.create("Battle Morale III", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 149)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.COMMANDER, 150, "Increases the health bonus from your Commanders by " + static.commanderHealthPercentUpgradeValue + "%.", 160, 0));
-            this.upgrades.push(upgrade.create("Battle Morale IV", Math.floor((static.baseCommanderPrice * Math.pow(1.15, 199)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.COMMANDER, 200, "Increases the health bonus from your Commanders by " + static.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+            this.upgrades.push(upgrade.create("Battle Morale", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 49)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.COMMANDER, 50, "Increases the health bonus from your Commanders by " + staticData.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+            this.upgrades.push(upgrade.create("Battle Morale II", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 99)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.COMMANDER, 100, "Increases the health bonus from your Commanders by " + staticData.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+            this.upgrades.push(upgrade.create("Battle Morale III", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 149)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.COMMANDER, 150, "Increases the health bonus from your Commanders by " + staticData.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+            this.upgrades.push(upgrade.create("Battle Morale IV", Math.floor((staticData.baseCommanderPrice * Math.pow(1.15, 199)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.COMMANDER, 200, "Increases the health bonus from your Commanders by " + staticData.commanderHealthPercentUpgradeValue + "%.", 160, 0));
 
             // Mage Ability Upgrades
-            this.upgrades.push(upgrade.create("Fire Mastery", Math.floor((static.baseMagePrice * Math.pow(1.15, 49)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.MAGE, 50, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
-            this.upgrades.push(upgrade.create("Fire Mastery II", Math.floor((static.baseMagePrice * Math.pow(1.15, 99)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.MAGE, 100, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
-            this.upgrades.push(upgrade.create("Fire Mastery III", Math.floor((static.baseMagePrice * Math.pow(1.15, 149)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.MAGE, 150, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
-            this.upgrades.push(upgrade.create("Fire Mastery IV", Math.floor((static.baseMagePrice * Math.pow(1.15, 199)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.MAGE, 200, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+            this.upgrades.push(upgrade.create("Fire Mastery", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 49)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.MAGE, 50, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+            this.upgrades.push(upgrade.create("Fire Mastery II", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 99)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.MAGE, 100, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+            this.upgrades.push(upgrade.create("Fire Mastery III", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 149)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.MAGE, 150, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+            this.upgrades.push(upgrade.create("Fire Mastery IV", Math.floor((staticData.baseMagePrice * Math.pow(1.15, 199)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.MAGE, 200, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
 
             // Assassin Ability Upgrades
-            this.upgrades.push(upgrade.create("Shadow Mastery", Math.floor((static.baseAssassinPrice + Math.pow(1.15, 49)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.ASSASSIN, 50, "Increases the evasion bonus from your assassins by " + static.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
-            this.upgrades.push(upgrade.create("Shadow Mastery II", Math.floor((static.baseAssassinPrice + Math.pow(1.15, 99)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.ASSASSIN, 100, "Increases the evasion bonus from your assassins by " + static.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
-            this.upgrades.push(upgrade.create("Shadow Mastery III", Math.floor((static.baseAssassinPrice + Math.pow(1.15, 149)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.ASSASSIN, 150, "Increases the evasion bonus from your assassins by " + static.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
-            this.upgrades.push(upgrade.create("Shadow Mastery IV", Math.floor((static.baseAssassinPrice + Math.pow(1.15, 199)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.ASSASSIN, 200, "Increases the evasion bonus from your assassins by " + static.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+            this.upgrades.push(upgrade.create("Shadow Mastery", Math.floor((staticData.baseAssassinPrice + Math.pow(1.15, 49)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.ASSASSIN, 50, "Increases the evasion bonus from your assassins by " + staticData.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+            this.upgrades.push(upgrade.create("Shadow Mastery II", Math.floor((staticData.baseAssassinPrice + Math.pow(1.15, 99)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.ASSASSIN, 100, "Increases the evasion bonus from your assassins by " + staticData.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+            this.upgrades.push(upgrade.create("Shadow Mastery III", Math.floor((staticData.baseAssassinPrice + Math.pow(1.15, 149)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.ASSASSIN, 150, "Increases the evasion bonus from your assassins by " + staticData.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+            this.upgrades.push(upgrade.create("Shadow Mastery IV", Math.floor((staticData.baseAssassinPrice + Math.pow(1.15, 199)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.ASSASSIN, 200, "Increases the evasion bonus from your assassins by " + staticData.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
 
             // Warlock Ability Upgrades
-            this.upgrades.push(upgrade.create("Corruption", Math.floor((static.baseWarlockPrice * Math.pow(1.15, 49)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.WARLOCK, 50, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
-            this.upgrades.push(upgrade.create("Corruption II", Math.floor((static.baseWarlockPrice * Math.pow(1.15, 99)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.WARLOCK, 100, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
-            this.upgrades.push(upgrade.create("Corruption III", Math.floor((static.baseWarlockPrice * Math.pow(1.15, 149)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.WARLOCK, 150, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
-            this.upgrades.push(upgrade.create("Corruption IV", Math.floor((static.baseWarlockPrice * Math.pow(1.15, 199)) * 3), static.UpgradeType.SPECIAL, static.UpgradeRequirementType.WARLOCK, 200, "Increases the crit damage bonus from Warlocks by 2.5%.", 40, 0));
+            this.upgrades.push(upgrade.create("Corruption", Math.floor((staticData.baseWarlockPrice * Math.pow(1.15, 49)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.WARLOCK, 50, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
+            this.upgrades.push(upgrade.create("Corruption II", Math.floor((staticData.baseWarlockPrice * Math.pow(1.15, 99)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.WARLOCK, 100, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
+            this.upgrades.push(upgrade.create("Corruption III", Math.floor((staticData.baseWarlockPrice * Math.pow(1.15, 149)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.WARLOCK, 150, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
+            this.upgrades.push(upgrade.create("Corruption IV", Math.floor((staticData.baseWarlockPrice * Math.pow(1.15, 199)) * 3), staticData.UpgradeType.SPECIAL, staticData.UpgradeRequirementType.WARLOCK, 200, "Increases the crit damage bonus from Warlocks by 2.5%.", 40, 0));
 
             // Attack Upgrades
-            this.upgrades.push(upgrade.create("Power Strike",monsterCreator.calculateMonsterGoldWorth(50, static.MonsterRarity.COMMON) * 400, static.UpgradeType.ATTACK, static.UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
-            this.upgrades.push(upgrade.create("Double Strike",monsterCreator.calculateMonsterGoldWorth(100, static.MonsterRarity.COMMON) * 400, static.UpgradeType.ATTACK, static.UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
+            this.upgrades.push(upgrade.create("Power Strike",monsterCreator.calculateMonsterGoldWorth(50, staticData.MonsterRarity.COMMON) * 400, staticData.UpgradeType.ATTACK, staticData.UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
+            this.upgrades.push(upgrade.create("Double Strike",monsterCreator.calculateMonsterGoldWorth(100, staticData.MonsterRarity.COMMON) * 400, staticData.UpgradeType.ATTACK, staticData.UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
         }
 
         this.componentUpdate = this.update;
@@ -128,42 +128,42 @@ declare('UpgradeManager', function () {
 
                     // Find the matching requirement type, then see if it has been met
                     switch (currentUpgrade.requirementType) {
-                        case static.UpgradeRequirementType.FOOTMAN:
+                        case staticData.UpgradeRequirementType.FOOTMAN:
                             if (gameState.footmenOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.CLERIC:
+                        case staticData.UpgradeRequirementType.CLERIC:
                             if (gameState.clericsOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.COMMANDER:
+                        case staticData.UpgradeRequirementType.COMMANDER:
                             if (gameState.commandersOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.MAGE:
+                        case staticData.UpgradeRequirementType.MAGE:
                             if (gameState.magesOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.ASSASSIN:
+                        case staticData.UpgradeRequirementType.ASSASSIN:
                             if (gameState.assassinsOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.WARLOCK:
+                        case staticData.UpgradeRequirementType.WARLOCK:
                             if (gameState.warlocksOwned >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.ITEMS_LOOTED:
+                        case staticData.UpgradeRequirementType.ITEMS_LOOTED:
                             if (game.stats.itemsLooted >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
                             break;
-                        case static.UpgradeRequirementType.LEVEL:
+                        case staticData.UpgradeRequirementType.LEVEL:
                             if (game.player.getLevel() >= currentUpgrade.requirementAmount) {
                                 available = true;
                             }
@@ -265,58 +265,58 @@ declare('UpgradeManager', function () {
 
                 // Apply the bonus
                 switch (upgrade.type) {
-                    case static.UpgradeType.GPS:
+                    case staticData.UpgradeType.GPS:
                         switch (upgrade.requirementType) {
-                            case static.UpgradeRequirementType.FOOTMAN:
+                            case staticData.UpgradeRequirementType.FOOTMAN:
                                 this.footmanUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.CLERIC:
+                            case staticData.UpgradeRequirementType.CLERIC:
                                 this.clericUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.COMMANDER:
+                            case staticData.UpgradeRequirementType.COMMANDER:
                                 this.commanderUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.MAGE:
+                            case staticData.UpgradeRequirementType.MAGE:
                                 this.mageUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.ASSASSIN:
+                            case staticData.UpgradeRequirementType.ASSASSIN:
                                 this.assassinUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.WARLOCK:
+                            case staticData.UpgradeRequirementType.WARLOCK:
                                 this.warlockUpgradesPurchased++;
                                 break;
                         }
                         break;
-                    case static.UpgradeType.SPECIAL:
+                    case staticData.UpgradeType.SPECIAL:
                         switch (upgrade.requirementType) {
-                            case static.UpgradeRequirementType.FOOTMAN:
+                            case staticData.UpgradeRequirementType.FOOTMAN:
                                 break;
-                            case static.UpgradeRequirementType.CLERIC:
+                            case staticData.UpgradeRequirementType.CLERIC:
                                 this.clericSpecialUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.COMMANDER:
+                            case staticData.UpgradeRequirementType.COMMANDER:
                                 this.commanderSpecialUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.MAGE:
+                            case staticData.UpgradeRequirementType.MAGE:
                                 this.mageSpecialUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.ASSASSIN:
+                            case staticData.UpgradeRequirementType.ASSASSIN:
                                 this.assassinSpecialUpgradesPurchased++;
                                 break;
-                            case static.UpgradeRequirementType.WARLOCK:
+                            case staticData.UpgradeRequirementType.WARLOCK:
                                 this.warlockSpecialUpgradesPurchased++;
                                 break;
                         }
                         break;
-                    case static.UpgradeType.ATTACK:
+                    case staticData.UpgradeType.ATTACK:
                         switch (upgrade.name) {
                             case "Power Strike":
                                 if (!this.upgrades[56].purchased) {
-                                    game.player.changeAttack(static.AttackType.POWER_STRIKE);
+                                    game.player.changeAttack(staticData.AttackType.POWER_STRIKE);
                                 }
                                 break;
                             case "Double Strike":
-                                game.player.changeAttack(static.AttackType.DOUBLE_STRIKE);
+                                game.player.changeAttack(staticData.AttackType.DOUBLE_STRIKE);
                                 break;
                         }
                 }

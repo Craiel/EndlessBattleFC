@@ -12,6 +12,6 @@ declare('SaveKeys', function() {
 
 
 		///// Potentially remove:
-		idnMercenaryUpdateTime: StrSha('mercUpdateTime'),
+		idnMercenaryUpdateTime: StrSha('mercUpdateTime')
 	};
 });

@@ -1,7 +1,7 @@
 declare('MonsterCreator', function () {
     include('Component');
     include('Utils');
-    include('Static');
+    include('StaticData');
     include('Monster');
     include('Data');
 
@@ -139,15 +139,15 @@ declare('MonsterCreator', function () {
             // Choose the rarity randomly and return it
             var rand = Math.random();
             if (rand <= bossChance) {
-                return static.MonsterRarity.BOSS;
+                return staticData.MonsterRarity.BOSS;
             }
             else if (rand <= eliteChance) {
-                return static.MonsterRarity.ELITE;
+                return staticData.MonsterRarity.ELITE;
             }
             else if (rand <= rareChance) {
-                return static.MonsterRarity.RARE;
+                return staticData.MonsterRarity.RARE;
             }
-            else return static.MonsterRarity.COMMON;
+            else return staticData.MonsterRarity.COMMON;
         }
     }
 
