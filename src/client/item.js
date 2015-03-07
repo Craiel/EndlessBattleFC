@@ -1,6 +1,9 @@
 declare('Item', function () {
 
+    var nextId = 0;
+
     function Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, itemBonuses) {
+        this.id = 'Item' + nextId++;
         this.name = name;
         this.level = level;
         this.rarity = rarity;

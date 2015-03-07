@@ -200,7 +200,7 @@ declare('CoreUtils', function() {
               }
             }
         
-            return ( Math.round(value * 1000) / 1000.0 ) + notationValue;
+            return ( Math.round(value * 1000) / 1000.0 ).toLocaleString() + notationValue;
           };
         };
         

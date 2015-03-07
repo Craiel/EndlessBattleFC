@@ -78,7 +78,12 @@ declare('Actor', function () {
                 return;
             }
 
-            storage.add(item, count);
+            storage.add(item.id, count);
+
+            // If it's not a static item store it's meta information
+            if(item.isStatic !== true) {
+                storage.setMetadata(item.id, item);
+            }
         }
 
         // ---------------------------------------------------------------------------

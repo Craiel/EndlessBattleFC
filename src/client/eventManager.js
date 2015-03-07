@@ -39,11 +39,11 @@ declare('EventManager', function () {
             }
 
             // Add a new event if enough time has passed
-            this.eventSpawnTimeRemaining -= gameTime.elapsed;
+            /*this.eventSpawnTimeRemaining -= gameTime.elapsed;
             if (this.eventSpawnTimeRemaining <= 0) {
                 this.eventSpawnTimeRemaining = this.eventSpawnTime;
                 this.addRandomEvent(game.player.getLevel());
-            }
+            }*/
 
             // Keep all the event buttons falling down
             var elements = document.getElementsByClassName('eventButton');

@@ -53,13 +53,15 @@ declare('CurrencyControl', function() {
                 return false;
             }
 
-            var formattedCurrency = coreUtils.formatters['shortName'](this.currentValue);
+            var formatter = coreUtils.formatters['shortName'];
+            var formattedCurrency = formatter(this.currentValue);
             if(this.trackChanges === true) {
                 this._trackChange(gameTime);
+                var formattedChange = formatter(this.changeTrackingValue);
                 if(this.changeTrackingValue >= 0) {
-                    formattedCurrency = "{0} (+{1}/s)".format(formattedCurrency, this.changeTrackingValue);
+                    formattedCurrency = "{0} (+{1}/s)".format(formattedCurrency, formattedChange);
                 } else {
-                    formattedCurrency = "{0} ({1}/s)".format(formattedCurrency, this.changeTrackingValue);
+                    formattedCurrency = "{0} ({1}/s)".format(formattedCurrency, formattedChange);
                 }
 
             }

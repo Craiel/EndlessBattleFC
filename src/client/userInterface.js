@@ -22,6 +22,7 @@ declare('UserInterface', function () {
     include('Dialog');
     include('CurrencyControl');
     include('MercenaryControl');
+    include('InventoryControl');
 
     UserInterface.prototype = component.create();
     UserInterface.prototype.$super = parent;
@@ -72,6 +73,13 @@ declare('UserInterface', function () {
         this.mercenaryArea = undefined;
         this.mercenaryControls = {}
 
+        this.characterInventoryArea = undefined;
+        this.characterInventory = undefined;
+
+        this.characterArea = undefined;
+
+        this.questArea = undefined;
+
         // ---------------------------------------------------------------------------
         // basic functions
         // ---------------------------------------------------------------------------
@@ -88,6 +96,9 @@ declare('UserInterface', function () {
 
             // Dialogs
             this.initMercenaryDialog();
+            this.initCharacterInventoryDialog();
+            this.initCharacterDialog();
+            this.initQuestDialog();
 
             this.setupWindowState();
         };
@@ -104,6 +115,9 @@ declare('UserInterface', function () {
             this.updateBattleUI(gameTime);
 
             this.updateMercenaryDialog(gameTime);
+            this.updateCharacterInventoryDialog(gameTime);
+            this.updateCharacterDialog(gameTime);
+            this.updateQuestDialog(gameTime);
 
             $('#version').text("Version " + game[saveKeys.idnGameVersion]);
 
@@ -278,6 +292,36 @@ declare('UserInterface', function () {
                 control.setMercenaryImage(staticData.imageRoot + data.Mercenaries[key].icon);
                 this.mercenaryControls[key] = control;
             }
+
+            this.mercenaryArea.hide();
+        }
+
+        this.initCharacterInventoryDialog = function() {
+            this.characterInventoryArea = dialog.create("characterInventoryDialog");
+            this.characterInventoryArea.init();
+            this.characterInventoryArea.setHeaderText("Inventory");
+
+            this.characterInventory = inventoryControl.create("characterInventory");
+            this.characterInventory.storage = game.player.storage;
+            this.characterInventory.init(this.characterInventoryArea.getContentArea());
+
+            this.characterInventoryArea.hide();
+        }
+
+        this.initCharacterDialog = function() {
+            this.characterArea = dialog.create("characterDialog");
+            this.characterArea.init();
+            this.characterArea.setHeaderText("Character");
+
+            this.characterArea.hide();
+        }
+
+        this.initQuestDialog = function() {
+            this.questArea = dialog.create("questDialog");
+            this.questArea.init();
+            this.questArea.setHeaderText("Quests");
+
+            this.questArea.hide();
         }
 
         // ---------------------------------------------------------------------------
@@ -418,6 +462,17 @@ declare('UserInterface', function () {
             }
         }
 
+        this.updateCharacterInventoryDialog = function(gameTime) {
+            // Todo
+        }
+
+        this.updateCharacterDialog = function(gameTime) {
+            // Todo
+        }
+
+        this.updateQuestDialog = function(gameTime) {
+            // Todo
+        }
 
         // ---------------------------------------------------------------------------
         // utility functions
@@ -441,10 +496,12 @@ declare('UserInterface', function () {
 
         this.toggleInventoryWindow = function() {
             this.inventoryWindowShown = !this.inventoryWindowShown;
+            this.characterInventoryArea.toggle();
         }
 
         this.toggleCharacterWindow = function() {
             this.characterWindowShown = !this.characterWindowShown;
+            this.characterArea.toggle();
         }
 
         this.toggleMercenaryWindow = function() {
@@ -458,6 +515,7 @@ declare('UserInterface', function () {
 
         this.toggleQuestWindow = function() {
             this.questWindowShown = !this.questWindowShown;
+            this.questArea.toggle();
         }
 
         this.toggleUpdatesWindow = function() {

@@ -58,7 +58,7 @@ declare('Player', function () {
 
             statUtils.initStats(this[saveKeys.idnPlayerBaseStats]);
 
-            this.storage = storage.create(this.id);
+            this.storage = storage.create(this.id, 25);
             this.storage.init();
         }
 
