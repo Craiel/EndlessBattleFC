@@ -463,11 +463,13 @@ declare('UserInterface', function () {
         }
 
         this.updateCharacterInventoryDialog = function(gameTime) {
-            // Todo
+            if(this.characterInventoryArea.isVisible) {
+                // Update the child components if the window is visible
+                this.characterInventory.update(gameTime);
+            }
         }
 
         this.updateCharacterDialog = function(gameTime) {
-            // Todo
         }
 
         this.updateQuestDialog = function(gameTime) {
@@ -944,8 +946,8 @@ declare('UserInterface', function () {
                     case staticData.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Stamina";
                         break;
-                    case staticData.StatUpgradeType.ARMOUR:
-                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Armour";
+                    case staticData.StatUpgradeType.ARMOR:
+                        document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Armor";
                         break;
                     case staticData.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName1").innerHTML = "+" + upgrades[0].amount + " Hp5";
@@ -977,8 +979,8 @@ declare('UserInterface', function () {
                     case staticData.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Stamina";
                         break;
-                    case staticData.StatUpgradeType.ARMOUR:
-                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Armour";
+                    case staticData.StatUpgradeType.ARMOR:
+                        document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Armor";
                         break;
                     case staticData.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName2").innerHTML = "+" + upgrades[1].amount + " Hp5";
@@ -1010,8 +1012,8 @@ declare('UserInterface', function () {
                     case staticData.StatUpgradeType.STAMINA:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Stamina";
                         break;
-                    case staticData.StatUpgradeType.ARMOUR:
-                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Armour";
+                    case staticData.StatUpgradeType.ARMOR:
+                        document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Armor";
                         break;
                     case staticData.StatUpgradeType.HP5:
                         document.getElementById("statUpgradeName3").innerHTML = "+" + upgrades[2].amount + " Hp5";
@@ -1120,10 +1122,10 @@ declare('UserInterface', function () {
                     break;
                 case staticData.StatUpgradeType.STAMINA:
                     $("#otherTooltipTitle").html("Stamina");
-                    $("#otherTooltipDescription").html("Increases your Hp5 by 1 and your Armour by 1%.");
+                    $("#otherTooltipDescription").html("Increases your Hp5 by 1 and your Armor by 1%.");
                     break;
-                case staticData.StatUpgradeType.ARMOUR:
-                    $("#otherTooltipTitle").html("Armour");
+                case staticData.StatUpgradeType.ARMOR:
+                    $("#otherTooltipTitle").html("Armor");
                     $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
                     break;
                 case staticData.StatUpgradeType.EVASION:
@@ -1182,8 +1184,8 @@ declare('UserInterface', function () {
                 case staticData.StatUpgradeType.STAMINA:
                     game.player.chosenLevelUpBonuses.stamina += upgrade.amount;
                     break;
-                case staticData.StatUpgradeType.ARMOUR:
-                    game.player.chosenLevelUpBonuses.armour += upgrade.amount;
+                case staticData.StatUpgradeType.ARMOR:
+                    game.player.chosenLevelUpBonuses.armor += upgrade.amount;
                     break;
                 case staticData.StatUpgradeType.EVASION:
                     game.player.chosenLevelUpBonuses.evasion += upgrade.amount;
@@ -1458,8 +1460,8 @@ declare('UserInterface', function () {
             obj.data.self.setTooltipLocation(obj);
         }
 
-        this.armourStatHover = function(obj) {
-            $("#otherTooltipTitle").html("Armour");
+        this.armorStatHover = function(obj) {
+            $("#otherTooltipTitle").html("Armor");
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
             $("#otherTooltipDescription").html("Reduces the damage you take from monsters.");
@@ -1498,7 +1500,7 @@ declare('UserInterface', function () {
             $("#otherTooltipTitle").html("Stamina");
             $("#otherTooltipCooldown").html('');
             $("#otherTooltipLevel").html('');
-            $("#otherTooltipDescription").html("Increases your Hp5 by 1 and Armour by 1%.");
+            $("#otherTooltipDescription").html("Increases your Hp5 by 1 and Armor by 1%.");
             $("#otherTooltip").show();
             obj.data.self.setTooltipLocation(obj);
         }
@@ -1782,8 +1784,8 @@ declare('UserInterface', function () {
             $('#statHp5').mouseout({self: this}, this.statTooltipReset );
             $('#statDamageBonus').mouseover({self: this}, this.damageBonusStatHover );
             $('#statDamageBonus').mouseout({self: this}, this.statTooltipReset );
-            $('#statArmour').mouseover({self: this}, this.armourStatHover );
-            $('#statArmour').mouseout({self: this}, this.statTooltipReset );
+            $('#statArmor').mouseover({self: this}, this.armorStatHover );
+            $('#statArmor').mouseout({self: this}, this.statTooltipReset );
             $('#statEvasion').mouseover({self: this}, this.evasionStatHover );
             $('#statEvasion').mouseout({self: this}, this.statTooltipReset );
             $('#statStrength').mouseover({self: this}, this.strengthStatHover );

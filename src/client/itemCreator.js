@@ -183,10 +183,10 @@ declare('ItemCreator', function () {
                         }
                         break;
                     case 2:
-                        if (itemBonusAddition.armourBonus == 0 && type != staticData.ItemType.WEAPON) {
-                            itemBonusAddition.armourBonus = statGenerator.getRandomArmourBonus(level);
+                        if (itemBonusAddition.armorBonus == 0 && type != staticData.ItemType.WEAPON) {
+                            itemBonusAddition.armorBonus = statGenerator.getRandomArmorBonus(level);
                             if (prefix == "") {
-                                prefix = nameGenerator.getRandomArmourBonusName();
+                                prefix = nameGenerator.getRandomArmorBonusName();
                             }
                             amount--;
                         }
@@ -319,9 +319,9 @@ declare('ItemCreator', function () {
                         break;
                 }
             }
-            // Else; add armour
+            // Else; add armor
             else {
-                itemBonusAddition.armour = statGenerator.getRandomArmour(level);
+                itemBonusAddition.armor = statGenerator.getRandomArmor(level);
             }
 
             // Create the name

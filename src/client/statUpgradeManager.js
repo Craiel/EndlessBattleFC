@@ -72,8 +72,8 @@ declare('StatUpgradeManager', function () {
                         upgradeAmounts.push(statGenerator.getRandomStaminaBonus(level));
                         break;
                     case 4:
-                        upgradeTypes.push(staticData.StatUpgradeType.ARMOUR);
-                        upgradeAmounts.push(statGenerator.getRandomArmourBonus(level));
+                        upgradeTypes.push(staticData.StatUpgradeType.ARMOR);
+                        upgradeAmounts.push(statGenerator.getRandomArmorBonus(level));
                         break;
                     case 5:
                         upgradeTypes.push(staticData.StatUpgradeType.HP5);

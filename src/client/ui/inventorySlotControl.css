@@ -1,3 +1,41 @@
-.inventorySlotBackground {
+.inventoryRow {
+    width: 100%;
+    position: absolute;
+}
 
+.inventorySlot {
+    position: absolute;
+    /*background-color: #0005ff;*/
+
+    border-color: #808080;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
+}
+
+.inventorySlotBorder {
+    include: globalMaxSizeAbsoluteTopLeft;
+}
+
+.inventorySlotImage {
+    include: globalMaxSizeAbsoluteTopLeft;
+}
+
+.inventorySlotItemCount {
+    include: globalTextFont;
+    include: globalColorWhite;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 18px;
+    margin: auto;
+    text-align: center;
+}
+
+/* Legacy styles for testing */
+.inventorySlotRarityCOMMON {
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 6px;
 }

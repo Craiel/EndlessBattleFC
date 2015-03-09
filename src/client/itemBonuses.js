@@ -11,8 +11,8 @@ declare('ItemBonuses', function () {
 
         this.health = 0;
         this.hp5 = 0;
-        this.armour = 0;
-        this.armourBonus = 0;
+        this.armor = 0;
+        this.armorBonus = 0;
         this.evasion = 0;
 
         this.critChance = 0;

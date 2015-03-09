@@ -48,8 +48,8 @@ declare('TooltipManager', function () {
             if (item1.minDamage > 0) {
                 stats1 += item1.minDamage + " - " + item1.maxDamage + " Damage";
             }
-            if (item1.armour > 0) {
-                stats1 += (item1.armour + item1.armourBonus) + " Armour";
+            if (item1.armor > 0) {
+                stats1 += (item1.armor + item1.armorBonus) + " Armor";
             }
             if (item1.strength > 0) {
                 stats2 += "<br>Strength: " + item1.strength;
@@ -120,9 +120,9 @@ declare('TooltipManager', function () {
 
             // Set the type
             $("#itemTooltipType").html(type + '<br>');
-            // If there is an armour or damage bonus, change the armour/damage colour to green
-            if (item1.armourBonus > 0) {
-                $("#itemTooltipStats1").html('<span class="greenText">' + (item1.armour + item1.armourBonus) + '<span class="whiteText"> Armour<br></span></span>');
+            // If there is an armor or damage bonus, change the armor/damage colour to green
+            if (item1.armorBonus > 0) {
+                $("#itemTooltipStats1").html('<span class="greenText">' + (item1.armor + item1.armorBonus) + '<span class="whiteText"> Armor<br></span></span>');
             }
             else if (item1.damageBonus > 0) {
                 $("#itemTooltipStats1").html('<span class="greenText">' + (item1.minDamage + item1.damageBonus) + ' - ' + (item1.maxDamage + item1.damageBonus) + '<span class="whiteText"> Damage<br></span></span>');
@@ -188,8 +188,8 @@ declare('TooltipManager', function () {
                 if (item2.minDamage > 0) {
                     stats1 += item2.minDamage + " - " + item2.maxDamage + " Damage";
                 }
-                if (item2.armour > 0) {
-                    stats1 += (item2.armour + item2.armourBonus) + " Armour";
+                if (item2.armor > 0) {
+                    stats1 += (item2.armor + item2.armorBonus) + " Armor";
                 }
                 if (item2.strength > 0) {
                     stats2 += "<br>Strength: " + item2.strength;
@@ -260,8 +260,8 @@ declare('TooltipManager', function () {
                 }
 
                 $("#itemCompareTooltipType").html(type + '<br>');
-                if (item2.armourBonus > 0) {
-                    $("#itemCompareTooltipStats1").html('<span class="greenText">' + (item2.armour + item2.armourBonus) + '<span class="whiteText"> Armour<br></span></span>');
+                if (item2.armorBonus > 0) {
+                    $("#itemCompareTooltipStats1").html('<span class="greenText">' + (item2.armor + item2.armorBonus) + '<span class="whiteText"> Armor<br></span></span>');
                 }
                 else if (item2.damageBonus > 0) {
                     $("#itemCompareTooltipStats1").html('<span class="greenText">' + (item2.minDamage + item2.damageBonus) + ' - ' + (item2.maxDamage + item2.damageBonus) + '<span class="whiteText"> Damage<br></span></span>');
@@ -291,8 +291,8 @@ declare('TooltipManager', function () {
                     if (item3.minDamage > 0) {
                         stats1 += item3.minDamage + " - " + item3.maxDamage + " Damage";
                     }
-                    if (item3.armour > 0) {
-                        stats1 += (item3.armour + item3.armourBonus) + " Armour";
+                    if (item3.armor > 0) {
+                        stats1 += (item3.armor + item3.armorBonus) + " Armor";
                     }
                     if (item3.strength > 0) {
                         stats2 += "<br>Strength: " + item3.strength;
@@ -363,8 +363,8 @@ declare('TooltipManager', function () {
                     }
 
                     $("#itemCompareTooltip2Type").html(type + '<br>');
-                    if (item3.armourBonus > 0) {
-                        $("#itemCompareTooltip2Stats1").html('<span class="greenText">' + (item3.armour + item3.armourBonus) + '<span class="whiteText"> Armour<br></span></span>');
+                    if (item3.armorBonus > 0) {
+                        $("#itemCompareTooltip2Stats1").html('<span class="greenText">' + (item3.armor + item3.armorBonus) + '<span class="whiteText"> Armor<br></span></span>');
                     }
                     else if (item3.damageBonus > 0) {
                         $("#itemCompareTooltip2Stats1").html('<span class="greenText">' + (item3.minDamage + item3.damageBonus) + ' - ' + (item3.maxDamage + item3.damageBonus) + '<span class="whiteText"> Damage<br></span></span>');

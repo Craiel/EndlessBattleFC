@@ -133,8 +133,8 @@ declare('StatGenerator', function () {
             }
         }
 
-        // Random base armour
-        this.getRandomArmour = function(level) {
+        // Random base armor
+        this.getRandomArmor = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {
@@ -150,8 +150,8 @@ declare('StatGenerator', function () {
             }
         }
 
-        // Random bonus armour
-        this.getRandomArmourBonus = function(level) {
+        // Random bonus armor
+        this.getRandomArmorBonus = function(level) {
             rand = Math.random() * 3;
             rand = Math.floor(rand);
             switch (rand) {

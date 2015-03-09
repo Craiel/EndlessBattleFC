@@ -23,8 +23,8 @@ declare('Item', function () {
 
         this.health = itemBonuses.health;
         this.hp5 = itemBonuses.hp5;
-        this.armour = itemBonuses.armour;
-        this.armourBonus = itemBonuses.armourBonus;
+        this.armor = itemBonuses.armor;
+        this.armorBonus = itemBonuses.armorBons;
         this.evasion = itemBonuses.evasion;
 
         this.critChance = itemBonuses.critChance;

@@ -178,14 +178,19 @@ declare('Element', function() {
         };
         
         this.setPosition = function(point) {
-            assert.isTrue(point.isValid(), StrLoc("Point needs to be a valid structure"));
-            
-            this._mainDiv.offset({ left: point.x, top: point.y});
+            this._mainDiv.css({ left: point.x, top: point.y});
         };
+
+        this.setHeight = function(height) {
+            this._mainDiv.height(height);
+            this._mainDiv.trigger( "updatelayout" );
+        }
+
+        this.getSize = function() {
+            return {x: this._mainDiv.width(), y: this._mainDiv.height()};
+        }
         
         this.setSize = function(size) {
-            assert.isTrue(size.isValid(), StrLoc("Size needs to be a valid structure"));
-            
             this._mainDiv.width(size.x);
             this._mainDiv.height(size.y);
             this._mainDiv.trigger( "updatelayout" );

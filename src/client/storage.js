@@ -107,14 +107,12 @@ declare('Storage', function() {
 
 		this.getSize = function() {
 			return this.itemSlotSize;
-		}
-
-		this.getSlotCount = function() {
-			return this.itemSlots.length;
 		};
 		
 		this.getSlotAt = function(index) {
-			assert.isTrue(index >= 0 && index < this.itemSlots.length);
+			if(this.itemSlots === undefined || this.itemSlots.length < index) {
+                return undefined;
+            }
 			
 			return this.itemSlots[index];
 		};

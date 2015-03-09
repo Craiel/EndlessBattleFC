@@ -35,7 +35,7 @@ declare('StaticData', function () {
         this.StatUpgradeType.AGILITY = "AGILITY";
         this.StatUpgradeType.STAMINA = "STAMINA";
         this.StatUpgradeType.HP5 = "HP5";
-        this.StatUpgradeType.ARMOUR = "ARMOUR";
+        this.StatUpgradeType.ARMOR = "ARMOR";
         this.StatUpgradeType.EVASION = "EVASION";
         this.StatUpgradeType.CRIT_DAMAGE = "CRIT_DAMAGE";
         this.StatUpgradeType.ITEM_RARITY = "ITEM_RARITY";
@@ -78,7 +78,7 @@ declare('StaticData', function () {
         this.ParticleType.PLAYER_CRITICAL = "PLAYER_CRITICAL";
         this.ParticleType.MONSTER_DAMAGE = "MONSTER_DAMAGE";
 
-        this.Prefixes = new Array("DAMAGE", "HEALTH", "ARMOUR", "CRIT_CHANCE", "ITEM_RARITY", "GOLD_GAIN");
+        this.Prefixes = new Array("DAMAGE", "HEALTH", "ARMOR", "CRIT_CHANCE", "ITEM_RARITY", "GOLD_GAIN");
         this.PREFIX_AMOUNT = 6;
 
         this.Suffixes = new Array("STRENGTH", "AGILITY", "STAMINA", "HP5", "CRIT_DAMAGE", "EXPERIENCE_GAIN", "EVASION");
@@ -88,7 +88,7 @@ declare('StaticData', function () {
             "Sparkling", "Gleaming", "Dazzling", "Glistening", "Flaring", "Luminous", "Glowing", "Brilliant", "Radiant", "Glorious");
         this.HealthNames = new Array("Healthy", "Lively", "Athletic", "Brisk", "Tough", "Fecund", "Bracing", "Uplifting", "Stimulating", "Invigorating",
             "Exhilarating", "Virile", "Stout", "Stalwart", "Sanguine", "Robust", "Rotund", "Spirited", "Potent", "Vigorous");
-        this.ArmourNames = new Array("Lacquered", "Studded", "Ribbed", "Fortified", "Plated", "Carapaced", "Reinforced", "Strengthened", "Backed",
+        this.ArmorNames = new Array("Lacquered", "Studded", "Ribbed", "Fortified", "Plated", "Carapaced", "Reinforced", "Strengthened", "Backed",
             "Banded", "Bolstered", "Braced", "Thickened", "Spiked", "Barbed", "Layered", "Scaled", "Tightened", "Chained", "Supported");
         this.CritChanceNames = new Array("Dark", "Shadow", "Wilderness", "Night", "Bloodthirsty", "Black", "Cloudy", "Dim", "Grim", "Savage", "Deadly",
             "Sharpened", "Razor Sharp", "Pincer", "Bloody", "Cruel", "Dangerous", "Fatal", "Harmful", "Lethal");

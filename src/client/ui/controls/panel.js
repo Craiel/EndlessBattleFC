@@ -42,6 +42,13 @@ declare('Panel', function() {
             this.contentElement.init();
         };
 
+        this.elementRemove = this.remove;
+        this.remove = function() {
+            this.contentElement.remove();
+
+            this.elementRemove();
+        }
+
         // ---------------------------------------------------------------------------
         // panel functions
         // ---------------------------------------------------------------------------

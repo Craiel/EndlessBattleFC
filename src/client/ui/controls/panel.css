@@ -50,6 +50,4 @@
 
 .panelContent {
     height: calc(100% - 18px);
-    width: auto;
-    position: relative;
 }

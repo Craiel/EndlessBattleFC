@@ -279,8 +279,8 @@ declare('Player', function () {
             var bonus = (baseBonus + mercenaryBonus) * shardMultiplier;
             return this.getStrength() + bonus;
         }
-        this.getArmour = function() {
-            return Math.floor(((this.baseStats.armour + this.chosenLevelUpBonuses.armour + this.baseItemBonuses.armour) * ((this.getStamina() / 100) + 1)) * ((this.powerShards / 100) + 1));
+        this.getArmor = function() {
+            return Math.floor(((this.baseStats.armor + this.chosenLevelUpBonuses.armor + this.baseItemBonuses.armor) * ((this.getStamina() / 100) + 1)) * ((this.powerShards / 100) + 1));
         }
         this.getEvasion = function() {
             return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (mercenaryManager.getAssassinEvasionPercentBonus() * gameState.assassinsOwned)) / 100) + 1)) * ((this.powerShards / 100) + 1));
@@ -454,7 +454,7 @@ declare('Player', function () {
 
         // Take an amount of damage
         this.takeDamage = function(damage) {
-            // Reduce the damage based on the amount of armour
+            // Reduce the damage based on the amount of armor
             var damageReduction = this.calculateDamageReduction();
             var newDamage = damage - Math.floor(damage * (damageReduction / 100));
             if (newDamage < 0) {
@@ -486,7 +486,7 @@ declare('Player', function () {
             particleManager.createParticle(newDamage, staticData.ParticleType.MONSTER_DAMAGE);
         }
 
-        // Calculate the amount of reduction granted by armour
+        // Calculate the amount of reduction granted by armor
         this.calculateDamageReduction = function() {
             // Calculate the reduction
             var armor = this.getStat(data.StatDefinition.armor.id);
@@ -527,7 +527,7 @@ declare('Player', function () {
 
             this.baseItemBonuses.health += item.health;
             this.baseItemBonuses.hp5 += item.hp5;
-            this.baseItemBonuses.armour += item.armour + item.armourBonus;
+            this.baseItemBonuses.armor += item.armor + item.armorBonus;
             this.baseItemBonuses.evasion += item.evasion;
 
             this.baseItemBonuses.critChance += item.critChance;
@@ -552,7 +552,7 @@ declare('Player', function () {
 
             this.baseItemBonuses.health -= item.health;
             this.baseItemBonuses.hp5 -= item.hp5;
-            this.baseItemBonuses.armour -= item.armour + item.armourBonus;
+            this.baseItemBonuses.armor -= item.armor + item.armorBonus;
             this.baseItemBonuses.evasion -= item.evasion;
 
             this.baseItemBonuses.critChance -= item.critChance;

@@ -58,7 +58,7 @@ declare('Monster', function () {
 
         this.maxHealth = 0;
         this.damage = 0;
-        this.armour = 0;
+        this.armor = 0;
         this.goldWorth = 0;
         this.experienceWorth = 0;
 

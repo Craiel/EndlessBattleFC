@@ -18,7 +18,12 @@ declare('InventorySlotControl', function() {
 
         this.backgroundPanel = undefined;
 
-        this.storage = undefined;
+        this.slotChanged = true;
+        this.slot = undefined;
+
+        this.borderControl = undefined;
+        this.imageControl = undefined;
+        this.countControl = undefined;
 
         // ---------------------------------------------------------------------------
         // overrides
@@ -36,7 +41,14 @@ declare('InventorySlotControl', function() {
             this.backgroundPanel.addClass("inventorySlotBackground");
             this.backgroundPanel.addClass("globalNoDrag");
 
+            this.borderControl = element.create(this.id + "Border");
+            this.borderControl.init(this);
 
+            this.imageControl = element.create(this.id + "Image");
+            this.imageControl.init(this);
+
+            this.countControl = element.create(this.id + "Count");
+            this.countControl.init(this);
         };
 
         this.elementUpdate = this.update;
@@ -45,14 +57,46 @@ declare('InventorySlotControl', function() {
                 return false;
             }
 
+            if(this.slotChanged === true) {
+                this.updateSlotDisplay();
+                this.slotChanged = false;
+            }
+
             return true;
+        }
+
+        this.elementRemove = this.remove;
+        this.remove = function() {
+            this.backgroundPanel.remove();
+            this.borderControl.remove();
+            this.imageControl.remove();
+            this.countControl.remove();
+
+            this.elementRemove();
         }
 
         // ---------------------------------------------------------------------------
         // dialog functions
         // ---------------------------------------------------------------------------
-        this.setItem = function(item) {
-            // Todo
+        this.setSlot = function(slot) {
+            if(this.slot !== slot) {
+                this.slot = slot;
+                this.slotChanged = true;
+            }
+        }
+
+        this.updateSlotDisplay = function() {
+            if (this.slot === undefined) {
+                this.countControl.setText(undefined);
+            } else {
+                this.countControl.setText(this.slot.count);
+                this.setLegacySlotProperties(this.slot.metaData);
+            }
+        }
+
+        this.setLegacySlotProperties = function(metaData) {
+            console.log(metaData);
+            this.borderControl.addClass("inventorySlotRarity" + metaData.rarity);
         }
     };
 

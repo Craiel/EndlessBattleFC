@@ -522,7 +522,7 @@ declare('Game', function() {
             document.getElementById("hp5Value").innerHTML = this.player.getStat(data.StatDefinition.hp5.id).toFixed(2);
             document.getElementById("damageValue").innerHTML = this.player.getStat(data.StatDefinition.dmgMin.id) + ' - ' + this.player.getStat(data.StatDefinition.dmgMax.id);
             document.getElementById("damageBonusValue").innerHTML = this.player.getStat(data.StatDefinition.dmgMult.id) + '%';
-            document.getElementById("armourValue").innerHTML = this.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + this.player.calculateDamageReduction().toFixed(2) + '%)';
+            document.getElementById("armorValue").innerHTML = this.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + this.player.calculateDamageReduction().toFixed(2) + '%)';
             document.getElementById("evasionValue").innerHTML = this.player.getStat(data.StatDefinition.evaRate.id).toFixed(2) + ' (' + this.player.calculateEvasionChance().toFixed(2) + '%)';
 
             document.getElementById("strengthValue").innerHTML = this.player.getStat(data.StatDefinition.str.id);

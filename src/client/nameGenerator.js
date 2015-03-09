@@ -23,11 +23,11 @@ declare('NameGenerator', function () {
             rand = Math.floor(rand);
             return staticData.HealthNames[rand];
         }
-        // Armour Bonus
-        this.getRandomArmourBonusName = function() {
+        // Armor Bonus
+        this.getRandomArmorBonusName = function() {
             rand = Math.random() * staticData.namesAmount;
             rand = Math.floor(rand);
-            return staticData.ArmourNames[rand];
+            return staticData.ArmorNames[rand];
         }
         // Crit Chance
         this.getRandomCritChanceName = function() {
