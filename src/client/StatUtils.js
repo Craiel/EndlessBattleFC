@@ -1,8 +1,38 @@
 declare('StatUtils', function () {
     include('Assert');
     include('Data');
+    include('Component');
+
+    StatUtils.prototype = component.create();
+    StatUtils.prototype.$super = parent;
+    StatUtils.prototype.constructor = StatUtils;
 
     function StatUtils() {
+        this.id = "StatUtils";
+
+        this.primaryStats = {};
+        this.secondaryStats = {};
+        this.tertiaryStats = {};
+
+        // ---------------------------------------------------------------------------
+        // main functions
+        // ---------------------------------------------------------------------------
+        this.componentInit = this.init;
+        this.init = function() {
+            this.componentInit();
+
+            for(var key in data.StatDefinition) {
+                var entry = data.StatDefinition[key];
+                if(entry.isPrimaryStat === true) {
+                    this.primaryStats[key] = entry;
+                } else if (entry.isSecondaryStat === true) {
+                    this.secondaryStats[key] = entry;
+                } else if (entry.isTertiaryStat === true) {
+                    this.tertiaryStats[key] = entry;
+                }
+            }
+        }
+
         // ---------------------------------------------------------------------------
         // Generic stat functions
         // ---------------------------------------------------------------------------
@@ -81,6 +111,19 @@ declare('StatUtils', function () {
             }
 
             return true;
+        }
+
+        this.getStatsFromData = function(sourceData) {
+            assert.isDefined(sourceData);
+
+            statData = {};
+            for(key in sourceData) {
+                if(data.StatDefinition[key] !== undefined) {
+                    statData[key] = sourceData[key];
+                }
+            }
+
+            return statData;
         }
 
         // ---------------------------------------------------------------------------

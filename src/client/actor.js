@@ -119,7 +119,11 @@ declare('Actor', function () {
 
         this.computeActorStats = function() {
             var stats = [];
-            stats.push(this.getBaseStats());
+            if(this.getStatLists !== undefined) {
+                stats = this.getStatLists();
+            }
+
+            stats.splice(0, 0, this.getBaseStats());
             this.actorStats = statUtils.mergeStats(stats);
             this.statsChanged = false;
         }

@@ -79,6 +79,11 @@ declare('CoreUtils', function() {
         	return value.charAt(0).toUpperCase() + value.slice(1);
         };
 
+        this.pickRandomProperty = function(obj) {
+            var keys = Object.keys(obj)
+            return obj[keys[ keys.length * Math.random() << 0]];
+        }
+
         // ---------------------------------------------------------------------------
         // Html Utils
         // ---------------------------------------------------------------------------

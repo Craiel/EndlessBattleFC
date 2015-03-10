@@ -59,17 +59,17 @@ declare('Element', function() {
         	this.componentInit();
 
             // Check the parent
-        	log.debug(StrLoc(" ELEMENT: {0}").format(this.id));
+        	if(Endless.isVerboseDebug === true) { log.debug(StrLoc(" ELEMENT: {0}").format(this.id)); }
         	if (parent !== undefined) {
         		if (parent === RootParentKey) {
         			log.warning(StrLoc("  --> Appending to ROOT!"));
         			this.parent = $(document.body);
         		} else {
-        			log.debug(StrLoc("  --> Appending to {0}").format(parent.id));
+                    if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> Appending to {0}").format(parent.id)); }
         			this.parent = parent;
         		}
         	} else {
-        		log.debug(StrLoc("  --> skipping parent"));
+                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> skipping parent")); }
         	}
 
             // try to get our element target
@@ -86,7 +86,7 @@ declare('Element', function() {
                 if(existingElement !== undefined && existingElement.length > 0) {
                     this._mainDiv = content;
                     existingElement.replaceWith(content);
-                    log.debug(StrLoc("  --> from template (replacing content)"));
+                    if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template (replacing content)")); }
                 } else {
                     this._mainDiv = content;
 
@@ -98,11 +98,11 @@ declare('Element', function() {
                         parent.getMainElement().append(this._mainDiv);
                     }
 
-                    log.debug(StrLoc("  --> from template"));
+                    if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template")); }
                 }
             } else {
                 this._mainDiv = existingElement;
-                log.debug(StrLoc("  --> from content"));
+                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from content")); }
             }
 
             assert.isDefined(this._mainDiv, "MainDiv must be assigned after init: " + this.id);

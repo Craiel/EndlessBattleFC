@@ -21,6 +21,8 @@ declare('Game', function() {
     include('SaveKeys');
     include('Data');
     include('CoreUtils');
+    include('GeneratorMonster');
+    include('StatUtils');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -46,10 +48,11 @@ declare('Game', function() {
         this.init = function() {
             this.componentInit();
 
+            statUtils.init();
+            generatorMonster.init();
+
             ////////////////////// TODO: Remove / refactor below
             this.reset();
-
-            this.spawnMonster();
 
             gameState.init();
             eventManager.init();
@@ -88,6 +91,7 @@ declare('Game', function() {
 
             if(this.monster !== undefined) {
                 this.monster.update(gameTime);
+                this.testMonster.update(gameTime);
             }
 
             this.updateAutoSave(gameTime);
@@ -164,6 +168,9 @@ declare('Game', function() {
         this.onLoad = function() {
             // Perform some initial operation after being loaded
             this.calculateMercenaryGps();
+
+            this.testMonster = generatorMonster.generate(this[saveKeys.idnGameBattleLevel]);
+            this.testMonster.init();
         }
 
 
@@ -191,6 +198,7 @@ declare('Game', function() {
         this.inBattle = false;
 
         // Monsters
+        this.testMonster = undefined;
         this.displayMonsterHealth = false;
 
         // Saving/Loading

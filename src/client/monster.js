@@ -18,6 +18,8 @@ declare('Monster', function () {
         this.id = "Monster" + nextId++;
 
         this.baseStats = {};
+        this.rarityStats = undefined;
+        this.rarity = undefined;
 
         // ---------------------------------------------------------------------------
         // basic functions
@@ -43,6 +45,28 @@ declare('Monster', function () {
         // ---------------------------------------------------------------------------
         this.getBaseStats = function() {
             return this.baseStats;
+        }
+
+        this.getStatLists = function() {
+            var stats = [];
+            if(this.rarityStats !== undefined) {
+                stats.push(this.rarityStats);
+            }
+
+            return stats;
+        }
+
+        this.setRarity = function(rarity) {
+            this.rarity = rarity;
+            this.rarityStats = statUtils.getStatsFromData(rarity);
+        }
+
+        this.getRarity = function() {
+            return this.rarity;
+        }
+
+        this.setStats = function(stats) {
+            this.baseStats = stats;
         }
 
 
