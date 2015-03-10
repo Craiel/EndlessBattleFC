@@ -91,7 +91,6 @@ declare('Game', function() {
 
             if(this.monster !== undefined) {
                 this.monster.update(gameTime);
-                this.testMonster.update(gameTime);
             }
 
             this.updateAutoSave(gameTime);
@@ -163,14 +162,21 @@ declare('Game', function() {
         }
 
         // ---------------------------------------------------------------------------
+        // monster functions
+        // ---------------------------------------------------------------------------
+        this.spawnNewMonster = function() {
+            var monster = generatorMonster.generate(this[saveKeys.idnGameBattleLevel]);
+            monster.init();
+
+            return monster;
+        }
+
+        // ---------------------------------------------------------------------------
         // save / load functions
         // ---------------------------------------------------------------------------
         this.onLoad = function() {
             // Perform some initial operation after being loaded
             this.calculateMercenaryGps();
-
-            this.testMonster = generatorMonster.generate(this[saveKeys.idnGameBattleLevel]);
-            this.testMonster.init();
         }
 
 
@@ -198,7 +204,6 @@ declare('Game', function() {
         this.inBattle = false;
 
         // Monsters
-        this.testMonster = undefined;
         this.displayMonsterHealth = false;
 
         // Saving/Loading

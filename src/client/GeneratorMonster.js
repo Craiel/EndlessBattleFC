@@ -66,7 +66,7 @@ declare('GeneratorMonster', function () {
 
         this.getMonsterStats = function(level, secondaryRolls) {
             var stats = {};
-            statUtils.initStats(stats);
+            statUtils.initStats(stats, false);
 
             if(secondaryRolls === undefined) {
                 secondaryRolls = 0;
@@ -81,26 +81,37 @@ declare('GeneratorMonster', function () {
                     temp[key] = this.getStatValue(level, 1.01);
                 }
                 console.log("Primary: " + key + ": " + temp[key]);
-                stats = statUtils.mergeStats([stats, temp]);
+                statUtils.doMergeStats(temp, stats);
             }
 
             console.log("Rolling Secondary stats " + secondaryRolls);
             for(var i = 0; i < secondaryRolls; i++) {
                 var secondaryStat = this.getRandomSecondaryStat();
                 var temp = {};
-                if(stat.isMultiplier === true) {
-                    temp[secondaryStat.id] = coreUtils.getRandom(0.01, 0.1);
+                if(secondaryStat.isMultiplier === true) {
+                    temp[secondaryStat.id] = this.getMultiplierStatValue();
+                    console.log("Multiplier Roll");
                 } else {
-                    temp[secondaryStat.id] = this.getStatValue(level / 2, 1.01);
+                    temp[secondaryStat.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
                 }
 
                 console.log("Secondary: " + secondaryStat.id + ": " + temp[secondaryStat.id]);
-                stats = statUtils.mergeStats([stats, temp]);
+                statUtils.doMergeStats(temp, stats);
             }
+
+            // Add a little bit of extra stamina
+            temp = {};
+            temp[data.StatDefinition.sta.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
+            statUtils.doMergeStats(temp, stats);
 
             console.log("Final Stats");
             console.log(stats);
             return stats;
+        }
+
+        this.getMultiplierStatValue = function() {
+            var precision = 1000;
+            return Math.floor(coreUtils.getRandom(1.01, 1.1) * precision) / precision;
         }
 
         this.getStatValue = function(level, multiplier) {

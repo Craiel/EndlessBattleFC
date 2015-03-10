@@ -86,7 +86,7 @@ declare('InventorySlotControl', function() {
         }
 
         this.updateSlotDisplay = function() {
-            if (this.slot === undefined) {
+            if (this.slot === undefined || this.slot.count <= 0) {
                 this.countControl.setText(undefined);
             } else {
                 this.countControl.setText(this.slot.count);
