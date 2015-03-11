@@ -4,6 +4,13 @@ declare('CombatUtils', function () {
     include('Data');
     include('CoreUtils');
 
+    function CombatResult() {
+        this.wasHit = false;
+        this.wasCrit = false;
+
+        this.damage = { physical: 0 }
+    }
+
     function CombatUtils() {
 
         this.resolveCombatTick = function(sourceActor, targetActor) {
@@ -16,7 +23,7 @@ declare('CombatUtils', function () {
         }
 
         this.computeHit = function(actor) {
-            var result = { wasHit: false, wasCrit: false, damage: 0 };
+            var result = new CombatResult();
             var dmgMult = actor.getStat(data.StatDefinition.dmgMult.id);
             var minDmg = actor.getStat(data.StatDefinition.dmgMin.id);
             var maxDmg = actor.getStat(data.StatDefinition.dmgMax.id);
@@ -29,7 +36,9 @@ declare('CombatUtils', function () {
                 damage += critDamage;
             }
 
-            result.damage = damage;
+            // Todo: damage types
+            // Todo: % Hit chance
+            result.damage.physical = damage;
             return result;
         }
 
