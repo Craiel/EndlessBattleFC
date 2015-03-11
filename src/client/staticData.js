@@ -13,6 +13,11 @@ declare('StaticData', function () {
 
         this.mercenaryPriceIncreaseFactor = 1.15;
 
+        this.XpSourceMonster = 0;
+
+        this.GoldSourceMonster = 0;
+        this.GoldSourceMercenary = 1;
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// Unchecked code below

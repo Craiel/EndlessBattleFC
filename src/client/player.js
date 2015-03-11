@@ -127,20 +127,6 @@ declare('Player', function () {
             this.legacyLevelUp();
         }
 
-        this.heal = function(amount) {
-            this.modifyStat(data.StatDefinition.hp.id, amount);
-            if (this.getStat(data.StatDefinition.hp.id) > this.getStat(data.StatDefinition.hpMax.id)) {
-                this.setStat(data.StatDefinition.hp.id, this.getStat(data.StatDefinition.hpMax.id));
-            }
-        }
-
-        this.healMp = function(amount) {
-            this.modifyStat(data.StatDefinition.mp.id, amount);
-            if(this.getStat(data.StatDefinition.mp.id) > this.getStat(data.StatDefinition.mpMax.id)) {
-                this.setStat(data.StatDefinition.mp.id, this.getStat(data.StatDefinition.mpMax.id));
-            }
-        }
-
         this.processResurrectionDelay = function(gameTime) {
             if(this.resurrectionDelayDecreaseTime === 0) {
                 this.resurrectionDelayDecreaseTime = gameTime.current + this.resurrectionDelayDecreaseInterval;
@@ -463,7 +449,6 @@ declare('Player', function () {
 
             // Take the damage
             this.modifyStat(data.StatDefinition.hp.id, -newDamage);
-            this.lastDamageTaken = newDamage;
             game.stats.damageTaken += newDamage;
 
             // Reflect a percentage of the damage if the player has any Barrier effects
@@ -472,10 +457,10 @@ declare('Player', function () {
             for (var x = 0; x < barrierEffects.length; x++) {
                 reflectAmount += barrierEffects[x].value;
             }
-            reflectAmount = this.lastDamageTaken * (reflectAmount / 100);
+            /*reflectAmount = this.lastDamageTaken * (reflectAmount / 100);
             if (reflectAmount > 0) {
                 game.monster.takeDamage(reflectAmount, false, false);
-            }
+            }*/
 
             // Check if the player is dead
             if (this.getStat(data.StatDefinition.hp.id) <= 0) {

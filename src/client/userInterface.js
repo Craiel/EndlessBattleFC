@@ -118,6 +118,7 @@ declare('UserInterface', function () {
             this.updateCharacterInventoryDialog(gameTime);
             this.updateCharacterDialog(gameTime);
             this.updateQuestDialog(gameTime);
+            this.updateGameInterface(gameTime.elapsed);
 
             $('#version').text("Version " + game[saveKeys.idnGameVersion]);
 
@@ -252,13 +253,13 @@ declare('UserInterface', function () {
             this.leaveBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
 
             this.battleLevelDownButton = button.create('battleLevelDownButton');
-            this.battleLevelDownButton.callback = function(obj) { game.decreaseBattleLevel(); };
+            this.battleLevelDownButton.callback = function(obj) { game.changeBattleLevel(-1); };
             this.battleLevelDownButton.init(this.battleArea.getContentArea());
             this.battleLevelDownButton.setImages(resources.ImageButton, resources.ImageButtonHover);
             this.battleLevelDownButton.setButtonText("-");
 
             this.battleLevelUpButton = button.create('battleLevelUpButton');
-            this.battleLevelUpButton.callback = function(obj) { game.increaseBattleLevel(); };
+            this.battleLevelUpButton.callback = function(obj) { game.changeBattleLevel(1); };
             this.battleLevelUpButton.init(this.battleArea.getContentArea());
             this.battleLevelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
             this.battleLevelUpButton.setButtonText("+");
@@ -1997,6 +1998,73 @@ declare('UserInterface', function () {
                     game.equipment.equipItem(game.inventory.slots[slotNumberSelected - 1], slotNumberSelected - 1);
                     itemMoved = true;
                 }
+            }
+        }
+
+        this.updateGameInterface = function(ms) {
+
+            // Update the player's stats
+            document.getElementById("levelValue").innerHTML = game.player.getLevel();
+            document.getElementById("healthValue").innerHTML = Math.floor(game.player.getStat(data.StatDefinition.hp.id)) + '/' + game.player.getStat(data.StatDefinition.hpMax.id);
+            document.getElementById("hp5Value").innerHTML = game.player.getStat(data.StatDefinition.hp5.id).toFixed(2);
+            document.getElementById("damageValue").innerHTML = game.player.getStat(data.StatDefinition.dmgMin.id) + ' - ' + game.player.getStat(data.StatDefinition.dmgMax.id);
+            document.getElementById("damageBonusValue").innerHTML = game.player.getStat(data.StatDefinition.dmgMult.id) + '%';
+            document.getElementById("armorValue").innerHTML = game.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + game.player.calculateDamageReduction().toFixed(2) + '%)';
+            document.getElementById("evasionValue").innerHTML = game.player.getStat(data.StatDefinition.evaRate.id).toFixed(2) + ' (' + game.player.calculateEvasionChance().toFixed(2) + '%)';
+
+            document.getElementById("strengthValue").innerHTML = game.player.getStat(data.StatDefinition.str.id);
+            document.getElementById("staminaValue").innerHTML = game.player.getStat(data.StatDefinition.sta.id);
+            document.getElementById("agilityValue").innerHTML = game.player.getStat(data.StatDefinition.agi.id);
+            document.getElementById("critChanceValue").innerHTML = game.player.getStat(data.StatDefinition.critRate.id).toFixed(2) + '%';
+            document.getElementById("critDamageValue").innerHTML = game.player.getStat(data.StatDefinition.critDmg.id).toFixed(2) + '%';
+
+            document.getElementById("itemRarityValue").innerHTML = game.player.getStat(data.StatDefinition.magicFind.id).toFixed(2) + '%';
+            document.getElementById("goldGainValue").innerHTML = game.player.getStat(data.StatDefinition.goldMult.id).toFixed(2) + '%';
+            document.getElementById("experienceGainValue").innerHTML = game.player.getStat(data.StatDefinition.xpMult.id).toFixed(2) + '%';
+
+            // Update the select quest display
+            var quest = questManager.getSelectedQuest();
+            if (quest != null) {
+                var newText = '';
+                // Name
+                document.getElementById("questTitle").innerHTML = quest.name;
+                // Create the quest goal
+                switch (quest.type) {
+                    case staticData.QuestType.KILL:
+                        if (quest.typeAmount == 1) {
+                            newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monster.";
+                        }
+                        else {
+                            newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monsters.";
+                        }
+                        break;
+                    case staticData.QuestType.UPGRADE:
+                        newText = "Purchase the " + upgradeManager.upgrades[quest.typeId].name + " upgrade.";
+                        break;
+                }
+                document.getElementById("questGoal").innerHTML = newText;
+                // Create the quest progress text
+                switch (quest.type) {
+                    case staticData.QuestType.KILL:
+                        newText = quest.killCount + "/" + quest.typeAmount + " Monsters slain.";
+                        break;
+                    case staticData.QuestType.UPGRADE:
+                        break;
+                }
+                document.getElementById("questProgress").innerHTML = newText;
+                // Add the description
+                document.getElementById("questDescription").innerHTML = "<br>" + quest.description;
+                // Add the reward
+                document.getElementById("questReward").innerHTML = "<br>Reward:";
+                if (quest.buffReward != null) {
+                    document.getElementById("questRewardText").innerHTML = "Completing this quest will empower you with a powerful buff.";
+                }
+                document.getElementById("questGold").innerHTML = quest.goldReward;
+                document.getElementById("questExperience").innerHTML = quest.expReward;
+            }
+            else {
+                $("#questNamesArea").hide();
+                $("#questTextArea").hide();
             }
         }
     }

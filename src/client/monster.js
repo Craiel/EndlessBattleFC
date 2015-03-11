@@ -92,7 +92,6 @@ declare('Monster', function () {
 
         this.takeDamage = function(damage, isCritical, displayParticle) {
             this.modifyStat(data.StatDefinition.hp.id, -damage);
-            this.lastDamageTaken = damage;
             game.stats.damageDealt += damage;
 
             // Create the player's damage particle

@@ -1,5 +1,6 @@
 declare('Game', function() {
     include('Log');
+    include('Assert');
     include('Component');
     include('Player');
     include('Inventory');
@@ -23,6 +24,7 @@ declare('Game', function() {
     include('CoreUtils');
     include('GeneratorMonster');
     include('StatUtils');
+    include('CombatUtils');
 
     Game.prototype = component.create();
     Game.prototype.$super = parent;
@@ -37,9 +39,26 @@ declare('Game', function() {
 
         save.register(this, saveKeys.idnMercenariesPurchased).asJson().withDefault({}).withCallback(false, true, false);
 
+        this.autoSaveDelay = 30000; // 30s default
+        this.autoSaveTime = undefined;
+
         this.mercenaryGps = 0;
         this.mercenaryGpsTime = 0;
         this.mercenaryGpsDelay = 1000;
+
+        this.inBattle = false;
+
+        this.player = player.create();
+
+        this.monsters = {
+            Center: undefined,
+            Left: undefined,
+            Right: undefined,
+            Back1: undefined,
+            Back2: undefined,
+            Back3: undefined,
+            Back4: undefined
+        }
 
         // ---------------------------------------------------------------------------
         // basic functions
@@ -50,6 +69,8 @@ declare('Game', function() {
 
             statUtils.init();
             generatorMonster.init();
+
+            this.player.init();
 
             ////////////////////// TODO: Remove / refactor below
             this.reset();
@@ -69,45 +90,73 @@ declare('Game', function() {
                 return false;
             }
 
-            this.mercenaryGpsTime = coreUtils.processInterval(gameTime, this.mercenaryGpsTime, this.mercenaryGpsDelay, this, function(self, value) { self.gainMercenaryGold(value); }, this.mercenaryGps);
+            this.mercenaryGpsTime = coreUtils.processInterval(gameTime, this.mercenaryGpsTime, this.mercenaryGpsDelay, this, function(self, value) { self.gainGold(value, staticData.GoldSourceMercenary); }, this.mercenaryGps);
+
+            // Update the player
+            this.updatePlayers(gameTime);
+
+            // Update the monsters
+            this.updateMonsters(gameTime);
+
+            // Update misc components
+            this.updateAutoSave(gameTime);
 
             /////////////////////TODO: Remove / refactor below
-            var newDate = new Date();
-            this.oldDate = newDate;
 
-            if(this.player.alive !== true) {
-                this.leaveBattle();
-            }
 
             gameState.update(gameTime)
             this.inventory.update(gameTime);
-            this.updateInterface(gameTime.elapsed);
             questManager.update(gameTime);
             eventManager.update(gameTime);
             upgradeManager.update(gameTime);
             particleManager.update(gameTime);
             this.stats.update(gameTime);
-            this.player.update(gameTime);
 
             if(this.monster !== undefined) {
                 this.monster.update(gameTime);
             }
 
-            this.updateAutoSave(gameTime);
-
-            oldDate = newDate;
-
             return true;
+        }
+
+        this.updateAutoSave = function(gameTime) {
+            if(this.autoSaveTime  === undefined) {
+                // Skip the first auto save cycle
+                this.autoSaveTime = gameTime.current;
+                return;
+            }
+
+            if (gameTime.current > this.autoSaveTime + this.autoSaveDelay) {
+                this.save();
+                this.autoSaveTime = gameTime.current;
+            }
         }
 
         // ---------------------------------------------------------------------------
         // player functions
         // ---------------------------------------------------------------------------
-        this.gainMercenaryGold = function(value) {
+        this.updatePlayers = function(gameTime) {
+            this.player.update(gameTime);
+            if(this.player.alive !== true) {
+                this.leaveBattle();
+            }
+        }
+
+        this.gainXp = function(value, source) {
             if(isNaN(value) || value === undefined) {
                 return;
             }
 
+            // Todo: Apply modifiers etc
+            this.player.modifyStat(data.StatDefinition.xp.id, value);
+        }
+
+        this.gainGold = function(value, source) {
+            if(isNaN(value) || value === undefined) {
+                return;
+            }
+
+            // Todo: Apply modifiers etc
             this.player.modifyStat(data.StatDefinition.gold.id, value);
         }
 
@@ -157,23 +206,120 @@ declare('Game', function() {
             this.mercenaryGps = gps;
         }
 
-        this.updateProcessMercenaryGps = function(gameTime) {
-
-        }
-
         // ---------------------------------------------------------------------------
         // monster functions
         // ---------------------------------------------------------------------------
-        this.spawnNewMonster = function() {
-            var monster = generatorMonster.generate(this[saveKeys.idnGameBattleLevel]);
-            monster.init();
+        this.updateMonsters = function(gameTime) {
+            for(var key in this.monsters) {
+                if(this.monsters[key] === undefined) {
+                    continue;
+                }
 
-            return monster;
+                this.monsters[key].update(gameTime);
+
+                if(this.monsters[key].alive !== true) {
+                    this.killMonster(key);
+                }
+            }
+        }
+
+        this.killMonster = function(position) {
+            assert.isDefined(this.monsters[position], "Tried to kill non-existing monster");
+
+            var xp = this.monsters[position].getStat(data.StatDefinition.xp);
+            var gold = this.monsters[position].getStat(data.StatDefinition.gold);
+
+            this.gainXP(xp, staticData.XpSourceMonster);
+            this.gainGold(gold, staticData.GoldSourceMonster);
+
+            this.monsters[position].remove();
+            this.monsters[position] = undefined;
+        }
+
+        this.despawnMonsters = function() {
+            for(var key in this.monsters) {
+                if(this.monsters[key] !== undefined) {
+                    this.monsters[key].remove();
+                }
+
+                this.monsters[key] = undefined;
+            }
+        }
+
+        this.respawnMonsters = function() {
+            this.despawnMonsters();
+
+            // Todo
+            var level = this[saveKeys.idnGameBattleLevel];
+            this.monsters.Center = generatorMonster.generate(level);
+            this.monsters.Center.init();
+            this.monsters.Center.level = level;
+            this.monsters.Center.heal();
+        }
+
+        // ---------------------------------------------------------------------------
+        // battle functions
+        // ---------------------------------------------------------------------------
+        this.changeBattleLevel = function(value) {
+            this[saveKeys.idnGameBattleLevel] += value;
+            this.checkBattleLevel();
+        }
+
+        this.checkBattleLevel = function() {
+            var max = this.player.getLevel();
+            if(this[saveKeys.idnGameBattleLevel] <= 0) {
+                this[saveKeys.idnGameBattleLevel] = 1;
+            } else if (this[saveKeys.idnGameBattleLevel] > max) {
+                this[saveKeys.idnGameBattleLevel] = max;
+            }
+        }
+
+        this.getBattleLevel = function() {
+            return this[saveKeys.idnGameBattleLevel];
+        }
+
+        this.setBattleLevel = function(value) {
+            this[saveKeys.idnGameBattleDepth] = value;
+            this.checkBattleLevel();
+        }
+
+        this.enterBattle = function() {
+            assert.isFalse(this.inBattle);
+            this.inBattle = true;
+
+            this.respawnMonsters();
+
+            // Legacy
+            this.spawnMonster();
+        }
+
+        this.leaveBattle = function() {
+            assert.isTrue(this.inBattle);
+
+            this.inBattle = false;
+
+            this.despawnMonsters();
         }
 
         // ---------------------------------------------------------------------------
         // save / load functions
         // ---------------------------------------------------------------------------
+        this.save = function() {
+            save.save();
+
+            this.legacySave();
+        }
+
+        this.load = function() {
+            save.load();
+            this.legacyLoad();
+        }
+
+        this.reset = function() {
+            save.reset();
+            this.legacyReset();
+        }
+
         this.onLoad = function() {
             // Perform some initial operation after being loaded
             this.calculateMercenaryGps();
@@ -184,11 +330,8 @@ declare('Game', function() {
         /// Unchecked code below
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.oldDate = new Date();
-
         // Player
-        this.player = player.create();
-        this.player.init();
+
         this.inventory = inventory.create();
         this.inventory.init();
         this.equipment = equipment.create();
@@ -200,15 +343,7 @@ declare('Game', function() {
         this.options = options.create();
         this.options.init();
 
-        // Combat
-        this.inBattle = false;
 
-        // Monsters
-        this.displayMonsterHealth = false;
-
-        // Saving/Loading
-        this.autoSaveDelay = 30000; // 30s default
-        this.autoSaveTime = 0;
 
         this.spawnMonster = function() {
             this.monster = monsterCreator.createRandomMonster(
@@ -218,31 +353,12 @@ declare('Game', function() {
         }
 
 
-
-        this.enterBattle = function() {
-            this.inBattle = true;
-            // Create a new monster
-            this.spawnMonster();
-        }
-
-        this.leaveBattle = function() {
-            if(this.inBattle === false) {
-                return;
-            }
-
-            // Leave the battle and update the interface
-            this.inBattle = false;
-
-            // Reset the battle depth
-            this.resetBattle();
-
-            // Hide the attack button and debuffs
-            $("#monsterBleedingIcon").hide();
-            $("#monsterBurningIcon").hide();
-            $("#monsterChilledIcon").hide();
-        }
-
         this.attack = function() {
+            combatUtils.resolveCombatTick(this.player, this.monsters.Center);
+        }
+
+
+        this.attackOld = function() {
             if(this.inBattle !== true) {
                 return;
             }
@@ -254,107 +370,22 @@ declare('Game', function() {
             // Attack the monster if the player can attack
             var monstersDamageTaken = 0;
             if (game.player.canAttack) {
-                // Calculate how many attacks the player will do
-                var attackAmount = 1;
-                var successfulAttacks = 0;
-                if (this.player.attackType == staticData.AttackType.DOUBLE_STRIKE) {
-                    attackAmount++;
+                // Calculate the damage
+                var playerMinDamage = this.player.getStat(data.StatDefinition.dmgMin.id);
+                var playerMaxDamage = this.player.getStat(data.StatDefinition.dmgMax.id);
+                var playerDamage = playerMinDamage + coreUtils.getRandomInt(playerMinDamage, playerMaxDamage);
+
+
+                // See if the player will crit
+                var criticalHappened = false;
+                if (this.player.getStat(data.StatDefinition.critRate.id) >= (Math.random() * 100)) {
+                    playerDamage *= (this.player.getStat(data.StatDefinition.critDmg.id) / 100);
+                    criticalHappened = true;
                 }
 
-                for (var x = 0; x < attackAmount; x++) {
-                    // Calculate the damage
-                    var playerMinDamage = this.player.getStat(data.StatDefinition.dmgMin.id);
-                    var playerMaxDamage = this.player.getStat(data.StatDefinition.dmgMax.id);
-                    var playerDamage = playerMinDamage + (Math.random() * (playerMaxDamage - playerMinDamage));
-
-                    // If the player is using power strike, multiply the damage
-                    if (this.player.attackType == staticData.AttackType.POWER_STRIKE) {
-                        playerDamage *= 1.5;
-                    }
-
-                    // See if the player will crit
-                    var criticalHappened = false;
-                    if (this.player.getStat(data.StatDefinition.critRate.id) >= (Math.random() * 100)) {
-                        playerDamage *= (this.player.getStat(data.StatDefinition.critDmg.id) / 100);
-                        criticalHappened = true;
-                    }
-
-                    // If the player has any crushing blows effects then deal the damage from those effects
-                    var crushingBlowsEffects = game.player.getEffectsOfType(staticData.EffectType.CRUSHING_BLOWS);
-                    var crushingBlowsDamage = 0;
-                    if (crushingBlowsEffects.length > 0) {
-                        for (var y = 0; y < crushingBlowsEffects.length; y++) {
-                            crushingBlowsDamage += crushingBlowsEffects[y].value;
-                        }
-                        if (crushingBlowsDamage > 0) {
-                            this.monster.takeDamage((crushingBlowsDamage / 100) * this.monster.getStat(data.StatDefinition.hp.id), false, false);
-                        }
-                    }
-                    this.monster.takeDamage(playerDamage, criticalHappened, true);
-                    this.player.useAbilities();
-                    successfulAttacks++;
-
-                    // If the player has any Swiftness effects, see if the player generates any extra attacks
-                    var swiftnessEffects = game.player.getEffectsOfType(staticData.EffectType.SWIFTNESS);
-                    for (var z = 0; z < swiftnessEffects.length; z++) {
-                        // Try to generate an extra attack
-                        if (Math.random() < swiftnessEffects[z].chance / 100) {
-                            // Calculate the damage
-                            playerMinDamage = this.player.getStat(data.StatDefinition.dmgMin.id);
-                            playerMaxDamage = this.player.getStat(data.StatDefinition.dmgMax.id);
-                            playerDamage = playerMinDamage + (Math.random() * (playerMaxDamage - playerMinDamage));
-
-                            // If the player is using power strike, multiply the damage
-                            if (this.player.attackType == staticData.AttackType.POWER_STRIKE) {
-                                playerDamage *= 1.5;
-                            }
-
-                            // See if the player will crit
-                            criticalHappened = false;
-                            if (this.player.getStat(data.StatDefinition.critRate.id) >= (Math.random() * 100)) {
-                                playerDamage *= (this.player.getStat(data.StatDefinition.critDmg.id) / 100);
-                                criticalHappened = true;
-                            }
-
-                            // If the player has any crushing blows effects then deal the damage from those effects
-                            crushingBlowsEffects = game.player.getEffectsOfType(staticData.EffectType.CRUSHING_BLOWS);
-                            crushingBlowsDamage = 0;
-                            if (crushingBlowsEffects.length > 0) {
-                                for (var y = 0; y < crushingBlowsEffects.length; y++) {
-                                    crushingBlowsDamage += crushingBlowsEffects[y].value;
-                                }
-                                if (crushingBlowsDamage > 0) {
-                                    this.monster.takeDamage((crushingBlowsDamage / 100) * this.monster.getStat(data.StatDefinition.hp.id), false, false);
-                                }
-                            }
-                            this.monster.takeDamage(playerDamage, criticalHappened, true);
-                            this.player.useAbilities();
-                            successfulAttacks++;
-                        }
-                    }
-                }
-
-                // Try to trigger on-hit effects for every attack
-                var pillagingEffects = this.player.getEffectsOfType(staticData.EffectType.PILLAGING);
-                var nourishmentEffects = this.player.getEffectsOfType(staticData.EffectType.NOURISHMENT);
-                var berserkingEffects = this.player.getEffectsOfType(staticData.EffectType.BERSERKING);
-                for (var x = 0; x < successfulAttacks; x++) {
-                    for (var y = 0; y < pillagingEffects.length; y++) {
-                        if (Math.random() < pillagingEffects[y].chance / 100) {
-                            game.player.gainGold(pillagingEffects[y].value, true);
-                        }
-                    }
-                    for (var y = 0; y < nourishmentEffects.length; y++) {
-                        if (Math.random() < nourishmentEffects[y].chance / 100) {
-                            game.player.heal(nourishmentEffects[y].value);
-                        }
-                    }
-                    for (var y = 0; y < berserkingEffects.length; y++) {
-                        if (Math.random() < berserkingEffects[y].chance / 100) {
-                            game.monster.takeDamage(berserkingEffects[y].value, false, false);
-                        }
-                    }
-                }
+                this.monster.takeDamage(playerDamage, criticalHappened, true);
+                this.player.useAbilities();
+                successfulAttacks++;
             }
 
             // Have the monster attack if it can and did not die
@@ -384,58 +415,16 @@ declare('Game', function() {
                 }
 
                 // Create particles for the loot, experience and kill
-                particleManager.createParticle(this.player.lastGoldGained.toFixed(2), staticData.ParticleType.GOLD);
-                particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), staticData.ParticleType.EXP_ORB);
-                particleManager.createParticle(null, staticData.ParticleType.SKULL);
+                //particleManager.createParticle(this.player.lastGoldGained.toFixed(2), staticData.ParticleType.GOLD);
+                //particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), staticData.ParticleType.EXP_ORB);
+                //particleManager.createParticle(null, staticData.ParticleType.SKULL);
 
                 // Create a new monster
                 this.spawnMonster();
-
-                // Hide the debuff icons for the monster
-                $("#monsterBleedingIcon").hide();
-                $("#monsterBurningIcon").hide();
-                $("#monsterChilledIcon").hide();
-
-                // Increase the depth of the battle
-                this[saveKeys.idnGameBattleDepth]++;
             }
         }
 
-        this.maxBattleLevelReached = function() {
-            if (this.player.getLevel() == this[saveKeys.idnGameBattleLevel]) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
 
-        this.increaseBattleLevel = function() {
-            if (this.player.getLevel() > this[saveKeys.idnGameBattleLevel]) {
-                this[saveKeys.idnGameBattleLevel]++;
-                return true;
-            }
-
-            return false;
-        }
-
-        this.decreaseBattleLevel = function() {
-            if (this[saveKeys.idnGameBattleLevel] > 1) {
-                this[saveKeys.idnGameBattleLevel]--;
-                return true;
-
-            }
-
-            return false;
-        }
-
-        this.getBattleLevel = function() {
-            return this[saveKeys.idnGameBattleLevel];
-        }
-
-        this.resetBattle = function resetBattle() {
-            this[saveKeys.idnGameBattleDepth] = 1;
-        }
 
 
 
@@ -448,9 +437,7 @@ declare('Game', function() {
             return powerShardsReward;
         }
 
-        this.save = function() {
-            save.save();
-
+        this.legacySave = function() {
             this.inventory.save();
             this.equipment.save();
             questManager.save();
@@ -460,9 +447,7 @@ declare('Game', function() {
             this.options.save();
         }
 
-        this.load = function() {
-            save.load();
-
+        this.legacyLoad = function() {
             this.inventory.load();
             this.equipment.load();
             questManager.load();
@@ -470,28 +455,9 @@ declare('Game', function() {
             statUpgradeManager.load();
             this.stats.load();
             this.options.load();
-
-
-            /*if (localStorage.battleLevel != null) {
-                this.battleLevel = parseInt(localStorage.battleLevel);
-            }
-            if (this.battleLevel > 1) {
-                $("#battleLevelDownButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 0px');
-            }
-            if (this.maxBattleLevelReached()) {
-                $("#battleLevelUpButton").css('background', 'url("' + resources.ImageBattleLevelButton + '") 0 25px');
-            }
-
-            this.monster = monsterCreator.createRandomMonster(
-                this.battleLevel,
-                monsterCreator.calculateMonsterRarity(this.battleLevel, this.battleDepth));*/
         }
 
-        this.reset = function() {
-
-            // Combat
-            save.reset();
-
+        this.legacyReset = function() {
             // Upgrades
             // Remove all the upgrade purchase buttons
             var currentElement;
@@ -516,83 +482,9 @@ declare('Game', function() {
 
 
 
-        this.updateAutoSave = function(gameTime) {
-            // Save the progress if enough time has passed
-            if(this.autoSaveTime <= 0) {
-                // Skip the first auto save cycle
-                this.autoSaveTime = gameTime.current;
-            } else if (gameTime.current > this.autoSaveTime + this.autoSaveDelay) {
-                this.save();
-                this.autoSaveTime = gameTime.current;
-            }
-        }
 
-        this.updateInterface = function(ms) {
 
-            // Update the player's stats
-            document.getElementById("levelValue").innerHTML = this.player.getLevel();
-            document.getElementById("healthValue").innerHTML = Math.floor(this.player.getStat(data.StatDefinition.hp.id)) + '/' + this.player.getStat(data.StatDefinition.hpMax.id);
-            document.getElementById("hp5Value").innerHTML = this.player.getStat(data.StatDefinition.hp5.id).toFixed(2);
-            document.getElementById("damageValue").innerHTML = this.player.getStat(data.StatDefinition.dmgMin.id) + ' - ' + this.player.getStat(data.StatDefinition.dmgMax.id);
-            document.getElementById("damageBonusValue").innerHTML = this.player.getStat(data.StatDefinition.dmgMult.id) + '%';
-            document.getElementById("armorValue").innerHTML = this.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + this.player.calculateDamageReduction().toFixed(2) + '%)';
-            document.getElementById("evasionValue").innerHTML = this.player.getStat(data.StatDefinition.evaRate.id).toFixed(2) + ' (' + this.player.calculateEvasionChance().toFixed(2) + '%)';
 
-            document.getElementById("strengthValue").innerHTML = this.player.getStat(data.StatDefinition.str.id);
-            document.getElementById("staminaValue").innerHTML = this.player.getStat(data.StatDefinition.sta.id);
-            document.getElementById("agilityValue").innerHTML = this.player.getStat(data.StatDefinition.agi.id);
-            document.getElementById("critChanceValue").innerHTML = this.player.getStat(data.StatDefinition.critRate.id).toFixed(2) + '%';
-            document.getElementById("critDamageValue").innerHTML = this.player.getStat(data.StatDefinition.critDmg.id).toFixed(2) + '%';
-
-            document.getElementById("itemRarityValue").innerHTML = this.player.getStat(data.StatDefinition.magicFind.id).toFixed(2) + '%';
-            document.getElementById("goldGainValue").innerHTML = this.player.getStat(data.StatDefinition.goldMult.id).toFixed(2) + '%';
-            document.getElementById("experienceGainValue").innerHTML = this.player.getStat(data.StatDefinition.xpMult.id).toFixed(2) + '%';
-
-            // Update the select quest display
-            var quest = questManager.getSelectedQuest();
-            if (quest != null) {
-                var newText = '';
-                // Name
-                document.getElementById("questTitle").innerHTML = quest.name;
-                // Create the quest goal
-                switch (quest.type) {
-                    case staticData.QuestType.KILL:
-                        if (quest.typeAmount == 1) {
-                            newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monster.";
-                        }
-                        else {
-                            newText = "Slay " + quest.typeAmount + " Level " + quest.typeId + " Monsters.";
-                        }
-                        break;
-                    case staticData.QuestType.UPGRADE:
-                        newText = "Purchase the " + upgradeManager.upgrades[quest.typeId].name + " upgrade.";
-                        break;
-                }
-                document.getElementById("questGoal").innerHTML = newText;
-                // Create the quest progress text
-                switch (quest.type) {
-                    case staticData.QuestType.KILL:
-                        newText = quest.killCount + "/" + quest.typeAmount + " Monsters slain.";
-                        break;
-                    case staticData.QuestType.UPGRADE:
-                        break;
-                }
-                document.getElementById("questProgress").innerHTML = newText;
-                // Add the description
-                document.getElementById("questDescription").innerHTML = "<br>" + quest.description;
-                // Add the reward
-                document.getElementById("questReward").innerHTML = "<br>Reward:";
-                if (quest.buffReward != null) {
-                    document.getElementById("questRewardText").innerHTML = "Completing this quest will empower you with a powerful buff.";
-                }
-                document.getElementById("questGold").innerHTML = quest.goldReward;
-                document.getElementById("questExperience").innerHTML = quest.expReward;
-            }
-            else {
-                $("#questNamesArea").hide();
-                $("#questTextArea").hide();
-            }
-        }
     }
 
     return new Game();

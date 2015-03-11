@@ -18,17 +18,16 @@ declare('Actor', function () {
         this.id = "Actor";
 
         // General
+        this.level = 0;
         this.actorStats = {};
         this.statsChanged = true;
 
         // Combat
-        this.lastDamageTaken = 0;
-        this.alive = true;
-        this.canAttack = true;
-        this.attackType = staticData.AttackType.BASIC_ATTACK;
+        this.abilitySet = {}
+        this.abilityCooldown = {}
 
-        // Buffs/Debuffs
-        this.buffs = buffSet.create();
+        this.alive = true;
+
 
         // ---------------------------------------------------------------------------
         // basic functions
@@ -38,6 +37,9 @@ declare('Actor', function () {
             this.componentInit();
 
             assert.isDefined(this.getBaseStats, "Actor needs to have a getBaseStats() function");
+
+            // Todo: pull this from data
+            this.abilitySet['basic'] = { id: 'basic', name: 'Basic Attack', dmgMult: 1 }
         }
 
         this.componentUpdate = this.update;
@@ -51,7 +53,7 @@ declare('Actor', function () {
                 this.computeActorStats();
             }
 
-            this.buffs.update(gameTime);
+            this.alive = this.getStat(data.StatDefinition.hp.id) > 0;
 
             return true;
         }
@@ -61,6 +63,11 @@ declare('Actor', function () {
         // ---------------------------------------------------------------------------
         this.getLevel = function() {
             return this.level;
+        }
+
+        this.getAbility = function(key) {
+            // Todo:
+            return undefined;
         }
 
         // ---------------------------------------------------------------------------
@@ -126,6 +133,31 @@ declare('Actor', function () {
             stats.splice(0, 0, this.getBaseStats());
             this.actorStats = statUtils.mergeStats(stats);
             this.statsChanged = false;
+        }
+
+        // ---------------------------------------------------------------------------
+        // actor functions
+        // ---------------------------------------------------------------------------
+        this.heal = function(amount) {
+            if(amount === undefined) {
+                amount = this.getStat(data.StatDefinition.hpMax.id);
+            }
+
+            this.modifyStat(data.StatDefinition.hp.id, amount);
+            if (this.getStat(data.StatDefinition.hp.id) > this.getStat(data.StatDefinition.hpMax.id)) {
+                this.setStat(data.StatDefinition.hp.id, this.getStat(data.StatDefinition.hpMax.id));
+            }
+        }
+
+        this.healMp = function(amount) {
+            if(amount === undefined) {
+                amount = this.getStat(data.StatDefinition.mpMax.id);
+            }
+
+            this.modifyStat(data.StatDefinition.mp.id, amount);
+            if(this.getStat(data.StatDefinition.mp.id) > this.getStat(data.StatDefinition.mpMax.id)) {
+                this.setStat(data.StatDefinition.mp.id, this.getStat(data.StatDefinition.mpMax.id));
+            }
         }
     }
 
