@@ -12,41 +12,41 @@ declare('Particle', function () {
         this.velocityY = velocityY;
         this.duration = duration * 100000; // in seconds
         this.maxDuration = duration;
+    }
 
-        this.update = function(gameTime) {
-            this.duration -= gameTime.elapsed;
-            this.x += this.velocityX;
-            this.y += this.velocityY;
+    Particle.prototype.update = function(gameTime) {
+        this.duration -= gameTime.elapsed;
+        this.x += this.velocityX;
+        this.y += this.velocityY;
 
-            return true;
-        }
+        return true;
+    }
 
-        this.draw = function() {
-            var canvas = document.getElementById("particleCanvas");
-            var context = canvas.getContext("2d");
-            if (this.duration <= this.maxDuration / 5) {
-                var newAlpha = this.duration / (this.maxDuration / 5);
-                if (newAlpha < 0) {
-                    newAlpha = 0;
-                }
-                context.globalAlpha = newAlpha;
+    Particle.prototype.draw = function() {
+        var canvas = document.getElementById("particleCanvas");
+        var context = canvas.getContext("2d");
+        if (this.duration <= this.maxDuration / 5) {
+            var newAlpha = this.duration / (this.maxDuration / 5);
+            if (newAlpha < 0) {
+                newAlpha = 0;
             }
-            if (this.image != null) {
-                context.drawImage(this.image, this.x, this.y, 25, 25);
-            }
-            if (this.text != null) {
-                context.shadowColor = "black";
-                context.lineWidth = 3;
-                context.strokeText(this.text, this.x + 12, this.y + 19);
-                context.fillStyle = this.textColour;
-                context.fillText(this.text, this.x + 12, this.y + 19);
-            }
-            context.globalAlpha = 1;
+            context.globalAlpha = newAlpha;
         }
+        if (this.image != null) {
+            context.drawImage(this.image, this.x, this.y, 25, 25);
+        }
+        if (this.text != null) {
+            context.shadowColor = "black";
+            context.lineWidth = 3;
+            context.strokeText(this.text, this.x + 12, this.y + 19);
+            context.fillStyle = this.textColour;
+            context.fillText(this.text, this.x + 12, this.y + 19);
+        }
+        context.globalAlpha = 1;
+    }
 
-        this.expired = function() {
-            return this.duration <= 0;
-        }
+    Particle.prototype.expired = function() {
+        return this.duration <= 0;
     }
 
     return {

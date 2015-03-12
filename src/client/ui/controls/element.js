@@ -30,11 +30,13 @@ declare('Element', function() {
     // ---------------------------------------------------------------------------
     // class definition
     // ---------------------------------------------------------------------------
-    UIElement.prototype = component.create();
+    UIElement.prototype = component.prototype();
     UIElement.prototype.$super = parent;
     UIElement.prototype.constructor = UIElement;
     
     function UIElement(id) {
+        component.construct(this);
+
         this.id = id;
         
         this.isVisible = true;
@@ -44,205 +46,210 @@ declare('Element', function() {
         this.templateName = this.templateName !== undefined ? this.templateName : undefined;
         
         this._mainDiv = undefined;
-        
-        // ---------------------------------------------------------------------------
-        // overrides
-        // ---------------------------------------------------------------------------
-        this.componentInit = this.init;
-        this.componentUpdate = this.update;
-        this.componentRemove = this.remove;
-        
-        // ---------------------------------------------------------------------------
-        // main functions
-        // ---------------------------------------------------------------------------
-        this.init = function(parent, attributes) {
-        	this.componentInit();
+    };
 
-            // Check the parent
-        	if(Endless.isVerboseDebug === true) { log.debug(StrLoc(" ELEMENT: {0}").format(this.id)); }
-        	if (parent !== undefined) {
-        		if (parent === RootParentKey) {
-        			log.warning(StrLoc("  --> Appending to ROOT!"));
-        			this.parent = $(document.body);
-        		} else {
-                    if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> Appending to {0}").format(parent.id)); }
-        			this.parent = parent;
-        		}
-        	} else {
-                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> skipping parent")); }
-        	}
+    // ---------------------------------------------------------------------------
+    // overrides
+    // ---------------------------------------------------------------------------
+    UIElement.prototype.componentInit = UIElement.prototype.init;
+    UIElement.prototype.componentUpdate = UIElement.prototype.update;
+    UIElement.prototype.componentRemove = UIElement.prototype.remove;
 
-            // try to get our element target
-            var existingElement = undefined;
-            if(this.parent !== undefined) {
-                existingElement = this.parent.getMainElement().find('#' + this.id);
+    // ---------------------------------------------------------------------------
+    // main functions
+    // ---------------------------------------------------------------------------
+    UIElement.prototype.init = function(parent, attributes) {
+        this.componentInit();
+
+        // Check the parent
+        if(Endless.isVerboseDebug === true) { log.debug(StrLoc(" ELEMENT: {0}").format(this.id)); }
+        if (parent !== undefined) {
+            if (parent === RootParentKey) {
+                log.warning(StrLoc("  --> Appending to ROOT!"));
+                this.parent = $(document.body);
             } else {
-                existingElement = $('#' + this.id);
+                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> Appending to {0}").format(parent.id)); }
+                this.parent = parent;
             }
+        } else {
+            if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> skipping parent")); }
+        }
 
-            // Check if we are supposed to take from template
-            if (this.templateName !== undefined) {
-                var content = createElementContent(this.id, this.parent, this.templateName, attributes);
-                if(existingElement !== undefined && existingElement.length > 0) {
-                    this._mainDiv = content;
-                    existingElement.replaceWith(content);
-                    if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template (replacing content)")); }
-                } else {
-                    this._mainDiv = content;
+        // try to get our element target
+        var existingElement = undefined;
+        if(this.parent !== undefined) {
+            existingElement = this.parent.getMainElement().find('#' + this.id);
+        } else {
+            existingElement = $('#' + this.id);
+        }
 
-                    // this is a new element so check if we are supposed to register it
-                    //  undefined means no registration
-                    if(parent !== undefined) {
-                        var targetElement = parent.getMainElement();
-                        assert.isTrue(targetElement !== undefined && targetElement.length > 0, "Parent must be UIElement and initialized: " + parent.id);
-                        parent.getMainElement().append(this._mainDiv);
-                    }
+        // Check if we are supposed to take from template
+        if (this.templateName !== undefined) {
+            var content = createElementContent(this.id, this.parent, this.templateName, attributes);
+            if(existingElement !== undefined && existingElement.length > 0) {
+                this._mainDiv = content;
+                existingElement.replaceWith(content);
+                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template (replacing content)")); }
+            } else {
+                this._mainDiv = content;
 
-                    if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template")); }
+                // this is a new element so check if we are supposed to register it
+                //  undefined means no registration
+                if(parent !== undefined) {
+                    var targetElement = parent.getMainElement();
+                    assert.isTrue(targetElement !== undefined && targetElement.length > 0, "Parent must be UIElement and initialized: " + parent.id);
+                    parent.getMainElement().append(this._mainDiv);
                 }
-            } else {
-                this._mainDiv = existingElement;
-                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from content")); }
-            }
 
-            assert.isDefined(this._mainDiv, "MainDiv must be assigned after init: " + this.id);
-            assert.isTrue(this._mainDiv.length > 0, "MainDiv must be valid after init: " + this.id);
-        };
-        
-        this.update = function(currentTime) {
-            if(this.isVisible !== true) {
-                return false;
+                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template")); }
             }
-
-            return this.componentUpdate(currentTime);
-        };
-        
-        this.remove = function(keepDivAlive) {
-            this.componentRemove();
-            
-            if(keepDivAlive !== true) {
-                this._mainDiv.remove();
-            }
-        };
-        
-        // ---------------------------------------------------------------------------
-        // ui functions
-        // ---------------------------------------------------------------------------
-        this.hide = function() {
-            this.isVisible = false;
-            this._mainDiv.hide();
-        };
-        
-        this.show = function() {
-            this.isVisible = true;
-            this._mainDiv.show();
-            this.invalidate();
-        };
-        
-        this.getMainElement = function() {
-            return this._mainDiv;
-        };
-        
-        this.checkClassExist = function(className) {
-            if(Endless.isDebug === false) {
-                return;
-            }
-            
-            if($("."+className).length > 0) {
-                return;
-            }
-            
-            log.warning(StrLoc("ClassVerifyError: {0} on {1}").format(className, this.id));
-        };
-        
-        this.addClass = function(className) {
-            assert.isFalse(this._mainDiv.hasClass(className));
-            this.checkClassExist(className);
-            
-            this._mainDiv.addClass(className);
-        };
-        
-        this.removeClass = function(className) {
-            assert.isTrue(this._mainDiv.hasClass(className));
-            this.checkClassExist(className);
-            
-            this._mainDiv.removeClass(className);
-        };
-        
-        this.toggleClass = function(className) {
-            if(this._mainDiv.hasClass(className) === true) {
-                this.removeClass(className);
-            } else {
-                this.addClass(className);
-            };
-        };
-        
-        this.setPosition = function(point) {
-            this._mainDiv.css({ left: point.x, top: point.y});
-        };
-
-        this.setHeight = function(height) {
-            this._mainDiv.height(height);
-            this._mainDiv.trigger( "updatelayout" );
+        } else {
+            this._mainDiv = existingElement;
+            if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from content")); }
         }
 
-        this.getSize = function() {
-            return {x: this._mainDiv.width(), y: this._mainDiv.height()};
+        assert.isDefined(this._mainDiv, "MainDiv must be assigned after init: " + this.id);
+        assert.isTrue(this._mainDiv.length > 0, "MainDiv must be valid after init: " + this.id);
+    };
+
+    UIElement.prototype.update = function(currentTime) {
+        if(this.isVisible !== true) {
+            return false;
         }
-        
-        this.setSize = function(size) {
-            this._mainDiv.width(size.x);
-            this._mainDiv.height(size.y);
-            this._mainDiv.trigger( "updatelayout" );
-        };
-        
-        this.setContent = function(content) {
-            this._mainDiv.empty();
-            this._mainDiv.append(content);
-        };
-        
-        this.setText = function(text) {
-            this._mainDiv.text(text);
-        };
-        
-        this.getText = function() {
-        	return this._mainDiv.text();
-        };
 
-        this.setStyle = function(style) {
-            this._mainDiv.css(style);
+        return this.componentUpdate(currentTime);
+    };
+
+    UIElement.prototype.remove = function(keepDivAlive) {
+        this.componentRemove();
+
+        if(keepDivAlive !== true) {
+            this._mainDiv.remove();
         }
-        
-        this.setAttribute = function(name, content) {
-        	this._mainDiv.attr(name, content);
-        };
-        
-        this.setOnClick = function(target) {
-            assert.isDefined(target);
-        	this._mainDiv.click({ target: target, self: this }, function(event) { event.data.target(event.data.self); });
-        };
-        
-        this.setKeyPress = function(code, callback) {
-        	this._mainDiv.keypress({self: this}, function(event) {
-        		if(event.which === code) {
-        			callback(event.data.self);
-        			return false;
-        		}
-        	});
-        };
+    };
 
-        this.setTemplate = function(name) {
-            if(this.templateName !== undefined) {
-                log.error("Replacing template " + this.templateName + " with " + name + " for " + this.id);
-            }
+    // ---------------------------------------------------------------------------
+    // ui functions
+    // ---------------------------------------------------------------------------
+    UIElement.prototype.hide = function() {
+        this.isVisible = false;
+        this._mainDiv.hide();
+    };
 
-            this.templateName = name;
+    UIElement.prototype.show = function() {
+        this.isVisible = true;
+        this._mainDiv.show();
+        this.invalidate();
+    };
+
+    UIElement.prototype.getMainElement = function() {
+        return this._mainDiv;
+    };
+
+    UIElement.prototype.checkClassExist = function(className) {
+        if(Endless.isDebug === false) {
+            return;
+        }
+
+        if($("."+className).length > 0) {
+            return;
+        }
+
+        log.warning(StrLoc("ClassVerifyError: {0} on {1}").format(className, this.id));
+    };
+
+    UIElement.prototype.addClass = function(className) {
+        assert.isFalse(this._mainDiv.hasClass(className));
+        this.checkClassExist(className);
+
+        this._mainDiv.addClass(className);
+    };
+
+    UIElement.prototype.removeClass = function(className) {
+        assert.isTrue(this._mainDiv.hasClass(className));
+        this.checkClassExist(className);
+
+        this._mainDiv.removeClass(className);
+    };
+
+    UIElement.prototype.toggleClass = function(className) {
+        if(this._mainDiv.hasClass(className) === true) {
+            this.removeClass(className);
+        } else {
+            this.addClass(className);
         };
     };
+
+    UIElement.prototype.setPosition = function(point) {
+        this._mainDiv.css({ left: point.x, top: point.y});
+    };
+
+    UIElement.prototype.setHeight = function(height) {
+        this._mainDiv.height(height);
+        this._mainDiv.trigger( "updatelayout" );
+    }
+
+    UIElement.prototype.getSize = function() {
+        return {x: this._mainDiv.width(), y: this._mainDiv.height()};
+    }
+
+    UIElement.prototype.setSize = function(size) {
+        this._mainDiv.width(size.x);
+        this._mainDiv.height(size.y);
+        this._mainDiv.trigger( "updatelayout" );
+    };
+
+    UIElement.prototype.setContent = function(content) {
+        this._mainDiv.empty();
+        this._mainDiv.append(content);
+    };
+
+    UIElement.prototype.setText = function(text) {
+        this._mainDiv.text(text);
+    };
+
+    UIElement.prototype.getText = function() {
+        return this._mainDiv.text();
+    };
+
+    UIElement.prototype.setStyle = function(style) {
+        this._mainDiv.css(style);
+    }
+
+    UIElement.prototype.setAttribute = function(name, content) {
+        this._mainDiv.attr(name, content);
+    };
+
+    UIElement.prototype.setOnClick = function(target) {
+        assert.isDefined(target);
+        this._mainDiv.click({ target: target, self: this }, function(event) { event.data.target(event.data.self); });
+    };
+
+    UIElement.prototype.setKeyPress = function(code, callback) {
+        this._mainDiv.keypress({self: this}, function(event) {
+            if(event.which === code) {
+                callback(event.data.self);
+                return false;
+            }
+        });
+    };
+
+    UIElement.prototype.setTemplate = function(name) {
+        if(this.templateName !== undefined) {
+            log.error("Replacing template " + this.templateName + " with " + name + " for " + this.id);
+        }
+
+        this.templateName = name;
+    };
+
+    var surrogate = function(){};
+    surrogate.prototype = UIElement.prototype;
     
     return {
+        prototype: function() { return new surrogate(); },
+        construct: function(self) { UIElement.call(self); },
+
     	rootParent: RootParentKey,
-    	
         create: function(id) { return new UIElement(id); }
     };
 });

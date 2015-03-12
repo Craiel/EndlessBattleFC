@@ -26,11 +26,13 @@ declare('Game', function() {
     include('StatUtils');
     include('CombatUtils');
 
-    Game.prototype = component.create();
+    Game.prototype = component.prototype();
     Game.prototype.$super = parent;
     Game.prototype.constructor = Game;
 
     function Game() {
+        component.construct(this);
+
         this.id = "Game";
 
         save.register(this, saveKeys.idnGameVersion).asFloat().withDefault(0.3);
@@ -60,278 +62,281 @@ declare('Game', function() {
             Back4: undefined
         }
 
-        // ---------------------------------------------------------------------------
-        // basic functions
-        // ---------------------------------------------------------------------------
-        this.componentInit = this.init;
-        this.init = function() {
-            this.componentInit();
+        this.legacyConstruct();
+    }
 
-            statUtils.init();
-            generatorMonster.init();
+    // ---------------------------------------------------------------------------
+    // basic functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.componentInit = Game.prototype.init;
+    Game.prototype.init = function() {
+        this.componentInit();
 
-            this.player.init();
+        statUtils.init();
+        generatorMonster.init();
 
-            ////////////////////// TODO: Remove / refactor below
-            this.reset();
+        this.player.init();
 
-            gameState.init();
-            eventManager.init();
-            upgradeManager.init();
-            particleManager.init();
-            questManager.init();
+        ////////////////////// TODO: Remove / refactor below
+        this.reset();
 
-            this.load();
+        gameState.init();
+        eventManager.init();
+        upgradeManager.init();
+        particleManager.init();
+        questManager.init();
+
+        this.load();
+    }
+
+    Game.prototype.componentUpdate = Game.prototype.update;
+    Game.prototype.update = function(gameTime) {
+        if(this.componentUpdate(gameTime) !== true) {
+            return false;
         }
 
-        this.componentUpdate = this.update;
-        this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
+        this.mercenaryGpsTime = coreUtils.processInterval(gameTime, this.mercenaryGpsTime, this.mercenaryGpsDelay, this, function(self, value) { self.gainGold(value, staticData.GoldSourceMercenary); }, this.mercenaryGps);
+
+        // Update the player
+        this.updatePlayers(gameTime);
+
+        // Update the monsters
+        this.updateMonsters(gameTime);
+
+        // Update misc components
+        this.updateAutoSave(gameTime);
+
+        /////////////////////TODO: Remove / refactor below
+
+
+        gameState.update(gameTime)
+        this.inventory.update(gameTime);
+        questManager.update(gameTime);
+        eventManager.update(gameTime);
+        upgradeManager.update(gameTime);
+        particleManager.update(gameTime);
+        this.stats.update(gameTime);
+
+        if(this.monster !== undefined) {
+            this.monster.update(gameTime);
+        }
+
+        return true;
+    }
+
+    Game.prototype.updateAutoSave = function(gameTime) {
+        if(this.autoSaveTime  === undefined) {
+            // Skip the first auto save cycle
+            this.autoSaveTime = gameTime.current;
+            return;
+        }
+
+        if (gameTime.current > this.autoSaveTime + this.autoSaveDelay) {
+            this.save();
+            this.autoSaveTime = gameTime.current;
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+    // player functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.updatePlayers = function(gameTime) {
+        this.player.update(gameTime);
+        if(this.player.alive !== true) {
+            this.leaveBattle();
+        }
+    }
+
+    Game.prototype.gainXp = function(value, source) {
+        if(isNaN(value) || value === undefined) {
+            return;
+        }
+
+        // Todo: Apply modifiers etc
+        this.player.modifyStat(data.StatDefinition.xp.id, value);
+    }
+
+    Game.prototype.gainGold = function(value, source) {
+        if(isNaN(value) || value === undefined) {
+            return;
+        }
+
+        // Todo: Apply modifiers etc
+        this.player.modifyStat(data.StatDefinition.gold.id, value);
+    }
+
+    // ---------------------------------------------------------------------------
+    // mercenary functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.purchaseMercenary = function(key) {
+        var cost = this.getMercenaryCost(key);
+        if(this.player.getStat(data.StatDefinition.gold.id) < cost) {
+            return;
+        }
+
+        this.player.modifyStat(data.StatDefinition.gold.id, -cost);
+
+        if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
+            this[saveKeys.idnMercenariesPurchased][key] = 0;
+        }
+
+        this[saveKeys.idnMercenariesPurchased][key]++;
+        this.calculateMercenaryGps();
+    }
+
+    Game.prototype.getMercenaryCost = function(key) {
+        var owned = this.getMercenaryCount(key);
+        return Math.floor(data.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
+    }
+
+    Game.prototype.getMercenaryCount = function(key) {
+        if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
+            return 0;
+        }
+
+        return this[saveKeys.idnMercenariesPurchased][key];
+    }
+
+    Game.prototype.mercenaryGps = function(key) {
+        return this.mercenaryGps;
+    }
+
+    Game.prototype.calculateMercenaryGps = function() {
+        var gps = 0;
+        for(key in this[saveKeys.idnMercenariesPurchased]) {
+            var baseValue = data.Mercenaries[key].gps * this[saveKeys.idnMercenariesPurchased][key];
+            gps += baseValue;
+        }
+
+        this.mercenaryGps = gps;
+    }
+
+    // ---------------------------------------------------------------------------
+    // monster functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.updateMonsters = function(gameTime) {
+        for(var key in this.monsters) {
+            if(this.monsters[key] === undefined) {
+                continue;
             }
 
-            this.mercenaryGpsTime = coreUtils.processInterval(gameTime, this.mercenaryGpsTime, this.mercenaryGpsDelay, this, function(self, value) { self.gainGold(value, staticData.GoldSourceMercenary); }, this.mercenaryGps);
+            this.monsters[key].update(gameTime);
 
-            // Update the player
-            this.updatePlayers(gameTime);
-
-            // Update the monsters
-            this.updateMonsters(gameTime);
-
-            // Update misc components
-            this.updateAutoSave(gameTime);
-
-            /////////////////////TODO: Remove / refactor below
-
-
-            gameState.update(gameTime)
-            this.inventory.update(gameTime);
-            questManager.update(gameTime);
-            eventManager.update(gameTime);
-            upgradeManager.update(gameTime);
-            particleManager.update(gameTime);
-            this.stats.update(gameTime);
-
-            if(this.monster !== undefined) {
-                this.monster.update(gameTime);
-            }
-
-            return true;
-        }
-
-        this.updateAutoSave = function(gameTime) {
-            if(this.autoSaveTime  === undefined) {
-                // Skip the first auto save cycle
-                this.autoSaveTime = gameTime.current;
-                return;
-            }
-
-            if (gameTime.current > this.autoSaveTime + this.autoSaveDelay) {
-                this.save();
-                this.autoSaveTime = gameTime.current;
+            if(this.monsters[key].alive !== true) {
+                this.killMonster(key);
             }
         }
+    }
 
-        // ---------------------------------------------------------------------------
-        // player functions
-        // ---------------------------------------------------------------------------
-        this.updatePlayers = function(gameTime) {
-            this.player.update(gameTime);
-            if(this.player.alive !== true) {
-                this.leaveBattle();
-            }
-        }
+    Game.prototype.killMonster = function(position) {
+        assert.isDefined(this.monsters[position], "Tried to kill non-existing monster");
 
-        this.gainXp = function(value, source) {
-            if(isNaN(value) || value === undefined) {
-                return;
-            }
+        var xp = this.monsters[position].getStat(data.StatDefinition.xp);
+        var gold = this.monsters[position].getStat(data.StatDefinition.gold);
 
-            // Todo: Apply modifiers etc
-            this.player.modifyStat(data.StatDefinition.xp.id, value);
-        }
+        this.gainXP(xp, staticData.XpSourceMonster);
+        this.gainGold(gold, staticData.GoldSourceMonster);
 
-        this.gainGold = function(value, source) {
-            if(isNaN(value) || value === undefined) {
-                return;
+        this.monsters[position].remove();
+        this.monsters[position] = undefined;
+    }
+
+    Game.prototype.despawnMonsters = function() {
+        for(var key in this.monsters) {
+            if(this.monsters[key] !== undefined) {
+                this.monsters[key].remove();
             }
 
-            // Todo: Apply modifiers etc
-            this.player.modifyStat(data.StatDefinition.gold.id, value);
+            this.monsters[key] = undefined;
         }
+    }
 
-        // ---------------------------------------------------------------------------
-        // mercenary functions
-        // ---------------------------------------------------------------------------
-        this.purchaseMercenary = function(key) {
-            var cost = this.getMercenaryCost(key);
-            if(this.player.getStat(data.StatDefinition.gold.id) < cost) {
-                return;
-            }
+    Game.prototype.respawnMonsters = function() {
+        this.despawnMonsters();
 
-            this.player.modifyStat(data.StatDefinition.gold.id, -cost);
+        // Todo
+        var level = this[saveKeys.idnGameBattleLevel];
+        this.monsters.Center = generatorMonster.generate(level);
+        this.monsters.Center.init();
+        this.monsters.Center.level = level;
+        this.monsters.Center.heal();
+    }
 
-            if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
-                this[saveKeys.idnMercenariesPurchased][key] = 0;
-            }
+    // ---------------------------------------------------------------------------
+    // battle functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.changeBattleLevel = function(value) {
+        this[saveKeys.idnGameBattleLevel] += value;
+        this.checkBattleLevel();
+    }
 
-            this[saveKeys.idnMercenariesPurchased][key]++;
-            this.calculateMercenaryGps();
+    Game.prototype.checkBattleLevel = function() {
+        var max = this.player.getLevel();
+        if(this[saveKeys.idnGameBattleLevel] <= 0) {
+            this[saveKeys.idnGameBattleLevel] = 1;
+        } else if (this[saveKeys.idnGameBattleLevel] > max) {
+            this[saveKeys.idnGameBattleLevel] = max;
         }
+    }
 
-        this.getMercenaryCost = function(key) {
-            var owned = this.getMercenaryCount(key);
-            return Math.floor(data.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
-        }
+    Game.prototype.getBattleLevel = function() {
+        return this[saveKeys.idnGameBattleLevel];
+    }
 
-        this.getMercenaryCount = function(key) {
-            if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
-                return 0;
-            }
+    Game.prototype.setBattleLevel = function(value) {
+        this[saveKeys.idnGameBattleDepth] = value;
+        this.checkBattleLevel();
+    }
 
-            return this[saveKeys.idnMercenariesPurchased][key];
-        }
+    Game.prototype.enterBattle = function() {
+        assert.isFalse(this.inBattle);
+        this.inBattle = true;
 
-        this.mercenaryGps = function(key) {
-            return this.mercenaryGps;
-        }
+        this.respawnMonsters();
 
-        this.calculateMercenaryGps = function() {
-            var gps = 0;
-            for(key in this[saveKeys.idnMercenariesPurchased]) {
-                var baseValue = data.Mercenaries[key].gps * this[saveKeys.idnMercenariesPurchased][key];
-                gps += baseValue;
-            }
+        // Legacy
+        this.spawnMonster();
+    }
 
-            this.mercenaryGps = gps;
-        }
+    Game.prototype.leaveBattle = function() {
+        assert.isTrue(this.inBattle);
 
-        // ---------------------------------------------------------------------------
-        // monster functions
-        // ---------------------------------------------------------------------------
-        this.updateMonsters = function(gameTime) {
-            for(var key in this.monsters) {
-                if(this.monsters[key] === undefined) {
-                    continue;
-                }
+        this.inBattle = false;
 
-                this.monsters[key].update(gameTime);
+        this.despawnMonsters();
+    }
 
-                if(this.monsters[key].alive !== true) {
-                    this.killMonster(key);
-                }
-            }
-        }
+    // ---------------------------------------------------------------------------
+    // save / load functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.save = function() {
+        save.save();
 
-        this.killMonster = function(position) {
-            assert.isDefined(this.monsters[position], "Tried to kill non-existing monster");
+        this.legacySave();
+    }
 
-            var xp = this.monsters[position].getStat(data.StatDefinition.xp);
-            var gold = this.monsters[position].getStat(data.StatDefinition.gold);
+    Game.prototype.load = function() {
+        save.load();
+        this.legacyLoad();
+    }
 
-            this.gainXP(xp, staticData.XpSourceMonster);
-            this.gainGold(gold, staticData.GoldSourceMonster);
+    Game.prototype.reset = function() {
+        save.reset();
+        this.legacyReset();
+    }
 
-            this.monsters[position].remove();
-            this.monsters[position] = undefined;
-        }
-
-        this.despawnMonsters = function() {
-            for(var key in this.monsters) {
-                if(this.monsters[key] !== undefined) {
-                    this.monsters[key].remove();
-                }
-
-                this.monsters[key] = undefined;
-            }
-        }
-
-        this.respawnMonsters = function() {
-            this.despawnMonsters();
-
-            // Todo
-            var level = this[saveKeys.idnGameBattleLevel];
-            this.monsters.Center = generatorMonster.generate(level);
-            this.monsters.Center.init();
-            this.monsters.Center.level = level;
-            this.monsters.Center.heal();
-        }
-
-        // ---------------------------------------------------------------------------
-        // battle functions
-        // ---------------------------------------------------------------------------
-        this.changeBattleLevel = function(value) {
-            this[saveKeys.idnGameBattleLevel] += value;
-            this.checkBattleLevel();
-        }
-
-        this.checkBattleLevel = function() {
-            var max = this.player.getLevel();
-            if(this[saveKeys.idnGameBattleLevel] <= 0) {
-                this[saveKeys.idnGameBattleLevel] = 1;
-            } else if (this[saveKeys.idnGameBattleLevel] > max) {
-                this[saveKeys.idnGameBattleLevel] = max;
-            }
-        }
-
-        this.getBattleLevel = function() {
-            return this[saveKeys.idnGameBattleLevel];
-        }
-
-        this.setBattleLevel = function(value) {
-            this[saveKeys.idnGameBattleDepth] = value;
-            this.checkBattleLevel();
-        }
-
-        this.enterBattle = function() {
-            assert.isFalse(this.inBattle);
-            this.inBattle = true;
-
-            this.respawnMonsters();
-
-            // Legacy
-            this.spawnMonster();
-        }
-
-        this.leaveBattle = function() {
-            assert.isTrue(this.inBattle);
-
-            this.inBattle = false;
-
-            this.despawnMonsters();
-        }
-
-        // ---------------------------------------------------------------------------
-        // save / load functions
-        // ---------------------------------------------------------------------------
-        this.save = function() {
-            save.save();
-
-            this.legacySave();
-        }
-
-        this.load = function() {
-            save.load();
-            this.legacyLoad();
-        }
-
-        this.reset = function() {
-            save.reset();
-            this.legacyReset();
-        }
-
-        this.onLoad = function() {
-            // Perform some initial operation after being loaded
-            this.calculateMercenaryGps();
-        }
+    Game.prototype.onLoad = function() {
+        // Perform some initial operation after being loaded
+        this.calculateMercenaryGps();
+    }
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// Unchecked code below
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Unchecked code below
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Player
-
+    // Player
+    Game.prototype.legacyConstruct = function() {
         this.inventory = inventory.create();
         this.inventory.init();
         this.equipment = equipment.create();
@@ -342,149 +347,141 @@ declare('Game', function() {
         this.stats.init();
         this.options = options.create();
         this.options.init();
+    }
+
+    Game.prototype.spawnMonster = function() {
+        this.monster = monsterCreator.createRandomMonster(
+            this[saveKeys.idnGameBattleLevel],
+            monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
+        this.monster.init();
+    }
 
 
+    Game.prototype.attack = function() {
+        combatUtils.resolveCombatTick(this.player, this.monsters.Center);
+    }
 
-        this.spawnMonster = function() {
-            this.monster = monsterCreator.createRandomMonster(
-                this[saveKeys.idnGameBattleLevel],
-                monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
-            this.monster.init();
+
+    Game.prototype.attackOld = function() {
+        if(this.inBattle !== true) {
+            return;
         }
 
+        // Update the player and monster
+        this.player.updateDebuffs();
+        this.monster.updateDebuffs();
 
-        this.attack = function() {
-            combatUtils.resolveCombatTick(this.player, this.monsters.Center);
+        // Attack the monster if the player can attack
+        var monstersDamageTaken = 0;
+        if (game.player.canAttack) {
+            // Calculate the damage
+            var playerMinDamage = this.player.getStat(data.StatDefinition.dmgMin.id);
+            var playerMaxDamage = this.player.getStat(data.StatDefinition.dmgMax.id);
+            var playerDamage = playerMinDamage + coreUtils.getRandomInt(playerMinDamage, playerMaxDamage);
+
+
+            // See if the player will crit
+            var criticalHappened = false;
+            if (this.player.getStat(data.StatDefinition.critRate.id) >= (Math.random() * 100)) {
+                playerDamage *= (this.player.getStat(data.StatDefinition.critDmg.id) / 100);
+                criticalHappened = true;
+            }
+
+            this.monster.takeDamage(playerDamage, criticalHappened, true);
+            this.player.useAbilities();
+            successfulAttacks++;
         }
 
-
-        this.attackOld = function() {
-            if(this.inBattle !== true) {
-                return;
-            }
-
-            // Update the player and monster
-            this.player.updateDebuffs();
-            this.monster.updateDebuffs();
-
-            // Attack the monster if the player can attack
-            var monstersDamageTaken = 0;
-            if (game.player.canAttack) {
-                // Calculate the damage
-                var playerMinDamage = this.player.getStat(data.StatDefinition.dmgMin.id);
-                var playerMaxDamage = this.player.getStat(data.StatDefinition.dmgMax.id);
-                var playerDamage = playerMinDamage + coreUtils.getRandomInt(playerMinDamage, playerMaxDamage);
-
-
-                // See if the player will crit
-                var criticalHappened = false;
-                if (this.player.getStat(data.StatDefinition.critRate.id) >= (Math.random() * 100)) {
-                    playerDamage *= (this.player.getStat(data.StatDefinition.critDmg.id) / 100);
-                    criticalHappened = true;
-                }
-
-                this.monster.takeDamage(playerDamage, criticalHappened, true);
-                this.player.useAbilities();
-                successfulAttacks++;
-            }
-
-            // Have the monster attack if it can and did not die
-            var playersDamageTaken = 0;
-            if (this.monster.canAttack && this.monster.alive) {
-                // See if the player will dodge the attack
-                if (Math.random() >= (this.player.calculateEvasionChance() / 100)) {
-                    var monsterDamage = this.monster.damage;
-                    this.player.takeDamage(monsterDamage);
-                    playersDamageTaken = monsterDamage;
-                }
-            }
-
-            if (this.monster.alive == false) {
-                // Add the kill to any quests that require it
-                questManager.updateKillCounts(this.monster.getLevel());
-
-                // Get the loot and experience from the monster and reward it to the player
-                var loot = itemCreator.getRandomLoot(this.monster.getLevel(), this.monster.rarity, this.monster.goldWorth);
-                this.player.gainGold(loot.gold, true);
-                this.stats.goldFromMonsters += this.player.lastGoldGained;
-                this.player.gainExperience(this.monster.experienceWorth, true);
-                this.stats.experienceFromMonsters += this.player.lastExperienceGained;
-                if (loot.item != null) {
-                    game.player.giveItem(loot.item);
-                    this.inventory.lootItem(loot.item);
-                }
-
-                // Create particles for the loot, experience and kill
-                //particleManager.createParticle(this.player.lastGoldGained.toFixed(2), staticData.ParticleType.GOLD);
-                //particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), staticData.ParticleType.EXP_ORB);
-                //particleManager.createParticle(null, staticData.ParticleType.SKULL);
-
-                // Create a new monster
-                this.spawnMonster();
+        // Have the monster attack if it can and did not die
+        var playersDamageTaken = 0;
+        if (this.monster.canAttack && this.monster.alive) {
+            // See if the player will dodge the attack
+            if (Math.random() >= (this.player.calculateEvasionChance() / 100)) {
+                var monsterDamage = this.monster.damage;
+                this.player.takeDamage(monsterDamage);
+                playersDamageTaken = monsterDamage;
             }
         }
 
+        if (this.monster.alive == false) {
+            // Add the kill to any quests that require it
+            questManager.updateKillCounts(this.monster.getLevel());
 
-
-
-
-        this.calculatePowerShardReward = function calculatePowerShardReward() {
-            var powerShardsTotal = Math.floor((Math.sqrt(1 + 8 * (this.stats.goldEarned / 1000000000000)) - 1) / 2);
-            var powerShardsReward = powerShardsTotal - this.player.getStat(data.StatDefinition.shards.id);
-            if (powerShardsReward < 0) {
-                powerShardsReward = 0;
-            }
-            return powerShardsReward;
-        }
-
-        this.legacySave = function() {
-            this.inventory.save();
-            this.equipment.save();
-            questManager.save();
-            upgradeManager.save();
-            statUpgradeManager.save();
-            this.stats.save();
-            this.options.save();
-        }
-
-        this.legacyLoad = function() {
-            this.inventory.load();
-            this.equipment.load();
-            questManager.load();
-            upgradeManager.load();
-            statUpgradeManager.load();
-            this.stats.load();
-            this.options.load();
-        }
-
-        this.legacyReset = function() {
-            // Upgrades
-            // Remove all the upgrade purchase buttons
-            var currentElement;
-            for (var x = 0; x < upgradeManager.upgradesAvailable; x++) {
-                currentElement = document.getElementById('upgradePurchaseButton' + (x + 1));
-                currentElement.parentNode.removeChild(currentElement);
+            // Get the loot and experience from the monster and reward it to the player
+            var loot = itemCreator.getRandomLoot(this.monster.getLevel(), this.monster.rarity, this.monster.goldWorth);
+            this.player.gainGold(loot.gold, true);
+            this.stats.goldFromMonsters += this.player.lastGoldGained;
+            this.player.gainExperience(this.monster.experienceWorth, true);
+            this.stats.experienceFromMonsters += this.player.lastExperienceGained;
+            if (loot.item != null) {
+                game.player.giveItem(loot.item);
+                this.inventory.lootItem(loot.item);
             }
 
-            // Monsters
+            // Create particles for the loot, experience and kill
+            //particleManager.createParticle(this.player.lastGoldGained.toFixed(2), staticData.ParticleType.GOLD);
+            //particleManager.createParticle(this.player.lastExperienceGained.toFixed(2), staticData.ParticleType.EXP_ORB);
+            //particleManager.createParticle(null, staticData.ParticleType.SKULL);
+
+            // Create a new monster
             this.spawnMonster();
+        }
+    }
 
-            // Reset all the inventory and equipment slots
-            for (var x = 0; x < this.inventory.slots.length; x++) {
-                $("#inventoryItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
-            }
-            for (var x = 0; x < this.equipment.slots.length; x++) {
-                $(".equipItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
-            }
 
-            $("#gps").css('color', '#ffd800');
+
+
+
+    Game.prototype.calculatePowerShardReward = function calculatePowerShardReward() {
+        var powerShardsTotal = Math.floor((Math.sqrt(1 + 8 * (this.stats.goldEarned / 1000000000000)) - 1) / 2);
+        var powerShardsReward = powerShardsTotal - this.player.getStat(data.StatDefinition.shards.id);
+        if (powerShardsReward < 0) {
+            powerShardsReward = 0;
+        }
+        return powerShardsReward;
+    }
+
+    Game.prototype.legacySave = function() {
+        this.inventory.save();
+        this.equipment.save();
+        questManager.save();
+        upgradeManager.save();
+        statUpgradeManager.save();
+        this.stats.save();
+        this.options.save();
+    }
+
+    Game.prototype.legacyLoad = function() {
+        this.inventory.load();
+        this.equipment.load();
+        questManager.load();
+        upgradeManager.load();
+        statUpgradeManager.load();
+        this.stats.load();
+        this.options.load();
+    }
+
+    Game.prototype.legacyReset = function() {
+        // Upgrades
+        // Remove all the upgrade purchase buttons
+        var currentElement;
+        for (var x = 0; x < upgradeManager.upgradesAvailable; x++) {
+            currentElement = document.getElementById('upgradePurchaseButton' + (x + 1));
+            currentElement.parentNode.removeChild(currentElement);
         }
 
+        // Monsters
+        this.spawnMonster();
 
+        // Reset all the inventory and equipment slots
+        for (var x = 0; x < this.inventory.slots.length; x++) {
+            $("#inventoryItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
+        }
+        for (var x = 0; x < this.equipment.slots.length; x++) {
+            $(".equipItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
+        }
 
-
-
-
+        $("#gps").css('color', '#ffd800');
     }
 
     return new Game();

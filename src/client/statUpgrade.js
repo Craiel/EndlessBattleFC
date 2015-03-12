@@ -4,11 +4,11 @@ declare('StatUpgrade', function () {
     function StatUpgrade() {
         this.type = undefined;
         this.amount = 0;
+    }
 
-        this.init = function(type, amount) {
-            this.type = type;
-            this.amount = amount;
-        }
+    StatUpgrade.prototype.init = function(type, amount) {
+        this.type = type;
+        this.amount = amount;
     }
 
     return {

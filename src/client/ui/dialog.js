@@ -8,11 +8,13 @@ declare('Dialog', function() {
     include('Panel');
     include('Button');
 
-    Dialog.prototype = element.create();
+    Dialog.prototype = element.prototype();
     Dialog.prototype.$super = parent;
     Dialog.prototype.constructor = Dialog;
 
     function Dialog(id) {
+        element.construct(this);
+
         this.id = id;
 
         this.setTemplate("dialog");
@@ -27,84 +29,85 @@ declare('Dialog', function() {
 
         this.headerText = undefined;
         this.closeButton = undefined;
+    };
 
-        // ---------------------------------------------------------------------------
-        // overrides
-        // ---------------------------------------------------------------------------
-        this.elementInit = this.init;
+    // ---------------------------------------------------------------------------
+    // main functions
+    // ---------------------------------------------------------------------------
+    Dialog.prototype.elementInit = Dialog.prototype.init;
+    Dialog.prototype.init = function(parent, attributes) {
+        this.elementInit(parent, attributes);
 
-        // ---------------------------------------------------------------------------
-        // main functions
-        // ---------------------------------------------------------------------------
-        this.init = function(parent, attributes) {
-            this.elementInit(parent, attributes);
+        this.headerPanel = panel.create(this.id + "Header");
+        this.headerPanel.init(this);
+        this.headerPanel.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
+            resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
+            resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+        this.headerPanel.addClass("dialogHeaderPanel");
 
-            this.headerPanel = panel.create(this.id + "Header");
-            this.headerPanel.init(this);
-            this.headerPanel.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
-            this.headerPanel.addClass("dialogHeaderPanel");
+        this.headerText = element.create(this.id + "HeaderText");
+        this.headerText.templateName = "globalTextElement";
+        this.headerText.init(this.headerPanel.getContentArea());
+        this.headerText.addClass("dialogHeaderText");
 
-            this.headerText = element.create(this.id + "HeaderText");
-            this.headerText.templateName = "globalTextElement";
-            this.headerText.init(this.headerPanel.getContentArea());
-            this.headerText.addClass("dialogHeaderText");
-
-            this.contentPanel = panel.create(this.id + "Content");
-            this.contentPanel.init(this);
-            this.contentPanel.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-                resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-                resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
-            this.contentPanel.addClass("dialogContentPanel");
-            this.contentPanel.addClass("globalNoDrag");
-            if(this.canScroll === true) {
-                this.contentPanel.getContentArea().setStyle({"overflow-y": "scroll"});
-            }
-
-            if(this.canClose === true) {
-                this.closeButton = button.create(this.id + "Close");
-                this.closeButton.callback = function (obj) { obj.data.arg.onDialogClose(); };
-                this.closeButton.callbackArgument = this;
-                this.closeButton.init(this);
-                this.closeButton.setImages(resources.ImageIconClose, resources.ImageIconCloseHover, undefined);
-                this.closeButton.addClass("dialogCloseButton");
-            }
-
-            if(this.canDrag === true) {
-                this.setStyle({"zIndex": staticData.dialogDefaultZIndex});
-                this.getMainElement().draggable({ self: this, cancel: ".globalNoDrag", zIndex: staticData.dragZIndex, drag: function () { }});
-            }
-        };
-
-        // ---------------------------------------------------------------------------
-        // dialog functions
-        // ---------------------------------------------------------------------------
-        this.setHeaderText = function(text) {
-            this.headerText.setText(text);
+        this.contentPanel = panel.create(this.id + "Content");
+        this.contentPanel.init(this);
+        this.contentPanel.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
+            resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
+            resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+        this.contentPanel.addClass("dialogContentPanel");
+        this.contentPanel.addClass("globalNoDrag");
+        if(this.canScroll === true) {
+            this.contentPanel.getContentArea().setStyle({"overflow-y": "scroll"});
         }
 
-        this.getContentArea = function() {
-            return this.contentPanel.getContentArea();
+        if(this.canClose === true) {
+            this.closeButton = button.create(this.id + "Close");
+            this.closeButton.callback = function (obj) { obj.data.arg.onDialogClose(); };
+            this.closeButton.callbackArgument = this;
+            this.closeButton.init(this);
+            this.closeButton.setImages(resources.ImageIconClose, resources.ImageIconCloseHover, undefined);
+            this.closeButton.addClass("dialogCloseButton");
         }
 
-        this.onDialogClose = function(obj) {
-            this.getMainElement().hide();
-            this.isVisible = false;
-        }
-
-        this.toggle = function(obj) {
-            if(this.isVisible === true) {
-                this.getMainElement().hide();
-                this.isVisible = false;
-            } else {
-                this.getMainElement().show();
-                this.isVisible = true;
-            }
+        if(this.canDrag === true) {
+            this.setStyle({"zIndex": staticData.dialogDefaultZIndex});
+            this.getMainElement().draggable({ self: this, cancel: ".globalNoDrag", zIndex: staticData.dragZIndex, drag: function () { }});
         }
     };
 
+    // ---------------------------------------------------------------------------
+    // dialog functions
+    // ---------------------------------------------------------------------------
+    Dialog.prototype.setHeaderText = function(text) {
+        this.headerText.setText(text);
+    }
+
+    Dialog.prototype.getContentArea = function() {
+        return this.contentPanel.getContentArea();
+    }
+
+    Dialog.prototype.onDialogClose = function(obj) {
+        this.getMainElement().hide();
+        this.isVisible = false;
+    }
+
+    Dialog.prototype.toggle = function(obj) {
+        if(this.isVisible === true) {
+            this.getMainElement().hide();
+            this.isVisible = false;
+        } else {
+            this.getMainElement().show();
+            this.isVisible = true;
+        }
+    }
+
+    var surrogate = function(){};
+    surrogate.prototype = Dialog.prototype;
+
     return {
+        prototype: function() { return new surrogate(); },
+        construct: function(self) { Dialog.call(self); },
         create: function(id) { return new Dialog(id); }
     };
 

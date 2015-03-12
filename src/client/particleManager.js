@@ -4,11 +4,13 @@ declare('ParticleManager', function () {
     include('Particle');
     include('Resources');
 
-    ParticleManager.prototype = component.create();
+    ParticleManager.prototype = component.prototype();
     ParticleManager.prototype.$super = parent;
     ParticleManager.prototype.constructor = ParticleManager;
 
     function ParticleManager() {
+        component.construct(this);
+
         this.id = "ParticleManager";
 
         this.maxParticles = 50;
@@ -19,144 +21,144 @@ declare('ParticleManager', function () {
         this.particleSources.EXP_ORB = resources.ImageIconGlobe;
         this.particleSources.PLAYER_DAMAGE = resources.ImageIconAttack;
         this.particleSources.PLAYER_CRITICAL = resources.ImageIconAttack;
+    }
 
-        this.componentInit = this.init;
-        this.init = function() {
-            this.componentInit();
+    ParticleManager.prototype.componentInit = ParticleManager.prototype.init;
+    ParticleManager.prototype.init = function() {
+        this.componentInit();
 
-            var canvas = document.getElementById("particleCanvas");
-            var context = canvas.getContext("2d");
-            context.font = "20px Gentium Book Basic";
-            context.textAlign = 'center';
+        var canvas = document.getElementById("particleCanvas");
+        var context = canvas.getContext("2d");
+        context.font = "20px Gentium Book Basic";
+        context.textAlign = 'center';
+    }
+
+    ParticleManager.prototype.createParticle = function(text, imageType) {
+        // If the type should not be displayed, end this function
+        switch (imageType) {
+            case staticData.ParticleType.SKULL:
+                if (game.options.displaySkullParticles == false) {
+                    return;
+                }
+                break;
+            case staticData.ParticleType.GOLD:
+                if (game.options.displayGoldParticles == false) {
+                    return;
+                }
+                break;
+            case staticData.ParticleType.EXP_ORB:
+                if (game.options.displayExpParticles == false) {
+                    return;
+                }
+                break;
+            case staticData.ParticleType.PLAYER_DAMAGE:
+                if (game.options.displayPlayerDamageParticles == false) {
+                    return;
+                }
+                break;
+            case staticData.ParticleType.PLAYER_CRITICAL:
+                if (game.options.displayPlayerDamageParticles == false) {
+                    return;
+                }
+                break;
+            case staticData.ParticleType.MONSTER_DAMAGE:
+                if (game.options.displayMonsterDamageParticles == false) {
+                    return;
+                }
+                break;
         }
 
-        this.createParticle = function(text, imageType) {
-            // If the type should not be displayed, end this function
-            switch (imageType) {
-                case staticData.ParticleType.SKULL:
-                    if (game.options.displaySkullParticles == false) {
-                        return;
-                    }
-                    break;
-                case staticData.ParticleType.GOLD:
-                    if (game.options.displayGoldParticles == false) {
-                        return;
-                    }
-                    break;
-                case staticData.ParticleType.EXP_ORB:
-                    if (game.options.displayExpParticles == false) {
-                        return;
-                    }
-                    break;
-                case staticData.ParticleType.PLAYER_DAMAGE:
-                    if (game.options.displayPlayerDamageParticles == false) {
-                        return;
-                    }
-                    break;
-                case staticData.ParticleType.PLAYER_CRITICAL:
-                    if (game.options.displayPlayerDamageParticles == false) {
-                        return;
-                    }
-                    break;
-                case staticData.ParticleType.MONSTER_DAMAGE:
-                    if (game.options.displayMonsterDamageParticles == false) {
-                        return;
-                    }
-                    break;
+        // Calculate the left and top positions
+        var left = Math.random() * 325 + 175;
+        var top = Math.random() * 425 + 100;
+        var textColour;
+        var source = null;
+
+        // Set the text colour and image source
+        switch (imageType) {
+            case staticData.ParticleType.SKULL:
+                source = this.particleSources.SKULL;
+                break;
+            case staticData.ParticleType.GOLD:
+                textColour = '#fcd200';
+                source = this.particleSources.GOLD;
+                break;
+            case staticData.ParticleType.EXP_ORB:
+                textColour = '#00ff00';
+                source = this.particleSources.EXP_ORB;
+                break;
+            case staticData.ParticleType.PLAYER_DAMAGE:
+                textColour = '#ffffff';
+                source = this.particleSources.PLAYER_DAMAGE;
+                break;
+            case staticData.ParticleType.PLAYER_CRITICAL:
+                textColour = '#fcff00';
+                source = this.particleSources.PLAYER_CRITICAL;
+                break;
+            case staticData.ParticleType.MONSTER_DAMAGE:
+                textColour = '#ff0000';
+                source = this.particleSources.MONSTER_DAMAGE;
+                break;
+        }
+
+        // If there is text; create it
+        var finalText = null;
+        if (text != null) {
+            // Calcuate the final text and set it
+            finalText = '';
+            if (imageType == staticData.ParticleType.GOLD || imageType == staticData.ParticleType.EXP_ORB) {
+                finalText += '+';
             }
-
-            // Calculate the left and top positions
-            var left = Math.random() * 325 + 175;
-            var top = Math.random() * 425 + 100;
-            var textColour;
-            var source = null;
-
-            // Set the text colour and image source
-            switch (imageType) {
-                case staticData.ParticleType.SKULL:
-                    source = this.particleSources.SKULL;
-                    break;
-                case staticData.ParticleType.GOLD:
-                    textColour = '#fcd200';
-                    source = this.particleSources.GOLD;
-                    break;
-                case staticData.ParticleType.EXP_ORB:
-                    textColour = '#00ff00';
-                    source = this.particleSources.EXP_ORB;
-                    break;
-                case staticData.ParticleType.PLAYER_DAMAGE:
-                    textColour = '#ffffff';
-                    source = this.particleSources.PLAYER_DAMAGE;
-                    break;
-                case staticData.ParticleType.PLAYER_CRITICAL:
-                    textColour = '#fcff00';
-                    source = this.particleSources.PLAYER_CRITICAL;
-                    break;
-                case staticData.ParticleType.MONSTER_DAMAGE:
-                    textColour = '#ff0000';
-                    source = this.particleSources.MONSTER_DAMAGE;
-                    break;
+            else if (imageType == staticData.ParticleType.MONSTER_DAMAGE) {
+                finalText += '-';
             }
+            finalText += text;
 
-            // If there is text; create it
-            var finalText = null;
-            if (text != null) {
-                // Calcuate the final text and set it
-                finalText = '';
-                if (imageType == staticData.ParticleType.GOLD || imageType == staticData.ParticleType.EXP_ORB) {
-                    finalText += '+';
-                }
-                else if (imageType == staticData.ParticleType.MONSTER_DAMAGE) {
-                    finalText += '-';
-                }
-                finalText += text;
-
-                // If this was a player critical add an exclamation on the end
-                if (imageType == staticData.ParticleType.PLAYER_CRITICAL) {
-                    finalText += '!';
-                }
-            }
-
-            // If there is an image; create one
-            var image = null;
-            if (source != null) {
-                image = new Image();
-                image.src = source;
-            }
-
-            var canvas = document.getElementById("particleCanvas");
-            var context = canvas.getContext("2d");
-
-            var newParticle = particle.create(image, finalText, textColour, left, top, 25, 25, 0, -10, 1.5);
-            this.particles.push(newParticle);
-            // If the maximum amount of particles has been exceeded, remove the first particle
-            if (this.particles.length > this.maxParticles) {
-                this.particles.splice(0, 1);
+            // If this was a player critical add an exclamation on the end
+            if (imageType == staticData.ParticleType.PLAYER_CRITICAL) {
+                finalText += '!';
             }
         }
 
-        this.componentUpdate = this.update;
-        this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
-            }
-
-            var canvas = document.getElementById("particleCanvas");
-            var context = canvas.getContext("2d");
-            var image;
-            var p;
-            context.clearRect(0, 0, 675, 550);
-            for (var x = this.particles.length - 1; x >= 0; x--) {
-                p = this.particles[x];
-                p.update(gameTime);
-                p.draw();
-                if (p.expired()) {
-                    this.particles.splice(x, 1);
-                }
-            }
-
-            return true;
+        // If there is an image; create one
+        var image = null;
+        if (source != null) {
+            image = new Image();
+            image.src = source;
         }
+
+        var canvas = document.getElementById("particleCanvas");
+        var context = canvas.getContext("2d");
+
+        var newParticle = particle.create(image, finalText, textColour, left, top, 25, 25, 0, -10, 1.5);
+        this.particles.push(newParticle);
+        // If the maximum amount of particles has been exceeded, remove the first particle
+        if (this.particles.length > this.maxParticles) {
+            this.particles.splice(0, 1);
+        }
+    }
+
+    ParticleManager.prototype.componentUpdate = ParticleManager.prototype.update;
+    ParticleManager.prototype.update = function(gameTime) {
+        if(this.componentUpdate(gameTime) !== true) {
+            return false;
+        }
+
+        var canvas = document.getElementById("particleCanvas");
+        var context = canvas.getContext("2d");
+        var image;
+        var p;
+        context.clearRect(0, 0, 675, 550);
+        for (var x = this.particles.length - 1; x >= 0; x--) {
+            p = this.particles[x];
+            p.update(gameTime);
+            p.draw();
+            if (p.expired()) {
+                this.particles.splice(x, 1);
+            }
+        }
+
+        return true;
     }
 
     return new ParticleManager();

@@ -29,6 +29,10 @@ declare('CoreUtils', function() {
         this.getRandomInt = function(min, max) {
             return ~~(Math.random() * (max - min + 1)) + min;
         };
+
+        this.getSigma = function(number) {
+            return (number*(number+1))/2;
+        }
         
         this.getGlobal = function() {
             return global;

@@ -1,11 +1,13 @@
 declare('StaticData', function () {
     include('Component');
 
-    StaticData.prototype = component.create();
+    StaticData.prototype = component.prototype();
     StaticData.prototype.$super = parent;
     StaticData.prototype.constructor = StaticData;
 
     function StaticData() {
+        component.construct(this);
+
         this.id = "StaticData";
 
         this.dialogDefaultZIndex = 5;
@@ -188,15 +190,15 @@ declare('StaticData', function () {
 
         this.deathGpsReductionAmount = 50;
         this.deathGpsReductionDuration = 60;
-
-        this.setRoot = function(value) {
-            this.imageRoot = value + 'images/';
-        };
-
-        this.getImagePath = function(fileName) {
-            return this.imageRoot + fileName;
-        };
     }
+
+    StaticData.prototype.setRoot = function(value) {
+        this.imageRoot = value + 'images/';
+    };
+
+    StaticData.prototype.getImagePath = function(fileName) {
+        return this.imageRoot + fileName;
+    };
 
     return new StaticData();
 });

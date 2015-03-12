@@ -3,77 +3,79 @@ declare('EventManager', function () {
     include('QuestManager');
     include('StaticData');
 
-    EventManager.prototype = component.create();
+    EventManager.prototype = component.prototype();
     EventManager.prototype.$super = parent;
     EventManager.prototype.constructor = EventManager;
 
     function EventManager() {
+        component.construct(this);
+
         this.id = "EventManager";
         this.eventSpawnTime = 3600000;
         this.eventSpawnTimeRemaining = this.eventSpawnTime;
         this.events = new Array();
+    }
 
-        this.addRandomEvent = function(level) {
-            var event = new Event(this.events.length + 1);
-            event.type = staticData.EventType.QUEST;
-            // Create a random quest
-            var name = staticData.QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + staticData.QuestNameSuffixes[Math.floor(Math.random() * 5)];
-            var amount = Math.floor(Math.random() * 6) + 7;
-            event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), staticData.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
-            this.events.push(event);
+    EventManager.prototype.addRandomEvent = function(level) {
+        var event = new Event(this.events.length + 1);
+        event.type = staticData.EventType.QUEST;
+        // Create a random quest
+        var name = staticData.QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + staticData.QuestNameSuffixes[Math.floor(Math.random() * 5)];
+        var amount = Math.floor(Math.random() * 6) + 7;
+        event.quest = questManager.createQuest(name, ("Kill " + amount + " level " + level + " monsters."), staticData.QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
+        this.events.push(event);
 
-            var newDiv = document.createElement('div');
-            newDiv.id = 'eventButton' + event.id;
-            newDiv.className = 'eventButton button';
-            newDiv.onmousedown = function () {
-                clickEventButton(newDiv, event.id);
-            }
-            var container = document.getElementById("eventsArea");
-            container.appendChild(newDiv);
+        var newDiv = document.createElement('div');
+        newDiv.id = 'eventButton' + event.id;
+        newDiv.className = 'eventButton button';
+        newDiv.onmousedown = function () {
+            clickEventButton(newDiv, event.id);
+        }
+        var container = document.getElementById("eventsArea");
+        container.appendChild(newDiv);
+    }
+
+    EventManager.prototype.componentUpdate = EventManager.prototype.update;
+    EventManager.prototype.update = function(gameTime) {
+        if(this.componentUpdate(gameTime) !== true) {
+            return false;
         }
 
-        this.componentUpdate = this.update;
-        this.update = function(gameTime) {
-            if(this.componentUpdate(gameTime) !== true) {
-                return false;
+        // Add a new event if enough time has passed
+        /*this.eventSpawnTimeRemaining -= gameTime.elapsed;
+         if (this.eventSpawnTimeRemaining <= 0) {
+         this.eventSpawnTimeRemaining = this.eventSpawnTime;
+         this.addRandomEvent(game.player.getLevel());
+         }*/
+
+        // Keep all the event buttons falling down
+        var elements = document.getElementsByClassName('eventButton');
+        for (var x = 0; x < this.events.length; x++) {
+            var element = elements[x]
+            var parent = element.parentNode;
+            var bottom = parent.clientHeight - element.offsetTop - element.clientHeight;
+            var minBottom = x * 25;
+            var newBottom = bottom - (this.events[x].velY * (gameTime.elapsed / 1000));
+            if (newBottom < minBottom) {
+                newBottom = minBottom;
+                this.events[x].velY = 0;
             }
-
-            // Add a new event if enough time has passed
-            /*this.eventSpawnTimeRemaining -= gameTime.elapsed;
-            if (this.eventSpawnTimeRemaining <= 0) {
-                this.eventSpawnTimeRemaining = this.eventSpawnTime;
-                this.addRandomEvent(game.player.getLevel());
-            }*/
-
-            // Keep all the event buttons falling down
-            var elements = document.getElementsByClassName('eventButton');
-            for (var x = 0; x < this.events.length; x++) {
-                var element = elements[x]
-                var parent = element.parentNode;
-                var bottom = parent.clientHeight - element.offsetTop - element.clientHeight;
-                var minBottom = x * 25;
-                var newBottom = bottom - (this.events[x].velY * (gameTime.elapsed / 1000));
-                if (newBottom < minBottom) {
-                    newBottom = minBottom;
-                    this.events[x].velY = 0;
-                }
-                element.style.bottom = newBottom + 'px';
-                this.events[x].velY += 10;
-            }
-
-            return true;
+            element.style.bottom = newBottom + 'px';
+            this.events[x].velY += 10;
         }
 
-        this.startEvent = function(obj, id) {
-            // Remove the event button
-            obj.parentNode.removeChild(obj);
-            questManager.addQuest(this.events[id - 1].quest);
-            this.events.splice(id - 1, 1);
+        return true;
+    }
 
-            // Change all the ids of the events that need changing
-            for (var x = id - 1; x < this.events.length; x++) {
-                this.events[x].id--;
-            }
+    EventManager.prototype.startEvent = function(obj, id) {
+        // Remove the event button
+        obj.parentNode.removeChild(obj);
+        questManager.addQuest(this.events[id - 1].quest);
+        this.events.splice(id - 1, 1);
+
+        // Change all the ids of the events that need changing
+        for (var x = id - 1; x < this.events.length; x++) {
+            this.events[x].id--;
         }
     }
 
