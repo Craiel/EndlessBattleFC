@@ -117,10 +117,6 @@ declare('Game', function() {
         particleManager.update(gameTime);
         this.stats.update(gameTime);
 
-        if(this.monster !== undefined) {
-            this.monster.update(gameTime);
-        }
-
         return true;
     }
 
@@ -142,7 +138,7 @@ declare('Game', function() {
     // ---------------------------------------------------------------------------
     Game.prototype.updatePlayers = function(gameTime) {
         this.player.update(gameTime);
-        if(this.player.alive !== true) {
+        if(this.player.alive !== true && this.inBattle === true) {
             this.leaveBattle();
         }
     }
@@ -215,6 +211,7 @@ declare('Game', function() {
     // monster functions
     // ---------------------------------------------------------------------------
     Game.prototype.updateMonsters = function(gameTime) {
+        var aliveMonsters = 0;
         for(var key in this.monsters) {
             if(this.monsters[key] === undefined) {
                 continue;
@@ -224,7 +221,14 @@ declare('Game', function() {
 
             if(this.monsters[key].alive !== true) {
                 this.killMonster(key);
+            } else {
+                aliveMonsters++;
             }
+        }
+
+        // For now we just respawn if everything is dead
+        if(aliveMonsters <= 0) {
+            this.respawnMonsters();
         }
     }
 
@@ -234,7 +238,7 @@ declare('Game', function() {
         var xp = this.monsters[position].getStat(data.StatDefinition.xp);
         var gold = this.monsters[position].getStat(data.StatDefinition.gold);
 
-        this.gainXP(xp, staticData.XpSourceMonster);
+        this.gainXp(xp, staticData.XpSourceMonster);
         this.gainGold(gold, staticData.GoldSourceMonster);
 
         this.monsters[position].remove();
@@ -293,9 +297,6 @@ declare('Game', function() {
         this.inBattle = true;
 
         this.respawnMonsters();
-
-        // Legacy
-        this.spawnMonster();
     }
 
     Game.prototype.leaveBattle = function() {
@@ -304,6 +305,12 @@ declare('Game', function() {
         this.inBattle = false;
 
         this.despawnMonsters();
+    }
+
+    Game.prototype.attack = function() {
+        // Todo: This is for testing purpose
+        combatUtils.resolveCombat(this.player, this.monsters.Center);
+        combatUtils.resolveCombat(this.monsters.Center, this.player);
     }
 
     // ---------------------------------------------------------------------------
@@ -349,27 +356,11 @@ declare('Game', function() {
         this.options.init();
     }
 
-    Game.prototype.spawnMonster = function() {
-        this.monster = monsterCreator.createRandomMonster(
-            this[saveKeys.idnGameBattleLevel],
-            monsterCreator.calculateMonsterRarity(this[saveKeys.idnGameBattleLevel], this[saveKeys.idnGameBattleDepth]));
-        this.monster.init();
-    }
 
-
-    Game.prototype.attack = function() {
-        combatUtils.resolveCombatTick(this.player, this.monsters.Center);
-    }
-
-
-    Game.prototype.attackOld = function() {
+    /*Game.prototype.attackOld = function() {
         if(this.inBattle !== true) {
             return;
         }
-
-        // Update the player and monster
-        this.player.updateDebuffs();
-        this.monster.updateDebuffs();
 
         // Attack the monster if the player can attack
         var monstersDamageTaken = 0;
@@ -387,7 +378,7 @@ declare('Game', function() {
                 criticalHappened = true;
             }
 
-            this.monster.takeDamage(playerDamage, criticalHappened, true);
+            //this.monster.takeDamage(playerDamage, criticalHappened, true);
             this.player.useAbilities();
             successfulAttacks++;
         }
@@ -426,7 +417,7 @@ declare('Game', function() {
             // Create a new monster
             this.spawnMonster();
         }
-    }
+    }*/
 
 
 
@@ -470,8 +461,6 @@ declare('Game', function() {
             currentElement.parentNode.removeChild(currentElement);
         }
 
-        // Monsters
-        this.spawnMonster();
 
         // Reset all the inventory and equipment slots
         for (var x = 0; x < this.inventory.slots.length; x++) {

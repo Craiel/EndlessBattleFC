@@ -21,7 +21,9 @@ declare('Monster', function () {
 
         this.baseStats = {};
         this.rarityStats = undefined;
+        this.typeStats = undefined;
         this.rarity = undefined;
+        this.type = undefined;
 
         this.legacyConstruct();
     }
@@ -56,6 +58,14 @@ declare('Monster', function () {
         var stats = [];
         if(this.rarityStats !== undefined) {
             stats.push(this.rarityStats);
+        } else {
+            log.warning("Monster has no Rarity set!");
+        }
+
+        if(this.typeStats !== undefined) {
+            stats.push(this.typeStats);
+        } else {
+            log.warning("Monster has no Type set!");
         }
 
         return stats;
@@ -64,6 +74,13 @@ declare('Monster', function () {
     Monster.prototype.setRarity = function(rarity) {
         this.rarity = rarity;
         this.rarityStats = statUtils.getStatsFromData(rarity);
+    }
+
+    Monster.prototype.setType = function(type) {
+        console.log(type);
+        this.type = type;
+        this.name = type.name;
+        this.typeStats = statUtils.getStatsFromData(type);
     }
 
     Monster.prototype.getRarity = function() {

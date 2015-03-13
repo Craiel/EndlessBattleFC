@@ -38,8 +38,10 @@ declare('GeneratorMonster', function () {
 
         var monsterData = monster.create();
         var rarity = this.getMonsterRarity();
+        var type = coreUtils.pickRandomProperty(data.MonsterTypes);
 
         monsterData.setRarity(rarity);
+        monsterData.setType(type);
         monsterData.setStats(this.getMonsterStats(level, rarity.secondaryStatRolls));
 
         return monsterData;

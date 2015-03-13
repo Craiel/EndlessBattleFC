@@ -443,13 +443,22 @@ declare('UserInterface', function () {
             this.leaveBattleButton.show();
             this.attackButton.show();
 
-            var monsterRarityColor = this.getMonsterRarityColor(game.monster.rarity);
-            this.monsterName.setText(game.monster.name);
-            this.monsterName.getMainElement().css({ 'color': monsterRarityColor });
+            var monster = game.monsters.Center;
+            if(monster !== undefined) {
+                //var monsterRarityColor = this.getMonsterRarityColor(game.monster.rarity);
+                this.monsterName.setText(monster.name);
+                //this.monsterName.getMainElement().css({ 'color': monsterRarityColor });
 
-            // Update the monster health bar
-            this.monsterHealthBar.setProgress(game.monster.getStat(data.StatDefinition.hp.id), game.monster.maxHealth);
-            this.monsterHealthBar.setProgressText("{0} / {1}".format(game.monster.getStat(data.StatDefinition.hp.id), game.monster.maxHealth));
+                // Update the monster health bar
+                var monsterHp = monster.getStat(data.StatDefinition.hp.id);
+                var monsterHpMax = monster.getStat(data.StatDefinition.hpMax.id);
+                this.monsterHealthBar.setProgress(monsterHp, monsterHpMax);
+                this.monsterHealthBar.setProgressText("{0} / {1}".format(monsterHp, monsterHpMax));
+            } else {
+                this.monsterName.setText("");
+                this.monsterHealthBar.setProgress(0, 100);
+                this.monsterHealthBar.setProgressText("DEAD");
+            }
 
         } else if(isAlive === true) {
             this.enterBattleButton.show();
@@ -2015,8 +2024,8 @@ declare('UserInterface', function () {
         document.getElementById("hp5Value").innerHTML = game.player.getStat(data.StatDefinition.hp5.id).toFixed(2);
         document.getElementById("damageValue").innerHTML = game.player.getStat(data.StatDefinition.dmgMin.id) + ' - ' + game.player.getStat(data.StatDefinition.dmgMax.id);
         document.getElementById("damageBonusValue").innerHTML = game.player.getStat(data.StatDefinition.dmgMult.id) + '%';
-        document.getElementById("armorValue").innerHTML = game.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + game.player.calculateDamageReduction().toFixed(2) + '%)';
-        document.getElementById("evasionValue").innerHTML = game.player.getStat(data.StatDefinition.evaRate.id).toFixed(2) + ' (' + game.player.calculateEvasionChance().toFixed(2) + '%)';
+        //document.getElementById("armorValue").innerHTML = game.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + game.player.calculateDamageReduction().toFixed(2) + '%)';
+        //document.getElementById("evasionValue").innerHTML = game.player.getStat(data.StatDefinition.evaRate.id).toFixed(2) + ' (' + game.player.calculateEvasionChance().toFixed(2) + '%)';
 
         document.getElementById("strengthValue").innerHTML = game.player.getStat(data.StatDefinition.str.id);
         document.getElementById("staminaValue").innerHTML = game.player.getStat(data.StatDefinition.sta.id);

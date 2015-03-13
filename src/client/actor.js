@@ -21,13 +21,15 @@ declare('Actor', function () {
         this.id = "Actor";
 
         // Limits:
+        this.armorRatingMultiplier = 20;
         this.baseRatingMultiplier = 10;
-        this.hitChanceMin = 0.40;
+        this.hitChanceMin = 0.50;
         this.hitChanceMax = 1.0;
         this.critChanceMin = 0.05;
         this.critChanceMax = 0.75;
         this.evadeChanceMin = 0.05;
         this.evadeChanceMax = 0.75;
+        this.armorReductionMax = 0.9;
 
         // General
         this.level = 0;
@@ -51,8 +53,6 @@ declare('Actor', function () {
         assert.isDefined(this.getBaseStats, "Actor needs to have a getBaseStats() function");
 
         // Add the basic attack ability to the actor, this everyone will have
-        console.log("Actor.Create: " + this.id);
-        console.log(this.abilitySet);
         this.addAbility(data.Abilities.basic.id);
     }
 
@@ -83,13 +83,11 @@ declare('Actor', function () {
     // Ability functions
     // ---------------------------------------------------------------------------
     Actor.prototype.addAbility = function(key) {
-        console.log(this.abilitySet[key]);
         if(this.abilitySet[key] !== undefined) {
             log.warning("Ability {0} already added to actor {1}".format(key, this.id));
             return;
         }
 
-        log.warning("Ability {0} added to actor {1}".format(key, this.id));
         this.abilitySet[key] = data.Abilities[key];
         this.abilityCooldown[key] = 0;
     }
@@ -168,19 +166,23 @@ declare('Actor', function () {
     }
 
     Actor.prototype.getHitChance = function() {
-        return this.getRatingValue(data.StatDefinition.hitRate.id, data.StatDefinition.hitRateMult.id, this.hitChanceMin, this.hitChanceMax);
+        return this.getRatingValue(data.StatDefinition.hitRate.id, data.StatDefinition.hitRateMult.id, this.hitChanceMin, this.hitChanceMax, this.baseRatingMultiplier);
     }
 
     Actor.prototype.getCritChance = function() {
-        return this.getRatingValue(data.StatDefinition.critRate.id, data.StatDefinition.critRateMult.id, this.critChanceMin, this.critChanceMax);
+        return this.getRatingValue(data.StatDefinition.critRate.id, data.StatDefinition.critRateMult.id, this.critChanceMin, this.critChanceMax, this.baseRatingMultiplier);
     }
 
     Actor.prototype.getEvadeChance = function() {
-        return this.getRatingValue(data.StatDefinition.evaRate.id, data.StatDefinition.evaRateMult.id, this.evadeChanceMin, this.evadeChanceMax);
+        return this.getRatingValue(data.StatDefinition.evaRate.id, data.StatDefinition.evaRateMult.id, this.evadeChanceMin, this.evadeChanceMax, this.baseRatingMultiplier);
     }
 
-    Actor.prototype.getRatingValue = function(ratingStat, ratingMultStat, min, max) {
-        var requiredRating = coreUtils.getSigma(this.getLevel()) * this.baseRatingMultiplier;
+    Actor.prototype.getArmorDmgReduction = function() {
+        return this.getRatingValue(data.StatDefinition.armor.id, data.StatDefinition.armorMult.id, 0, this.armorReductionMax, this.armorRatingMultiplier);
+    }
+
+    Actor.prototype.getRatingValue = function(ratingStat, ratingMultStat, min, max, multiplier) {
+        var requiredRating = coreUtils.getSigma(this.getLevel()) * multiplier;
         var rating = this.getStat(ratingStat);
         var multiplier = this.getStat(ratingMultStat);
         var chance = (rating * multiplier) / requiredRating;

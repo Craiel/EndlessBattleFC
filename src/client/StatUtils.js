@@ -159,10 +159,9 @@ declare('StatUtils', function () {
                     this.doModifyStat(data.StatDefinition.hp5.id, value, target);
 
                     this.doModifyStat(data.StatDefinition.fireResist.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.coldResist.id, value / 10, target);
+                    this.doModifyStat(data.StatDefinition.iceResist.id, value / 10, target);
                     this.doModifyStat(data.StatDefinition.lightResist.id, value / 10, target);
                     this.doModifyStat(data.StatDefinition.darkResist.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.holyResist.id, value / 10, target);
                     break;
                 }
 
@@ -171,11 +170,10 @@ declare('StatUtils', function () {
                     this.doModifyStat(data.StatDefinition.mpMax.id, value * 5, target);
                     this.doModifyStat(data.StatDefinition.mp5.id, value, target);
 
-                    this.doModifyStat(data.StatDefinition.fireDmgMult.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.coldDmgMult.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.lightDmgMult.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.darkDmgMult.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.holyDmgMult.id, value / 10, target);
+                    this.doModifyStat(data.StatDefinition.fireDmgMult.id, value / 100, target);
+                    this.doModifyStat(data.StatDefinition.iceDmgMult.id, value / 100, target);
+                    this.doModifyStat(data.StatDefinition.lightDmgMult.id, value / 100, target);
+                    this.doModifyStat(data.StatDefinition.darkDmgMult.id, value / 100, target);
                     break;
                 }
             }

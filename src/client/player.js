@@ -162,6 +162,7 @@ declare('Player', function () {
         }
 
         // Bring the player back alive
+        this.setStat(data.StatDefinition.hp.id, 1);
         this.alive = true;
         this.resurrectionTime = 0;
 
@@ -338,7 +339,7 @@ declare('Player', function () {
     }
 
     // Use all the abilities the player has
-    Player.prototype.useAbilities = function() {
+    /*Player.prototype.useAbilities = function() {
         var monstersDamageTaken = 0;
         var criticalHappened = false;
         // Use the abilities
@@ -382,7 +383,7 @@ declare('Player', function () {
             // Apply the burn effect to the monster
             game.monster.addDebuff(staticData.DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
         }
-    }
+    }*/
 
     // Change the player's attack
     /*this.changeAttack = function(type) {
@@ -444,69 +445,6 @@ declare('Player', function () {
         this.levelUpBonuses.health += Math.floor(this.baseLevelUpBonuses.health * (Math.pow(1.01, this[saveKeys.idnLevel] - 1)));
         this.levelUpBonuses.hp5 += Math.floor(this.baseLevelUpBonuses.hp5 * (Math.pow(1.01, this[saveKeys.idnLevel] - 1)));
     }
-
-    // Take an amount of damage
-    Player.prototype.takeDamage = function(damage) {
-        // Reduce the damage based on the amount of armor
-        var damageReduction = this.calculateDamageReduction();
-        var newDamage = damage - Math.floor(damage * (damageReduction / 100));
-        if (newDamage < 0) {
-            newDamage = 0;
-        }
-
-        // Take the damage
-        this.modifyStat(data.StatDefinition.hp.id, -newDamage);
-        game.stats.damageTaken += newDamage;
-
-        // Reflect a percentage of the damage if the player has any Barrier effects
-        var reflectAmount = 0;
-        var barrierEffects = this.getEffectsOfType(staticData.EffectType.BARRIER);
-        for (var x = 0; x < barrierEffects.length; x++) {
-            reflectAmount += barrierEffects[x].value;
-        }
-        /*reflectAmount = this.lastDamageTaken * (reflectAmount / 100);
-         if (reflectAmount > 0) {
-         game.monster.takeDamage(reflectAmount, false, false);
-         }*/
-
-        // Check if the player is dead
-        if (this.getStat(data.StatDefinition.hp.id) <= 0) {
-            this.alive = false;
-        }
-
-        // Create the monster's damage particle
-        particleManager.createParticle(newDamage, staticData.ParticleType.MONSTER_DAMAGE);
-    }
-
-    // Calculate the amount of reduction granted by armor
-    Player.prototype.calculateDamageReduction = function() {
-        // Calculate the reduction
-        var armor = this.getStat(data.StatDefinition.armor.id);
-        var reduction = armor / (armor + 500) * 99
-
-        // Cap the reduction at 99%
-        if (reduction >= 99) {
-            reduction = 99;
-        }
-
-        return reduction;
-    }
-
-    // Calculate the chance the player has of dodging an attack
-    Player.prototype.calculateEvasionChance = function() {
-        // Calculate the chance
-        var evasionRate = this.getStat(data.StatDefinition.evaRate.id);
-        var chance = (evasionRate / (evasionRate + 375)) * 75;
-
-        // Cap the dodge at 75%
-        if (chance >= 75) {
-            chance = 75;
-        }
-
-        return chance;
-    }
-
-
 
     // Gain the stats from an item
     Player.prototype.gainItemsStats = function(item) {

@@ -7,25 +7,117 @@ declare('CombatUtils', function () {
     function CombatResult() {
         this.wasHit = false;
         this.wasCrit = false;
+        this.wasEvaded = false;
 
         this.damageTotal = 0;
-        this.damage = { physical: 0 }
+        this.damage = { physical: 0, ice: 0, fire: 0, light: 0, dark: 0 }
+        this.mitigation = { physical: 0, ice: 0, fire: 0, light: 0, dark: 0 }
     }
 
-    function CombatUtils() {}
+    function CombatUtils() {
+        this.maxResist = 0.8;
+    }
 
-    CombatUtils.prototype.resolveCombatTick = function(sourceActor, targetActor) {
-        var ability = data.Abilities.basic.id;
+    CombatUtils.prototype.applyHit = function(targetActor, hit) {
+        if(hit.wasHit !== true || hit.wasEvaded !== false) {
+            log.warning("Tried to apply missed or evaded hit!");
+            return;
+        }
+
+        targetActor.modifyStat(data.StatDefinition.hp.id, -hit.damageTotal);
+        console.log(hit);
+    }
+
+    CombatUtils.prototype.resolveCombat = function(sourceActor, targetActor) {
+        // Todo: Abilities etc, probably not here though
+        /*var ability = data.Abilities.basic.id;
         var sourceAbility = sourceActor.getAbility(ability);
         var sourceCooldown = sourceActor.getAbilityCooldown(ability);
         var targetAbility = targetActor.getAbility(ability);
         var targetCooldown = targetActor.getAbilityCooldown(ability);
 
-        console.log(sourceAbility + "." + sourceCooldown);
+        console.log(sourceAbility + "." + sourceCooldown);*/
 
-        console.log("Combat Resolve Starting: ");
-        console.log(this.computeHit(sourceActor));
-        console.log(this.computeHit(targetActor));
+        var hit = this.computeHit(sourceActor);
+        if(hit.wasHit !== true) {
+            console.log("Missed");
+            return hit;
+        }
+
+        this.applyEvasion(targetActor, hit);
+        if(hit.wasEvaded !== false) {
+            console.log("Evaded");
+            return hit;
+        }
+
+        // Calculate the mitigation from armor and resistances
+        this.applyArmor(targetActor, hit);
+        this.applyResistances(targetActor, hit);
+
+        // Apply the hit to the target
+        this.applyHit(targetActor, hit);
+
+        return hit;
+    }
+
+    CombatUtils.prototype.applyEvasion = function(actor, hit) {
+        var chance = actor.getEvadeChance();
+        if(Math.random() <= chance) {
+            hit.wasEvaded = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    CombatUtils.prototype.applyArmor = function(actor, hit) {
+        var reduction = actor.getArmorDmgReduction();
+        var value = Math.floor(hit.damage.physical * reduction);
+        if(value > 0) {
+            hit.mitigation.physical += value;
+            hit.damage.physical -= value;
+            hit.damageTotal -= value;
+        }
+    }
+
+    CombatUtils.prototype.applyResistances = function(actor, hit) {
+        var iceResist = 1.0 - actor.getStat(data.StatDefinition.iceResist.id) * actor.getStat(data.StatDefinition.iceResistMult.id);
+        var fireResist = 1.0 - actor.getStat(data.StatDefinition.fireResist.id) * actor.getStat(data.StatDefinition.fireResistMult.id);
+        var lightResist = 1.0 - actor.getStat(data.StatDefinition.lightResist.id) * actor.getStat(data.StatDefinition.lightResistMult.id);
+        var darkResist = 1.0 - actor.getStat(data.StatDefinition.darkResist.id) * actor.getStat(data.StatDefinition.darkResistMult.id);
+
+        iceResist = iceResist.clamp(0, this.maxResist);
+        fireResist = fireResist.clamp(0, this.maxResist);
+        lightResist = lightResist.clamp(0, this.maxResist);
+        darkResist = darkResist.clamp(0, this.maxResist);
+
+        var mitigation = Math.floor(hit.damage.ice * iceResist);
+        if(mitigation > 0) {
+            hit.mitigation.ice += mitigation;
+            hit.damage.ice -= mitigation;
+            hit.damageTotal -= mitigation;
+        }
+
+        mitigation = Math.floor(hit.damage.fire * fireResist);
+        if(mitigation > 0) {
+            hit.mitigation.fire += mitigation;
+            hit.damage.fire -= mitigation;
+            hit.damageTotal -= mitigation;
+        }
+
+        mitigation = Math.floor(hit.damage.light * lightResist);
+        if(mitigation > 0) {
+            hit.mitigation.light += mitigation;
+            hit.damage.light -= mitigation;
+            hit.damageTotal -= mitigation;
+        }
+
+        mitigation = Math.floor(hit.damage.dark * darkResist);
+        if(mitigation > 0) {
+            hit.mitigation.dark += mitigation;
+            hit.damage.dark -= mitigation;
+            hit.damageTotal -= mitigation;
+        }
     }
 
     CombatUtils.prototype.computeHit = function(actor) {
@@ -69,7 +161,7 @@ declare('CombatUtils', function () {
         return false;
     }
 
-    this.computeHitChance = function(actor) {
+    CombatUtils.prototype.computeHitChance = function(actor) {
         var chance = actor.getHitChance();
         if(Math.random() <= chance) {
             return true;
