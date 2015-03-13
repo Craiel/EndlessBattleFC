@@ -235,8 +235,13 @@ declare('Game', function() {
     Game.prototype.killMonster = function(position) {
         assert.isDefined(this.monsters[position], "Tried to kill non-existing monster");
 
-        var xp = this.monsters[position].getStat(data.StatDefinition.xp);
-        var gold = this.monsters[position].getStat(data.StatDefinition.gold);
+        var monster = this.monsters[position];
+        var xp = Math.floor(monster.getStat(data.StatDefinition.xp.id) * monster.getStat(data.StatDefinition.xpMult.id));
+        var gold = Math.floor(monster.getStat(data.StatDefinition.gold.id) * monster.getStat(data.StatDefinition.goldMult.id));
+
+        if(xp <= 0 || gold <= 0) {
+            log.warning("Warning, Monster gave no gold or xp!");
+        }
 
         this.gainXp(xp, staticData.XpSourceMonster);
         this.gainGold(gold, staticData.GoldSourceMonster);

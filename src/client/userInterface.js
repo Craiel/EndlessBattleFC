@@ -447,7 +447,9 @@ declare('UserInterface', function () {
             if(monster !== undefined) {
                 //var monsterRarityColor = this.getMonsterRarityColor(game.monster.rarity);
                 this.monsterName.setText(monster.name);
-                //this.monsterName.getMainElement().css({ 'color': monsterRarityColor });
+
+                // Todo: rarity display
+                this.monsterName.getMainElement().css({ 'color': '#FFFFFF' });
 
                 // Update the monster health bar
                 var monsterHp = monster.getStat(data.StatDefinition.hp.id);

@@ -107,6 +107,9 @@ declare('GeneratorMonster', function () {
         // Add a little bit of extra stamina
         temp = {};
         temp[data.StatDefinition.sta.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
+        // Compute Gold and XP this monster will give
+        temp[data.StatDefinition.xp.id] = this.getStatValue(Math.ceil(level / 2), 1.05);
+        temp[data.StatDefinition.gold.id] = this.getStatValue(level, 1.05);
         statUtils.doMergeStats(temp, stats);
 
         console.log("Final Stats");
