@@ -5,6 +5,8 @@ declare('CombatUtils', function () {
     include('CoreUtils');
 
     function CombatResult() {
+        this.sourceActorName = undefined;
+        this.targetActorName = undefined;
         this.wasHit = false;
         this.wasCrit = false;
         this.wasEvaded = false;
@@ -39,6 +41,9 @@ declare('CombatUtils', function () {
         console.log(sourceAbility + "." + sourceCooldown);*/
 
         var hit = this.computeHit(sourceActor);
+        hit.sourceActorName = sourceActor.getName();
+        hit.targetActorName = targetActor.getName();
+
         if(hit.wasHit !== true) {
             console.log("Missed");
             return hit;

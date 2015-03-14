@@ -9,7 +9,6 @@ declare('Player', function () {
     include('BuffSet');
     include('ParticleManager');
     include('StatUpgradeManager');
-    include('GameState');
     include('Resources');
     include('Save');
     include('SaveKeys');
@@ -26,11 +25,10 @@ declare('Player', function () {
         actor.construct(this);
 
         this.id = "Player";
-        this.name = "Hero";
 
         this.statsChanged = true;
 
-        save.register(this, saveKeys.idnName).withDefault("#ERR");
+        save.register(this, saveKeys.idnName).withDefault("Hero");
         save.register(this, saveKeys.idnPlayerBaseStats).asJson();
         save.register(this, saveKeys.idnPlayerSkillPoints).asNumber().withDefault(0);
         save.register(this, saveKeys.idnPlayerStorageSlots).asJsonArray().withDefault([]);
@@ -96,6 +94,14 @@ declare('Player', function () {
         return this[saveKeys.idnPlayerBaseStats];
     }
 
+    Player.prototype.getName = function() {
+        return this[saveKeys.idnName];
+    }
+
+    Player.prototype.setName = function(name) {
+        this[saveKeys.idnName] = name;
+    }
+
     Player.prototype.getLevel = function() {
         return this[saveKeys.idnLevel];
     }
@@ -154,6 +160,7 @@ declare('Player', function () {
 
         if(this.resurrectionTime === 0) {
             this.resurrectionTime = gameTime.current + this.resurrectionDelay;
+
             return;
         }
 

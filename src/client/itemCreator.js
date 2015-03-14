@@ -8,7 +8,6 @@ declare('ItemCreator', function () {
     include('Item');
     include('UpgradeManager');
     include('Loot');
-    include('GameState');
     include('Data');
 
     ItemCreator.prototype = component.prototype();

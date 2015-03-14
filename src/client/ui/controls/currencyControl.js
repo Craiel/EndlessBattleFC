@@ -13,10 +13,6 @@ declare('CurrencyControl', function() {
 
         this.setTemplate("currencyControl");
 
-        this.isVisible = true;
-        this.canClose = true;
-        this.canDrag = true;
-        this.canScroll = false;
         this.showAffordable = false;
         this.trackChanges = false;
 

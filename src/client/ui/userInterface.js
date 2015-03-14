@@ -2,27 +2,29 @@ declare('UserInterface', function () {
     include('Assert');
     include('Component');
     include('StaticData');
-    include('EventManager');
     include('QuestManager');
     include('StatUpgradeManager');
     include('TooltipManager');
-    include('GameState');
     include('UpgradeManager');
     include('Resources');
     include('Save');
     include('SaveKeys');
     include('Data');
     include('CoreUtils');
+    include('InterfaceState');
 
     // UI Components
-    include('Element');
-    include('ProgressBar');
-    include('Panel');
-    include('Button');
     include('Dialog');
-    include('CurrencyControl');
-    include('MercenaryControl');
     include('InventoryControl');
+    include('SystemDialog');
+    include('BattleDialog');
+    include('PlayerDialog');
+    include('CurrencyDialog');
+    include('MercenaryDialog');
+    include('InventoryDialog');
+    include('QuestDialog');
+    include('CharacterDialog');
+    include('LogDialog');
 
     UserInterface.prototype = component.prototype();
     UserInterface.prototype.$super = parent;
@@ -36,47 +38,15 @@ declare('UserInterface', function () {
         this.mouseX = 0;
         this.mouseY = 0;
 
-        this.characterWindowShown = false;
-        this.mercenaryWindowShown = false;
-        this.upgradeWindowShown = false;
-        this.questWindowShown = false;
-        this.inventoryWindowShown = false;
-        this.updatesWindowShown = false;
-        this.statsWindowShown = false;
-        this.optionsWindowShown = false;
-
-        this.playerArea = undefined;
-        this.playerHealthBar = undefined;
-        this.playerManaBar = undefined;
-        this.experienceTitle = undefined;
-        this.experienceBar = undefined;
-
-        this.currencyArea = undefined;
-        this.currencyGoldControl = undefined;
-
-        this.systemArea = undefined;
-        this.inventoryWindowButton = undefined;
-        this.characterWindowButton = undefined;
-        this.questWindowButton = undefined;
-        this.mercenaryWindowButton = undefined;
-        this.upgradeWindowButton = undefined;
-
-        this.battleArea = undefined;
-        this.monsterName = undefined;
-        this.monsterHealthBar = undefined;
-        this.resurrectionBar = undefined;
-        this.enterBattleButton = undefined;
-        this.leaveBattleButton = undefined;
-        this.battleLevelDownButton = undefined;
-        this.battleLevelUpButton = undefined;
-        this.levelUpButton = undefined;
-        this.attackButton = undefined;
-
-        this.mercenaryArea = undefined;
-        this.mercenaryControls = {}
-
-        this.characterInventoryArea = undefined;
-        this.characterInventory = undefined;
+        this.playerDialog = undefined;
+        this.currencyDialog = undefined;
+        this.systemDialog = undefined;
+        this.battleDialog = undefined;
+        this.mercenaryDialog = undefined;
+        this.inventoryDialog = undefined;
+        this.questDialog = undefined;
+        this.characterDialog = undefined;
+        this.logDialog = undefined;
 
         this.characterArea = undefined;
 
@@ -94,16 +64,33 @@ declare('UserInterface', function () {
 
         $(document).mousemove({self: this}, this.handleMouseMove);
 
-        this.initPlayerArea();
-        this.initCurrencyArea();
-        this.initSystemArea();
-        this.initBattleArea();
-
         // Dialogs
-        this.initMercenaryDialog();
-        this.initCharacterInventoryDialog();
-        this.initCharacterDialog();
-        this.initQuestDialog();
+        this.systemDialog = systemDialog.create();
+        this.systemDialog.init();
+
+        this.battleDialog = battleDialog.create();
+        this.battleDialog.init();
+
+        this.playerDialog = playerDialog.create();
+        this.playerDialog.init();
+
+        this.currencyDialog = currencyDialog.create();
+        this.currencyDialog.init();
+
+        this.mercenaryDialog = mercenaryDialog.create();
+        this.mercenaryDialog.init();
+
+        this.inventoryDialog = inventoryDialog.create();
+        this.inventoryDialog.init();
+
+        this.questDialog = questDialog.create();
+        this.questDialog.init();
+
+        this.characterDialog = characterDialog.create();
+        this.characterDialog.init();
+
+        this.logDialog = logDialog.create();
+        this.logDialog.init();
 
         this.setupWindowState();
     };
@@ -114,15 +101,20 @@ declare('UserInterface', function () {
             return false;
         }
 
-        this.updatePlayerUI(gameTime);
-        this.updateCurrencyUI(gameTime);
-        this.updateSystemMenu(gameTime);
-        this.updateBattleUI(gameTime);
+        this.updateDialogVisibility();
 
-        this.updateMercenaryDialog(gameTime);
-        this.updateCharacterInventoryDialog(gameTime);
-        this.updateCharacterDialog(gameTime);
-        this.updateQuestDialog(gameTime);
+        this.systemDialog.update(gameTime);
+        this.battleDialog.update(gameTime);
+        this.playerDialog.update(gameTime);
+        this.currencyDialog.update(gameTime);
+        this.mercenaryDialog.update(gameTime);
+        this.inventoryDialog.update(gameTime);
+        this.questDialog.update(gameTime);
+        this.characterDialog.update(gameTime);
+        this.logDialog.update(gameTime);
+
+        // Legacy:
+        this.updateLegacyWindowVisibility();
         this.updateGameInterface(gameTime.elapsed);
 
         $('#version').text("Version " + game[saveKeys.idnGameVersion]);
@@ -144,224 +136,18 @@ declare('UserInterface', function () {
     // ---------------------------------------------------------------------------
     // init functions
     // ---------------------------------------------------------------------------
-    UserInterface.prototype.initPlayerArea = function() {
-        this.playerArea = dialog.create("playerArea");
-        this.playerArea.canClose = false;
-        this.playerArea.init();
-
-        this.playerHealthBar = progressBar.create("playerHealthBar");
-        this.playerHealthBar.init(this.playerArea.getContentArea());
-        this.playerHealthBar.animate = true;
-        this.playerHealthBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
-        this.playerHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
-
-        this.playerManaBar = progressBar.create("playerManaBar");
-        this.playerManaBar.init(this.playerArea.getContentArea());
-        this.playerManaBar.animate = true;
-        this.playerManaBar.setImages(resources.ImageProgressBlueHorizontalLeft, resources.ImageProgressBlueHorizontalMid, resources.ImageProgressBlueHorizontalRight);
-        this.playerManaBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
-
-        this.experienceTitle = element.create("experienceTitle");
-        this.experienceTitle.templateName = "globalTextElement";
-        this.experienceTitle.init(this.playerArea.getContentArea());
-        this.experienceTitle.addClass("experienceTitle");
-        this.experienceTitle.setText("XP to next Level: ");
-
-        this.experienceBar = progressBar.create("experienceBar");
-        this.experienceBar.init(this.playerArea.getContentArea());
-        this.experienceBar.animate = true;
-        this.experienceBar.setImages(resources.ImageProgressPurpleHorizontalLeft, resources.ImageProgressPurpleHorizontalMid, resources.ImageProgressPurpleHorizontalRight);
-        this.experienceBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
-    }
-
-    UserInterface.prototype.initCurrencyArea = function() {
-        this.currencyArea = dialog.create("currencyArea");
-        this.currencyArea.canClose = false;
-        this.currencyArea.init();
-        this.currencyArea.setHeaderText("Currencies");
-
-        this.currencyGoldControl = currencyControl.create("currencyGold");
-        this.currencyGoldControl.trackChanges = true;
-        this.currencyGoldControl.init(this.currencyArea.getContentArea());
-        this.currencyGoldControl.setImage(resources.ImageIconCoin);
-        this.currencyGoldControl.addClass("currencyGoldControl");
-    }
-
-    UserInterface.prototype.initSystemArea = function() {
-        this.systemArea = dialog.create("systemArea");
-        this.systemArea.canClose = false;
-        this.systemArea.init();
-        this.systemArea.setHeaderText("System Menu");
-
-        this.inventoryWindowButton = button.create("inventoryWindowButton");
-        this.inventoryWindowButton.callback = function(obj) { obj.data.arg.toggleInventoryWindow(); };
-        this.inventoryWindowButton.callbackArgument = this;
-        this.inventoryWindowButton.init(this.systemArea.getContentArea());
-        this.inventoryWindowButton.setImages(resources.ImageIconBackpack, resources.ImageIconBackpackHover, undefined);
-
-        this.characterWindowButton = button.create("characterWindowButton");
-        this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
-        this.characterWindowButton.callbackArgument = this;
-        this.characterWindowButton.init(this.systemArea.getContentArea());
-        this.characterWindowButton.setImages(resources.ImageIconCharacter, resources.ImageIconCharacterHover, undefined);
-
-        this.questWindowButton = button.create("questWindowButton");
-        this.questWindowButton.callback = function(obj) { obj.data.arg.toggleQuestWindow(); };
-        this.questWindowButton.callbackArgument = this;
-        this.questWindowButton.init(this.systemArea.getContentArea());
-        this.questWindowButton.setImages(resources.ImageIconQuest, resources.ImageIconQuestHover, undefined);
-
-        this.mercenaryWindowButton = button.create("mercenaryWindowButton");
-        this.mercenaryWindowButton.callback = function(obj) { obj.data.arg.toggleMercenaryWindow(); };
-        this.mercenaryWindowButton.callbackArgument = this;
-        this.mercenaryWindowButton.init(this.systemArea.getContentArea());
-        this.mercenaryWindowButton.setImages(resources.ImageIconMercenary, resources.ImageIconMercenaryHover, undefined);
-
-        this.upgradeWindowButton = button.create("upgradeWindowButton");
-        this.upgradeWindowButton.callback = function(obj) { obj.data.arg.toggleUpgradeWindow(); };
-        this.upgradeWindowButton.callbackArgument = this;
-        this.upgradeWindowButton.init(this.systemArea.getContentArea());
-        this.upgradeWindowButton.setImages(resources.ImageIconUpgrade, resources.ImageIconUpgradeHover, undefined);
-    }
-
-    UserInterface.prototype.initBattleArea = function() {
-        this.battleArea = dialog.create("battleArea");
-        this.battleArea.canClose = false;
-        this.battleArea.init();
-        this.battleArea.setHeaderText("Battle");
-
-        // Just a plain element for the monster name for now...
-        this.monsterName = element.create("monsterName");
-        this.monsterName.templateName = "globalTextElement";
-        this.monsterName.init(this.battleArea.getContentArea());
-        this.monsterName.addClass("monsterName");
-
-        this.monsterHealthBar = progressBar.create("monsterHealthBar");
-        this.monsterHealthBar.init(this.battleArea.getContentArea());
-        this.monsterHealthBar.animate = true;
-        this.monsterHealthBar.setImages(resources.ImageProgressRedHorizontalLeft, resources.ImageProgressRedHorizontalMid, resources.ImageProgressRedHorizontalRight);
-        this.monsterHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
-
-        this.resurrectionBar = progressBar.create("resurrectionBar");
-        this.resurrectionBar.init(this.battleArea.getContentArea());
-        this.resurrectionBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
-        this.resurrectionBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
-
-        this.enterBattleButton = button.create('enterBattleButton');
-        this.enterBattleButton.callback = function(obj) { game.enterBattle(); };
-        this.enterBattleButton.init(this.battleArea.getContentArea());
-        this.enterBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
-
-        this.leaveBattleButton = button.create('leaveBattleButton');
-        this.leaveBattleButton.callback = function(obj) { game.leaveBattle(); };
-        this.leaveBattleButton.init(this.battleArea.getContentArea());
-        this.leaveBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
-
-        this.battleLevelDownButton = button.create('battleLevelDownButton');
-        this.battleLevelDownButton.callback = function(obj) { game.changeBattleLevel(-1); };
-        this.battleLevelDownButton.init(this.battleArea.getContentArea());
-        this.battleLevelDownButton.setImages(resources.ImageButton, resources.ImageButtonHover);
-        this.battleLevelDownButton.setButtonText("-");
-
-        this.battleLevelUpButton = button.create('battleLevelUpButton');
-        this.battleLevelUpButton.callback = function(obj) { game.changeBattleLevel(1); };
-        this.battleLevelUpButton.init(this.battleArea.getContentArea());
-        this.battleLevelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
-        this.battleLevelUpButton.setButtonText("+");
-
-        this.attackButton = button.create('attackButton');
-        this.attackButton.callback = function(obj) { game.attack(); };
-        this.attackButton.init(this.battleArea.getContentArea());
-        this.attackButton.setImages(resources.ImageButton, resources.ImageButtonHover, resources.ImageIconAttack);
-
-        this.levelUpButton = button.create('levelUpButton');
-        this.levelUpButton.callback = function(obj) { if(game.player.getSkillPoints() > 0) { include('UserInterface'); userInterface.displayLevelUpWindow(); }};
-        this.levelUpButton.init(this.battleArea.getContentArea());
-        this.levelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
-        this.levelUpButton.setButtonText("Level Up");
-    }
-
-    UserInterface.prototype.initMercenaryDialog = function() {
-        this.mercenaryArea = dialog.create("mercenaryDialog");
-        this.mercenaryArea.canScroll = true;
-        this.mercenaryArea.init();
-        this.mercenaryArea.setHeaderText("Mercenaries");
-
-        // Create the control for each mercenary...
-        for(key in data.Mercenaries) {
-            var control = mercenaryControl.create("Mercenary_" + key);
-            control.mercenaryKey = key;
-            control.callback = function(obj) { obj.data.arg.purchaseMercenary(obj.data.self.mercenaryKey); };
-            control.callbackArgument = game;
-            control.init(this.mercenaryArea.getContentArea());
-            control.setMercenaryName(data.Mercenaries[key].name);
-            control.setMercenaryImage(staticData.imageRoot + data.Mercenaries[key].icon);
-            this.mercenaryControls[key] = control;
-        }
-
-        this.mercenaryArea.hide();
-    }
-
-    UserInterface.prototype.initCharacterInventoryDialog = function() {
-        this.characterInventoryArea = dialog.create("characterInventoryDialog");
-        this.characterInventoryArea.init();
-        this.characterInventoryArea.setHeaderText("Inventory");
-
-        this.characterInventory = inventoryControl.create("characterInventory");
-        this.characterInventory.storage = game.player.storage;
-        this.characterInventory.init(this.characterInventoryArea.getContentArea());
-
-        this.characterInventoryArea.hide();
-    }
-
-    UserInterface.prototype.initCharacterDialog = function() {
-        this.characterArea = dialog.create("characterDialog");
-        this.characterArea.init();
-        this.characterArea.setHeaderText("Character");
-
-        this.characterArea.hide();
-    }
-
-    UserInterface.prototype.initQuestDialog = function() {
-        this.questArea = dialog.create("questDialog");
-        this.questArea.init();
-        this.questArea.setHeaderText("Quests");
-
-        this.questArea.hide();
-    }
 
     // ---------------------------------------------------------------------------
     // update functions
     // ---------------------------------------------------------------------------
-    UserInterface.prototype.updatePlayerUI = function(gameTime) {
-        // No reason to hide them atm
-        this.playerHealthBar.show();
-        this.experienceBar.show();
-
-        this.playerArea.setHeaderText(game.player.name);
-
-        var hp = game.player.getStat(data.StatDefinition.hp.id);
-        var hpMax = game.player.getStat(data.StatDefinition.hpMax.id);
-        this.playerHealthBar.setProgress(hp, hpMax);
-        this.playerHealthBar.setProgressText("{0} / {1}".format(hp, hpMax));
-
-        var mp = game.player.getStat(data.StatDefinition.mp.id);
-        var mpMax = game.player.getStat(data.StatDefinition.mpMax.id);
-        this.playerManaBar.setProgress(mp, mpMax);
-        this.playerManaBar.setProgressText("{0} / {1}".format(mp, mpMax));
-
-        var requiredXP = game.player.experienceRequired;
-        var xp = game.player.getStat(data.StatDefinition.xp.id);
-        this.experienceBar.setProgress(xp, requiredXP);
-        this.experienceBar.setProgressText("{0} / {1}".format(xp, requiredXP));
+    UserInterface.prototype.updateDialogVisibility = function() {
+        this.mercenaryDialog.setVisibility(interfaceState.mercenaryWindowShown);
+        this.inventoryDialog.setVisibility(interfaceState.inventoryWindowShown);
+        this.questDialog.setVisibility(interfaceState.questWindowShown);
+        this.characterDialog.setVisibility(interfaceState.characterWindowShown);
     }
 
-    UserInterface.prototype.updateCurrencyUI = function(gameTime) {
-        this.currencyGoldControl.setValue(game.player.getStat(data.StatDefinition.gold.id));
-        this.currencyGoldControl.update(gameTime);
-    }
-
-    UserInterface.prototype.updateSystemMenu = function(gameTime) {
+    UserInterface.prototype.updateLegacyWindowVisibility = function() {
         $("#inventoryWindow").hide();
         $("#characterWindow").hide();
         $("#mercenariesWindow").hide();
@@ -371,183 +157,43 @@ declare('UserInterface', function () {
         $("#statsWindow").hide();
         $("#updatesWindow").hide();
 
-        if(this.inventoryWindowShown === true) {
+        if(interfaceState.inventoryWindowShown === true) {
             $("#inventoryWindow").show();
         }
 
-        if(this.characterWindowShown === true) {
+        if(interfaceState.characterWindowShown === true) {
             $("#characterWindow").show();
         }
 
-        if(this.mercenaryWindowShown === true) {
+        if(interfaceState.mercenaryWindowShown === true) {
             $("#mercenariesWindow").show();
         }
 
-        if(this.upgradeWindowShown === true) {
+        if(interfaceState.upgradeWindowShown === true) {
             $("#upgradesWindow").show();
         }
 
-        if(this.questWindowShown === true) {
+        if(interfaceState.questWindowShown === true) {
             $("#questsWindow").show();
         }
 
-        if(this.optionsWindowShown === true) {
+        if(interfaceState.optionsWindowShown === true) {
             $("#optionsWindow").show();
         }
 
-        if(this.statsWindowShown === true) {
+        if(interfaceState.statsWindowShown === true) {
             $("#statsWindow").show();
         }
 
-        if(this.updatesWindowShown === true) {
+        if(interfaceState.updatesWindowShown === true) {
             $("#updatesWindow").show();
         }
-    }
-
-    UserInterface.prototype.updateBattleUI = function(gameTime) {
-
-        // First we just hide everything, makes it easier
-        this.resurrectionBar.hide();
-        this.monsterName.hide();
-        this.monsterHealthBar.hide();
-        this.enterBattleButton.hide();
-        this.leaveBattleButton.hide();
-        this.battleLevelDownButton.hide();
-        this.battleLevelUpButton.hide();
-        this.levelUpButton.hide();
-        this.attackButton.hide();
-
-        // Check the alive state
-        var isAlive = game.player.alive === true;
-        if(isAlive === false) {
-            this.resurrectionBar.show();
-
-            var remainingResurrectionTime = game.player.getResurrectionTimeRemaining(gameTime);
-            var totalResurrectionTime = game.player.getResurrectionTime();
-            var progress = totalResurrectionTime - remainingResurrectionTime;
-            this.resurrectionBar.setProgress(progress, totalResurrectionTime);
-            this.resurrectionBar.setProgressText("Resurrecting in " + coreUtils.getDurationDisplay(remainingResurrectionTime));
-        }
-
-        if(isAlive === true && game.player.getSkillPoints() > 0) {
-            this.levelUpButton.show();
-        }
-
-        var currentLevel = game.getBattleLevel();
-        this.enterBattleButton.setButtonText("Enter Level {0}".format(currentLevel));
-        this.leaveBattleButton.setButtonText("Leave Level {0}".format(currentLevel));
-
-        if(game.inBattle === true) {
-            this.monsterName.show();
-            this.monsterHealthBar.show();
-            this.leaveBattleButton.show();
-            this.attackButton.show();
-
-            var monster = game.monsters.Center;
-            if(monster !== undefined) {
-                //var monsterRarityColor = this.getMonsterRarityColor(game.monster.rarity);
-                this.monsterName.setText(monster.name);
-
-                // Todo: rarity display
-                this.monsterName.getMainElement().css({ 'color': '#FFFFFF' });
-
-                // Update the monster health bar
-                var monsterHp = monster.getStat(data.StatDefinition.hp.id);
-                var monsterHpMax = monster.getStat(data.StatDefinition.hpMax.id);
-                this.monsterHealthBar.setProgress(monsterHp, monsterHpMax);
-                this.monsterHealthBar.setProgressText("{0} / {1}".format(monsterHp, monsterHpMax));
-            } else {
-                this.monsterName.setText("");
-                this.monsterHealthBar.setProgress(0, 100);
-                this.monsterHealthBar.setProgressText("DEAD");
-            }
-
-        } else if(isAlive === true) {
-            this.enterBattleButton.show();
-            this.battleLevelDownButton.show();
-            this.battleLevelUpButton.show();
-        }
-    }
-
-    UserInterface.prototype.updateMercenaryDialog = function(gameTime) {
-        for(key in data.Mercenaries) {
-            var control = this.mercenaryControls[key];
-            control.setMercenaryCost(game.getMercenaryCost(key));
-            control.setMercenaryCount(game.getMercenaryCount(key));
-            control.setPlayerGold(game.player.getStat(data.StatDefinition.gold.id));
-            control.update(gameTime);
-        }
-    }
-
-    UserInterface.prototype.updateCharacterInventoryDialog = function(gameTime) {
-        if(this.characterInventoryArea.isVisible) {
-            // Update the child components if the window is visible
-            this.characterInventory.update(gameTime);
-        }
-    }
-
-    UserInterface.prototype.updateCharacterDialog = function(gameTime) {
-    }
-
-    UserInterface.prototype.updateQuestDialog = function(gameTime) {
-        // Todo
     }
 
     // ---------------------------------------------------------------------------
     // utility functions
     // ---------------------------------------------------------------------------
-    UserInterface.prototype.getMonsterRarityColor = function(rarity) {
-        switch (rarity) {
-            case staticData.MonsterRarity.COMMON:
-                return '#ffffff';
-                break;
-            case staticData.MonsterRarity.RARE:
-                return '#00fff0';
-                break;
-            case staticData.MonsterRarity.ELITE:
-                return '#ffd800';
-                break;
-            case staticData.MonsterRarity.BOSS:
-                return '#ff0000';
-                break;
-        }
-    }
 
-    UserInterface.prototype.toggleInventoryWindow = function() {
-        this.inventoryWindowShown = !this.inventoryWindowShown;
-        this.characterInventoryArea.toggle();
-    }
-
-    UserInterface.prototype.toggleCharacterWindow = function() {
-        this.characterWindowShown = !this.characterWindowShown;
-        this.characterArea.toggle();
-    }
-
-    UserInterface.prototype.toggleMercenaryWindow = function() {
-        this.mercenaryWindowShown = !this.mercenaryWindowShown;
-        this.mercenaryArea.toggle();
-    }
-
-    UserInterface.prototype.toggleUpgradeWindow = function() {
-        this.upgradeWindowShown = !this.upgradeWindowShown;
-    }
-
-    UserInterface.prototype.toggleQuestWindow = function() {
-        this.questWindowShown = !this.questWindowShown;
-        this.questArea.toggle();
-    }
-
-    UserInterface.prototype.toggleUpdatesWindow = function() {
-        this.updatesWindowShown = !this.updatesWindowShown;
-    }
-
-    UserInterface.prototype.toggleOptionsWindow = function() {
-        this.optionsWindowShown = !this.optionsWindowShown;
-    }
-
-    UserInterface.prototype.toggleStatsWindow = function() {
-        this.statsWindowShown = !this.statsWindowShown;
-    }
 
 
 
@@ -576,10 +222,6 @@ declare('UserInterface', function () {
         battleLevelText.style.top = '600px';
         battleLevelText.innerHTML = text;
         $("#battleLevelText").animate({top: '-=50px', opacity: '0'}, 1000);
-    }
-
-    UserInterface.prototype.clickEventButton = function(obj, id) {
-        eventManager.startEvent(obj, id);
     }
 
     UserInterface.prototype.skullParticlesOptionClick = function() {

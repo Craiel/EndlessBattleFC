@@ -100,7 +100,7 @@ declare('InventoryControl', function() {
         var slotCounter = 0;
         for(var row = 0; row < rowCount; row++) {
             var rowElement = element.create(this.id + "Row" + row);
-            rowElement.templateName = "inventoryRow";
+            rowElement.templateName = "inventoryControlRow";
             rowElement.init(this);
             rowElement.setHeight(slotSize);
             rowElement.setPosition({x: padding, y: 2 + (row * slotFullSize)});

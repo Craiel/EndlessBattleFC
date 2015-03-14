@@ -20,6 +20,12 @@ declare('StaticData', function () {
         this.GoldSourceMonster = 0;
         this.GoldSourceMercenary = 1;
 
+        this.EventCombatHit = "eventCombatHit";
+        this.EventCombatDeath = "eventCombatDeath";
+        this.EventXpGain = "eventXpGain";
+        this.EventGoldGain = "eventGoldGain";
+        this.EventItemGain = "eventItemGain";
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// Unchecked code below
@@ -63,10 +69,6 @@ declare('StaticData', function () {
         this.BuffType.DAMAGE = "DAMAGE";
         this.BuffType.GOLD = "GOLD";
         this.BuffType.EXPERIENCE = "EXPERIENCE";
-
-        this.EventType = new Object();
-        this.EventType.QUEST = "QUEST";
-        this.EventType.amount = 1;
 
         this.QuestNamePrefixes = new Array("Clearing", "Reaping", "Destroying", "Removing", "Obliterating");
         this.QuestNameSuffixes = new Array("Threat", "Swarm", "Horde", "Pillagers", "Ravagers");

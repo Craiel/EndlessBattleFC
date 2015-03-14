@@ -15,8 +15,6 @@ declare('Game', function() {
     include('NameGenerator');
     include('StatUpgradeManager');
     include('QuestManager');
-    include('EventManager');
-    include('GameState');
     include('Resources');
     include('Save');
     include('SaveKeys');
@@ -25,6 +23,7 @@ declare('Game', function() {
     include('GeneratorMonster');
     include('StatUtils');
     include('CombatUtils');
+    include('EventAggregate');
 
     Game.prototype = component.prototype();
     Game.prototype.$super = parent;
@@ -80,8 +79,6 @@ declare('Game', function() {
         ////////////////////// TODO: Remove / refactor below
         this.reset();
 
-        gameState.init();
-        eventManager.init();
         upgradeManager.init();
         particleManager.init();
         questManager.init();
@@ -108,11 +105,8 @@ declare('Game', function() {
 
         /////////////////////TODO: Remove / refactor below
 
-
-        gameState.update(gameTime)
         this.inventory.update(gameTime);
         questManager.update(gameTime);
-        eventManager.update(gameTime);
         upgradeManager.update(gameTime);
         particleManager.update(gameTime);
         this.stats.update(gameTime);
@@ -150,6 +144,8 @@ declare('Game', function() {
 
         // Todo: Apply modifiers etc
         this.player.modifyStat(data.StatDefinition.xp.id, value);
+
+        eventAggregate.publish(staticData.EventXpGain, { value: value });
     }
 
     Game.prototype.gainGold = function(value, source) {
@@ -159,6 +155,11 @@ declare('Game', function() {
 
         // Todo: Apply modifiers etc
         this.player.modifyStat(data.StatDefinition.gold.id, value);
+
+        // Report gold gain from sources that qualify
+        if(source !== staticData.GoldSourceMercenary) {
+            eventAggregate.publish(staticData.EventGoldGain, {value: value});
+        }
     }
 
     // ---------------------------------------------------------------------------
@@ -314,8 +315,11 @@ declare('Game', function() {
 
     Game.prototype.attack = function() {
         // Todo: This is for testing purpose
-        combatUtils.resolveCombat(this.player, this.monsters.Center);
-        combatUtils.resolveCombat(this.monsters.Center, this.player);
+        var playerHit = combatUtils.resolveCombat(this.player, this.monsters.Center);
+        var monsterHit = combatUtils.resolveCombat(this.monsters.Center, this.player);
+
+        eventAggregate.publish(staticData.EventCombatHit, playerHit);
+        eventAggregate.publish(staticData.EventCombatHit, monsterHit);
     }
 
     // ---------------------------------------------------------------------------

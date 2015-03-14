@@ -295,24 +295,6 @@
     text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
-/* --------------------------------------------- EVENTS AREA -------------------------------------------- */
-#eventsArea {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    bottom: 10px;
-    width: 25px;
-    overflow: hidden;
-}
-.eventButton {
-    background: url("images/randomQuestButton2.png");
-    position: absolute;
-    bottom: 700px;
-    left: 0;
-    height: 25px;
-    width: 25px;
-}
-
 /* ------------------------------------------------ BUFFS ----------------------------------------------- */
 #buffsArea {
     position: absolute;

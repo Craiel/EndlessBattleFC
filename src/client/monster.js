@@ -3,7 +3,6 @@ declare('Monster', function () {
     include('BuffSet');
     include('StaticData');
     include('ParticleManager');
-    include('GameState');
     include('Loot');
     include('Data');
     include('StatUtils');
@@ -98,7 +97,6 @@ declare('Monster', function () {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Monster.prototype.legacyConstruct = function() {
-        this.name = '#ERR';
         this.level = 0;
         this.rarity = staticData.MonsterRarity.COMMON;
 

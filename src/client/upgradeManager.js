@@ -3,7 +3,6 @@ declare('UpgradeManager', function () {
     include('StaticData');
     include('Upgrade');
     include('MonsterCreator');
-    include('GameState');
     include('Resources');
     include('CoreUtils');
 
@@ -119,7 +118,7 @@ declare('UpgradeManager', function () {
             return false;
         }
 
-        var currentUpgrade;
+        /*var currentUpgrade;
         var available = false;
         // Go through every upgrade
         for (var x = 0; x < this.upgrades.length; x++) {
@@ -250,7 +249,7 @@ declare('UpgradeManager', function () {
                 break;
             }
         }
-
+*/
         return true;
     }
 

@@ -1,6 +1,5 @@
 declare('QuestManager', function () {
     include('Component');
-    include('GameState');
     include('Quest');
     include('Resources');
     include('StaticData');

@@ -1,7 +1,6 @@
 declare('Quest', function () {
     include('Component');
     include('UpgradeManager');
-    include('GameState');
     include('StaticData');
 
     Quest.prototype = component.prototype();

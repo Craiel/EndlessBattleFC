@@ -132,15 +132,33 @@ declare('Element', function() {
     // ui functions
     // ---------------------------------------------------------------------------
     UIElement.prototype.hide = function() {
+        if(this.isVisible !== true) {
+            // Avoid useless processing
+            return;
+        }
+
         this.isVisible = false;
         this._mainDiv.hide();
     };
 
     UIElement.prototype.show = function() {
+        if(this.isVisible !== false) {
+            // Avoid useless processing
+            return;
+        }
+
         this.isVisible = true;
         this._mainDiv.show();
         this.invalidate();
     };
+
+    UIElement.prototype.setVisibility = function(value) {
+        if(value === true) {
+            this.show();
+        } else {
+            this.hide();
+        }
+    }
 
     UIElement.prototype.getMainElement = function() {
         return this._mainDiv;
@@ -204,6 +222,10 @@ declare('Element', function() {
         this._mainDiv.append(content);
     };
 
+    UIElement.prototype.addContent = function(content) {
+        this._mainDiv.append(content);
+    };
+
     UIElement.prototype.setText = function(text) {
         this._mainDiv.text(text);
     };
@@ -240,6 +262,18 @@ declare('Element', function() {
         }
 
         this.templateName = name;
+    };
+
+    UIElement.prototype.scrollToBottom = function(content) {
+        this._mainDiv.scrollTop(1E10);
+    };
+
+    UIElement.prototype.getChildCount = function() {
+        return this._mainDiv.children().length;
+    };
+
+    UIElement.prototype.removeFirstChild = function() {
+        this._mainDiv.children().first().remove();
     };
 
     var surrogate = function(){};

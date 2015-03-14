@@ -10,6 +10,7 @@ declare('Actor', function () {
     include('Storage');
     include('StatUtils');
     include('CoreUtils');
+    include('EventAggregate');
 
     Actor.prototype = component.prototype();
     Actor.prototype.$super = parent;
@@ -19,6 +20,7 @@ declare('Actor', function () {
         component.construct(this);
 
         this.id = "Actor";
+        this.name = "#ERR";
 
         // Limits:
         this.armorRatingMultiplier = 20;
@@ -67,7 +69,13 @@ declare('Actor', function () {
             this.computeActorStats();
         }
 
+        var wasAlive = this.alive;
         this.alive = this.getStat(data.StatDefinition.hp.id) > 0;
+
+        if(wasAlive === true && this.alive !== true) {
+            // The actor has died, trigger the event
+            eventAggregate.publish(staticData.EventCombatDeath, { actorName: this.getName() });
+        }
 
         return true;
     }
@@ -75,6 +83,10 @@ declare('Actor', function () {
     // ---------------------------------------------------------------------------
     // getters / setters
     // ---------------------------------------------------------------------------
+    Actor.prototype.getName = function() {
+        return this.name;
+    }
+
     Actor.prototype.getLevel = function() {
         return this.level;
     }
