@@ -36,6 +36,8 @@ declare('Player', function () {
 
         this.storage = undefined;
 
+        this.experienceRequired = 0;
+
         this.hp5Delay = 5000;
         this.hp5Time = 0;
         this.mp5Delay = 5000;
@@ -70,6 +72,8 @@ declare('Player', function () {
         if(this.actorUpdate(gameTime) !== true) {
             return false;
         }
+
+        this.updateExperience(gameTime);
 
         // Perform some basic operations that happen when the player is alive
         if(this.alive === true) {
@@ -129,13 +133,28 @@ declare('Player', function () {
     // ---------------------------------------------------------------------------
     // player functions
     // ---------------------------------------------------------------------------
+    Player.prototype.updateExperience = function(gameTime) {
+        this.updateExperienceRequired();
+
+        var current = this.getStat(data.StatDefinition.xp.id);
+        if(current < this.experienceRequired) {
+            return;
+        }
+
+        this.levelUp();
+    }
+
+    Player.prototype.updateExperienceRequired = function() {
+        var level = this.getLevel();
+        this.experienceRequired = Math.ceil((coreUtils.getSigma(level) * 2) * Math.pow(1.05, level));
+    }
+
     Player.prototype.levelUp = function() {
         this.setStat(data.StatDefinition.xp.id, 0);
         this[saveKeys.idnLevel]++;
-        this[saveKeys.idnPlayerSkillPoints]++;
+        this[saveKeys.idnPlayerSkillPoints] += 5;
 
-        // Todo
-        this.legacyLevelUp();
+        this.updateExperienceRequired();
     }
 
     Player.prototype.processResurrectionDelay = function(gameTime) {

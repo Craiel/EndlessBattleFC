@@ -51,6 +51,8 @@ declare('LogDialog', function() {
         eventAggregate.subscribe(staticData.EventXpGain, receiveEventXpGain);
         eventAggregate.subscribe(staticData.EventGoldGain, receiveEventGoldGain);
         eventAggregate.subscribe(staticData.EventItemGain, receiveEventItemGain);
+
+        this.getMainElement().resizable();
     };
 
     LogDialog.prototype.dialogUpdate = LogDialog.prototype.update;

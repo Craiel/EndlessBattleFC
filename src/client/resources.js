@@ -74,6 +74,16 @@ declare('Resources', function() {
         this.ImagePanelBeigeInsetB = staticData.imageRoot + "panelBeigeInsetB.png";
         this.ImagePanelBeigeInsetRB = staticData.imageRoot + "panelBeigeInsetRB.png";
 
+        this.ImagePanelBeigeLightLT = staticData.imageRoot + "panelBeigeLightLT.png";
+        this.ImagePanelBeigeLightT = staticData.imageRoot + "panelBeigeLightT.png";
+        this.ImagePanelBeigeLightRT = staticData.imageRoot + "panelBeigeLightRT.png";
+        this.ImagePanelBeigeLightL = staticData.imageRoot + "panelBeigeLightL.png";
+        this.ImagePanelBeigeLightContent = staticData.imageRoot + "panelBeigeLightContent.png";
+        this.ImagePanelBeigeLightR = staticData.imageRoot + "panelBeigeLightR.png";
+        this.ImagePanelBeigeLightLB = staticData.imageRoot + "panelBeigeLightLB.png";
+        this.ImagePanelBeigeLightB = staticData.imageRoot + "panelBeigeLightB.png";
+        this.ImagePanelBeigeLightRB = staticData.imageRoot + "panelBeigeLightRB.png";
+
         this.ImagePanelBeigeLightInsetLT = staticData.imageRoot + "panelBeigeLightInsetLT.png";
         this.ImagePanelBeigeLightInsetT = staticData.imageRoot + "panelBeigeLightInsetT.png";
         this.ImagePanelBeigeLightInsetRT = staticData.imageRoot + "panelBeigeLightInsetRT.png";
@@ -93,6 +103,26 @@ declare('Resources', function() {
         this.ImagePanelBrownLB = staticData.imageRoot + "panelBrownLB.png";
         this.ImagePanelBrownB = staticData.imageRoot + "panelBrownB.png";
         this.ImagePanelBrownRB = staticData.imageRoot + "panelBrownRB.png";
+
+        this.ImagePanelBlueLT = staticData.imageRoot + "panelBlueLT.png";
+        this.ImagePanelBlueT = staticData.imageRoot + "panelBlueT.png";
+        this.ImagePanelBlueRT = staticData.imageRoot + "panelBlueRT.png";
+        this.ImagePanelBlueL = staticData.imageRoot + "panelBlueL.png";
+        this.ImagePanelBlueContent = staticData.imageRoot + "panelBlueContent.png";
+        this.ImagePanelBlueR = staticData.imageRoot + "panelBlueR.png";
+        this.ImagePanelBlueLB = staticData.imageRoot + "panelBlueLB.png";
+        this.ImagePanelBlueB = staticData.imageRoot + "panelBlueB.png";
+        this.ImagePanelBlueRB = staticData.imageRoot + "panelBlueRB.png";
+
+        this.ImagePanelBlueInsetLT = staticData.imageRoot + "panelBlueInsetLT.png";
+        this.ImagePanelBlueInsetT = staticData.imageRoot + "panelBlueInsetT.png";
+        this.ImagePanelBlueInsetRT = staticData.imageRoot + "panelBlueInsetRT.png";
+        this.ImagePanelBlueInsetL = staticData.imageRoot + "panelBlueInsetL.png";
+        this.ImagePanelBlueInsetContent = staticData.imageRoot + "panelBlueInsetContent.png";
+        this.ImagePanelBlueInsetR = staticData.imageRoot + "panelBlueInsetR.png";
+        this.ImagePanelBlueInsetLB = staticData.imageRoot + "panelBlueInsetLB.png";
+        this.ImagePanelBlueInsetB = staticData.imageRoot + "panelBlueInsetB.png";
+        this.ImagePanelBlueInsetRB = staticData.imageRoot + "panelBlueInsetRB.png";
 
         // Progress bar images
         this.ImageProgressBlueHorizontalLeft = staticData.imageRoot + "barBlue_horizontalLeft.png";

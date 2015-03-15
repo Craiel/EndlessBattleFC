@@ -1,7 +1,114 @@
 .characterDialog {
     position: absolute;
-    width: 400px;
+    width: 300px;
     height: 500px;
     top: 0px;
     left: 840px;
+}
+
+.equipBackGround {
+    position: absolute;
+    width: calc(100% - 20px);
+    left: 10px;
+    height: 270px;
+}
+
+.equipSlotBase {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+}
+
+.equipSlotCenter {
+    include: equipSlotBase;
+    left: calc(50% - 20px);
+}
+
+.equipSlotLeftSide {
+    include: equipSlotBase;
+    left: calc(30% - 20px);
+}
+
+.equipSlotRightSide {
+    include: equipSlotBase;
+    left: calc(70% - 20px);
+}
+
+.equipSlotHead {
+    include: equipSlotCenter;
+    top: 20px;
+}
+
+.equipSlotChest {
+    include: equipSlotCenter;
+    top: 70px;
+}
+
+.equipSlotWaist {
+    include: equipSlotCenter;
+    top: 120px;
+}
+
+.equipSlotLegs {
+    include: equipSlotCenter;
+    top: 170px;
+}
+
+.equipSlotFeet {
+    include: equipSlotCenter;
+    top: 220px;
+}
+
+.equipSlotShoulder {
+    include: equipSlotBase;
+    left: calc(35% - 20px);
+    top: 50px;
+}
+
+.equipSlotWrist {
+    include: equipSlotRightSide;
+    top: 100px;
+}
+
+.equipSlotArms {
+    include: equipSlotLeftSide;
+    top: 100px;
+}
+
+.equipSlotNeck {
+    include: equipSlotBase;
+    left: calc(65% - 20px);
+    top: 50px;
+}
+
+.equipSlotRing1 {
+    include: equipSlotLeftSide;
+    top: 150px;
+}
+
+.equipSlotRing2 {
+    include: equipSlotRightSide;
+    top: 150px;
+}
+
+.equipSlotMainHand {
+    include: equipSlotLeftSide;
+    top: 200px;
+}
+
+.equipSlotOffHand {
+    include: equipSlotRightSide;
+    top: 200px;
+}
+
+.equipSlotTrinket1 {
+    include: equipSlotBase;
+    left: calc(100% - 55px);
+    top: 180px;
+}
+
+.equipSlotTrinket2 {
+    include: equipSlotBase;
+    left: calc(100% - 55px);
+    top: 220px;
 }
