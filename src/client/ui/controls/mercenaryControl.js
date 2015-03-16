@@ -80,18 +80,14 @@ declare('MercenaryControl', function() {
     MercenaryControl.prototype._setupEvents = function() {
         var hoverCallback = function (obj) {
             include('Resources');
-            obj.data.self.backgroundPanel.setImages(resources.ImagePanelBeigeLightInsetLT, resources.ImagePanelBeigeLightInsetT, resources.ImagePanelBeigeLightInsetRT,
-                resources.ImagePanelBeigeLightInsetL, resources.ImagePanelBeigeLightInsetContent, resources.ImagePanelBeigeLightInsetR,
-                resources.ImagePanelBeigeLightInsetLB, resources.ImagePanelBeigeLightInsetB, resources.ImagePanelBeigeLightInsetRB);
+            resources.setPanelImages(obj.data.self.backgroundPanel, "BeigeLightInset");
         };
         this.getMainElement().mouseover({self: this}, hoverCallback );
         this.getMainElement().mouseup({self: this}, hoverCallback );
 
         var resetCallback = function (obj) {
             include('Resources');
-            obj.data.self.backgroundPanel.setImages(resources.ImagePanelBeigeInsetLT, resources.ImagePanelBeigeInsetT, resources.ImagePanelBeigeInsetRT,
-                resources.ImagePanelBeigeInsetL, resources.ImagePanelBeigeInsetContent, resources.ImagePanelBeigeInsetR,
-                resources.ImagePanelBeigeInsetLB, resources.ImagePanelBeigeInsetB, resources.ImagePanelBeigeInsetRB);
+            resources.setPanelImages(obj.data.self.backgroundPanel, "BeigeInset");
         };
         this.getMainElement().mouseout({self: this}, resetCallback );
 

@@ -40,9 +40,7 @@ declare('Dialog', function() {
 
         this.headerPanel = panel.create(this.id + "Header");
         this.headerPanel.init(this);
-        this.headerPanel.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-            resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-            resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+        resources.setPanelImages(this.headerPanel, "Brown");
         this.headerPanel.addClass("dialogHeaderPanel");
 
         this.headerText = element.create(this.id + "HeaderText");
@@ -52,9 +50,7 @@ declare('Dialog', function() {
 
         this.contentPanel = panel.create(this.id + "Content");
         this.contentPanel.init(this);
-        this.contentPanel.setImages(resources.ImagePanelBrownLT, resources.ImagePanelBrownT, resources.ImagePanelBrownRT,
-            resources.ImagePanelBrownL, resources.ImagePanelBrownContent, resources.ImagePanelBrownR,
-            resources.ImagePanelBrownLB, resources.ImagePanelBrownB, resources.ImagePanelBrownRB);
+        resources.setPanelImages(this.contentPanel, "Brown");
         this.contentPanel.addClass("dialogContentPanel");
         this.contentPanel.addClass("globalNoDrag");
         if(this.canScroll === true) {

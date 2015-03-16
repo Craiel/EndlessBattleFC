@@ -26,6 +26,27 @@ declare('StaticData', function () {
         this.EventGoldGain = "eventGoldGain";
         this.EventItemGain = "eventItemGain";
 
+        this.EquipSlotHead = "head";
+        this.EquipSlotChest = "chest";
+        this.EquipSlotWaist = "waist";
+        this.EquipSlotLegs = "legs";
+        this.EquipSlotFeet = "feet";
+        this.EquipSlotShoulder = "shoulder";
+        this.EquipSlotWrist = "wrist";
+        this.EquipSlotHands = "hands";
+        this.EquipSlotMainHand = "mainHand";
+        this.EquipSlotOffHand = "offHand";
+        this.EquipSlotNeck = "neck";
+        this.EquipSlotRing1 = "ring1";
+        this.EquipSlotRing2 = "ring2";
+        this.EquipSlotTrinket1 = "trinket1";
+        this.EquipSlotTrinket2 = "trinket2";
+
+        this.EquipSlots = [this.EquipSlotHead, this.EquipSlotChest, this.EquipSlotWaist, this.EquipSlotLegs,
+            this.EquipSlotFeet, this.EquipSlotShoulder, this.EquipSlotWrist, this.EquipSlotHands, this.EquipSlotMainHand,
+            this.EquipSlotOffHand, this.EquipSlotNeck, this.EquipSlotRing1, this.EquipSlotRing2,
+            this.EquipSlotTrinket1, this.EquipSlotTrinket2];
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// Unchecked code below

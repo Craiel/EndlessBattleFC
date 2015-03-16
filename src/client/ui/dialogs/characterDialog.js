@@ -8,6 +8,7 @@ declare('CharacterDialog', function() {
     include('Game');
     include('Data');
     include('Panel');
+    include('InventoryControl');
     include('InventorySlotControl');
 
     CharacterDialog.prototype = dialog.prototype();
@@ -20,6 +21,8 @@ declare('CharacterDialog', function() {
         this.id = "characterDialog";
 
         this.equipBackground = undefined;
+        this.statsBackground = undefined;
+        this.inventoryBackground = undefined;
 
         this.headSlot = undefined;
         this.chestSlot = undefined;
@@ -36,6 +39,8 @@ declare('CharacterDialog', function() {
         this.offHandSlot = undefined;
         this.trinket1Slot = undefined;
         this.trinket2Slot = undefined;
+
+        this.characterInventory = undefined;
     };
 
     // ---------------------------------------------------------------------------
@@ -49,12 +54,24 @@ declare('CharacterDialog', function() {
 
         this.equipBackground = panel.create(this.id + 'EquipBackGround');
         this.equipBackground.init(this.getContentArea());
-        this.equipBackground.setImages(resources.ImagePanelBlueInsetLT, resources.ImagePanelBlueInsetT, resources.ImagePanelBlueInsetRT,
-            resources.ImagePanelBlueInsetL, resources.ImagePanelBlueInsetContent, resources.ImagePanelBlueInsetR,
-            resources.ImagePanelBlueInsetLB, resources.ImagePanelBlueInsetB, resources.ImagePanelBlueInsetRB);
-        this.equipBackground.addClass('equipBackGround');
+        resources.setPanelImages(this.equipBackground, "BeigeInset");
+        this.equipBackground.addClass('characterEquipBackGround');
+
+        this.statsBackground = panel.create(this.id + 'StatsBackground');
+        this.statsBackground.init(this.getContentArea());
+        resources.setPanelImages(this.statsBackground, "BeigeInset");
+        this.statsBackground.addClass('characterStatsBackground');
+
+        this.inventoryBackground = panel.create(this.id + 'InventoryBackground');
+        this.inventoryBackground.init(this.getContentArea());
+        resources.setPanelImages(this.inventoryBackground, "BeigeInset");
+        this.inventoryBackground.addClass('characterInventoryBackground');
 
         this.initEquipmentSlots();
+
+        this.characterInventory = inventoryControl.create("characterInventory");
+        this.characterInventory.storage = game.player.storage;
+        this.characterInventory.init(this.inventoryBackground.getContentArea());
 
         this.hide();
     };
@@ -69,6 +86,15 @@ declare('CharacterDialog', function() {
             return false;
         }
 
+        // Update the child components if the window is visible
+        this.characterInventory.update(gameTime);
+
+        // Make the inventory scrollable if there are too many slots (Temporary)
+        if(game.player.storage.getSize() > 36) {
+            this.inventoryBackground.getContentArea().setStyle({"overflow-y": "scroll"});
+        } else {
+            this.inventoryBackground.getContentArea().setStyle({"overflow-y": "none"});
+        }
 
         return true;
     }
@@ -96,7 +122,7 @@ declare('CharacterDialog', function() {
 
     CharacterDialog.prototype.createEquipSlot = function(id) {
         var slot = inventorySlotControl.create(this.id + id);
-        slot.init(this.getContentArea());
+        slot.init(this.equipBackground);
         slot.addClass(id);
         return slot;
     }

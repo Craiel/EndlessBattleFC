@@ -21,6 +21,10 @@ declare('InventoryControl', function() {
 
         this.backgroundPanel = undefined;
         this.minSlotSize = 32;
+        this.isDynamic = false;
+
+        this.fixedSlotSize = 40;
+        this.fixedSlotRowCount = 9;
 
         this.elementSize = undefined;
 
@@ -88,10 +92,15 @@ declare('InventoryControl', function() {
         console.log(this.getMainElement());
         var inventorySize = this.getSize();
         var slotCount = this.storage.getSize();
-        var slotSize = this.getSlotSize(inventorySize.x, inventorySize.y, slotCount);
+        var slotSize = this.fixedSlotSize;
         var slotFullSize = slotSize + 1;
-        var slotsPerRow = Math.floor(inventorySize.x / slotFullSize);
-        var rowMargin = inventorySize.x - (slotsPerRow * slotFullSize);
+        var slotsPerRow = this.fixedSlotRowCount;
+        if(this.isDynamic === true) {
+            slotSize = this.getSlotSize(inventorySize.x, inventorySize.y, slotCount);
+            slotFullSize = slotSize + 1;
+            slotsPerRow = Math.floor(inventorySize.x / slotFullSize);
+        }
+
         var rowCount = Math.ceil(slotCount / slotsPerRow);
         var padding = Math.floor((inventorySize.x - (slotsPerRow * slotFullSize)) / 2);            console.log(padding);
 

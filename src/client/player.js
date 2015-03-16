@@ -34,6 +34,8 @@ declare('Player', function () {
         save.register(this, saveKeys.idnPlayerStorageSlots).asJsonArray().withDefault([]);
         save.register(this, saveKeys.idnLevel).asNumber().withDefault(1).withCallback(false, true, false);
 
+        save.register(this, saveKeys.idnPlayerEquip).asJson();
+
         this.storage = undefined;
 
         this.experienceRequired = 0;
@@ -63,8 +65,8 @@ declare('Player', function () {
 
         statUtils.initStats(this[saveKeys.idnPlayerBaseStats]);
 
-        this.storage = storage.create(this.id, 25);
-        this.storage.init();
+        this.storage = storage.create(this.id);
+        this.storage.init(18);
     }
 
     Player.prototype.actorUpdate = Player.prototype.update;
@@ -74,6 +76,7 @@ declare('Player', function () {
         }
 
         this.updateExperience(gameTime);
+        this.updateEquipment(gameTime);
 
         // Perform some basic operations that happen when the player is alive
         if(this.alive === true) {
@@ -133,6 +136,14 @@ declare('Player', function () {
     // ---------------------------------------------------------------------------
     // player functions
     // ---------------------------------------------------------------------------
+    Player.prototype.updateEquipment = function(gameTime) {
+        for(var i = 0; i < staticData.EquipSlots.length; i++) {
+            if(this[saveKeys.idnPlayerEquip][staticData.EquipSlots[i]] === undefined) {
+                this[saveKeys.idnPlayerEquip][staticData.EquipSlots[i]] = null;
+            }
+        }
+    }
+
     Player.prototype.updateExperience = function(gameTime) {
         this.updateExperienceRequired();
 

@@ -30,7 +30,8 @@ declare('InventoryDialog', function() {
 
         this.setHeaderText("Inventory");
 
-        this.characterInventory = inventoryControl.create("characterInventory");
+        this.characterInventory = inventoryControl.create("characterInventoryDialog");
+        this.characterInventory.isDynamic = true;
         this.characterInventory.storage = game.player.storage;
         this.characterInventory.init(this.getContentArea());
 

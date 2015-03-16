@@ -144,6 +144,13 @@ declare('Resources', function() {
         this.ImageProgressBackHorizontalMid = staticData.imageRoot + "barBack_horizontalMid.png";
         this.ImageProgressBackHorizontalRight = staticData.imageRoot + "barBack_horizontalRight.png";
     };
+
+    // Helper function for panels
+    Resources.prototype.setPanelImages = function(panel, imageKey) {
+        panel.setImages(this['ImagePanel'+imageKey+'LT'], this['ImagePanel'+imageKey+'T'], this['ImagePanel'+imageKey+'RT'],
+            this['ImagePanel'+imageKey+'L'], this['ImagePanel'+imageKey+'Content'], this['ImagePanel'+imageKey+'R'],
+            this['ImagePanel'+imageKey+'LB'], this['ImagePanel'+imageKey+'B'], this['ImagePanel'+imageKey+'RB']);
+    }
     
     return new Resources();
 });
