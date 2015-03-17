@@ -35,7 +35,7 @@ declare('Monster', function () {
         this.actorInit();
 
         statUtils.initStats(this.baseStats, false);
-    }
+    };
 
     Monster.prototype.actorUpdate = Monster.prototype.update;
     Monster.prototype.update = function(gameTime) {
@@ -44,14 +44,14 @@ declare('Monster', function () {
         }
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // getters / setters
     // ---------------------------------------------------------------------------
     Monster.prototype.getBaseStats = function() {
         return this.baseStats;
-    }
+    };
 
     Monster.prototype.getStatLists = function() {
         var stats = [];
@@ -68,27 +68,27 @@ declare('Monster', function () {
         }
 
         return stats;
-    }
+    };
 
     Monster.prototype.setRarity = function(rarity) {
         this.rarity = rarity;
         this.rarityStats = statUtils.getStatsFromData(rarity);
-    }
+    };
 
     Monster.prototype.setType = function(type) {
         console.log(type);
         this.type = type;
         this.name = type.name;
         this.typeStats = statUtils.getStatsFromData(type);
-    }
+    };
 
     Monster.prototype.getRarity = function() {
         return this.rarity;
-    }
+    };
 
     Monster.prototype.setStats = function(stats) {
         this.baseStats = stats;
-    }
+    };
 
 
 
@@ -109,7 +109,7 @@ declare('Monster', function () {
         this.buffIconLeftPositionBase = 325;
         this.buffIconTopPosition = 0;
         this.buffLeftPositionIncrement = 30;
-    }
+    };
 
     Monster.prototype.takeDamage = function(damage, isCritical, displayParticle) {
         this.modifyStat(data.StatDefinition.hp.id, -damage);
@@ -129,7 +129,7 @@ declare('Monster', function () {
             this.alive = false;
             game.stats.monstersKilled++;
         }
-    }
+    };
 
     // Add a debuff to this monster of the specified type, damage and duration
     Monster.prototype.addDebuff = function(type, damage, duration) {
@@ -229,10 +229,10 @@ declare('Monster', function () {
                 this.buffs.chillMaxDuration = duration;
                 break;
         }
-    }
+    };
 
     // Update all the debuffs on this monster
-    Monster.prototype.updateDebuffs = function() {
+    /*Monster.prototype.updateDebuffs = function() {
         // Update all the debuffs on this monster
         // If there are bleed stacks on this monster
         if (this.buffs.bleeding) {
@@ -301,7 +301,7 @@ declare('Monster', function () {
         else {
             this.canAttack = true;
         }
-    }
+    }*/
 
     var surrogate = function(){};
     surrogate.prototype = Monster.prototype;

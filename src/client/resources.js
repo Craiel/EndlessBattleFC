@@ -50,6 +50,7 @@ declare('Resources', function() {
         this.ImageIconMercenaryHover = staticData.imageRoot + "iconMercenaryHover.png";
         this.ImageIconClose = staticData.imageRoot + "iconClose.png";
         this.ImageIconCloseHover = staticData.imageRoot + "iconCloseHover.png";
+        this.ImageIconPlus = staticData.imageRoot + "iconPlus_Blue.png";
         this.ImageResurrectionBar = staticData.imageRoot + "resurrectionBar.png";
         this.ImageMonsterHealthBar = staticData.imageRoot + "monsterHealthBar.png";
 

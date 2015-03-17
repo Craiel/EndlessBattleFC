@@ -10,6 +10,7 @@ declare('CharacterDialog', function() {
     include('Panel');
     include('InventoryControl');
     include('InventorySlotControl');
+    include('Button');
 
     CharacterDialog.prototype = dialog.prototype();
     CharacterDialog.prototype.$super = parent;
@@ -128,9 +129,12 @@ declare('CharacterDialog', function() {
         }
 
         for(var category in this.statElements) {
+            var playerHasStatPoints = game.player.getStatPoints() > 0;
             for(var i = 0; i < this.statElements[category].length; i++) {
-                var statKey = this.statElements[category][i][0];
-                var element = this.statElements[category][i][2];
+                var statKey = this.statElements[category][i].id;
+                var element = this.statElements[category][i].value;
+                var button = this.statElements[category][i].button;
+
                 var stat = data.StatDefinition[statKey];
                 var value = game.player.getStat(stat.id);
                 if(stat.isMultiplier === true) {
@@ -138,6 +142,10 @@ declare('CharacterDialog', function() {
                 }
 
                 element.setText(stat.displayValue.format(value));
+
+                if(button !== undefined) {
+                    button.setVisibility(playerHasStatPoints);
+                }
             }
         }
 
@@ -179,6 +187,16 @@ declare('CharacterDialog', function() {
                 statElement.init(characterStatLine);
                 statElement.setText(stat.displayValue);
 
+                var statButton = undefined;
+                if(stat.canSpendStatPoints === true) {
+                    statButton = button.create("playerStatButton" + stat.id);
+                    statButton.callbackArgument = {game: game, statId: stat.id};
+                    statButton.callback = function(obj) { obj.data.arg.game.spendStatPoint(obj.data.arg.statId); }
+                    statButton.init(characterStatLine);
+                    statButton.addClass("characterStatButton");
+                    statButton.setImages(resources.ImageIconPlus, undefined, undefined);
+                }
+
                 var statHeader = element.create("playerStatHeader" + stat.id);
                 statHeader.templateName = "characterStatDisplayHeader";
                 statHeader.init(characterStatLine);
@@ -188,7 +206,7 @@ declare('CharacterDialog', function() {
                     this.statElements[category] = [];
                 }
 
-                this.statElements[category].push([stat.id, statHeader, statElement]);
+                this.statElements[category].push({id: stat.id, header: statHeader, value: statElement, button: statButton});
             }
         }
     }

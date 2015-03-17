@@ -112,6 +112,12 @@ declare('Storage', function() {
         return this.itemSlotSize;
     };
 
+    Storage.prototype.increaseSize = function(additionalSize) {
+        assert.isTrue(additionalSize > 0);
+
+        this.itemSlotSize += additionalSize;
+    }
+
     Storage.prototype.getSlotAt = function(index) {
         if(this.itemSlots === undefined || this.itemSlots.length < index) {
             return undefined;

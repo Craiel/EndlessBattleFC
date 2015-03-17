@@ -26,6 +26,7 @@ declare('StaticData', function () {
         this.EventGoldGain = "eventGoldGain";
         this.EventItemGain = "eventItemGain";
 
+        // These match the data in ItemSlots
         this.EquipSlotHead = "head";
         this.EquipSlotChest = "chest";
         this.EquipSlotWaist = "waist";
@@ -37,10 +38,10 @@ declare('StaticData', function () {
         this.EquipSlotMainHand = "mainHand";
         this.EquipSlotOffHand = "offHand";
         this.EquipSlotNeck = "neck";
-        this.EquipSlotRing1 = "ring1";
-        this.EquipSlotRing2 = "ring2";
-        this.EquipSlotTrinket1 = "trinket1";
-        this.EquipSlotTrinket2 = "trinket2";
+        this.EquipSlotRing1 = "ring|1";
+        this.EquipSlotRing2 = "ring|2";
+        this.EquipSlotTrinket1 = "trinket|1";
+        this.EquipSlotTrinket2 = "trinket|2";
 
         this.EquipSlots = [this.EquipSlotHead, this.EquipSlotChest, this.EquipSlotWaist, this.EquipSlotLegs,
             this.EquipSlotFeet, this.EquipSlotShoulder, this.EquipSlotWrist, this.EquipSlotHands, this.EquipSlotMainHand,

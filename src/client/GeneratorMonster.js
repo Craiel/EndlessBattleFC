@@ -28,7 +28,7 @@ declare('GeneratorMonster', function () {
         this.generatorInit();
 
         this.rebuildLookupData();
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // monster functions
@@ -45,7 +45,7 @@ declare('GeneratorMonster', function () {
         monsterData.setStats(this.getMonsterStats(level, rarity.secondaryStatRolls));
 
         return monsterData;
-    }
+    };
 
     GeneratorMonster.prototype.getMonsterRarity = function() {
         var rarityRandom = Math.random();
@@ -67,7 +67,7 @@ declare('GeneratorMonster', function () {
         }
 
         return rarity;
-    }
+    };
 
     GeneratorMonster.prototype.getMonsterStats = function(level, secondaryRolls) {
         var stats = {};
@@ -115,20 +115,7 @@ declare('GeneratorMonster', function () {
         console.log("Final Stats");
         console.log(stats);
         return stats;
-    }
-
-    GeneratorMonster.prototype.getMultiplierStatValue = function() {
-        var precision = 1000;
-        return Math.floor(coreUtils.getRandom(1.01, 1.1) * precision) / precision;
-    }
-
-    GeneratorMonster.prototype.getStatValue = function(level, multiplier) {
-        if(level < 1) {
-            return 1;
-        }
-
-        return Math.floor(coreUtils.getSigma(level) * Math.pow(multiplier, level));
-    }
+    };
 
     GeneratorMonster.prototype.rebuildLookupData = function() {
         this.rarityList.length = 0;
@@ -139,11 +126,11 @@ declare('GeneratorMonster', function () {
         }
 
         this.rarityList.sort(this.sortMonsterRarity);
-    }
+    };
 
     GeneratorMonster.prototype.sortMonsterRarity = function(a, b) {
         return a.spawnChance > b.spawnChance;
-    }
+    };
 
     return new GeneratorMonster();
 

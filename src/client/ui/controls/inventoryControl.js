@@ -24,7 +24,7 @@ declare('InventoryControl', function() {
         this.isDynamic = false;
 
         this.fixedSlotSize = 40;
-        this.fixedSlotRowCount = 9;
+        this.fixedSlotRowCount = 14;
 
         this.elementSize = undefined;
 

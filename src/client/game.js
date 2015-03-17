@@ -21,6 +21,7 @@ declare('Game', function() {
     include('Data');
     include('CoreUtils');
     include('GeneratorMonster');
+    include('GeneratorItem');
     include('StatUtils');
     include('CombatUtils');
     include('EventAggregate');
@@ -59,7 +60,7 @@ declare('Game', function() {
             Back2: undefined,
             Back3: undefined,
             Back4: undefined
-        }
+        };
 
         this.legacyConstruct();
     }
@@ -73,6 +74,7 @@ declare('Game', function() {
 
         statUtils.init();
         generatorMonster.init();
+        generatorItem.init();
 
         this.player.init();
 
@@ -84,7 +86,7 @@ declare('Game', function() {
         questManager.init();
 
         this.load();
-    }
+    };
 
     Game.prototype.componentUpdate = Game.prototype.update;
     Game.prototype.update = function(gameTime) {
@@ -112,7 +114,7 @@ declare('Game', function() {
         this.stats.update(gameTime);
 
         return true;
-    }
+    };
 
     Game.prototype.updateAutoSave = function(gameTime) {
         if(this.autoSaveTime  === undefined) {
@@ -125,7 +127,7 @@ declare('Game', function() {
             this.save();
             this.autoSaveTime = gameTime.current;
         }
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // player functions
@@ -135,7 +137,7 @@ declare('Game', function() {
         if(this.player.alive !== true && this.inBattle === true) {
             this.leaveBattle();
         }
-    }
+    };
 
     Game.prototype.gainXp = function(value, source) {
         if(isNaN(value) || value === undefined) {
@@ -146,7 +148,7 @@ declare('Game', function() {
         this.player.modifyStat(data.StatDefinition.xp.id, value);
 
         eventAggregate.publish(staticData.EventXpGain, { value: value });
-    }
+    };
 
     Game.prototype.gainGold = function(value, source) {
         if(isNaN(value) || value === undefined) {
@@ -160,7 +162,21 @@ declare('Game', function() {
         if(source !== staticData.GoldSourceMercenary) {
             eventAggregate.publish(staticData.EventGoldGain, {value: value});
         }
-    }
+    };
+
+    Game.prototype.spendStatPoint = function(statId) {
+        if(this.player.getStatPoints() <= 0) {
+            return;
+        }
+
+        var stat = data.StatDefinition[statId];
+        if(stat === undefined) {
+            return;
+        }
+
+        this.player.modifyStat(stat.id, 1);
+        this.player.modifyStatPoints(-1);
+    };
 
     // ---------------------------------------------------------------------------
     // mercenary functions
@@ -179,12 +195,12 @@ declare('Game', function() {
 
         this[saveKeys.idnMercenariesPurchased][key]++;
         this.calculateMercenaryGps();
-    }
+    };
 
     Game.prototype.getMercenaryCost = function(key) {
         var owned = this.getMercenaryCount(key);
         return Math.floor(data.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
-    }
+    };
 
     Game.prototype.getMercenaryCount = function(key) {
         if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
@@ -192,11 +208,11 @@ declare('Game', function() {
         }
 
         return this[saveKeys.idnMercenariesPurchased][key];
-    }
+    };
 
     Game.prototype.mercenaryGps = function(key) {
         return this.mercenaryGps;
-    }
+    };
 
     Game.prototype.calculateMercenaryGps = function() {
         var gps = 0;
@@ -206,7 +222,7 @@ declare('Game', function() {
         }
 
         this.mercenaryGps = gps;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // monster functions
@@ -231,7 +247,7 @@ declare('Game', function() {
         if(aliveMonsters <= 0) {
             this.respawnMonsters();
         }
-    }
+    };
 
     Game.prototype.killMonster = function(position) {
         assert.isDefined(this.monsters[position], "Tried to kill non-existing monster");
@@ -249,7 +265,7 @@ declare('Game', function() {
 
         this.monsters[position].remove();
         this.monsters[position] = undefined;
-    }
+    };
 
     Game.prototype.despawnMonsters = function() {
         for(var key in this.monsters) {
@@ -259,7 +275,7 @@ declare('Game', function() {
 
             this.monsters[key] = undefined;
         }
-    }
+    };
 
     Game.prototype.respawnMonsters = function() {
         this.despawnMonsters();
@@ -270,7 +286,7 @@ declare('Game', function() {
         this.monsters.Center.init();
         this.monsters.Center.level = level;
         this.monsters.Center.heal();
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // battle functions
@@ -278,7 +294,7 @@ declare('Game', function() {
     Game.prototype.changeBattleLevel = function(value) {
         this[saveKeys.idnGameBattleLevel] += value;
         this.checkBattleLevel();
-    }
+    };
 
     Game.prototype.checkBattleLevel = function() {
         var max = this.player.getLevel();
@@ -287,23 +303,23 @@ declare('Game', function() {
         } else if (this[saveKeys.idnGameBattleLevel] > max) {
             this[saveKeys.idnGameBattleLevel] = max;
         }
-    }
+    };
 
     Game.prototype.getBattleLevel = function() {
         return this[saveKeys.idnGameBattleLevel];
-    }
+    };
 
     Game.prototype.setBattleLevel = function(value) {
         this[saveKeys.idnGameBattleDepth] = value;
         this.checkBattleLevel();
-    }
+    };
 
     Game.prototype.enterBattle = function() {
         assert.isFalse(this.inBattle);
         this.inBattle = true;
 
         this.respawnMonsters();
-    }
+    };
 
     Game.prototype.leaveBattle = function() {
         assert.isTrue(this.inBattle);
@@ -311,7 +327,7 @@ declare('Game', function() {
         this.inBattle = false;
 
         this.despawnMonsters();
-    }
+    };
 
     Game.prototype.attack = function() {
         // Todo: This is for testing purpose
@@ -320,7 +336,17 @@ declare('Game', function() {
 
         eventAggregate.publish(staticData.EventCombatHit, playerHit);
         eventAggregate.publish(staticData.EventCombatHit, monsterHit);
-    }
+    };
+
+    // ---------------------------------------------------------------------------
+    // item functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.generateRandomItem = function() {
+        var test = generatorItem.generate(this.player.getLevel());
+        console.log("Item Generated:");
+        console.log(test);
+        return test;
+    };
 
     // ---------------------------------------------------------------------------
     // save / load functions
@@ -329,22 +355,22 @@ declare('Game', function() {
         save.save();
 
         this.legacySave();
-    }
+    };
 
     Game.prototype.load = function() {
         save.load();
         this.legacyLoad();
-    }
+    };
 
     Game.prototype.reset = function() {
         save.reset();
         this.legacyReset();
-    }
+    };
 
     Game.prototype.onLoad = function() {
         // Perform some initial operation after being loaded
         this.calculateMercenaryGps();
-    }
+    };
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,7 +389,7 @@ declare('Game', function() {
         this.stats.init();
         this.options = options.create();
         this.options.init();
-    }
+    };
 
 
     /*Game.prototype.attackOld = function() {
@@ -439,7 +465,7 @@ declare('Game', function() {
             powerShardsReward = 0;
         }
         return powerShardsReward;
-    }
+    };
 
     Game.prototype.legacySave = function() {
         this.inventory.save();
@@ -449,7 +475,7 @@ declare('Game', function() {
         statUpgradeManager.save();
         this.stats.save();
         this.options.save();
-    }
+    };
 
     Game.prototype.legacyLoad = function() {
         this.inventory.load();
@@ -459,7 +485,7 @@ declare('Game', function() {
         statUpgradeManager.load();
         this.stats.load();
         this.options.load();
-    }
+    };
 
     Game.prototype.legacyReset = function() {
         // Upgrades
@@ -480,7 +506,7 @@ declare('Game', function() {
         }
 
         $("#gps").css('color', '#ffd800');
-    }
+    };
 
     return new Game();
 

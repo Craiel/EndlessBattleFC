@@ -31,10 +31,11 @@ declare('Player', function () {
         save.register(this, saveKeys.idnName).withDefault("Hero");
         save.register(this, saveKeys.idnPlayerBaseStats).asJson();
         save.register(this, saveKeys.idnPlayerSkillPoints).asNumber().withDefault(0);
+        save.register(this, saveKeys.idnPlayerStatPoints).asNumber().withDefault(0);
         save.register(this, saveKeys.idnPlayerStorageSlots).asJsonArray().withDefault([]);
-        save.register(this, saveKeys.idnLevel).asNumber().withDefault(1).withCallback(false, true, false);
-
         save.register(this, saveKeys.idnPlayerEquip).asJson();
+        save.register(this, saveKeys.idnPlayerInventoryPurchased).asNumber().withDefault(0);
+        save.register(this, saveKeys.idnLevel).asNumber().withDefault(1).withCallback(false, true, false);
 
         this.storage = undefined;
 
@@ -53,6 +54,9 @@ declare('Player', function () {
         this.resurrectionDelayDecreaseInterval = 30000;
         this.resurrectionDelayDecreaseTime = 0;
 
+        this.slotCountBasic = 14;
+        this.slotCountPerPurchase = 14;
+
         this.legacyConstruct();
     }
 
@@ -66,8 +70,8 @@ declare('Player', function () {
         statUtils.initStats(this[saveKeys.idnPlayerBaseStats]);
 
         this.storage = storage.create(this.id);
-        this.storage.init(18);
-    }
+        this.storage.init(this.slotCountBasic);
+    };
 
     Player.prototype.actorUpdate = Player.prototype.update;
     Player.prototype.update = function(gameTime) {
@@ -77,6 +81,7 @@ declare('Player', function () {
 
         this.updateExperience(gameTime);
         this.updateEquipment(gameTime);
+        this.updateInventory(gameTime);
 
         // Perform some basic operations that happen when the player is alive
         if(this.alive === true) {
@@ -92,57 +97,77 @@ declare('Player', function () {
         }
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // getters / setters
     // ---------------------------------------------------------------------------
     Player.prototype.getBaseStats = function() {
         return this[saveKeys.idnPlayerBaseStats];
-    }
+    };
 
     Player.prototype.getName = function() {
         return this[saveKeys.idnName];
-    }
+    };
 
     Player.prototype.setName = function(name) {
         this[saveKeys.idnName] = name;
-    }
+    };
 
     Player.prototype.getLevel = function() {
         return this[saveKeys.idnLevel];
-    }
+    };
 
     Player.prototype.getAverageDamage = function() {
         var minDamage = this.getStat(data.StatDefinition.dmgMin);
         return minDamage + (this.getStat(data.StatDefinition.dmgMax) - minDamage);
-    }
+    };
 
     Player.prototype.getSkillPoints = function() {
         return this[saveKeys.idnPlayerSkillPoints];
-    }
+    };
 
     Player.prototype.getStorage = function() {
         return this.storage;
-    }
+    };
 
     Player.prototype.modifySkillPoints = function(value) {
         assert.isDefined(value);
         assert.isNotNaN(value);
 
         this[saveKeys.idnPlayerSkillPoints] += value;
-    }
+    };
+
+    Player.prototype.getStatPoints = function() {
+        return this[saveKeys.idnPlayerStatPoints];
+    };
+
+    Player.prototype.modifyStatPoints = function(value) {
+        assert.isDefined(value);
+        assert.isNotNaN(value);
+
+        this[saveKeys.idnPlayerStatPoints] += value;
+    };
 
     // ---------------------------------------------------------------------------
     // player functions
     // ---------------------------------------------------------------------------
+    Player.prototype.updateInventory = function(gameTime) {
+        var currentSlotCount = this.storage.getSize();
+        var slotCount = this.slotCountBasic + (this.slotCountPerPurchase * this[saveKeys.idnPlayerInventoryPurchased]);
+        if(currentSlotCount < slotCount) {
+            // Raise the inventory slot count if we can have more
+            this.storage.increaseSize(slotCount - currentSlotCount);
+        }
+    };
+
     Player.prototype.updateEquipment = function(gameTime) {
         for(var i = 0; i < staticData.EquipSlots.length; i++) {
             if(this[saveKeys.idnPlayerEquip][staticData.EquipSlots[i]] === undefined) {
                 this[saveKeys.idnPlayerEquip][staticData.EquipSlots[i]] = null;
             }
         }
-    }
+    };
 
     Player.prototype.updateExperience = function(gameTime) {
         this.updateExperienceRequired();
@@ -153,20 +178,27 @@ declare('Player', function () {
         }
 
         this.levelUp();
-    }
+    };
 
     Player.prototype.updateExperienceRequired = function() {
         var level = this.getLevel();
         this.experienceRequired = Math.ceil((coreUtils.getSigma(level) * 2) * Math.pow(1.05, level));
-    }
+    };
 
     Player.prototype.levelUp = function() {
         this.setStat(data.StatDefinition.xp.id, 0);
         this[saveKeys.idnLevel]++;
-        this[saveKeys.idnPlayerSkillPoints] += 5;
+        this.modifySkillPoints(1);
+        this.modifyStatPoints(5);
+
+        // Add 1-2 to the primary attributes
+        this.modifyStat(data.StatDefinition.str.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(data.StatDefinition.agi.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(data.StatDefinition.int.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(data.StatDefinition.sta.id, coreUtils.getRandomInt(1, 2));
 
         this.updateExperienceRequired();
-    }
+    };
 
     Player.prototype.processResurrectionDelay = function(gameTime) {
         if(this.resurrectionDelayDecreaseTime === 0) {
@@ -183,7 +215,7 @@ declare('Player', function () {
             this.resurrectionDelayDecreaseTime = gameTime.current + this.resurrectionDelayDecreaseInterval;
             log.info("Decreasing res time to " + this.resurrectionDelay);
         }
-    }
+    };
 
     Player.prototype.processResurrection = function(gameTime) {
         assert.isFalse(this.alive);
@@ -209,11 +241,11 @@ declare('Player', function () {
             this.resurrectionDelayDecreaseTime = gameTime.current + this.resurrectionDelayDecreaseInterval;
             log.info("Increasing res time to " + this.resurrectionDelay);
         }
-    }
+    };
 
     Player.prototype.getResurrectionTime = function() {
         return this.resurrectionDelay;
-    }
+    };
 
     Player.prototype.getResurrectionTimeRemaining = function(gameTime) {
         assert.isFalse(this.alive);
@@ -227,7 +259,7 @@ declare('Player', function () {
         }
 
         return this.resurrectionTime - gameTime.current;
-    }
+    };
 
     Player.prototype.onLoad = function() {
         // Update the storage slot data with the object from the save
@@ -236,7 +268,7 @@ declare('Player', function () {
         // TODO:
         this.baseExperienceRequired = 10;
         this.experienceRequired = Math.ceil(utils.Sigma(this[saveKeys.idnLevel] * 2) * Math.pow(1.05, this[saveKeys.idnLevel]) + this.baseExperienceRequired);
-    }
+    };
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +294,7 @@ declare('Player', function () {
         statUtils.initStats(this.baseItemBonuses);
 
         // All the special effects from items the player has
-        this.effects = new Array();
+        this.effects = [];
 
         // Resources
         this.lastGoldGained = 0;
@@ -275,7 +307,7 @@ declare('Player', function () {
         // Abilities
         this.skillPointsSpent = 0;
         this.abilities = abilities.create();
-    }
+    };
 
     /*// Stat calculation functions
      this.getMaxHealth = function() {
@@ -343,14 +375,14 @@ declare('Player', function () {
 
     // Get the power of a certain special effect
     Player.prototype.getEffectsOfType = function(type) {
-        var allEffects = new Array();
+        var allEffects = [];
         for (var x = 0; x < this.effects.length; x++) {
             if (this.effects[x].type == type) {
                 allEffects.push(this.effects[x]);
             }
         }
         return allEffects;
-    }
+    };
 
     // Increase the power of an ability
     Player.prototype.increaseAbilityPower = function(name) {
@@ -373,7 +405,7 @@ declare('Player', function () {
         // Alter the player's skill points
         this[saveKeys.idnPlayerSkillPoints]--;
         this.skillPointsSpent++;
-    }
+    };
 
     // Use all the abilities the player has
     /*Player.prototype.useAbilities = function() {
@@ -450,7 +482,7 @@ declare('Player', function () {
         this.modifyStat(data.StatDefinition.gold.id, amount);
         this.lastGoldGained = amount;
         game.stats.goldEarned += this.lastGoldGained;
-    }
+    };
 
     // Gain an amount of experience, this can include bonuses from exp gain and it also can not
     Player.prototype.gainExperience = function(amount, includeBonuses) {
@@ -468,7 +500,7 @@ declare('Player', function () {
         for(var i = 0; i < levels; i++) {
             this.levelUp();
         }
-    }
+    };
 
     Player.prototype.legacyLevelUp = function() {
         this.experienceRequired = Math.ceil(utils.Sigma(this[saveKeys.idnLevel] * 2) * Math.pow(1.05, this[saveKeys.idnLevel]) + this.baseExperienceRequired);
@@ -481,7 +513,7 @@ declare('Player', function () {
         // Add stats to the player for leveling up
         this.levelUpBonuses.health += Math.floor(this.baseLevelUpBonuses.health * (Math.pow(1.01, this[saveKeys.idnLevel] - 1)));
         this.levelUpBonuses.hp5 += Math.floor(this.baseLevelUpBonuses.hp5 * (Math.pow(1.01, this[saveKeys.idnLevel] - 1)));
-    }
+    };
 
     // Gain the stats from an item
     Player.prototype.gainItemsStats = function(item) {
@@ -506,7 +538,7 @@ declare('Player', function () {
         for (var x = 0; x < item.effects.length; x++) {
             this.effects.push(item.effects[x]);
         }
-    }
+    };
 
     // Lose the stats from an item
     Player.prototype.loseItemsStats = function(item) {
@@ -538,7 +570,7 @@ declare('Player', function () {
                 }
             }
         }
-    }
+    };
 
     // Add a debuff to the player of the specified type, damage and duration
     Player.prototype.addDebuff = function(type, damage, duration) {
@@ -562,12 +594,12 @@ declare('Player', function () {
                 this.buffs.burningMaxDuration = duration;
                 break;
         }
-    }
+    };
 
 
 
     // Update all the debuffs on the player
-    Player.prototype.updateDebuffs = function() {
+    /*Player.prototype.updateDebuffs = function() {
         // If the player is bleeding
         if (this.buffs.bleeding) {
             // Cause the player to take damage
@@ -621,7 +653,7 @@ declare('Player', function () {
                 this.buffs.burning = false;
             }
         }
-    }
+    };*/
 
     // Save all the player's data
     /*this.save = function() {

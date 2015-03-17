@@ -56,11 +56,11 @@ declare('Button', function() {
 
         this._updateImages();
         this._setupEvents();
-    }
+    };
 
     Button.prototype.setButtonText = function(text) {
         $('#' + this.id + 'Text').text(text);
-    }
+    };
 
     Button.prototype._updateImages = function() {
         if(this.foregroundImage !== undefined) {
@@ -68,7 +68,7 @@ declare('Button', function() {
         }
 
         this.getMainElement().mouseout();
-    }
+    };
 
     Button.prototype._setupEvents = function() {
         if(this.hoverImage !== undefined) {
@@ -87,7 +87,7 @@ declare('Button', function() {
 
         // Fire once to set the image
         this.getMainElement().mouseout();
-    }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = Button.prototype;
