@@ -43,42 +43,96 @@ declare('GeneratorItem', function () {
         var itemData = { id: this.getNextItemId(), name: undefined, stats: {} };
         statUtils.initStats(itemData.stats, false);
 
-        // Rarity: multiplier	dropChance	secondaryStatRolls	socketRolls
-        // Slot: maxSockets
-        var rarity = this.getItemRarity();
+        // Find out which slot we are generating for
         var slot = coreUtils.pickRandomProperty(data.ItemSlots);
-
-        var rarityStats = statUtils.getStatsFromData(rarity);
-        var slotStats = statUtils.getStatsFromData(slot);
-
-        statUtils.doMergeStats(rarityStats, itemData.stats);
-        statUtils.doMergeStats(slotStats, itemData.stats);
-
-        // Determine if we are adding sockets and calculate the secondary stats
-        var socketCount = this.getSocketCount(slot.maxSockets, rarity.socketRolls);
-        var secondaryStatRolls = rarity.secondaryStatRolls - socketCount;
-
-        switch(rarity.id) {
-            case "unique": {
-
-            }
-
-            case "set": {
-
-            }
-
-            default: {
-                var stats = this.getItemStats(level, secondaryStatRolls);
-                statUtils.doMergeStats(stats, itemData.stats);
-            }
+        itemData.slot = slot.id;
+        if(itemData.slot === "weapon") {
+            // We are generating weapons
+            this.generateWeapon(level, itemData);
+        } else {
+            // We are generating armor
+            this.generateArmor(level, itemData);
         }
 
-        console.log("ItemGenerate: " + rarity.name + " - " + slot.id);
-        console.log(itemData);
+        var prefix = coreUtils.pickRandomProperty(data.ItemPrefix);
+        var suffix = coreUtils.pickRandomProperty(data.ItemSuffix);
+        itemData.name = prefix +" " + itemData.typeName + " " + suffix;
+
         return itemData;
     };
 
-    GeneratorItem.prototype.getItemStats = function(level, secondaryRolls) {
+    GeneratorItem.prototype.generateWeapon = function(level, itemData) {
+        // Generate the rarity first
+        var rarity = this.getItemRarity();
+        itemData.rarity = rarity.id;
+
+        var type = coreUtils.pickRandomProperty(data.WeaponTypes);
+        itemData.type = type.id;
+        itemData.allowMainHand = type.allowMainHand;
+        itemData.allowOffHand = type.allowOffHand;
+        itemData.twoHand = type.is2hand;
+        itemData.baseTypeName = type.baseTypeName;
+
+        itemData.typeName = coreUtils.pickRandomProperty(data["WeaponNames_" + itemData.type]);
+
+        console.log("Found Weapon Type: " );
+        console.log(itemData);
+
+        switch(itemData.rarity) {
+            case "unique": {
+                log.warning("Unique items not implemented!");
+                return undefined;
+            }
+
+            case "set": {
+                log.warning("Set items not implemented!");
+                return undefined;
+            }
+
+            default: {
+                this.generateDynamicItemStats(level, rarity, itemData);
+            }
+        }
+    }
+
+    GeneratorItem.prototype.generateArmor = function(level, itemData) {
+        // Generate the rarity first
+        var rarity = this.getItemRarity();
+        itemData.rarity = rarity.id;
+
+        var type = data.ArmorTypes[itemData.slot];
+        itemData.type = type.id;
+        itemData.baseTypeName = type.name;
+        itemData.typeName = coreUtils.pickRandomProperty(data["ArmorNames_" + type.id]);
+
+        switch(itemData.rarity) {
+            case "unique": {
+                log.warning("Unique items not implemented!");
+                return undefined;
+            }
+
+            case "set": {
+                log.warning("Set items not implemented!");
+                return undefined;
+            }
+
+            default: {
+                this.generateDynamicItemStats(level, rarity, itemData);
+            }
+        }
+    }
+
+    GeneratorItem.prototype.generateDynamicItemStats = function(level, rarity, itemData) {
+        // Determine if we are adding sockets and calculate the secondary stats
+        var slot = data.ItemSlots[itemData.slot];
+        var socketCount = this.getSocketCount(slot.maxSockets, rarity.socketRolls);
+        var secondaryStatRolls = rarity.secondaryStatRolls - socketCount;
+
+        var stats = this.getItemStats(level, secondaryStatRolls, rarity.multiplier);
+        statUtils.doMergeStats(stats, itemData.stats);
+    }
+
+    GeneratorItem.prototype.getItemStats = function(level, secondaryRolls, multiplier) {
         var stats = {};
         statUtils.initStats(stats, false);
 
@@ -87,17 +141,17 @@ declare('GeneratorItem', function () {
         }
 
         var primaryStat = this.getRandomPrimaryStat();
-        stats[primaryStat.id] = this.getStatValue(level, 1.01);
+        stats[primaryStat.id] = this.getStatValue(level, 1.01, multiplier);
 
         console.log("Rolling Secondary stats " + secondaryRolls);
         for(var i = 0; i < secondaryRolls; i++) {
             var secondaryStat = this.getRandomSecondaryStat();
             var temp = {};
             if(secondaryStat.isMultiplier === true) {
-                temp[secondaryStat.id] = this.getMultiplierStatValue();
+                temp[secondaryStat.id] = this.getMultiplierStatValue(multiplier);
                 console.log("Multiplier Roll");
             } else {
-                temp[secondaryStat.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
+                temp[secondaryStat.id] = this.getStatValue(Math.ceil(level / 2), 1.01, multiplier);
             }
 
             console.log("Secondary: " + secondaryStat.id + ": " + temp[secondaryStat.id]);

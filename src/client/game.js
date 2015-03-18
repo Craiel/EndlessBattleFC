@@ -3,18 +3,10 @@ declare('Game', function() {
     include('Assert');
     include('Component');
     include('Player');
-    include('Inventory');
-    include('Equipment');
     include('Stats');
     include('Options');
     include('StaticData');
-    include('UpgradeManager');
     include('ParticleManager');
-    include('MonsterCreator');
-    include('ItemCreator');
-    include('NameGenerator');
-    include('StatUpgradeManager');
-    include('QuestManager');
     include('Resources');
     include('Save');
     include('SaveKeys');
@@ -81,9 +73,7 @@ declare('Game', function() {
         ////////////////////// TODO: Remove / refactor below
         this.reset();
 
-        upgradeManager.init();
         particleManager.init();
-        questManager.init();
 
         this.load();
     };
@@ -107,9 +97,6 @@ declare('Game', function() {
 
         /////////////////////TODO: Remove / refactor below
 
-        this.inventory.update(gameTime);
-        questManager.update(gameTime);
-        upgradeManager.update(gameTime);
         particleManager.update(gameTime);
         this.stats.update(gameTime);
 
@@ -163,6 +150,14 @@ declare('Game', function() {
             eventAggregate.publish(staticData.EventGoldGain, {value: value});
         }
     };
+
+    Game.prototype.gainItem = function(item) {
+        if(item === undefined) {
+            return;
+        }
+
+        this.player.receiveItem(item);
+    }
 
     Game.prototype.spendStatPoint = function(statId) {
         if(this.player.getStatPoints() <= 0) {
@@ -258,6 +253,12 @@ declare('Game', function() {
 
         if(xp <= 0 || gold <= 0) {
             log.warning("Warning, Monster gave no gold or xp!");
+        }
+
+        // For now just flat chance of 15% to spawn an item
+        if(Math.random() <= 0.15) {
+            item = this.generateRandomItem();
+            this.gainItem(item, staticData.ItemSourceMonster);
         }
 
         this.gainXp(xp, staticData.XpSourceMonster);
@@ -364,7 +365,6 @@ declare('Game', function() {
 
     Game.prototype.reset = function() {
         save.reset();
-        this.legacyReset();
     };
 
     Game.prototype.onLoad = function() {
@@ -379,11 +379,6 @@ declare('Game', function() {
 
     // Player
     Game.prototype.legacyConstruct = function() {
-        this.inventory = inventory.create();
-        this.inventory.init();
-        this.equipment = equipment.create();
-        this.equipment.init();
-
         // Other
         this.stats = stats.create();
         this.stats.init();
@@ -468,44 +463,13 @@ declare('Game', function() {
     };
 
     Game.prototype.legacySave = function() {
-        this.inventory.save();
-        this.equipment.save();
-        questManager.save();
-        upgradeManager.save();
-        statUpgradeManager.save();
         this.stats.save();
         this.options.save();
     };
 
     Game.prototype.legacyLoad = function() {
-        this.inventory.load();
-        this.equipment.load();
-        questManager.load();
-        upgradeManager.load();
-        statUpgradeManager.load();
         this.stats.load();
         this.options.load();
-    };
-
-    Game.prototype.legacyReset = function() {
-        // Upgrades
-        // Remove all the upgrade purchase buttons
-        var currentElement;
-        for (var x = 0; x < upgradeManager.upgradesAvailable; x++) {
-            currentElement = document.getElementById('upgradePurchaseButton' + (x + 1));
-            currentElement.parentNode.removeChild(currentElement);
-        }
-
-
-        // Reset all the inventory and equipment slots
-        for (var x = 0; x < this.inventory.slots.length; x++) {
-            $("#inventoryItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
-        }
-        for (var x = 0; x < this.equipment.slots.length; x++) {
-            $(".equipItem" + (x + 1)).css('background', 'url("' + resources.ImageNull + '")');
-        }
-
-        $("#gps").css('color', '#ffd800');
     };
 
     return new Game();

@@ -411,39 +411,6 @@ windowArea {
     right: 0;
     z-index: 8;
 }
-#inventoryWindow {
-    background-image: url("images/inventory2.png");
-    position: absolute;
-    right: 50px;
-    bottom: 30px;
-    width: 187px;
-    height: 220px;
-    z-index: 8;
-}
-#inventoryWindowTitle {
-    font-size: 16px; 
-    text-align: center;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    position: absolute; 
-    top: 3px; 
-    left: 3px;
-    width: 187px;
-    height: 16px;
-}
-#inventoryWindowSellAllButton {
-    font-size: 14px;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    position: absolute;
-    right: 4px;
-    top: 203px;
-}
-#inventoryWindowSellAllButton:hover {
-    color: #e3e3e3;
-    cursor: pointer;
-}
-
 .closeButton {
     background: url("images/closeButton.png");
     position: absolute;

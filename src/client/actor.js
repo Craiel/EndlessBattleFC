@@ -5,7 +5,6 @@ declare('Actor', function () {
     include('Save');
     include('SaveKeys');
     include('StaticData');
-    include('BuffSet');
     include('Data');
     include('Storage');
     include('StatUtils');

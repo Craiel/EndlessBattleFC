@@ -36,17 +36,25 @@ declare('Generator', function () {
         return coreUtils.pickRandomProperty(statUtils.secondaryStats);
     };
 
-    Generator.prototype.getStatValue = function(level, multiplier) {
+    Generator.prototype.getStatValue = function(level, multiplier, extraMultiplier) {
         if(level < 1) {
             return 1;
         }
 
-        return Math.floor(coreUtils.getSigma(level) * Math.pow(multiplier, level));
+        if(extraMultiplier === undefined) {
+            extraMultiplier = 1;
+        }
+
+        return Math.floor((coreUtils.getSigma(level) * Math.pow(multiplier, level)) * extraMultiplier);
     };
 
-    Generator.prototype.getMultiplierStatValue = function() {
+    Generator.prototype.getMultiplierStatValue = function(extraMultiplier) {
+        if(extraMultiplier === undefined) {
+            extraMultiplier = 1;
+        }
+
         var precision = 1000;
-        return Math.floor(coreUtils.getRandom(1.01, 1.1) * precision) / precision;
+        return Math.floor((coreUtils.getRandom(1.01, 1.1) * precision) * extraMultiplier) / precision;
     };
 
     var surrogate = function(){};

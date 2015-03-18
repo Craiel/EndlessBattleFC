@@ -1,6 +1,5 @@
 declare('Stats', function () {
     include('Component');
-    include('UpgradeManager');
     include('Data');
 
     Stats.prototype = component.prototype();
@@ -35,10 +34,6 @@ declare('Stats', function () {
         return game.player.gold;
     }
 
-    Stats.prototype.getUpgradesUnlocked = function() {
-        return upgradeManager.upgradesPurchased;
-    }
-
     Stats.prototype.componentUpdate = Stats.prototype.update;
     Stats.prototype.update = function(gameTime) {
         if(this.componentUpdate(gameTime) !== true) {
@@ -52,7 +47,7 @@ declare('Stats', function () {
         document.getElementById("statsWindowStartDateValue").innerHTML = this.startDate.toDateString() + " " + this.startDate.toLocaleTimeString();
         document.getElementById("statsWindowGoldFromMonstersValue").innerHTML = this.goldFromMonsters.formatMoney(2);
         document.getElementById("statsWindowGoldFromQuestsValue").innerHTML = this.goldFromQuests.formatMoney(0);
-        document.getElementById("statsWindowUpgradesUnlockedValue").innerHTML = this.getUpgradesUnlocked().formatMoney(0);
+        //document.getElementById("statsWindowUpgradesUnlockedValue").innerHTML = this.getUpgradesUnlocked().formatMoney(0);
         document.getElementById("statsWindowExperienceValue").innerHTML = game.player.getStat(data.StatDefinition.xp.id).formatMoney(2);
         document.getElementById("statsWindowExperienceEarnedValue").innerHTML = this.experienceEarned.formatMoney(2);
         document.getElementById("statsWindowExperienceFromMonstersValue").innerHTML = this.experienceFromMonsters.formatMoney(2);
