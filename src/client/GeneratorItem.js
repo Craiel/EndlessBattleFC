@@ -31,14 +31,15 @@ declare('GeneratorItem', function () {
         this.generatorInit();
 
         this.rebuildLookupData();
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // monster functions
     // ---------------------------------------------------------------------------
     GeneratorItem.prototype.getNextItemId = function() {
         return this[saveKeys.idnNextItemId]++;
-    }
+    };
+
     GeneratorItem.prototype.generate = function(level) {
         var itemData = { id: this.getNextItemId(), name: undefined, stats: {} };
         statUtils.initStats(itemData.stats, false);
@@ -93,7 +94,7 @@ declare('GeneratorItem', function () {
                 this.generateDynamicItemStats(level, rarity, itemData);
             }
         }
-    }
+    };
 
     GeneratorItem.prototype.generateArmor = function(level, itemData) {
         // Generate the rarity first
@@ -120,7 +121,7 @@ declare('GeneratorItem', function () {
                 this.generateDynamicItemStats(level, rarity, itemData);
             }
         }
-    }
+    };
 
     GeneratorItem.prototype.generateDynamicItemStats = function(level, rarity, itemData) {
         // Determine if we are adding sockets and calculate the secondary stats
@@ -130,7 +131,7 @@ declare('GeneratorItem', function () {
 
         var stats = this.getItemStats(level, secondaryStatRolls, rarity.multiplier);
         statUtils.doMergeStats(stats, itemData.stats);
-    }
+    };
 
     GeneratorItem.prototype.getItemStats = function(level, secondaryRolls, multiplier) {
         var stats = {};

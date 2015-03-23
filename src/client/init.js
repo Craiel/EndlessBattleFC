@@ -31,4 +31,8 @@ var StrLoc = function(str) {
 Endless.isDebug = true;
 // #EndIf
 
-declare("$", jQuery);
+if (typeof window !== 'undefined') {
+    declare("$", jQuery);
+} else {
+    console.log("Running in non-browser mode, exiting...");
+}
