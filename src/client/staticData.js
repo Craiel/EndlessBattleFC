@@ -13,6 +13,8 @@ declare('StaticData', function () {
         this.dialogDefaultZIndex = 5;
         this.dragZIndex = 100;
 
+        this.tooltipOffset = 10;
+
         this.mercenaryPriceIncreaseFactor = 1.15;
 
         this.XpSourceMonster = 0;
@@ -27,6 +29,7 @@ declare('StaticData', function () {
         this.EventXpGain = "eventXpGain";
         this.EventGoldGain = "eventGoldGain";
         this.EventItemGain = "eventItemGain";
+        this.EventTooltip = "eventTooltip";
 
         // These match the data in ItemSlots
         this.EquipSlotHead = "head";

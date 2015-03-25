@@ -41,30 +41,35 @@ declare('SystemDialog', function() {
         this.inventoryWindowButton.callbackArgument = this;
         this.inventoryWindowButton.init(this.getContentArea());
         this.inventoryWindowButton.setImages(resources.ImageIconBackpack, resources.ImageIconBackpackHover, undefined);
+        this.inventoryWindowButton.setTooltip("Inventory");
 
         this.characterWindowButton = button.create("characterWindowButton");
         this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
         this.characterWindowButton.callbackArgument = this;
         this.characterWindowButton.init(this.getContentArea());
         this.characterWindowButton.setImages(resources.ImageIconCharacter, resources.ImageIconCharacterHover, undefined);
+        this.characterWindowButton.setTooltip("Character");
 
         this.questWindowButton = button.create("questWindowButton");
         this.questWindowButton.callback = function(obj) { obj.data.arg.toggleQuestWindow(); };
         this.questWindowButton.callbackArgument = this;
         this.questWindowButton.init(this.getContentArea());
         this.questWindowButton.setImages(resources.ImageIconQuest, resources.ImageIconQuestHover, undefined);
+        this.questWindowButton.setTooltip("Quests");
 
         this.mercenaryWindowButton = button.create("mercenaryWindowButton");
         this.mercenaryWindowButton.callback = function(obj) { obj.data.arg.toggleMercenaryWindow(); };
         this.mercenaryWindowButton.callbackArgument = this;
         this.mercenaryWindowButton.init(this.getContentArea());
         this.mercenaryWindowButton.setImages(resources.ImageIconMercenary, resources.ImageIconMercenaryHover, undefined);
+        this.mercenaryWindowButton.setTooltip("Mercenaries");
 
         this.upgradeWindowButton = button.create("upgradeWindowButton");
         this.upgradeWindowButton.callback = function(obj) { obj.data.arg.toggleUpgradeWindow(); };
         this.upgradeWindowButton.callbackArgument = this;
         this.upgradeWindowButton.init(this.getContentArea());
         this.upgradeWindowButton.setImages(resources.ImageIconUpgrade, resources.ImageIconUpgradeHover, undefined);
+        this.upgradeWindowButton.setTooltip("Upgrades");
     };
 
     SystemDialog.prototype.dialogUpdate = SystemDialog.prototype.update;

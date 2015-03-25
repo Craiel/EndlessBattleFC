@@ -30,7 +30,7 @@ declare('InventoryControl', function() {
 
         this.rows = [];
         this.slots = [];
-    };
+    }
 
     // ---------------------------------------------------------------------------
     // main functions
@@ -63,7 +63,7 @@ declare('InventoryControl', function() {
                 this.elementSize = controlSize;
             }
 
-            // Update the clot item display
+            // Update the slot item display
             for(var index = 0; index < this.slots.length; index++) {
                 this.slots[index].setSlot(this.storage.getSlotAt(index));
                 this.slots[index].update(gameTime);
@@ -71,7 +71,7 @@ declare('InventoryControl', function() {
         }
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // dialog functions
@@ -86,7 +86,7 @@ declare('InventoryControl', function() {
             this.rows[i].remove();
         }
         this.rows.length = 0;
-    }
+    };
 
     InventoryControl.prototype._rebuildStorageSlots = function() {
         console.log(this.getMainElement());
@@ -129,7 +129,7 @@ declare('InventoryControl', function() {
                 }
             }
         }
-    }
+    };
 
     InventoryControl.prototype.getSlotSize = function(x, y, slotCount) {
         var side = x;
@@ -139,7 +139,7 @@ declare('InventoryControl', function() {
 
         var surface = Math.floor((side * side) / slotCount);
         return Math.floor(Math.sqrt(surface)) - 1;
-    }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = InventoryControl.prototype;

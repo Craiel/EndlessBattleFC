@@ -1,0 +1,24 @@
+.tooltipControl {
+    position: absolute;
+    z-index: 999;
+    width: auto;
+    height: auto;
+}
+
+.tooltipBackground {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+}
+
+.tooltipContent {
+    include: globalTextFont;
+    include: globalColorWhite;
+    position: absolute;
+    width: calc(100% - 18px);
+    height: calc(100% - 18px);
+    top: 9px;
+    left: 9px;
+}

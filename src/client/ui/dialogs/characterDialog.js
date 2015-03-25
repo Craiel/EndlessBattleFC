@@ -181,6 +181,9 @@ declare('CharacterDialog', function() {
                 var characterStatLine = element.create("playerStat" + stat.id);
                 characterStatLine.templateName = "characterStatDisplayLine";
                 characterStatLine.init(this.statsBackground.getContentArea());
+                if(stat.tooltip !== undefined) {
+                    characterStatLine.setTooltip(stat.tooltip);
+                }
 
                 var statElement = element.create("playerStatValue" + stat.id);
                 statElement.templateName = "characterStatDisplayValue";

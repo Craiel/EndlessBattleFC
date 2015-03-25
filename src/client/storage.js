@@ -188,7 +188,7 @@ declare('Storage', function() {
             while(index < this.itemSlotSize - 1) {
                 if(this.itemSlots.length - 1 < index) {
                     console.log("Pushing new Slot");
-                    this.itemSlots.push({id: undefined, metaData: undefined, count: 0});
+                    this.itemSlots.push({id: undefined, metaData: undefined, count: 0 });
                 }
 
                 if(this.itemSlots[index].id === undefined) {

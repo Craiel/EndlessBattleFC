@@ -88,14 +88,14 @@ declare('InventorySlotControl', function() {
         if (this.slot === undefined || this.slot.count <= 0) {
             this.countControl.setText(undefined);
         } else {
-            this.countControl.setText(this.slot.count);
-            this.setLegacySlotProperties(this.slot.metaData);
-        }
-    }
+            if(this.slot.count === 1 && this.slot.metaData !== undefined) {
+                this.countControl.setText(undefined);
+            } else {
+                this.countControl.setText(this.slot.count);
+            }
 
-    InventorySlotControl.prototype.setLegacySlotProperties = function(metaData) {
-        console.log(metaData);
-        this.borderControl.addClass("inventorySlotRarity" + metaData.rarity);
+            // Slot Metadata
+        }
     }
 
     var surrogate = function(){};

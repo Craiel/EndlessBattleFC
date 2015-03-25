@@ -3,6 +3,8 @@ declare('Element', function() {
 	include('Assert');
 	include('TemplateProvider');
 	include('Component');
+    include('EventAggregate');
+    include('StaticData');
     
     var RootParentKey = "__ROOT__";
         
@@ -38,8 +40,11 @@ declare('Element', function() {
         component.construct(this);
 
         this.id = id;
+
+        this.tooltip = undefined;
         
         this.isVisible = true;
+        this.hasTooltip = false;
         
         this.parent = undefined;
         
@@ -274,6 +279,20 @@ declare('Element', function() {
 
     UIElement.prototype.removeFirstChild = function() {
         this._mainDiv.children().first().remove();
+    };
+
+    UIElement.prototype.setTooltip = function(content) {
+        this.tooltip = content;
+
+        if(this.hasTooltip === false) {
+            // Setup the enter / exit handlers
+            var enterCallback = function(obj) { obj.data.aggregate.publish(obj.data.type, {content: obj.data.self.tooltip}); }
+            var leaveCallback = function(obj) { obj.data.aggregate.publish(obj.data.type, {content: null}); }
+            this._mainDiv.mouseenter({self: this, aggregate: eventAggregate, type: staticData.EventTooltip }, enterCallback);
+            this._mainDiv.mouseleave({self: this, aggregate: eventAggregate, type: staticData.EventTooltip }, leaveCallback);
+
+            this.hasTooltip = true;
+        }
     };
 
     var surrogate = function(){};

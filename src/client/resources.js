@@ -155,6 +155,16 @@ declare('Resources', function() {
         this.ImagePanelBlueInsetB = staticData.imageRoot + "panelBlueInsetB.png";
         this.ImagePanelBlueInsetRB = staticData.imageRoot + "panelBlueInsetRB.png";
 
+        this.ImagePanelTooltipLT = staticData.imageRoot + "panelTooltipLT.png";
+        this.ImagePanelTooltipT = staticData.imageRoot + "panelTooltipT.png";
+        this.ImagePanelTooltipRT = staticData.imageRoot + "panelTooltipRT.png";
+        this.ImagePanelTooltipL = staticData.imageRoot + "panelTooltipL.png";
+        this.ImagePanelTooltipContent = staticData.imageRoot + "panelTooltipContent.png";
+        this.ImagePanelTooltipR = staticData.imageRoot + "panelTooltipR.png";
+        this.ImagePanelTooltipLB = staticData.imageRoot + "panelTooltipLB.png";
+        this.ImagePanelTooltipB = staticData.imageRoot + "panelTooltipB.png";
+        this.ImagePanelTooltipRB = staticData.imageRoot + "panelTooltipRB.png";
+
         // Progress bar images
         this.ImageProgressBlueHorizontalLeft = staticData.imageRoot + "barBlue_horizontalLeft.png";
         this.ImageProgressBlueHorizontalMid = staticData.imageRoot + "barBlue_horizontalMid.png";

@@ -22,6 +22,7 @@ declare('UserInterface', function () {
     include('QuestDialog');
     include('CharacterDialog');
     include('LogDialog');
+    include('TooltipControl');
 
     UserInterface.prototype = component.prototype();
     UserInterface.prototype.$super = parent;
@@ -32,8 +33,8 @@ declare('UserInterface', function () {
 
         this.id = "UserInterface";
 
-        this.mouseX = 0;
-        this.mouseY = 0;
+        this.mousePosition = { x: 0, y: 0};
+        this.tooltipPosition = { x: 0, y: 0};
 
         this.playerDialog = undefined;
         this.currencyDialog = undefined;
@@ -48,6 +49,8 @@ declare('UserInterface', function () {
         this.characterArea = undefined;
 
         this.questArea = undefined;
+
+        this.tooltip = undefined;
 
         this.legacyConstruct();
     }
@@ -89,6 +92,9 @@ declare('UserInterface', function () {
         this.logDialog = logDialog.create();
         this.logDialog.init();
 
+        this.tooltip = tooltipControl.create();
+        this.tooltip.init();
+
         this.setupWindowState();
     };
 
@@ -110,6 +116,8 @@ declare('UserInterface', function () {
         this.characterDialog.update(gameTime);
         this.logDialog.update(gameTime);
 
+        this.updateTooltip(gameTime);
+
         // Legacy:
         this.updateLegacyWindowVisibility();
 
@@ -125,8 +133,11 @@ declare('UserInterface', function () {
         var self = obj.data.self;
 
         // event.clientX and event.clientY contain the mouse position
-        self.mouseX = obj.clientX;
-        self.mouseY = obj.clientY;
+        self.mousePosition.x = obj.clientX;
+        self.mousePosition.y = obj.clientY;
+
+        self.tooltipPosition.x = self.mousePosition.x + staticData.tooltipOffset;
+        self.tooltipPosition.y = self.mousePosition.y + staticData.tooltipOffset;
     }
 
     // ---------------------------------------------------------------------------
@@ -136,12 +147,17 @@ declare('UserInterface', function () {
     // ---------------------------------------------------------------------------
     // update functions
     // ---------------------------------------------------------------------------
+    UserInterface.prototype.updateTooltip = function(gameTime) {
+        this.tooltip.setPosition(this.tooltipPosition);
+        this.tooltip.update(gameTime);
+    };
+
     UserInterface.prototype.updateDialogVisibility = function() {
         this.mercenaryDialog.setVisibility(interfaceState.mercenaryWindowShown);
         this.inventoryDialog.setVisibility(interfaceState.inventoryWindowShown);
         this.questDialog.setVisibility(interfaceState.questWindowShown);
         this.characterDialog.setVisibility(interfaceState.characterWindowShown);
-    }
+    };
 
     UserInterface.prototype.updateLegacyWindowVisibility = function() {
         $("#characterWindow").hide();
