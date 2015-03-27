@@ -1,4 +1,4 @@
-declare('TooltipControl', function() {
+declare('ItemControl', function() {
     include('Log');
     include('Assert');
     include('StaticData');
