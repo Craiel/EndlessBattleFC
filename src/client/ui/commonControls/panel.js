@@ -38,7 +38,7 @@ declare('Panel', function() {
 
         // Nothing to do here atm
         this.contentElement = element.create(this.id + 'Content');
-        this.contentElement.init();
+        this.contentElement.init(this);
     };
 
     Panel.prototype.elementRemove = Panel.prototype.remove;

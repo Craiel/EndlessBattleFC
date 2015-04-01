@@ -1,7 +1,7 @@
 // set the main namespace
 Endless = {
 		isDebug: false,
-        isVerboseDebug: true,
+        isVerboseDebug: false,
         componentUpdateList: [],
         componentUpdateCount: 0,
         componentInitCount: 0,

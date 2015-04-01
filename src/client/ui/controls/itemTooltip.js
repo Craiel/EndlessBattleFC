@@ -32,8 +32,6 @@ declare('ItemTooltip', function() {
     ItemTooltip.prototype.elementInit = ItemTooltip.prototype.init;
     ItemTooltip.prototype.init = function(parent, attributes) {
         this.elementInit(parent, attributes);
-        console.log(this);
-        console.assert(false);
 
         this.headerPanel = panel.create(this.id + "Header");
         this.headerPanel.init(this);
