@@ -56,33 +56,33 @@ declare('Resources', function() {
         this.ImageMonsterHealthBar = staticData.imageRoot + "monsterHealthBar.png";
 
         // Armor Images
-        this.ImageArmorDefault_head = this.ImagePlaceHolder;
-        this.ImageArmorDefault_chest = this.ImagePlaceHolder;
-        this.ImageArmorDefault_waist = this.ImagePlaceHolder;
-        this.ImageArmorDefault_legs = this.ImagePlaceHolder;
-        this.ImageArmorDefault_feet = this.ImagePlaceHolder;
-        this.ImageArmorDefault_shoulder = this.ImagePlaceHolder;
-        this.ImageArmorDefault_wrist = this.ImagePlaceHolder;
-        this.ImageArmorDefault_hand = this.ImagePlaceHolder;
-        this.ImageArmorDefault_neck = this.ImagePlaceHolder;
-        this.ImageArmorDefault_ring = this.ImagePlaceHolder;
-        this.ImageArmorDefault_trinket = this.ImagePlaceHolder;
+        this.ImageItemDefault_head = this.ImagePlaceHolder;
+        this.ImageItemDefault_chest = this.ImagePlaceHolder;
+        this.ImageItemDefault_waist = this.ImagePlaceHolder;
+        this.ImageItemDefault_legs = this.ImagePlaceHolder;
+        this.ImageItemDefault_feet = this.ImagePlaceHolder;
+        this.ImageItemDefault_shoulder = this.ImagePlaceHolder;
+        this.ImageItemDefault_wrist = this.ImagePlaceHolder;
+        this.ImageItemDefault_hand = this.ImagePlaceHolder;
+        this.ImageItemDefault_neck = this.ImagePlaceHolder;
+        this.ImageItemDefault_ring = this.ImagePlaceHolder;
+        this.ImageItemDefault_trinket = this.ImagePlaceHolder;
 
          // Weapon Items
-        this.ImageWeaponDefault_dagger = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_sword = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_sword2h = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_mace = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_mace2h = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_axe = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_axe2h = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_spear = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_staff = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_wand = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_bow = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_crossbow = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_shield = this.ImagePlaceHolder;
-        this.ImageWeaponDefault_orb = this.ImagePlaceHolder;
+        this.ImageItemDefault_dagger = this.ImagePlaceHolder;
+        this.ImageItemDefault_sword = this.ImagePlaceHolder;
+        this.ImageItemDefault_sword2h = this.ImagePlaceHolder;
+        this.ImageItemDefault_mace = this.ImagePlaceHolder;
+        this.ImageItemDefault_mace2h = this.ImagePlaceHolder;
+        this.ImageItemDefault_axe = this.ImagePlaceHolder;
+        this.ImageItemDefault_axe2h = this.ImagePlaceHolder;
+        this.ImageItemDefault_spear = this.ImagePlaceHolder;
+        this.ImageItemDefault_staff = this.ImagePlaceHolder;
+        this.ImageItemDefault_wand = this.ImagePlaceHolder;
+        this.ImageItemDefault_bow = this.ImagePlaceHolder;
+        this.ImageItemDefault_crossbow = this.ImagePlaceHolder;
+        this.ImageItemDefault_shield = this.ImagePlaceHolder;
+        this.ImageItemDefault_orb = this.ImagePlaceHolder;
 
          // Panel images
         this.ImagePanelBeigeLT = staticData.imageRoot + "panelBeigeLT.png";
@@ -191,7 +191,7 @@ declare('Resources', function() {
         panel.setImages(this['ImagePanel'+imageKey+'LT'], this['ImagePanel'+imageKey+'T'], this['ImagePanel'+imageKey+'RT'],
             this['ImagePanel'+imageKey+'L'], this['ImagePanel'+imageKey+'Content'], this['ImagePanel'+imageKey+'R'],
             this['ImagePanel'+imageKey+'LB'], this['ImagePanel'+imageKey+'B'], this['ImagePanel'+imageKey+'RB']);
-    }
+    };
     
     return new Resources();
 });

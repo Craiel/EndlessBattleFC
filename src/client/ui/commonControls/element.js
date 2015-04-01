@@ -222,6 +222,10 @@ declare('Element', function() {
         this._mainDiv.trigger( "updatelayout" );
     };
 
+    UIElement.prototype.getContent = function() {
+        return this._mainDiv.contents();
+    };
+
     UIElement.prototype.setContent = function(content) {
         this._mainDiv.empty();
         this._mainDiv.append(content);
@@ -284,7 +288,7 @@ declare('Element', function() {
     UIElement.prototype.setTooltip = function(content) {
         this.tooltip = content;
 
-        if(this.hasTooltip === false) {
+        if(this.hasTooltip === false && content !== undefined) {
             // Setup the enter / exit handlers
             var enterCallback = function(obj) { obj.data.aggregate.publish(obj.data.type, {content: obj.data.self.tooltip}); }
             var leaveCallback = function(obj) { obj.data.aggregate.publish(obj.data.type, {content: null}); }
@@ -292,6 +296,11 @@ declare('Element', function() {
             this._mainDiv.mouseleave({self: this, aggregate: eventAggregate, type: staticData.EventTooltip }, leaveCallback);
 
             this.hasTooltip = true;
+        } else if (this.hasTooltip === true && content === undefined) {
+            this._mainDiv.unbind('mouseenter');
+            this._mainDiv.unbind('mouseleave');
+
+            this.hasTooltip = false;
         }
     };
 

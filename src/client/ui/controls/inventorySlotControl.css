@@ -6,11 +6,6 @@
 .inventorySlot {
     position: absolute;
     /*background-color: #0005ff;*/
-
-    border-color: #808080;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 6px;
 }
 
 .inventorySlotBorder {
@@ -32,10 +27,49 @@
     text-align: center;
 }
 
-/* Legacy styles for testing */
-.inventorySlotRarityCOMMON {
-    border-color: white;
-    border-width: 1px;
+.inventorySlotRarityBase {
+    background-color: #222222;
+    border-width: 2px;
     border-style: solid;
     border-radius: 6px;
+}
+
+.inventorySlotRarityDefault {
+    include: inventorySlotRarityBase;
+    border-color: #808080;
+}
+
+.inventorySlotRarity_poor {
+    include: inventorySlotRarityBase;
+    border-color: #9d9d9d;
+}
+
+.inventorySlotRarity_common {
+    include: inventorySlotRarityBase;
+    border-color: #FFFFFF;
+}
+
+.inventorySlotRarity_uncommon {
+    include: inventorySlotRarityBase;
+    border-color: #10FF10;
+}
+
+.inventorySlotRarity_magic {
+    include: inventorySlotRarityBase;
+    border-color: #0070ff;
+}
+
+.inventorySlotRarity_rare {
+    include: inventorySlotRarityBase;
+    border-color: #ffd800;
+}
+
+.inventorySlotRarity_unique {
+    include: inventorySlotRarityBase;
+    border-color: #ff6a00;
+}
+
+.inventorySlotRarity_set {
+    include: inventorySlotRarityBase;
+    border-color: #55ff00;
 }

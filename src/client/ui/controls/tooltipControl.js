@@ -24,6 +24,7 @@ declare('TooltipControl', function() {
 
         this.backgroundPanel = undefined;
         this.content = undefined;
+        this.backupContent = undefined;
     }
 
     // ---------------------------------------------------------------------------
@@ -55,7 +56,7 @@ declare('TooltipControl', function() {
                 if(event.content.id === undefined) {
                     this.setStringContent(event.content);
                 } else {
-                    assert.isFalse(true, "NotImplemented!");
+                    this.setElementContent(event.content);
                 }
 
                 this.show();
@@ -73,9 +74,21 @@ declare('TooltipControl', function() {
     };
 
     TooltipControl.prototype.setStringContent = function(content) {
+        if(this.backupContent !== undefined) {
+            this.setContent(this.backupContent);
+        }
+
         this.content.setText(content);
         var width = this.content.getMainElement().textWidth();
         this.setSize({x: 20 + width, y: 40});
+    };
+
+    TooltipControl.prototype.setElementContent = function(content) {
+        if(this.backupContent === undefined) {
+            this.backupContent = this.getContent();
+        }
+
+        this.setContent(content.getMainElement());
     };
 
     // ---------------------------------------------------------------------------

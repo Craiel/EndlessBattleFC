@@ -23,7 +23,7 @@ declare('InventoryControl', function() {
         this.minSlotSize = 32;
         this.isDynamic = false;
 
-        this.fixedSlotSize = 40;
+        this.fixedSlotSize = 36;
         this.fixedSlotRowCount = 14;
 
         this.elementSize = undefined;
@@ -93,11 +93,11 @@ declare('InventoryControl', function() {
         var inventorySize = this.getSize();
         var slotCount = this.storage.getSize();
         var slotSize = this.fixedSlotSize;
-        var slotFullSize = slotSize + 1;
+        var slotFullSize = slotSize + 4;
         var slotsPerRow = this.fixedSlotRowCount;
         if(this.isDynamic === true) {
             slotSize = this.getSlotSize(inventorySize.x, inventorySize.y, slotCount);
-            slotFullSize = slotSize + 1;
+            slotFullSize = slotSize + 4;
             slotsPerRow = Math.floor(inventorySize.x / slotFullSize);
         }
 

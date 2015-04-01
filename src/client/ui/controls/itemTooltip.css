@@ -1,0 +1,22 @@
+.itemTooltip {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    height: 35px;
+    width: 100%;
+}
+
+.itemTooltipTopPanel {
+    include: globalNoDrag;
+    position: absolute;
+    top: 35px;
+    left: 0px;
+    height: calc(100% - 30px);
+    width: 100%;
+}
+
+.itemTooltipHeaderText {
+    text-align: center;
+    color: #fff;
+}

@@ -708,35 +708,6 @@ windowArea {
     vertical-align: middle;
 }
 
-.itemTooltip {
-    background-color: #000;
-    border: 5px, 5px, 5px, 5px;
-    border-color: #ffd800;
-    border-style: groove;
-    padding: 2px 2px 2px 2px;
-    min-width: 200px;
-    color: #fff;
-}
-#itemTooltipText {
-    text-align: left;
-}
-.itemTooltipTitle { font-size: 18px; }
-.itemTooltipType   { font-size: 14px; }
-.itemTooltipStats1 { font-size: 16px; }
-.itemTooltipStats2 { font-size: 14px; }
-.itemTooltipSellValue { padding-left: 14px; font-size: 14px; }
-.itemTooltipLevel { color: #808080; font-size: 12px; }
-.itemTooltipUseInfo { color: #808080; font-size: 12px; }
-.itemTooltipSellInfo { color: #808080; font-size: 12px; }
-.itemCompareTooltipExtra { color: #808080; font-size: 12px; }
-
-.greenText { color: #02ff00; }
-.whiteText { color: #fff; }
-.yellowText { color: #ffd800; }
-.blueText { color: #0005ff; }
-.purpleText { color: #b800af; }
-.orangeText { color: #ff6a00; }
-
 #otherTooltip {
     background-color: #000;
     border: 5px, 5px, 5px, 5px;
