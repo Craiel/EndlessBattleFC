@@ -5,6 +5,7 @@ Endless = {
         componentUpdateList: [],
         componentUpdateCount: 0,
         componentInitCount: 0,
+        currentUpdateTick: 0,
         resetFrame: function() {
             Endless.componentUpdateList = [];
             Endless.componentUpdateCount = 0;

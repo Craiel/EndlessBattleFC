@@ -42,6 +42,7 @@ Endless.main = function() {
 			return;
 		}
 
+		Endless.currentUpdateTick++;
 		gameTime.update();
 	
 	    Endless.resetFrame();
@@ -54,6 +55,8 @@ Endless.main = function() {
 			console.assert(false, "Aborting UI update cycle, asserts occured!");
 			return;
 		}
+
+		Endless.currentUpdateTick++;
 
 		userInterface.update(gameTime);
 	    

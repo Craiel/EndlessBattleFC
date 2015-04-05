@@ -1,22 +1,47 @@
 .itemTooltip {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-
-    height: 35px;
-    width: 100%;
+    width: 250px;
+    height: 200px;
+    opacity: 0.85;
 }
 
-.itemTooltipTopPanel {
-    include: globalNoDrag;
-    position: absolute;
-    top: 35px;
-    left: 0px;
-    height: calc(100% - 30px);
+.itemTooltipItem {
+    width: 100%;
+    height: 100%;
+}
+
+.itemTooltipEquip {
+    width: 100%;
+    height: 100%;
+}
+
+.itemTooltipHeaderPanel {
+    position: relative;
+    height: 32px;
     width: 100%;
 }
 
 .itemTooltipHeaderText {
+    include: globalTextFont;
+    include: globalColorWhite;
     text-align: center;
-    color: #fff;
+}
+
+.itemTooltipTopContentPanel {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 64px);
+}
+
+.itemTooltipBottomContentPanel {
+    position: relative;
+    height: 32px;
+    width: 100%;
+}
+
+.itemTooltipIcon {
+    position: relative;
+    top: 12px;
+    left: 20px;
+    width: 48px;
+    height: 48px;
 }

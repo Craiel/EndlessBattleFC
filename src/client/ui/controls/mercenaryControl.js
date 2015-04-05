@@ -44,12 +44,15 @@ declare('MercenaryControl', function() {
         this.backgroundPanel.init(this);
         this.backgroundPanel.addClass("mercenaryBackground");
         this.backgroundPanel.addClass("globalNoDrag");
+        this.addManagedChild(this.backgroundPanel);
 
         this.imageElement = element.create(this.id + "Image");
         this.imageElement.init(this);
+        this.addManagedChild(this.imageElement);
 
         this.nameElement = element.create(this.id + "Name");
         this.nameElement.init(this);
+        this.addManagedChild(this.nameElement);
 
         this.currencyElement = currencyControl.create(this.id + "Currency");
         this.currencyElement.showAffordable = true;
@@ -57,9 +60,11 @@ declare('MercenaryControl', function() {
         this.currencyElement.addClass("mercenaryCurrency");
         this.currencyElement.addClass("globalNoDrag");
         this.currencyElement.setImage(resources.ImageIconCoin);
+        this.addManagedChild(this.currencyElement);
 
         this.countElement = element.create(this.id + "Count");
         this.countElement.init(this);
+        this.addManagedChild(this.countElement);
 
         this.getMainElement().mousedown({self: this, arg: this.callbackArgument}, this.callback);
 
@@ -71,8 +76,6 @@ declare('MercenaryControl', function() {
         if(this.elementUpdate(gameTime) !== true) {
             return false;
         }
-
-        this.currencyElement.update(gameTime);
 
         return true;
     }

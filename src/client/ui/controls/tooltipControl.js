@@ -39,10 +39,12 @@ declare('TooltipControl', function() {
         this.backgroundPanel = panel.create(this.id + "Background");
         this.backgroundPanel.init(this);
         resources.setPanelImages(this.backgroundPanel, "Tooltip");
+        this.addManagedChild(this.backgroundPanel);
 
         this.content = element.create(this.id + "Content");
         this.content.init(this);
         this.content.setText("TODO");
+        this.addManagedChild(this.content);
 
         this.hide();
     };
@@ -89,11 +91,33 @@ declare('TooltipControl', function() {
         }
 
         this.setContent(content.getMainElement());
+        this.setSize(content.getSize());
     };
 
     // ---------------------------------------------------------------------------
-    // dialog functions
+    // tooltip functions
     // ---------------------------------------------------------------------------
+    TooltipControl.prototype.setMousePosition = function(position) {
+        var wnd = $(window);
+        var windowWidth = wnd.width();
+        var windowHeight = wnd.height();
+        var size = this.getSize();
+        var tooltipPosition = {x: 0, y: 0};
+
+        if(position.x > windowWidth / 2) {
+            tooltipPosition.x = position.x - size.x - staticData.tooltipOffset;
+        } else {
+            tooltipPosition.x = position.x + staticData.tooltipOffset;
+        }
+
+        if(position.y > windowHeight / 2) {
+            tooltipPosition.y = position.y - size.y - staticData.tooltipOffset;
+        } else {
+            tooltipPosition.y = position.y + staticData.tooltipOffset;
+        }
+
+        this.setPosition(tooltipPosition);
+    };
 
     var surrogate = function(){};
     surrogate.prototype = TooltipControl.prototype;

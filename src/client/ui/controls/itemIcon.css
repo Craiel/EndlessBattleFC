@@ -1,0 +1,58 @@
+.itemIcon {
+    include: globalMaxSizeAbsoluteTopLeft;
+}
+
+.itemIconBorder {
+    include: globalMaxSizeAbsoluteTopLeft;
+}
+
+.itemIconImage {
+    include: globalMaxSizeAbsoluteTopLeft;
+}
+
+.itemIconRarityBase {
+    background-color: #222222;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 6px;
+}
+
+.itemIconRarityDefault {
+    include: itemIconRarityBase;
+    border-color: #808080;
+}
+
+.itemIconRarity_poor {
+    include: itemIconRarityBase;
+    border-color: #9d9d9d;
+}
+
+.itemIconRarity_common {
+    include: itemIconRarityBase;
+    border-color: #FFFFFF;
+}
+
+.itemIconRarity_uncommon {
+    include: itemIconRarityBase;
+    border-color: #10FF10;
+}
+
+.itemIconRarity_magic {
+    include: itemIconRarityBase;
+    border-color: #0070ff;
+}
+
+.itemIconRarity_rare {
+    include: itemIconRarityBase;
+    border-color: #ffd800;
+}
+
+.itemIconRarity_unique {
+    include: itemIconRarityBase;
+    border-color: #ff6a00;
+}
+
+.itemIconRarity_set {
+    include: itemIconRarityBase;
+    border-color: #55ff00;
+}

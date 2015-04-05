@@ -2,7 +2,6 @@ declare('UserInterface', function () {
     include('Assert');
     include('Component');
     include('StaticData');
-    include('TooltipManager');
     include('Resources');
     include('Save');
     include('SaveKeys');
@@ -34,7 +33,6 @@ declare('UserInterface', function () {
         this.id = "UserInterface";
 
         this.mousePosition = { x: 0, y: 0};
-        this.tooltipPosition = { x: 0, y: 0};
 
         this.playerDialog = undefined;
         this.currencyDialog = undefined;
@@ -135,9 +133,6 @@ declare('UserInterface', function () {
         // event.clientX and event.clientY contain the mouse position
         self.mousePosition.x = obj.clientX;
         self.mousePosition.y = obj.clientY;
-
-        self.tooltipPosition.x = self.mousePosition.x + staticData.tooltipOffset;
-        self.tooltipPosition.y = self.mousePosition.y + staticData.tooltipOffset;
     }
 
     // ---------------------------------------------------------------------------
@@ -148,7 +143,7 @@ declare('UserInterface', function () {
     // update functions
     // ---------------------------------------------------------------------------
     UserInterface.prototype.updateTooltip = function(gameTime) {
-        this.tooltip.setPosition(this.tooltipPosition);
+        this.tooltip.setMousePosition(this.mousePosition);
         this.tooltip.update(gameTime);
     };
 
@@ -306,35 +301,6 @@ declare('UserInterface', function () {
 
     UserInterface.prototype.stoneButtonReset = function(obj) {
         $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
-    }
-
-    UserInterface.prototype.equipItemHover = function(obj) {
-        var index = obj.data.index;
-        var item = game.equipment.slots[index - 1];
-        // If there is an item in this slot then show the item tooltip
-        if (item != null) {
-            var rect = obj.currentTarget.getBoundingClientRect();
-            tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
-        }
-    }
-
-    UserInterface.prototype.equipItemReset = function(obj) {
-        var index = obj.data.index;
-        $("#itemTooltip").hide();
-        $(".equipItem" + index).css('z-index', '1');
-    }
-
-    UserInterface.prototype.equipItemClick = function(obj) {
-        var index = obj.data.index;
-        // If the left mouse button was clicked
-        if (event.which == 1) {
-            // Store the information about this item
-            slotTypeSelected = staticData.SLOT_TYPE.EQUIP;
-            slotNumberSelected = index;
-
-            var rect = $(".equipItem" + index).position();
-            $(".equipItem" + index).css('z-index', '200');
-        }
     }
 
     UserInterface.prototype.closeButtonHover = function(obj) {

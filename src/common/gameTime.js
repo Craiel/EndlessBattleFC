@@ -4,7 +4,6 @@ declare("GameTime", function() {
     var timeZoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
 
     function GameTime() {
-        
     	this.start = undefined;
     	this.current = undefined;
     	this.currentLocale = undefined;

@@ -49,50 +49,59 @@ declare('BattleDialog', function() {
         this.monsterName.templateName = "globalTextElement";
         this.monsterName.init(this.getContentArea());
         this.monsterName.addClass("monsterName");
+        this.addManagedChild(this.monsterName);
 
         this.monsterHealthBar = progressBar.create("monsterHealthBar");
         this.monsterHealthBar.init(this.getContentArea());
         this.monsterHealthBar.animate = true;
         this.monsterHealthBar.setImages(resources.ImageProgressRedHorizontalLeft, resources.ImageProgressRedHorizontalMid, resources.ImageProgressRedHorizontalRight);
         this.monsterHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.addManagedChild(this.monsterHealthBar);
 
         this.resurrectionBar = progressBar.create("resurrectionBar");
         this.resurrectionBar.init(this.getContentArea());
         this.resurrectionBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
         this.resurrectionBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.addManagedChild(this.resurrectionBar);
 
         this.enterBattleButton = button.create('enterBattleButton');
         this.enterBattleButton.callback = function(obj) { game.enterBattle(); };
         this.enterBattleButton.init(this.getContentArea());
         this.enterBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+        this.addManagedChild(this.enterBattleButton);
 
         this.leaveBattleButton = button.create('leaveBattleButton');
         this.leaveBattleButton.callback = function(obj) { game.leaveBattle(); };
         this.leaveBattleButton.init(this.getContentArea());
         this.leaveBattleButton.setImages(resources.ImageButton, resources.ImageButtonHover);
+        this.addManagedChild(this.leaveBattleButton);
 
         this.battleLevelDownButton = button.create('battleLevelDownButton');
         this.battleLevelDownButton.callback = function(obj) { game.changeBattleLevel(-1); };
         this.battleLevelDownButton.init(this.getContentArea());
         this.battleLevelDownButton.setImages(resources.ImageButton, resources.ImageButtonHover);
         this.battleLevelDownButton.setButtonText("-");
+        this.addManagedChild(this.battleLevelDownButton);
 
         this.battleLevelUpButton = button.create('battleLevelUpButton');
         this.battleLevelUpButton.callback = function(obj) { game.changeBattleLevel(1); };
         this.battleLevelUpButton.init(this.getContentArea());
         this.battleLevelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
         this.battleLevelUpButton.setButtonText("+");
+        this.addManagedChild(this.battleLevelUpButton);
 
         this.attackButton = button.create('attackButton');
         this.attackButton.callback = function(obj) { game.attack(); };
         this.attackButton.init(this.getContentArea());
         this.attackButton.setImages(resources.ImageButton, resources.ImageButtonHover, resources.ImageIconAttack);
+        this.addManagedChild(this.attackButton);
 
         this.levelUpButton = button.create('levelUpButton');
         this.levelUpButton.callback = function(obj) { if(game.player.getSkillPoints() > 0) { include('UserInterface'); userInterface.displayLevelUpWindow(); }};
         this.levelUpButton.init(this.getContentArea());
         this.levelUpButton.setImages(resources.ImageButton, resources.ImageButtonHover);
         this.levelUpButton.setButtonText("Level Up");
+        this.addManagedChild(this.levelUpButton);
     };
 
     BattleDialog.prototype.dialogUpdate = BattleDialog.prototype.update;

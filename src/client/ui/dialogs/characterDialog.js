@@ -63,23 +63,27 @@ declare('CharacterDialog', function() {
         this.equipBackground.init(this.getContentArea());
         resources.setPanelImages(this.equipBackground, "BeigeInset");
         this.equipBackground.addClass('characterEquipBackGround');
+        this.addManagedChild(this.equipBackground);
 
         this.statsBackground = panel.create(this.id + 'StatsBackground');
         this.statsBackground.init(this.getContentArea());
         resources.setPanelImages(this.statsBackground, "BeigeInset");
         this.statsBackground.addClass('characterStatsBackground');
         this.statsBackground.getContentArea().setStyle({"overflow-y": "scroll"});
+        this.addManagedChild(this.statsBackground);
 
         this.inventoryBackground = panel.create(this.id + 'InventoryBackground');
         this.inventoryBackground.init(this.getContentArea());
         resources.setPanelImages(this.inventoryBackground, "BeigeInset");
         this.inventoryBackground.addClass('characterInventoryBackground');
+        this.addManagedChild(this.inventoryBackground);
 
         this.initEquipmentSlots();
 
         this.characterInventory = inventoryControl.create("characterInventory");
         this.characterInventory.storage = game.player.storage;
         this.characterInventory.init(this.inventoryBackground.getContentArea());
+        this.addManagedChild(this.characterInventory);
 
         this.initStats();
 
@@ -101,22 +105,19 @@ declare('CharacterDialog', function() {
         this.updateStats(gameTime);
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
     CharacterDialog.prototype.updateInventory = function(gameTime) {
-
-        this.characterInventory.update(gameTime);
-
         // Make the inventory scrollable if there are too many slots (Temporary)
         if(game.player.storage.getSize() > 36) {
             this.inventoryBackground.getContentArea().setStyle({"overflow-y": "scroll"});
         } else {
             this.inventoryBackground.getContentArea().setStyle({"overflow-y": "none"});
         }
-    }
+    };
 
     CharacterDialog.prototype.updateStats = function(gameTime) {
         if(this.statUpdateTime === 0) {

@@ -96,6 +96,8 @@ declare('CoreUtils', function() {
         };
 
         this.setBackgroundImage = function(target, resource, repeat) {
+            assert.isTrue(target.length > 0, "Target for background image was null!");
+
             if(repeat === undefined) {
                 target.css({'background-image': this.getImageUrl(resource), 'background-size': '100% 100%', 'background-repeat': 'no-repeat'});
             } else {

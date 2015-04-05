@@ -42,11 +42,13 @@ declare('Dialog', function() {
         this.headerPanel.init(this);
         resources.setPanelImages(this.headerPanel, "Brown");
         this.headerPanel.addClass("dialogHeaderPanel");
+        this.addManagedChild(this.headerPanel);
 
         this.headerText = element.create(this.id + "HeaderText");
         this.headerText.templateName = "globalTextElement";
         this.headerText.init(this.headerPanel.getContentArea());
         this.headerText.addClass("dialogHeaderText");
+        this.addManagedChild(this.headerText);
 
         this.contentPanel = panel.create(this.id + "Content");
         this.contentPanel.init(this);
@@ -56,6 +58,7 @@ declare('Dialog', function() {
         if(this.canScroll === true) {
             this.contentPanel.getContentArea().setStyle({"overflow-y": "scroll"});
         }
+        this.addManagedChild(this.contentPanel);
 
         if(this.canClose === true) {
             this.closeButton = button.create(this.id + "Close");
@@ -64,6 +67,7 @@ declare('Dialog', function() {
             this.closeButton.init(this);
             this.closeButton.setImages(resources.ImageIconClose, resources.ImageIconCloseHover, undefined);
             this.closeButton.addClass("dialogCloseButton");
+            this.addManagedChild(this.closeButton);
         }
 
         if(this.canDrag === true) {

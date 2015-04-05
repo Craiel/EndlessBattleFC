@@ -51,6 +51,10 @@ declare('Element', function() {
         this.templateName = this.templateName !== undefined ? this.templateName : undefined;
         
         this._mainDiv = undefined;
+
+        this.managedChildren = [];
+
+        this.lastUpdateTick = undefined;
     };
 
     // ---------------------------------------------------------------------------
@@ -117,18 +121,35 @@ declare('Element', function() {
         assert.isTrue(this._mainDiv.length > 0, "MainDiv must be valid after init: " + this.id);
     };
 
-    UIElement.prototype.update = function(currentTime) {
+    UIElement.prototype.update = function(gameTime) {
+        if(Endless.isDebug === true) {
+            assert.isFalse(Endless.currentUpdateTick === this.lastUpdateTick, "Element was updated more than once per cycle: " + this.id);
+            this.lastUpdateTick = Endless.currentUpdateTick;
+        }
+
         if(this.isVisible !== true) {
             return false;
         }
 
-        return this.componentUpdate(currentTime);
+        for(var i = 0; i < this.managedChildren.length; i++) {
+            this.managedChildren[i].update(gameTime);
+        }
+
+        return this.componentUpdate(gameTime);
     };
 
     UIElement.prototype.remove = function(keepDivAlive) {
         this.componentRemove();
 
-        if(keepDivAlive !== true) {
+        if(keepDivAlive !== true)
+        {
+            // Remove the managed children first before the main element goes out of scope
+            for(var i = 0; i < this.managedChildren.length; i++) {
+                this.managedChildren[i].remove();
+            }
+
+            this.managedChildren = [];
+
             this._mainDiv.remove();
         }
     };
@@ -226,8 +247,12 @@ declare('Element', function() {
         return this._mainDiv.contents();
     };
 
-    UIElement.prototype.setContent = function(content) {
+    UIElement.prototype.removeContent = function() {
         this._mainDiv.empty();
+    };
+
+    UIElement.prototype.setContent = function(content) {
+        this.removeContent();
         this._mainDiv.append(content);
     };
 
@@ -302,6 +327,14 @@ declare('Element', function() {
 
             this.hasTooltip = false;
         }
+    };
+
+    UIElement.prototype.findChildElement = function(id) {
+        return this.getMainElement().find('#' + id);
+    };
+
+    UIElement.prototype.addManagedChild = function(element) {
+        this.managedChildren.push(element);
     };
 
     var surrogate = function(){};

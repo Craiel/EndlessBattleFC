@@ -37,24 +37,28 @@ declare('PlayerDialog', function() {
         this.playerHealthBar.animate = true;
         this.playerHealthBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
         this.playerHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.addManagedChild(this.playerHealthBar);
 
         this.playerManaBar = progressBar.create("playerManaBar");
         this.playerManaBar.init(this.getContentArea());
         this.playerManaBar.animate = true;
         this.playerManaBar.setImages(resources.ImageProgressBlueHorizontalLeft, resources.ImageProgressBlueHorizontalMid, resources.ImageProgressBlueHorizontalRight);
         this.playerManaBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.addManagedChild(this.playerManaBar);
 
         this.experienceTitle = element.create("experienceTitle");
         this.experienceTitle.templateName = "globalTextElement";
         this.experienceTitle.init(this.getContentArea());
         this.experienceTitle.addClass("experienceTitle");
         this.experienceTitle.setText("XP to next Level: ");
+        this.addManagedChild(this.experienceTitle);
 
         this.experienceBar = progressBar.create("experienceBar");
         this.experienceBar.init(this.getContentArea());
         this.experienceBar.animate = true;
         this.experienceBar.setImages(resources.ImageProgressPurpleHorizontalLeft, resources.ImageProgressPurpleHorizontalMid, resources.ImageProgressPurpleHorizontalRight);
         this.experienceBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.addManagedChild(this.experienceBar);
     };
 
     PlayerDialog.prototype.dialogUpdate = PlayerDialog.prototype.update;

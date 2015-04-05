@@ -22,6 +22,8 @@ declare('Button', function() {
         this.callback = undefined;
         this.callbackArgument = undefined;
 
+        this.textElement = undefined;
+
         this.foregroundImageElement = undefined;
     };
 
@@ -42,12 +44,15 @@ declare('Button', function() {
 
         this.foregroundImageElement = element.create(this.id + 'Text');
         this.foregroundImageElement.init(this);
+        this.addManagedChild(this.foregroundImageElement);
+
+        this.textElement = this.findChildElement(this.id + 'Text');
 
         this._setupEvents();
     };
 
     // ---------------------------------------------------------------------------
-    // progress bar functions
+    // button functions
     // ---------------------------------------------------------------------------
     Button.prototype.setImages = function(background, hover, foreground) {
         this.backgroundImage = background;
@@ -59,7 +64,7 @@ declare('Button', function() {
     };
 
     Button.prototype.setButtonText = function(text) {
-        $('#' + this.id + 'Text').text(text);
+        this.textElement.text(text);
     };
 
     Button.prototype._updateImages = function() {

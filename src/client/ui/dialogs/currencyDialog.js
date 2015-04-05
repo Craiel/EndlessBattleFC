@@ -37,6 +37,7 @@ declare('CurrencyDialog', function() {
         this.currencyGoldControl.init(this.getContentArea());
         this.currencyGoldControl.setImage(resources.ImageIconCoin);
         this.currencyGoldControl.addClass("currencyGoldControl");
+        this.addManagedChild(this.currencyGoldControl);
     };
 
     CurrencyDialog.prototype.dialogUpdate = CurrencyDialog.prototype.update;
@@ -46,7 +47,6 @@ declare('CurrencyDialog', function() {
         }
 
         this.currencyGoldControl.setValue(game.player.getStat(data.StatDefinition.gold.id));
-        this.currencyGoldControl.update(gameTime);
 
         return true;
     }

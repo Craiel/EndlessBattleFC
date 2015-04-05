@@ -6,6 +6,7 @@ declare('ItemTooltip', function() {
     include('CoreUtils');
     include('Resources');
     include('Panel');
+    include('ItemIcon');
 
     var nextId = 0;
 
@@ -37,23 +38,27 @@ declare('ItemTooltip', function() {
         this.headerPanel.init(this);
         resources.setPanelImages(this.headerPanel, "Blue");
         this.headerPanel.addClass("itemTooltipHeaderPanel");
+        this.addManagedChild(this.headerPanel);
 
         this.headerText = element.create(this.id + "HeaderText");
         this.headerText.templateName = "globalTextElement";
         this.headerText.init(this.headerPanel.getContentArea());
         this.headerText.addClass("itemTooltipHeaderText");
+        this.addManagedChild(this.headerText);
 
         this.topPanel = panel.create(this.id + "Top");
         this.topPanel.init(this);
         resources.setPanelImages(this.topPanel, "Blue");
         this.topPanel.addClass("itemTooltipTopContentPanel");
         this.topPanel.addClass("globalNoDrag");
+        this.addManagedChild(this.topPanel);
 
         this.bottomPanel = panel.create(this.id + "Bottom");
         this.bottomPanel.init(this);
         resources.setPanelImages(this.bottomPanel, "Blue");
         this.bottomPanel.addClass("itemTooltipBottomContentPanel");
         this.bottomPanel.addClass("globalNoDrag");
+        this.addManagedChild(this.bottomPanel);
     };
 
     ItemTooltip.prototype.elementUpdate = ItemTooltip.prototype.update;
@@ -71,6 +76,19 @@ declare('ItemTooltip', function() {
     ItemTooltip.prototype.setSlotData = function(data) {
         // Todo...
         this.headerText.setText(data.metaData.name);
+
+        this.topPanel.getContentArea().removeContent();
+
+        var iconElement = element.create(this.id + "CurrentIconElement");
+        iconElement.templateName = "emptyElement";
+        iconElement.init(this.topPanel.getContentArea());
+        iconElement.addClass("itemTooltipIcon");
+        this.addManagedChild(iconElement);
+
+        var icon = itemIcon.create(this.id + "CurrentIcon");
+        icon.init(iconElement);
+        icon.setItem(data.metaData);
+        this.addManagedChild(icon);
     };
 
 

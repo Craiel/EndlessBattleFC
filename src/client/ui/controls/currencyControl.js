@@ -37,9 +37,11 @@ declare('CurrencyControl', function() {
 
         this.imageControl = element.create(this.id + "Image");
         this.imageControl.init(this);
+        this.addManagedChild(this.imageControl);
 
         this.textControl = element.create(this.id + "Value");
         this.textControl.init(this);
+        this.addManagedChild(this.textControl);
 
         if(this.showAffordable === true) {
             this.textControl.addClass("currencyControlCantAfford");

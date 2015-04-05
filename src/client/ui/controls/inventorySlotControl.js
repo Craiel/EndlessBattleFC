@@ -8,6 +8,7 @@ declare('InventorySlotControl', function() {
     include('Panel');
     include('ItemTooltip');
     include('ItemUtils');
+    include('ItemIcon');
 
     InventorySlotControl.prototype = element.prototype();
     InventorySlotControl.prototype.$super = parent;
@@ -21,17 +22,15 @@ declare('InventorySlotControl', function() {
         this.setTemplate("inventorySlotControl");
 
         this.backgroundPanel = undefined;
-        this.currentRarityClass = undefined;
 
         this.currentTooltip = undefined;
 
         this.slotChanged = true;
         this.slot = undefined;
 
-        this.borderControl = undefined;
-        this.imageControl = undefined;
+        this.iconControl = undefined;
         this.countControl = undefined;
-    };
+    }
 
     // ---------------------------------------------------------------------------
     // main functions
@@ -44,17 +43,15 @@ declare('InventorySlotControl', function() {
         this.backgroundPanel.init(this);
         this.backgroundPanel.addClass("inventorySlotBackground");
         this.backgroundPanel.addClass("globalNoDrag");
+        this.addManagedChild(this.backgroundPanel);
 
-        this.borderControl = element.create(this.id + "Border");
-        this.borderControl.init(this);
-
-        this.imageControl = element.create(this.id + "Image");
-        this.imageControl.init(this);
+        this.iconControl = itemIcon.create(this.id + "Icon");
+        this.iconControl.init(this);
+        this.addManagedChild(this.iconControl);
 
         this.countControl = element.create(this.id + "Count");
         this.countControl.init(this);
-
-        this.updateRarityClass(undefined);
+        this.addManagedChild(this.countControl);
     };
 
     InventorySlotControl.prototype.elementUpdate = InventorySlotControl.prototype.update;
@@ -78,11 +75,6 @@ declare('InventorySlotControl', function() {
 
     InventorySlotControl.prototype.elementRemove = InventorySlotControl.prototype.remove;
     InventorySlotControl.prototype.remove = function() {
-        this.backgroundPanel.remove();
-        this.borderControl.remove();
-        this.imageControl.remove();
-        this.countControl.remove();
-
         if(this.currentTooltip !== undefined) {
             this.currentTooltip.remove();
         }
@@ -103,9 +95,7 @@ declare('InventorySlotControl', function() {
     InventorySlotControl.prototype.updateSlotDisplay = function() {
         if (this.slot === undefined || this.slot.count <= 0) {
             this.countControl.setText(undefined);
-            this.updateRarityClass(undefined);
-            this.updateIcon(undefined);
-
+            this.iconControl.setItem(undefined);
             this.setTooltip(undefined);
         } else {
             if(this.slot.count === 1 && this.slot.metaData !== undefined) {
@@ -115,36 +105,9 @@ declare('InventorySlotControl', function() {
             }
 
             // Slot Metadata
-            this.updateRarityClass(this.slot.metaData.rarity);
-            this.updateIcon(this.slot.metaData.type);
+            this.iconControl.setItem(this.slot.metaData);
             this.updateTooltip(this.slot);
         }
-    };
-
-    InventorySlotControl.prototype.updateRarityClass = function(rarity) {
-        if(this.currentRarityClass !== undefined) {
-            this.removeClass(this.currentRarityClass);
-        }
-
-        if(rarity === undefined) {
-            this.currentRarityClass = "inventorySlotRarityDefault";
-        } else {
-            this.currentRarityClass = "inventorySlotRarity_" + rarity;
-        }
-
-        this.addClass(this.currentRarityClass);
-    };
-
-    InventorySlotControl.prototype.updateIcon = function(type) {
-        var style = {'background-repeat': 'no-repeat', 'background-size': '70% 70%', 'background-position': "center"};
-
-        if(type === undefined) {
-            style['background-image'] = undefined;
-        } else {
-            style['background-image'] = itemUtils.getItemIconUrl(type);
-        }
-
-        this.imageControl.setStyle(style);
     };
 
     InventorySlotControl.prototype.updateTooltip = function(slot) {

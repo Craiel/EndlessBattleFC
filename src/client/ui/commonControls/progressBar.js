@@ -27,6 +27,8 @@ declare('ProgressBar', function() {
         this.backLeftImage = undefined;
         this.backMidImage = undefined;
         this.backRightImage = undefined;
+
+        this.progressTextElement = undefined;
     };
 
     // ---------------------------------------------------------------------------
@@ -36,7 +38,7 @@ declare('ProgressBar', function() {
     ProgressBar.prototype.init = function(parent, attributes) {
         this.elementInit(parent, attributes);
 
-        // Nothing to do here atm
+        this.progressTextElement = this.findChildElement(this.id + 'Text');
     };
 
     // ---------------------------------------------------------------------------
@@ -74,41 +76,41 @@ declare('ProgressBar', function() {
     }
 
     ProgressBar.prototype.setProgressText = function(text) {
-        $('#' + this.id + 'Text').text(text);
+        this.progressTextElement.text(text);
     }
 
     ProgressBar.prototype._updateImages = function() {
         if(this.leftImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'Start'), this.leftImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'Start'), this.leftImage);
         }
 
         if(this.midImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'Value'), this.midImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'Value'), this.midImage);
         }
 
         if(this.rightImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'End'), this.rightImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'End'), this.rightImage);
         }
     }
 
     ProgressBar.prototype._updateBackImages = function() {
         if(this.backLeftImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'BackStart'), this.backLeftImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'BackStart'), this.backLeftImage);
         }
 
         if(this.backMidImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'BackValue'), this.backMidImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'BackValue'), this.backMidImage);
         }
 
         if(this.backRightImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'BackEnd'), this.backRightImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'BackEnd'), this.backRightImage);
         }
     }
 
     ProgressBar.prototype._updateProgressDiv = function() {
-        var mainBar = $('#' + this.id);
+        var mainBar = this.findChildElement(this.id + "Front");
         var progressValue = (this.value / this.maxValue);
-        var maxWidth = $('#' + this.id + 'MaxWidth').width();
+        var maxWidth = this.findChildElement(this.id + 'MaxWidth').width();
         var progressWidth = Math.floor(progressValue * maxWidth);
         if(progressWidth > maxWidth) {
             progressWidth = maxWidth;

@@ -42,6 +42,7 @@ declare('SystemDialog', function() {
         this.inventoryWindowButton.init(this.getContentArea());
         this.inventoryWindowButton.setImages(resources.ImageIconBackpack, resources.ImageIconBackpackHover, undefined);
         this.inventoryWindowButton.setTooltip("Inventory");
+        this.addManagedChild(this.inventoryWindowButton);
 
         this.characterWindowButton = button.create("characterWindowButton");
         this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
@@ -49,6 +50,7 @@ declare('SystemDialog', function() {
         this.characterWindowButton.init(this.getContentArea());
         this.characterWindowButton.setImages(resources.ImageIconCharacter, resources.ImageIconCharacterHover, undefined);
         this.characterWindowButton.setTooltip("Character");
+        this.addManagedChild(this.characterWindowButton);
 
         this.questWindowButton = button.create("questWindowButton");
         this.questWindowButton.callback = function(obj) { obj.data.arg.toggleQuestWindow(); };
@@ -56,6 +58,7 @@ declare('SystemDialog', function() {
         this.questWindowButton.init(this.getContentArea());
         this.questWindowButton.setImages(resources.ImageIconQuest, resources.ImageIconQuestHover, undefined);
         this.questWindowButton.setTooltip("Quests");
+        this.addManagedChild(this.questWindowButton);
 
         this.mercenaryWindowButton = button.create("mercenaryWindowButton");
         this.mercenaryWindowButton.callback = function(obj) { obj.data.arg.toggleMercenaryWindow(); };
@@ -63,6 +66,7 @@ declare('SystemDialog', function() {
         this.mercenaryWindowButton.init(this.getContentArea());
         this.mercenaryWindowButton.setImages(resources.ImageIconMercenary, resources.ImageIconMercenaryHover, undefined);
         this.mercenaryWindowButton.setTooltip("Mercenaries");
+        this.addManagedChild(this.mercenaryWindowButton);
 
         this.upgradeWindowButton = button.create("upgradeWindowButton");
         this.upgradeWindowButton.callback = function(obj) { obj.data.arg.toggleUpgradeWindow(); };
@@ -70,6 +74,7 @@ declare('SystemDialog', function() {
         this.upgradeWindowButton.init(this.getContentArea());
         this.upgradeWindowButton.setImages(resources.ImageIconUpgrade, resources.ImageIconUpgradeHover, undefined);
         this.upgradeWindowButton.setTooltip("Upgrades");
+        this.addManagedChild(this.upgradeWindowButton);
     };
 
     SystemDialog.prototype.dialogUpdate = SystemDialog.prototype.update;

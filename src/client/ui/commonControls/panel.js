@@ -39,14 +39,8 @@ declare('Panel', function() {
         // Nothing to do here atm
         this.contentElement = element.create(this.id + 'Content');
         this.contentElement.init(this);
+        this.addManagedChild(this.contentElement);
     };
-
-    Panel.prototype.elementRemove = Panel.prototype.remove;
-    Panel.prototype.remove = function() {
-        this.contentElement.remove();
-
-        this.elementRemove();
-    }
 
     // ---------------------------------------------------------------------------
     // panel functions
@@ -71,39 +65,39 @@ declare('Panel', function() {
 
     Panel.prototype._updateImages = function() {
         if(this.topLeftImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'LT'), this.topLeftImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'LT'), this.topLeftImage);
         }
 
         if(this.topImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'T'), this.topImage, 'repeat-x');
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'T'), this.topImage, 'repeat-x');
         }
 
         if(this.topRightImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'RT'), this.topRightImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'RT'), this.topRightImage);
         }
 
         if(this.leftImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'L'), this.leftImage, 'repeat-y');
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'L'), this.leftImage, 'repeat-y');
         }
 
         if(this.midImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'Content'), this.midImage, 'repeat');
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'Content'), this.midImage, 'repeat');
         }
 
         if(this.rightImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'R'), this.rightImage, 'repeat-y');
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'R'), this.rightImage, 'repeat-y');
         }
 
         if(this.bottomLeftImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'LB'), this.bottomLeftImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'LB'), this.bottomLeftImage);
         }
 
         if(this.bottomImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'B'), this.bottomImage, 'repeat-x');
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'B'), this.bottomImage, 'repeat-x');
         }
 
         if(this.bottomRightImage !== undefined) {
-            coreUtils.setBackgroundImage($('#' + this.id + 'RB'), this.bottomRightImage);
+            coreUtils.setBackgroundImage(this.findChildElement(this.id + 'RB'), this.bottomRightImage);
         }
     }
 

@@ -45,6 +45,7 @@ declare('InventoryControl', function() {
         this.backgroundPanel.init(this);
         this.backgroundPanel.addClass("inventoryBackground");
         this.backgroundPanel.addClass("globalNoDrag");
+        this.addManagedChild(this.backgroundPanel);
 
         this._rebuildStorageSlots();
     };

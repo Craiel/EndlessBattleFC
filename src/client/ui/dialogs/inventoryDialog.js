@@ -34,6 +34,7 @@ declare('InventoryDialog', function() {
         this.characterInventory.isDynamic = true;
         this.characterInventory.storage = game.player.storage;
         this.characterInventory.init(this.getContentArea());
+        this.addManagedChild(this.characterInventory);
 
         this.hide();
     };
@@ -44,20 +45,12 @@ declare('InventoryDialog', function() {
             return false;
         }
 
-        if(this.isVisible !== true) {
-            return false;
-        }
-
-        // Update the child components if the window is visible
-        this.characterInventory.update(gameTime);
-
         return true;
     }
 
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
-
     var surrogate = function(){};
     surrogate.prototype = InventoryDialog.prototype;
 
