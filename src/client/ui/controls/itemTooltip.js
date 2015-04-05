@@ -7,6 +7,7 @@ declare('ItemTooltip', function() {
     include('Resources');
     include('Panel');
     include('ItemIcon');
+    include('CurrencyControl');
 
     var nextId = 0;
 
@@ -74,22 +75,40 @@ declare('ItemTooltip', function() {
     // dialog functions
     // ---------------------------------------------------------------------------
     ItemTooltip.prototype.setSlotData = function(data) {
-        // Todo...
-        this.headerText.setText(data.metaData.name);
+        // Todo: Build to tooltip for the equipped item...
+        this.buildTooltip(data, "Current", this.headerText, this.topPanel, this.bottomPanel);
+    };
 
-        this.topPanel.getContentArea().removeContent();
+    ItemTooltip.prototype.buildTooltip = function(data, idSuffix, headerText, topPanel, bottomPanel) {
+        headerText.setText(data.metaData.name);
 
-        var iconElement = element.create(this.id + "CurrentIconElement");
+        topPanel.getContentArea().removeContent();
+
+        var iconElement = element.create(this.id + idSuffix + "IconElement");
         iconElement.templateName = "emptyElement";
-        iconElement.init(this.topPanel.getContentArea());
+        iconElement.init(topPanel.getContentArea());
         iconElement.addClass("itemTooltipIcon");
         this.addManagedChild(iconElement);
 
-        var icon = itemIcon.create(this.id + "CurrentIcon");
+        var icon = itemIcon.create(this.id + idSuffix + "Icon");
         icon.init(iconElement);
         icon.setItem(data.metaData);
         this.addManagedChild(icon);
-    };
+
+        var currencyLabel = element.create(this.id + idSuffix + "SellValueLabel");
+        currencyLabel.templateName = "emptyElement";
+        currencyLabel.init(bottomPanel.getContentArea());
+        currencyLabel.setText("Sell Value: ");
+        currencyLabel.addClass("itemTooltipSellValueLabel");
+        this.addManagedChild(currencyLabel);
+
+        var currency = currencyControl.create(this.id + idSuffix + "SellValue");
+        currency.init(bottomPanel.getContentArea());
+        currency.setImage(resources.ImageIconCoin);
+        currency.setValue(data.metaData.stats.gold);
+        currency.addClass("itemTooltipSellValue");
+        this.addManagedChild(currency);
+    }
 
 
     var surrogate = function(){};
