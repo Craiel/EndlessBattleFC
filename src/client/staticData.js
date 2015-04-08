@@ -22,7 +22,8 @@ declare('StaticData', function () {
         this.GoldSourceMonster = 0;
         this.GoldSourceMercenary = 1;
 
-        this.ItemSourceMonster = 0;
+        this.ItemSourceUnknown = 0;
+        this.ItemSourceMonster = 1;
 
         this.EventCombatHit = "eventCombatHit";
         this.EventCombatDeath = "eventCombatDeath";

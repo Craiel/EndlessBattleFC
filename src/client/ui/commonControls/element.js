@@ -154,6 +154,10 @@ declare('Element', function() {
         }
     };
 
+    UIElement.prototype.removeElementOnly = function() {
+        this._mainDiv.remove();
+    };
+
     // ---------------------------------------------------------------------------
     // ui functions
     // ---------------------------------------------------------------------------
@@ -222,6 +226,10 @@ declare('Element', function() {
         } else {
             this.addClass(className);
         };
+    };
+
+    UIElement.prototype.setTop = function(value) {
+        this._mainDiv.css({top: value});
     };
 
     UIElement.prototype.setPosition = function(point) {

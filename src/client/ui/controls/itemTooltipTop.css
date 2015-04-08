@@ -1,0 +1,48 @@
+.itemTooltipTopContentPanel {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 64px);
+}
+
+.itemTooltipIcon {
+    position: relative;
+    top: 12px;
+    left: 20px;
+    width: 48px;
+    height: 48px;
+}
+
+.itemTooltipTopRightOfIcon {
+    left: 75px;
+}
+
+.itemTooltipSlotText {
+    include: globalTextFont;
+    include: globalColorLightText;
+    position: absolute;
+    top: 9px;
+    right: 9px;
+}
+
+.itemTooltipItemTypeText {
+    include: itemTooltipTopRightOfIcon;
+    include: globalTextFont;
+    include: globalColorWhite;
+    position: absolute;
+    top: 9px;
+}
+
+.itemTooltipValueText {
+    include: itemTooltipTopRightOfIcon;
+    include: globalTextFont;
+    include: globalColorWhite;
+    position: absolute;
+    top: 30px;
+    font-size: 30px;
+}
+
+.itemTooltipValueDescriptionText {
+    include: itemTooltipTopRightOfIcon;
+    include: globalTextFont;
+    include: globalColorWhite;
+}

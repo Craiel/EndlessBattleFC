@@ -76,40 +76,56 @@ declare('ItemTooltip', function() {
     // ---------------------------------------------------------------------------
     ItemTooltip.prototype.setSlotData = function(data) {
         // Todo: Build to tooltip for the equipped item...
-        this.buildTooltip(data, "Current", this.headerText, this.topPanel, this.bottomPanel);
+        var prefix = "Current";
+
+        this.headerText.setText(data.metaData.name);
+
+        this.buildTooltipTopArea(data, prefix, this.topPanel);
+        this.buildTooltipBottomArea(data, prefix, this.bottomPanel);
     };
 
-    ItemTooltip.prototype.buildTooltip = function(data, idSuffix, headerText, topPanel, bottomPanel) {
-        headerText.setText(data.metaData.name);
-
+    ItemTooltip.prototype.buildTooltipTopArea = function(data, idSuffix, topPanel) {
         topPanel.getContentArea().removeContent();
 
-        var iconElement = element.create(this.id + idSuffix + "IconElement");
+        var attributes = {};
+        attributes.type = data.metaData.typeName;
+        attributes.slot = data.metaData.baseTypeName;
+
+        var contentId = this.id + idSuffix + "TopContent";
+        var topContent = element.create(contentId);
+        topContent.templateName = "itemTooltipTop";
+        topContent.init(topPanel.getContentArea(), attributes);
+        /*var iconElement = element.create(this.id + idSuffix + "IconElement");
         iconElement.templateName = "emptyElement";
         iconElement.init(topPanel.getContentArea());
         iconElement.addClass("itemTooltipIcon");
-        this.addManagedChild(iconElement);
+        this.addManagedChild(iconElement);*/
 
-        var icon = itemIcon.create(this.id + idSuffix + "Icon");
-        icon.init(iconElement);
+        var icon = itemIcon.create(contentId + "Icon");
+        icon.init(topContent);
         icon.setItem(data.metaData);
         this.addManagedChild(icon);
+        this.addManagedChild(topContent);
+    };
 
-        var currencyLabel = element.create(this.id + idSuffix + "SellValueLabel");
-        currencyLabel.templateName = "emptyElement";
-        currencyLabel.init(bottomPanel.getContentArea());
-        currencyLabel.setText("Sell Value: ");
-        currencyLabel.addClass("itemTooltipSellValueLabel");
-        this.addManagedChild(currencyLabel);
+    ItemTooltip.prototype.buildTooltipBottomArea = function(data, idSuffix, bottomPanel) {
+        var contentId = this.id + idSuffix + "BottomContent";
+        var bottomContent = element.create(contentId);
+        bottomContent.templateName = "itemTooltipBottom";
+        bottomContent.init(bottomPanel.getContentArea());
 
-        var currency = currencyControl.create(this.id + idSuffix + "SellValue");
-        currency.init(bottomPanel.getContentArea());
+        var currency = currencyControl.create(contentId + "SellValue");
+        currency.imageAfterText = true;
+        currency.classPrefix = "itemTooltipCurrency";
+        currency.init(bottomContent);
+        currency.addClass("itemTooltipSellValue");
         currency.setImage(resources.ImageIconCoin);
         currency.setValue(data.metaData.stats.gold);
-        currency.addClass("itemTooltipSellValue");
+        currency.setHeight(16);
         this.addManagedChild(currency);
-    }
 
+        this.addManagedChild(bottomContent);
+    }
 
     var surrogate = function(){};
     surrogate.prototype = ItemTooltip.prototype;

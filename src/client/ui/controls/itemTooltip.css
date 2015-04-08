@@ -26,24 +26,10 @@
     text-align: center;
 }
 
-.itemTooltipTopContentPanel {
-    position: relative;
-    width: 100%;
-    height: calc(100% - 64px);
-}
-
 .itemTooltipBottomContentPanel {
     position: relative;
     height: 32px;
     width: 100%;
-}
-
-.itemTooltipIcon {
-    position: relative;
-    top: 12px;
-    left: 20px;
-    width: 48px;
-    height: 48px;
 }
 
 .itemTooltipSellValueLabel {
@@ -51,11 +37,16 @@
     include: globalColorWhite;
     position: absolute;
     left: 9px;
-    top: 9px;
+    top: 7px;
 }
 
 .itemTooltipSellValue {
     position: absolute;
     top: 9px;
     left: 80px;
+}
+
+.itemTooltipCurrencyText {
+    include: globalTextFont;
+    include: globalColorWhite;
 }

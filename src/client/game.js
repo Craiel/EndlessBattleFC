@@ -151,12 +151,17 @@ declare('Game', function() {
         }
     };
 
-    Game.prototype.gainItem = function(item) {
+    Game.prototype.gainItem = function(item, source) {
         if(item === undefined) {
             return;
         }
 
         this.player.receiveItem(item);
+    };
+
+    Game.prototype.gainRandomItem = function() {
+        item = this.generateRandomItem();
+        this.gainItem(item, staticData.ItemSourceUnknown);
     }
 
     Game.prototype.spendStatPoint = function(statId) {

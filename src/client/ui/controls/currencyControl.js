@@ -26,6 +26,12 @@ declare('CurrencyControl', function() {
         this.changeTrackingTime = 0;
         this.changeTrackingDelay = 1000;
         this.changeTrackingValue = 0;
+
+        this.imageAfterText = false;
+
+        this.currencyControlHeight = 24;
+
+        this.classPrefix = "currencyControlDefault";
     };
 
     // ---------------------------------------------------------------------------
@@ -44,7 +50,14 @@ declare('CurrencyControl', function() {
         this.addManagedChild(this.textControl);
 
         if(this.showAffordable === true) {
-            this.textControl.addClass("currencyControlCantAfford");
+            this.textControl.addClass(this.classPrefix + "CantAfford");
+        } else {
+            this.textControl.addClass(this.classPrefix + "Text");
+        }
+
+        if(this.imageAfterText === true) {
+            this.imageControl.removeElementOnly();
+            this.addContent(this.imageControl.getMainElement());
         }
     };
 
@@ -69,18 +82,37 @@ declare('CurrencyControl', function() {
 
         this.textControl.setText(formattedCurrency);
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
     CurrencyControl.prototype.setImage = function(image) {
         coreUtils.setBackgroundImage(this.imageControl.getMainElement(), image);
-    }
+
+        this.applyLayout();
+    };
+
+    CurrencyControl.prototype.elementSetHeight = CurrencyControl.prototype.setHeight;
+    CurrencyControl.prototype.setHeight = function(value) {
+        this.currencyControlHeight = value;
+        this.elementSetHeight(this.currencyControlHeight);
+
+        this.applyLayout();
+    };
+
+    CurrencyControl.prototype.applyLayout = function() {
+        // Set the font's style according to the new height
+        this.textControl.setStyle({height: this.currencyControlHeight, "line-height": this.currencyControlHeight + "px", "font-size": this.currencyControlHeight - 2});
+
+        // We set the image to be uniform in both directions
+        var imageSize = this.currencyControlHeight;
+        this.imageControl.setSize({x: imageSize, y: imageSize});
+    };
 
     CurrencyControl.prototype.setValue = function(value) {
         this.currentValue = value;
-    }
+    };
 
     CurrencyControl.prototype.setOwnedValue = function(value) {
         if(this.showAffordable !== true || this.currentValue === undefined) {
@@ -89,11 +121,11 @@ declare('CurrencyControl', function() {
 
         var canAfford = value >= this.currentValue;
         if(canAfford !== this.canAffordValue) {
-            this.textControl.toggleClass("currencyControlCanAfford");
-            this.textControl.toggleClass("currencyControlCantAfford");
+            this.textControl.toggleClass(this.classPrefix + "CanAfford");
+            this.textControl.toggleClass(this.classPrefix + "CantAfford");
             this.canAffordValue = canAfford;
         }
-    }
+    };
 
     CurrencyControl.prototype._trackChange = function(gameTime) {
         if(this.changeTrackingTime === 0) {
@@ -107,7 +139,7 @@ declare('CurrencyControl', function() {
             this.changeTrackingStartValue = this.currentValue;
             this.changeTrackingTime = gameTime.current + this.changeTrackingDelay;
         }
-    }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = CurrencyControl.prototype;
