@@ -6,7 +6,7 @@ declare('CurrencyDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
+    include('GameData');
     include('CurrencyControl');
 
     CurrencyDialog.prototype = dialog.prototype();
@@ -46,7 +46,7 @@ declare('CurrencyDialog', function() {
             return false;
         }
 
-        this.currencyGoldControl.setValue(game.player.getStat(data.StatDefinition.gold.id));
+        this.currencyGoldControl.setValue(game.player.getStat(gameData.StatDefinition.gold.id));
 
         return true;
     }

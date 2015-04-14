@@ -5,7 +5,7 @@ declare('UserInterface', function () {
     include('Resources');
     include('Save');
     include('SaveKeys');
-    include('Data');
+    include('GameData');
     include('CoreUtils');
     include('InterfaceState');
 
@@ -549,9 +549,9 @@ declare('UserInterface', function () {
             game.reset();
         }
         else {
-            var powerShards = game.player.getStat(data.StatDefinition.shards.id) + game.calculatePowerShardReward();
+            var powerShards = game.player.getStat(gameData.StatDefinition.shards.id) + game.calculatePowerShardReward();
             game.reset();
-            game.player.setStat(data.StatDefinition.shards.id, powerShards);
+            game.player.setStat(gameData.StatDefinition.shards.id, powerShards);
         }
     }
 
@@ -779,22 +779,22 @@ declare('UserInterface', function () {
 
         // Update the player's stats
         document.getElementById("levelValue").innerHTML = game.player.getLevel();
-        document.getElementById("healthValue").innerHTML = Math.floor(game.player.getStat(data.StatDefinition.hp.id)) + '/' + game.player.getStat(data.StatDefinition.hpMax.id);
-        document.getElementById("hp5Value").innerHTML = game.player.getStat(data.StatDefinition.hp5.id).toFixed(2);
-        document.getElementById("damageValue").innerHTML = game.player.getStat(data.StatDefinition.dmgMin.id) + ' - ' + game.player.getStat(data.StatDefinition.dmgMax.id);
-        document.getElementById("damageBonusValue").innerHTML = game.player.getStat(data.StatDefinition.dmgMult.id) + '%';
-        //document.getElementById("armorValue").innerHTML = game.player.getStat(data.StatDefinition.armor.id).toFixed(2) + ' (' + game.player.calculateDamageReduction().toFixed(2) + '%)';
-        //document.getElementById("evasionValue").innerHTML = game.player.getStat(data.StatDefinition.evaRate.id).toFixed(2) + ' (' + game.player.calculateEvasionChance().toFixed(2) + '%)';
+        document.getElementById("healthValue").innerHTML = Math.floor(game.player.getStat(gameData.StatDefinition.hp.id)) + '/' + game.player.getStat(gameData.StatDefinition.hpMax.id);
+        document.getElementById("hp5Value").innerHTML = game.player.getStat(gameData.StatDefinition.hp5.id).toFixed(2);
+        document.getElementById("damageValue").innerHTML = game.player.getStat(gameData.StatDefinition.dmgMin.id) + ' - ' + game.player.getStat(gameData.StatDefinition.dmgMax.id);
+        document.getElementById("damageBonusValue").innerHTML = game.player.getStat(gameData.StatDefinition.dmgMult.id) + '%';
+        //document.getElementById("armorValue").innerHTML = game.player.getStat(gameData.StatDefinition.armor.id).toFixed(2) + ' (' + game.player.calculateDamageReduction().toFixed(2) + '%)';
+        //document.getElementById("evasionValue").innerHTML = game.player.getStat(gameData.StatDefinition.evaRate.id).toFixed(2) + ' (' + game.player.calculateEvasionChance().toFixed(2) + '%)';
 
-        document.getElementById("strengthValue").innerHTML = game.player.getStat(data.StatDefinition.str.id);
-        document.getElementById("staminaValue").innerHTML = game.player.getStat(data.StatDefinition.sta.id);
-        document.getElementById("agilityValue").innerHTML = game.player.getStat(data.StatDefinition.agi.id);
-        document.getElementById("critChanceValue").innerHTML = game.player.getStat(data.StatDefinition.critRate.id).toFixed(2) + '%';
-        document.getElementById("critDamageValue").innerHTML = game.player.getStat(data.StatDefinition.critDmg.id).toFixed(2) + '%';
+        document.getElementById("strengthValue").innerHTML = game.player.getStat(gameData.StatDefinition.str.id);
+        document.getElementById("staminaValue").innerHTML = game.player.getStat(gameData.StatDefinition.sta.id);
+        document.getElementById("agilityValue").innerHTML = game.player.getStat(gameData.StatDefinition.agi.id);
+        document.getElementById("critChanceValue").innerHTML = game.player.getStat(gameData.StatDefinition.critRate.id).toFixed(2) + '%';
+        document.getElementById("critDamageValue").innerHTML = game.player.getStat(gameData.StatDefinition.critDmg.id).toFixed(2) + '%';
 
-        document.getElementById("itemRarityValue").innerHTML = game.player.getStat(data.StatDefinition.magicFind.id).toFixed(2) + '%';
-        document.getElementById("goldGainValue").innerHTML = game.player.getStat(data.StatDefinition.goldMult.id).toFixed(2) + '%';
-        document.getElementById("experienceGainValue").innerHTML = game.player.getStat(data.StatDefinition.xpMult.id).toFixed(2) + '%';
+        document.getElementById("itemRarityValue").innerHTML = game.player.getStat(gameData.StatDefinition.magicFind.id).toFixed(2) + '%';
+        document.getElementById("goldGainValue").innerHTML = game.player.getStat(gameData.StatDefinition.goldMult.id).toFixed(2) + '%';
+        document.getElementById("experienceGainValue").innerHTML = game.player.getStat(gameData.StatDefinition.xpMult.id).toFixed(2) + '%';
 
     }
 

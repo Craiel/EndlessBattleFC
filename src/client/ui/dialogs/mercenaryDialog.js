@@ -6,7 +6,7 @@ declare('MercenaryDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
+    include('GameData');
     include('StaticData');
     include('MercenaryControl');
 
@@ -34,14 +34,14 @@ declare('MercenaryDialog', function() {
         this.setHeaderText("Mercenaries");
 
         // Create the control for each mercenary...
-        for(key in data.Mercenaries) {
+        for(key in gameData.Mercenaries) {
             var control = mercenaryControl.create("Mercenary_" + key);
             control.mercenaryKey = key;
             control.callback = function(obj) { obj.data.arg.purchaseMercenary(obj.data.self.mercenaryKey); };
             control.callbackArgument = game;
             control.init(this.getContentArea());
-            control.setMercenaryName(data.Mercenaries[key].name);
-            control.setMercenaryImage(staticData.imageRoot + data.Mercenaries[key].icon);
+            control.setMercenaryName(gameData.Mercenaries[key].name);
+            control.setMercenaryImage(staticData.imageRoot + gameData.Mercenaries[key].icon);
             this.mercenaryControls[key] = control;
         }
 
@@ -58,11 +58,11 @@ declare('MercenaryDialog', function() {
             return false;
         }
 
-        for(key in data.Mercenaries) {
+        for(key in gameData.Mercenaries) {
             var control = this.mercenaryControls[key];
             control.setMercenaryCost(game.getMercenaryCost(key));
             control.setMercenaryCount(game.getMercenaryCount(key));
-            control.setPlayerGold(game.player.getStat(data.StatDefinition.gold.id));
+            control.setPlayerGold(game.player.getStat(gameData.StatDefinition.gold.id));
             control.update(gameTime);
         }
 

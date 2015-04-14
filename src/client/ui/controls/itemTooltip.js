@@ -8,6 +8,7 @@ declare('ItemTooltip', function() {
     include('Panel');
     include('ItemIcon');
     include('CurrencyControl');
+    include('GameData');
 
     var nextId = 0;
 
@@ -90,22 +91,52 @@ declare('ItemTooltip', function() {
         var attributes = {};
         attributes.type = data.metaData.typeName;
         attributes.slot = data.metaData.baseTypeName;
+        attributes.value = this.getValueContent(data);
+        attributes.desc = this.getDescriptiveContent(data);
+        attributes.details = this.getDetailContent(data);
+        attributes.stats = this.getStatContent(data);
 
         var contentId = this.id + idSuffix + "TopContent";
         var topContent = element.create(contentId);
         topContent.templateName = "itemTooltipTop";
         topContent.init(topPanel.getContentArea(), attributes);
-        /*var iconElement = element.create(this.id + idSuffix + "IconElement");
-        iconElement.templateName = "emptyElement";
-        iconElement.init(topPanel.getContentArea());
-        iconElement.addClass("itemTooltipIcon");
-        this.addManagedChild(iconElement);*/
 
         var icon = itemIcon.create(contentId + "Icon");
         icon.init(topContent);
         icon.setItem(data.metaData);
         this.addManagedChild(icon);
         this.addManagedChild(topContent);
+    };
+
+    ItemTooltip.prototype.dataIsDpsType = function(data) {
+        return data.metaData.slot === gameData.ItemSlots.weapon.id
+            && data.metaData.type !== gameData.WeaponTypes.shield.id;
+    };
+
+    ItemTooltip.prototype.getValueContent = function(data) {
+        if(this.dataIsDpsType(data)) {
+            // Compute DPS...
+            return "<TODO>";
+        }
+
+        return data.metaData.stats.armor;
+    };
+
+    ItemTooltip.prototype.getDetailContent = function(data) {
+        var content = "";
+        if(this.dataIsDpsType(data)) {
+            content = "Damage Per Second";
+        } else {
+            content = "Armor"
+        }
+    }
+
+    ItemTooltip.prototype.getDescriptiveContent = function(data) {
+        return "Desc - TODO";
+    };
+
+    ItemTooltip.prototype.getStatContent = function(data) {
+        return "STAT - TODO";
     };
 
     ItemTooltip.prototype.buildTooltipBottomArea = function(data, idSuffix, bottomPanel) {

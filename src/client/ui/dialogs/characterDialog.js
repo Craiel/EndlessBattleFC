@@ -6,7 +6,7 @@ declare('CharacterDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
+    include('GameData');
     include('Panel');
     include('InventoryControl');
     include('InventorySlotControl');
@@ -136,7 +136,7 @@ declare('CharacterDialog', function() {
                 var element = this.statElements[category][i].value;
                 var button = this.statElements[category][i].button;
 
-                var stat = data.StatDefinition[statKey];
+                var stat = gameData.StatDefinition[statKey];
                 var value = game.player.getStat(stat.id);
                 if(stat.isMultiplier === true) {
                     value = Math.floor((value - 1) * 100);
@@ -155,8 +155,8 @@ declare('CharacterDialog', function() {
 
     CharacterDialog.prototype.initStats = function(gameTime) {
         var categories = {};
-        for(var key in data.StatDefinition) {
-            var stat = data.StatDefinition[key];
+        for(var key in gameData.StatDefinition) {
+            var stat = gameData.StatDefinition[key];
             if(stat.displayCategory === undefined) {
                 continue;
             }

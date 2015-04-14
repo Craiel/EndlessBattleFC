@@ -6,7 +6,7 @@ declare('SystemDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
+    include('GameData');
     include('InterfaceState');
 
     SystemDialog.prototype = dialog.prototype();

@@ -1,7 +1,7 @@
 declare('GeneratorMonster', function () {
     include('Log');
     include('Assert');
-    include('Data');
+    include('GameData');
     include('Component');
     include('Generator');
     include('Monster');
@@ -38,7 +38,7 @@ declare('GeneratorMonster', function () {
 
         var monsterData = monster.create();
         var rarity = this.getMonsterRarity();
-        var type = coreUtils.pickRandomProperty(data.MonsterTypes);
+        var type = coreUtils.pickRandomProperty(gameData.MonsterTypes);
 
         monsterData.setRarity(rarity);
         monsterData.setType(type);
@@ -106,10 +106,10 @@ declare('GeneratorMonster', function () {
 
         // Add a little bit of extra stamina
         temp = {};
-        temp[data.StatDefinition.sta.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
+        temp[gameData.StatDefinition.sta.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
         // Compute Gold and XP this monster will give
-        temp[data.StatDefinition.xp.id] = this.getStatValue(Math.ceil(level / 2), 1.05);
-        temp[data.StatDefinition.gold.id] = this.getStatValue(level, 1.05);
+        temp[gameData.StatDefinition.xp.id] = this.getStatValue(Math.ceil(level / 2), 1.05);
+        temp[gameData.StatDefinition.gold.id] = this.getStatValue(level, 1.05);
         statUtils.doMergeStats(temp, stats);
 
         console.log("Final Stats");
@@ -120,9 +120,9 @@ declare('GeneratorMonster', function () {
     GeneratorMonster.prototype.rebuildLookupData = function() {
         this.rarityList.length = 0;
 
-        log.info("Rebuilding Monster Generator lookup data!");
-        for(var key in data.MonsterRarity) {
-            this.rarityList.push(data.MonsterRarity[key]);
+        log.info("Rebuilding Monster Generator lookup gameData!");
+        for(var key in gameData.MonsterRarity) {
+            this.rarityList.push(gameData.MonsterRarity[key]);
         }
 
         this.rarityList.sort(this.sortMonsterRarity);

@@ -1,6 +1,6 @@
 declare('Stats', function () {
     include('Component');
-    include('Data');
+    include('GameData');
 
     Stats.prototype = component.prototype();
     Stats.prototype.$super = parent;
@@ -41,14 +41,14 @@ declare('Stats', function () {
         }
 
         // Update the stats window
-        document.getElementById("statsWindowPowerShardsValue").innerHTML = game.player.getStat(data.StatDefinition.shards.id).formatMoney(2);
-        document.getElementById("statsWindowGoldValue").innerHTML = game.player.getStat(data.StatDefinition.gold.id).formatMoney(2);
+        document.getElementById("statsWindowPowerShardsValue").innerHTML = game.player.getStat(gameData.StatDefinition.shards.id).formatMoney(2);
+        document.getElementById("statsWindowGoldValue").innerHTML = game.player.getStat(gameData.StatDefinition.gold.id).formatMoney(2);
         document.getElementById("statsWindowGoldEarnedValue").innerHTML = this.goldEarned.formatMoney(2);
         document.getElementById("statsWindowStartDateValue").innerHTML = this.startDate.toDateString() + " " + this.startDate.toLocaleTimeString();
         document.getElementById("statsWindowGoldFromMonstersValue").innerHTML = this.goldFromMonsters.formatMoney(2);
         document.getElementById("statsWindowGoldFromQuestsValue").innerHTML = this.goldFromQuests.formatMoney(0);
         //document.getElementById("statsWindowUpgradesUnlockedValue").innerHTML = this.getUpgradesUnlocked().formatMoney(0);
-        document.getElementById("statsWindowExperienceValue").innerHTML = game.player.getStat(data.StatDefinition.xp.id).formatMoney(2);
+        document.getElementById("statsWindowExperienceValue").innerHTML = game.player.getStat(gameData.StatDefinition.xp.id).formatMoney(2);
         document.getElementById("statsWindowExperienceEarnedValue").innerHTML = this.experienceEarned.formatMoney(2);
         document.getElementById("statsWindowExperienceFromMonstersValue").innerHTML = this.experienceFromMonsters.formatMoney(2);
         document.getElementById("statsWindowExperienceFromQuestsValue").innerHTML = this.experienceFromQuests.formatMoney(0);

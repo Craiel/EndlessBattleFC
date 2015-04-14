@@ -6,7 +6,7 @@ declare('PlayerDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
+    include('GameData');
 
     PlayerDialog.prototype = dialog.prototype();
     PlayerDialog.prototype.$super = parent;
@@ -73,18 +73,18 @@ declare('PlayerDialog', function() {
 
         this.setHeaderText(game.player.getName());
 
-        var hp = game.player.getStat(data.StatDefinition.hp.id);
-        var hpMax = game.player.getStat(data.StatDefinition.hpMax.id);
+        var hp = game.player.getStat(gameData.StatDefinition.hp.id);
+        var hpMax = game.player.getStat(gameData.StatDefinition.hpMax.id);
         this.playerHealthBar.setProgress(hp, hpMax);
         this.playerHealthBar.setProgressText("{0} / {1}".format(hp, hpMax));
 
-        var mp = game.player.getStat(data.StatDefinition.mp.id);
-        var mpMax = game.player.getStat(data.StatDefinition.mpMax.id);
+        var mp = game.player.getStat(gameData.StatDefinition.mp.id);
+        var mpMax = game.player.getStat(gameData.StatDefinition.mpMax.id);
         this.playerManaBar.setProgress(mp, mpMax);
         this.playerManaBar.setProgressText("{0} / {1}".format(mp, mpMax));
 
         var requiredXP = game.player.experienceRequired;
-        var xp = game.player.getStat(data.StatDefinition.xp.id);
+        var xp = game.player.getStat(gameData.StatDefinition.xp.id);
         this.experienceBar.setProgress(xp, requiredXP);
         this.experienceBar.setProgressText("{0} / {1}".format(xp, requiredXP));
 

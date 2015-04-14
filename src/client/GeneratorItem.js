@@ -1,7 +1,7 @@
 declare('GeneratorItem', function () {
     include('Log');
     include('Assert');
-    include('Data');
+    include('GameData');
     include('Component');
     include('Generator');
     include('StatUtils');
@@ -45,7 +45,7 @@ declare('GeneratorItem', function () {
         statUtils.initStats(itemData.stats, false);
 
         // Find out which slot we are generating for
-        var slot = coreUtils.pickRandomProperty(data.ItemSlots);
+        var slot = coreUtils.pickRandomProperty(gameData.ItemSlots);
         itemData.slot = slot.id;
         if(itemData.slot === "weapon") {
             // We are generating weapons
@@ -55,8 +55,8 @@ declare('GeneratorItem', function () {
             this.generateArmor(level, itemData);
         }
 
-        var prefix = coreUtils.pickRandomProperty(data.ItemPrefix);
-        var suffix = coreUtils.pickRandomProperty(data.ItemSuffix);
+        var prefix = coreUtils.pickRandomProperty(gameData.ItemPrefix);
+        var suffix = coreUtils.pickRandomProperty(gameData.ItemSuffix);
         itemData.name = prefix +" " + itemData.typeName + " " + suffix;
 
         return itemData;
@@ -67,14 +67,14 @@ declare('GeneratorItem', function () {
         var rarity = this.getItemRarity();
         itemData.rarity = rarity.id;
 
-        var type = coreUtils.pickRandomProperty(data.WeaponTypes);
+        var type = coreUtils.pickRandomProperty(gameData.WeaponTypes);
         itemData.type = type.id;
         itemData.allowMainHand = type.allowMainHand;
         itemData.allowOffHand = type.allowOffHand;
         itemData.twoHand = type.is2hand;
         itemData.baseTypeName = type.baseTypeName;
 
-        itemData.typeName = coreUtils.pickRandomProperty(data["WeaponNames_" + itemData.type]);
+        itemData.typeName = coreUtils.pickRandomProperty(gameData["WeaponNames_" + itemData.type]);
 
         console.log("Found Weapon Type: " );
         console.log(itemData);
@@ -101,10 +101,10 @@ declare('GeneratorItem', function () {
         var rarity = this.getItemRarity();
         itemData.rarity = rarity.id;
 
-        var type = data.ArmorTypes[itemData.slot];
+        var type = gameData.ArmorTypes[itemData.slot];
         itemData.type = type.id;
         itemData.baseTypeName = type.name;
-        itemData.typeName = coreUtils.pickRandomProperty(data["ArmorNames_" + type.id]);
+        itemData.typeName = coreUtils.pickRandomProperty(gameData["ArmorNames_" + type.id]);
 
         switch(itemData.rarity) {
             case "unique": {
@@ -125,7 +125,7 @@ declare('GeneratorItem', function () {
 
     GeneratorItem.prototype.generateDynamicItemStats = function(level, rarity, itemData) {
         // Determine if we are adding sockets and calculate the secondary stats
-        var slot = data.ItemSlots[itemData.slot];
+        var slot = gameData.ItemSlots[itemData.slot];
         var socketCount = this.getSocketCount(slot.maxSockets, rarity.socketRolls);
         var secondaryStatRolls = rarity.secondaryStatRolls - socketCount;
 
@@ -207,9 +207,9 @@ declare('GeneratorItem', function () {
     GeneratorItem.prototype.rebuildLookupData = function() {
         this.rarityList.length = 0;
 
-        log.info("Rebuilding Item Generator lookup data!");
-        for(var key in data.ItemRarity) {
-            this.rarityList.push(data.ItemRarity[key]);
+        log.info("Rebuilding Item Generator lookup gameData!");
+        for(var key in gameData.ItemRarity) {
+            this.rarityList.push(gameData.ItemRarity[key]);
         }
 
         this.rarityList.sort(this.sortItemRarity);

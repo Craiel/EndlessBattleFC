@@ -6,7 +6,6 @@ declare('InventoryDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
     include('InventoryControl');
 
     InventoryDialog.prototype = dialog.prototype();

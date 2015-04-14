@@ -1,7 +1,7 @@
 declare('CombatUtils', function () {
     include('Assert');
     include('Log');
-    include('Data');
+    include('GameData');
     include('CoreUtils');
 
     function CombatResult() {
@@ -26,13 +26,13 @@ declare('CombatUtils', function () {
             return;
         }
 
-        targetActor.modifyStat(data.StatDefinition.hp.id, -hit.damageTotal);
+        targetActor.modifyStat(gameData.StatDefinition.hp.id, -hit.damageTotal);
         console.log(hit);
     }
 
     CombatUtils.prototype.resolveCombat = function(sourceActor, targetActor) {
         // Todo: Abilities etc, probably not here though
-        /*var ability = data.Abilities.basic.id;
+        /*var ability = gameData.Abilities.basic.id;
         var sourceAbility = sourceActor.getAbility(ability);
         var sourceCooldown = sourceActor.getAbilityCooldown(ability);
         var targetAbility = targetActor.getAbility(ability);
@@ -86,10 +86,10 @@ declare('CombatUtils', function () {
     }
 
     CombatUtils.prototype.applyResistances = function(actor, hit) {
-        var iceResist = 1.0 - actor.getStat(data.StatDefinition.iceResist.id) * actor.getStat(data.StatDefinition.iceResistMult.id);
-        var fireResist = 1.0 - actor.getStat(data.StatDefinition.fireResist.id) * actor.getStat(data.StatDefinition.fireResistMult.id);
-        var lightResist = 1.0 - actor.getStat(data.StatDefinition.lightResist.id) * actor.getStat(data.StatDefinition.lightResistMult.id);
-        var darkResist = 1.0 - actor.getStat(data.StatDefinition.darkResist.id) * actor.getStat(data.StatDefinition.darkResistMult.id);
+        var iceResist = 1.0 - actor.getStat(gameData.StatDefinition.iceResist.id) * actor.getStat(gameData.StatDefinition.iceResistMult.id);
+        var fireResist = 1.0 - actor.getStat(gameData.StatDefinition.fireResist.id) * actor.getStat(gameData.StatDefinition.fireResistMult.id);
+        var lightResist = 1.0 - actor.getStat(gameData.StatDefinition.lightResist.id) * actor.getStat(gameData.StatDefinition.lightResistMult.id);
+        var darkResist = 1.0 - actor.getStat(gameData.StatDefinition.darkResist.id) * actor.getStat(gameData.StatDefinition.darkResistMult.id);
 
         iceResist = iceResist.clamp(0, this.maxResist);
         fireResist = fireResist.clamp(0, this.maxResist);
@@ -136,16 +136,16 @@ declare('CombatUtils', function () {
         result.wasHit = true;
 
         // Calculate the basic damage
-        var dmgMult = actor.getStat(data.StatDefinition.dmgMult.id);
-        var minDmg = actor.getStat(data.StatDefinition.dmgMin.id);
-        var maxDmg = actor.getStat(data.StatDefinition.dmgMax.id);
+        var dmgMult = actor.getStat(gameData.StatDefinition.dmgMult.id);
+        var minDmg = actor.getStat(gameData.StatDefinition.dmgMin.id);
+        var maxDmg = actor.getStat(gameData.StatDefinition.dmgMax.id);
         var damage = coreUtils.getRandomInt(minDmg, maxDmg) * dmgMult;
 
         // See if we are having a critical hit
         if(this.computeCrit(actor) === true) {
             result.wasCrit = true;
-            var critDmg = actor.getStat(data.StatDefinition.critDmg.id);
-            var critDmgMult = actor.getStat(data.StatDefinition.critDmgMult.id);
+            var critDmg = actor.getStat(gameData.StatDefinition.critDmg.id);
+            var critDmgMult = actor.getStat(gameData.StatDefinition.critDmgMult.id);
             var critDamage = (damage * critDmg) * critDmgMult;
             damage += critDamage;
         }

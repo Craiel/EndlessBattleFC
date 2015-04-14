@@ -9,7 +9,7 @@ declare('Player', function () {
     include('Resources');
     include('Save');
     include('SaveKeys');
-    include('Data');
+    include('GameData');
     include('StatUtils');
     include('CoreUtils');
     include('Storage');
@@ -81,10 +81,10 @@ declare('Player', function () {
         // Perform some basic operations that happen when the player is alive
         if(this.alive === true) {
             // Hp5
-            this.hp5Time = coreUtils.processInterval(gameTime, this.hp5Time, this.hp5Delay, this, function(self, value) { self.heal(value); }, this.getStat(data.StatDefinition.hp5.id));
+            this.hp5Time = coreUtils.processInterval(gameTime, this.hp5Time, this.hp5Delay, this, function(self, value) { self.heal(value); }, this.getStat(gameData.StatDefinition.hp5.id));
 
             // Mp5
-            this.mp5Time = coreUtils.processInterval(gameTime, this.mp5Time, this.mp5Delay, this, function(self, value) { self.healMp(value); }, this.getStat(data.StatDefinition.mp5.id));
+            this.mp5Time = coreUtils.processInterval(gameTime, this.mp5Time, this.mp5Delay, this, function(self, value) { self.healMp(value); }, this.getStat(gameData.StatDefinition.mp5.id));
 
             this.processResurrectionDelay(gameTime);
         } else {
@@ -114,8 +114,8 @@ declare('Player', function () {
     };
 
     Player.prototype.getAverageDamage = function() {
-        var minDamage = this.getStat(data.StatDefinition.dmgMin);
-        return minDamage + (this.getStat(data.StatDefinition.dmgMax) - minDamage);
+        var minDamage = this.getStat(gameData.StatDefinition.dmgMin);
+        return minDamage + (this.getStat(gameData.StatDefinition.dmgMax) - minDamage);
     };
 
     Player.prototype.getSkillPoints = function() {
@@ -167,7 +167,7 @@ declare('Player', function () {
     Player.prototype.updateExperience = function(gameTime) {
         this.updateExperienceRequired();
 
-        var current = this.getStat(data.StatDefinition.xp.id);
+        var current = this.getStat(gameData.StatDefinition.xp.id);
         if(current < this.experienceRequired) {
             return;
         }
@@ -181,16 +181,16 @@ declare('Player', function () {
     };
 
     Player.prototype.levelUp = function() {
-        this.setStat(data.StatDefinition.xp.id, 0);
+        this.setStat(gameData.StatDefinition.xp.id, 0);
         this[saveKeys.idnLevel]++;
         this.modifySkillPoints(1);
         this.modifyStatPoints(5);
 
         // Add 1-2 to the primary attributes
-        this.modifyStat(data.StatDefinition.str.id, coreUtils.getRandomInt(1, 2));
-        this.modifyStat(data.StatDefinition.agi.id, coreUtils.getRandomInt(1, 2));
-        this.modifyStat(data.StatDefinition.int.id, coreUtils.getRandomInt(1, 2));
-        this.modifyStat(data.StatDefinition.sta.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(gameData.StatDefinition.str.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(gameData.StatDefinition.agi.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(gameData.StatDefinition.int.id, coreUtils.getRandomInt(1, 2));
+        this.modifyStat(gameData.StatDefinition.sta.id, coreUtils.getRandomInt(1, 2));
 
         this.updateExperienceRequired();
     };
@@ -226,7 +226,7 @@ declare('Player', function () {
         }
 
         // Bring the player back alive
-        this.setStat(data.StatDefinition.hp.id, 1);
+        this.setStat(gameData.StatDefinition.hp.id, 1);
         this.alive = true;
         this.resurrectionTime = 0;
 

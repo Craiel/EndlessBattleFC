@@ -6,7 +6,7 @@ declare('BattleDialog', function() {
     include('ProgressBar');
     include('Button');
     include('Game');
-    include('Data');
+    include('GameData');
     include('InterfaceState');
     include('EventAggregate');
     include('StaticData');
@@ -171,8 +171,8 @@ declare('BattleDialog', function() {
             this.monsterName.getMainElement().css({ 'color': '#FFFFFF' });
 
             // Update the monster health bar
-            var monsterHp = monster.getStat(data.StatDefinition.hp.id);
-            var monsterHpMax = monster.getStat(data.StatDefinition.hpMax.id);
+            var monsterHp = monster.getStat(gameData.StatDefinition.hp.id);
+            var monsterHpMax = monster.getStat(gameData.StatDefinition.hpMax.id);
             this.monsterHealthBar.setProgress(monsterHp, monsterHpMax);
             this.monsterHealthBar.setProgressText("{0} / {1}".format(monsterHp, monsterHpMax));
         } else {

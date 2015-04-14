@@ -10,7 +10,7 @@ declare('Game', function() {
     include('Resources');
     include('Save');
     include('SaveKeys');
-    include('Data');
+    include('GameData');
     include('CoreUtils');
     include('GeneratorMonster');
     include('GeneratorItem');
@@ -132,7 +132,7 @@ declare('Game', function() {
         }
 
         // Todo: Apply modifiers etc
-        this.player.modifyStat(data.StatDefinition.xp.id, value);
+        this.player.modifyStat(gameData.StatDefinition.xp.id, value);
 
         eventAggregate.publish(staticData.EventXpGain, { value: value });
     };
@@ -143,7 +143,7 @@ declare('Game', function() {
         }
 
         // Todo: Apply modifiers etc
-        this.player.modifyStat(data.StatDefinition.gold.id, value);
+        this.player.modifyStat(gameData.StatDefinition.gold.id, value);
 
         // Report gold gain from sources that qualify
         if(source !== staticData.GoldSourceMercenary) {
@@ -169,7 +169,7 @@ declare('Game', function() {
             return;
         }
 
-        var stat = data.StatDefinition[statId];
+        var stat = gameData.StatDefinition[statId];
         if(stat === undefined) {
             return;
         }
@@ -183,11 +183,11 @@ declare('Game', function() {
     // ---------------------------------------------------------------------------
     Game.prototype.purchaseMercenary = function(key) {
         var cost = this.getMercenaryCost(key);
-        if(this.player.getStat(data.StatDefinition.gold.id) < cost) {
+        if(this.player.getStat(gameData.StatDefinition.gold.id) < cost) {
             return;
         }
 
-        this.player.modifyStat(data.StatDefinition.gold.id, -cost);
+        this.player.modifyStat(gameData.StatDefinition.gold.id, -cost);
 
         if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
             this[saveKeys.idnMercenariesPurchased][key] = 0;
@@ -199,7 +199,7 @@ declare('Game', function() {
 
     Game.prototype.getMercenaryCost = function(key) {
         var owned = this.getMercenaryCount(key);
-        return Math.floor(data.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
+        return Math.floor(gameData.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
     };
 
     Game.prototype.getMercenaryCount = function(key) {
@@ -217,7 +217,7 @@ declare('Game', function() {
     Game.prototype.calculateMercenaryGps = function() {
         var gps = 0;
         for(key in this[saveKeys.idnMercenariesPurchased]) {
-            var baseValue = data.Mercenaries[key].gps * this[saveKeys.idnMercenariesPurchased][key];
+            var baseValue = gameData.Mercenaries[key].gps * this[saveKeys.idnMercenariesPurchased][key];
             gps += baseValue;
         }
 
@@ -253,8 +253,8 @@ declare('Game', function() {
         assert.isDefined(this.monsters[position], "Tried to kill non-existing monster");
 
         var monster = this.monsters[position];
-        var xp = Math.floor(monster.getStat(data.StatDefinition.xp.id) * monster.getStat(data.StatDefinition.xpMult.id));
-        var gold = Math.floor(monster.getStat(data.StatDefinition.gold.id) * monster.getStat(data.StatDefinition.goldMult.id));
+        var xp = Math.floor(monster.getStat(gameData.StatDefinition.xp.id) * monster.getStat(gameData.StatDefinition.xpMult.id));
+        var gold = Math.floor(monster.getStat(gameData.StatDefinition.gold.id) * monster.getStat(gameData.StatDefinition.goldMult.id));
 
         if(xp <= 0 || gold <= 0) {
             log.warning("Warning, Monster gave no gold or xp!");
@@ -401,15 +401,15 @@ declare('Game', function() {
         var monstersDamageTaken = 0;
         if (game.player.canAttack) {
             // Calculate the damage
-            var playerMinDamage = this.player.getStat(data.StatDefinition.dmgMin.id);
-            var playerMaxDamage = this.player.getStat(data.StatDefinition.dmgMax.id);
+            var playerMinDamage = this.player.getStat(gameData.StatDefinition.dmgMin.id);
+            var playerMaxDamage = this.player.getStat(gameData.StatDefinition.dmgMax.id);
             var playerDamage = playerMinDamage + coreUtils.getRandomInt(playerMinDamage, playerMaxDamage);
 
 
             // See if the player will crit
             var criticalHappened = false;
-            if (this.player.getStat(data.StatDefinition.critRate.id) >= (Math.random() * 100)) {
-                playerDamage *= (this.player.getStat(data.StatDefinition.critDmg.id) / 100);
+            if (this.player.getStat(gameData.StatDefinition.critRate.id) >= (Math.random() * 100)) {
+                playerDamage *= (this.player.getStat(gameData.StatDefinition.critDmg.id) / 100);
                 criticalHappened = true;
             }
 
@@ -460,7 +460,7 @@ declare('Game', function() {
 
     Game.prototype.calculatePowerShardReward = function calculatePowerShardReward() {
         var powerShardsTotal = Math.floor((Math.sqrt(1 + 8 * (this.stats.goldEarned / 1000000000000)) - 1) / 2);
-        var powerShardsReward = powerShardsTotal - this.player.getStat(data.StatDefinition.shards.id);
+        var powerShardsReward = powerShardsTotal - this.player.getStat(gameData.StatDefinition.shards.id);
         if (powerShardsReward < 0) {
             powerShardsReward = 0;
         }

@@ -5,7 +5,7 @@ declare('Actor', function () {
     include('Save');
     include('SaveKeys');
     include('StaticData');
-    include('Data');
+    include('GameData');
     include('Storage');
     include('StatUtils');
     include('CoreUtils');
@@ -54,7 +54,7 @@ declare('Actor', function () {
         assert.isDefined(this.getBaseStats, "Actor needs to have a getBaseStats() function");
 
         // Add the basic attack ability to the actor, this everyone will have
-        this.addAbility(data.Abilities.basic.id);
+        this.addAbility(gameData.Abilities.basic.id);
     }
 
     Actor.prototype.componentUpdate = Actor.prototype.update;
@@ -69,7 +69,7 @@ declare('Actor', function () {
         }
 
         var wasAlive = this.alive;
-        this.alive = this.getStat(data.StatDefinition.hp.id) > 0;
+        this.alive = this.getStat(gameData.StatDefinition.hp.id) > 0;
 
         if(wasAlive === true && this.alive !== true) {
             // The actor has died, trigger the event
@@ -99,7 +99,7 @@ declare('Actor', function () {
             return;
         }
 
-        this.abilitySet[key] = data.Abilities[key];
+        this.abilitySet[key] = gameData.Abilities[key];
         this.abilityCooldown[key] = 0;
     }
 
@@ -177,19 +177,19 @@ declare('Actor', function () {
     }
 
     Actor.prototype.getHitChance = function() {
-        return this.getRatingValue(data.StatDefinition.hitRate.id, data.StatDefinition.hitRateMult.id, this.hitChanceMin, this.hitChanceMax, this.baseRatingMultiplier);
+        return this.getRatingValue(gameData.StatDefinition.hitRate.id, gameData.StatDefinition.hitRateMult.id, this.hitChanceMin, this.hitChanceMax, this.baseRatingMultiplier);
     }
 
     Actor.prototype.getCritChance = function() {
-        return this.getRatingValue(data.StatDefinition.critRate.id, data.StatDefinition.critRateMult.id, this.critChanceMin, this.critChanceMax, this.baseRatingMultiplier);
+        return this.getRatingValue(gameData.StatDefinition.critRate.id, gameData.StatDefinition.critRateMult.id, this.critChanceMin, this.critChanceMax, this.baseRatingMultiplier);
     }
 
     Actor.prototype.getEvadeChance = function() {
-        return this.getRatingValue(data.StatDefinition.evaRate.id, data.StatDefinition.evaRateMult.id, this.evadeChanceMin, this.evadeChanceMax, this.baseRatingMultiplier);
+        return this.getRatingValue(gameData.StatDefinition.evaRate.id, gameData.StatDefinition.evaRateMult.id, this.evadeChanceMin, this.evadeChanceMax, this.baseRatingMultiplier);
     }
 
     Actor.prototype.getArmorDmgReduction = function() {
-        return this.getRatingValue(data.StatDefinition.armor.id, data.StatDefinition.armorMult.id, 0, this.armorReductionMax, this.armorRatingMultiplier);
+        return this.getRatingValue(gameData.StatDefinition.armor.id, gameData.StatDefinition.armorMult.id, 0, this.armorReductionMax, this.armorRatingMultiplier);
     }
 
     Actor.prototype.getRatingValue = function(ratingStat, ratingMultStat, min, max, multiplier) {
@@ -211,23 +211,23 @@ declare('Actor', function () {
     // ---------------------------------------------------------------------------
     Actor.prototype.heal = function(amount) {
         if(amount === undefined) {
-            amount = this.getStat(data.StatDefinition.hpMax.id);
+            amount = this.getStat(gameData.StatDefinition.hpMax.id);
         }
 
-        this.modifyStat(data.StatDefinition.hp.id, amount);
-        if (this.getStat(data.StatDefinition.hp.id) > this.getStat(data.StatDefinition.hpMax.id)) {
-            this.setStat(data.StatDefinition.hp.id, this.getStat(data.StatDefinition.hpMax.id));
+        this.modifyStat(gameData.StatDefinition.hp.id, amount);
+        if (this.getStat(gameData.StatDefinition.hp.id) > this.getStat(gameData.StatDefinition.hpMax.id)) {
+            this.setStat(gameData.StatDefinition.hp.id, this.getStat(gameData.StatDefinition.hpMax.id));
         }
     }
 
     Actor.prototype.healMp = function(amount) {
         if(amount === undefined) {
-            amount = this.getStat(data.StatDefinition.mpMax.id);
+            amount = this.getStat(gameData.StatDefinition.mpMax.id);
         }
 
-        this.modifyStat(data.StatDefinition.mp.id, amount);
-        if(this.getStat(data.StatDefinition.mp.id) > this.getStat(data.StatDefinition.mpMax.id)) {
-            this.setStat(data.StatDefinition.mp.id, this.getStat(data.StatDefinition.mpMax.id));
+        this.modifyStat(gameData.StatDefinition.mp.id, amount);
+        if(this.getStat(gameData.StatDefinition.mp.id) > this.getStat(gameData.StatDefinition.mpMax.id)) {
+            this.setStat(gameData.StatDefinition.mp.id, this.getStat(gameData.StatDefinition.mpMax.id));
         }
     }
 

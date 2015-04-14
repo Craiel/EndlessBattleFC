@@ -1,7 +1,6 @@
 declare('Generator', function () {
     include('Log');
     include('Assert');
-    include('Data');
     include('Component');
     include('CoreUtils');
     include('StatUtils');

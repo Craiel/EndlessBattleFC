@@ -1,6 +1,6 @@
 declare('StatUtils', function () {
     include('Assert');
-    include('Data');
+    include('GameData');
     include('Component');
 
     StatUtils.prototype = component.prototype();
@@ -24,8 +24,8 @@ declare('StatUtils', function () {
     StatUtils.prototype.init = function() {
         this.componentInit();
 
-        for(var key in data.StatDefinition) {
-            var entry = data.StatDefinition[key];
+        for(var key in gameData.StatDefinition) {
+            var entry = gameData.StatDefinition[key];
             if(entry.isPrimaryStat === true) {
                 this.primaryStats[key] = entry;
             } else if (entry.isSecondaryStat === true) {
@@ -40,14 +40,14 @@ declare('StatUtils', function () {
     // Generic stat functions
     // ---------------------------------------------------------------------------
     StatUtils.prototype.initStats = function(stats, useDefaults) {
-        for (stat in data.StatDefinition) {
+        for (stat in gameData.StatDefinition) {
             if(useDefaults === undefined || useDefaults === true) {
-                stats[stat] = data.StatDefinition[stat].default;
+                stats[stat] = gameData.StatDefinition[stat].default;
             }
 
             // Ensure each stat is assigned with at least 0
             if(stats[stat] === undefined) {
-                if(data.StatDefinition[stat].isMultiplier !== true) {
+                if(gameData.StatDefinition[stat].isMultiplier !== true) {
                     stats[stat] = 0;
                 } else {
                     stats[stat] = 1.0;
@@ -74,7 +74,7 @@ declare('StatUtils', function () {
     StatUtils.prototype.doMergeStats = function(stats, target) {
         for(var stat in stats) {
             var value = stats[stat];
-            if(data.StatDefinition[stat].isMultiplier !== true) {
+            if(gameData.StatDefinition[stat].isMultiplier !== true) {
                 target[stat] += value;
             } else {
                 target[stat] += (value - 1.0);
@@ -89,7 +89,7 @@ declare('StatUtils', function () {
         // Avoid changing if it's the same
         if(target[stat] !== value) {
             target[stat] = value;
-            if(data.StatDefinition[stat].isMultiplier !== true) {
+            if(gameData.StatDefinition[stat].isMultiplier !== true) {
                 target[stat] = Math.floor(target[stat]);
             }
             return true;
@@ -109,7 +109,7 @@ declare('StatUtils', function () {
 
         // Modify the value and ensure its in the valid range
         target[stat] += value;
-        if(data.StatDefinition[stat].isMultiplier !== true) {
+        if(gameData.StatDefinition[stat].isMultiplier !== true) {
             target[stat] = Math.floor(target[stat]);
         }
 
@@ -121,7 +121,7 @@ declare('StatUtils', function () {
 
         statData = {};
         for(key in sourceData) {
-            if(data.StatDefinition[key] !== undefined) {
+            if(gameData.StatDefinition[key] !== undefined) {
                 statData[key] = sourceData[key];
             }
         }
@@ -136,44 +136,44 @@ declare('StatUtils', function () {
         for(stat in sourceStats) {
             var value = sourceStats[stat];
             switch (stat) {
-                case data.StatDefinition.str.id:
+                case gameData.StatDefinition.str.id:
                 {
-                    this.doModifyStat(data.StatDefinition.hpMax.id, value * 2, target);
-                    this.doModifyStat(data.StatDefinition.dmgMin.id, value, target);
-                    this.doModifyStat(data.StatDefinition.dmgMax.id, value, target);
-                    this.doModifyStat(data.StatDefinition.critDmg.id, (value * 2) / 100, target);
+                    this.doModifyStat(gameData.StatDefinition.hpMax.id, value * 2, target);
+                    this.doModifyStat(gameData.StatDefinition.dmgMin.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.dmgMax.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.critDmg.id, (value * 2) / 100, target);
                     break;
                 }
 
-                case data.StatDefinition.agi.id:
+                case gameData.StatDefinition.agi.id:
                 {
-                    this.doModifyStat(data.StatDefinition.critRate.id, value, target);
-                    this.doModifyStat(data.StatDefinition.evaRate.id, value, target);
-                    this.doModifyStat(data.StatDefinition.hitRate.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.critRate.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.evaRate.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.hitRate.id, value, target);
                     break;
                 }
 
-                case data.StatDefinition.sta.id:
+                case gameData.StatDefinition.sta.id:
                 {
-                    this.doModifyStat(data.StatDefinition.hpMax.id, value * 5, target);
-                    this.doModifyStat(data.StatDefinition.hp5.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.hpMax.id, value * 5, target);
+                    this.doModifyStat(gameData.StatDefinition.hp5.id, value, target);
 
-                    this.doModifyStat(data.StatDefinition.fireResist.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.iceResist.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.lightResist.id, value / 10, target);
-                    this.doModifyStat(data.StatDefinition.darkResist.id, value / 10, target);
+                    this.doModifyStat(gameData.StatDefinition.fireResist.id, value / 10, target);
+                    this.doModifyStat(gameData.StatDefinition.iceResist.id, value / 10, target);
+                    this.doModifyStat(gameData.StatDefinition.lightResist.id, value / 10, target);
+                    this.doModifyStat(gameData.StatDefinition.darkResist.id, value / 10, target);
                     break;
                 }
 
-                case data.StatDefinition.int.id:
+                case gameData.StatDefinition.int.id:
                 {
-                    this.doModifyStat(data.StatDefinition.mpMax.id, value * 5, target);
-                    this.doModifyStat(data.StatDefinition.mp5.id, value, target);
+                    this.doModifyStat(gameData.StatDefinition.mpMax.id, value * 5, target);
+                    this.doModifyStat(gameData.StatDefinition.mp5.id, value, target);
 
-                    this.doModifyStat(data.StatDefinition.fireDmgMult.id, value / 100, target);
-                    this.doModifyStat(data.StatDefinition.iceDmgMult.id, value / 100, target);
-                    this.doModifyStat(data.StatDefinition.lightDmgMult.id, value / 100, target);
-                    this.doModifyStat(data.StatDefinition.darkDmgMult.id, value / 100, target);
+                    this.doModifyStat(gameData.StatDefinition.fireDmgMult.id, value / 100, target);
+                    this.doModifyStat(gameData.StatDefinition.iceDmgMult.id, value / 100, target);
+                    this.doModifyStat(gameData.StatDefinition.lightDmgMult.id, value / 100, target);
+                    this.doModifyStat(gameData.StatDefinition.darkDmgMult.id, value / 100, target);
                     break;
                 }
             }
