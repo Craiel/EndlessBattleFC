@@ -2,7 +2,6 @@ declare("Type", function() {
 	include("$");
 	include("Log");
 	include("Assert");
-	include("Utils");
     
     var objectConstructor = {}.constructor;    
     

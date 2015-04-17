@@ -7,7 +7,6 @@ declare('Game', function() {
     include('Options');
     include('StaticData');
     include('ParticleManager');
-    include('Resources');
     include('Save');
     include('SaveKeys');
     include('GameData');

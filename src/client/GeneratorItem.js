@@ -1,8 +1,6 @@
 declare('GeneratorItem', function () {
     include('Log');
-    include('Assert');
     include('GameData');
-    include('Component');
     include('Generator');
     include('StatUtils');
     include('CoreUtils');

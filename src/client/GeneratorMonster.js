@@ -2,7 +2,6 @@ declare('GeneratorMonster', function () {
     include('Log');
     include('Assert');
     include('GameData');
-    include('Component');
     include('Generator');
     include('Monster');
     include('StatUtils');

@@ -1,7 +1,5 @@
 declare('MercenaryControl', function() {
-    include('Log');
     include('Assert');
-    include('StaticData');
     include('Element');
     include('CoreUtils');
     include('Resources');

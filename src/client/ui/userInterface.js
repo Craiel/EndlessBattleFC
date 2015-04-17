@@ -1,7 +1,5 @@
 declare('UserInterface', function () {
-    include('Assert');
     include('Component');
-    include('StaticData');
     include('Resources');
     include('Save');
     include('SaveKeys');
@@ -10,8 +8,6 @@ declare('UserInterface', function () {
     include('InterfaceState');
 
     // UI Components
-    include('Dialog');
-    include('InventoryControl');
     include('SystemDialog');
     include('BattleDialog');
     include('PlayerDialog');

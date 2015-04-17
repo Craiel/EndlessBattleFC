@@ -1,6 +1,5 @@
 declare('ItemUtils', function () {
     include('Assert');
-    include('Log');
     include('CoreUtils');
     include('Resources');
 

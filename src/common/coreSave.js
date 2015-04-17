@@ -1,7 +1,6 @@
 declare('CoreSave', function(require) {
     include('Log');
     include('Assert');
-    include('CoreUtils');
     include('Type');
     include('Lzw');
     

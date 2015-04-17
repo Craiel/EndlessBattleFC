@@ -1,6 +1,5 @@
 declare('EventAggregate', function () {
     include('Log');
-    include('Assert');
 
     function EventAggregate() {
         this.registry = {};

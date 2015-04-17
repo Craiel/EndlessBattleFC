@@ -1,5 +1,4 @@
 declare('CombatUtils', function () {
-    include('Assert');
     include('Log');
     include('GameData');
     include('CoreUtils');

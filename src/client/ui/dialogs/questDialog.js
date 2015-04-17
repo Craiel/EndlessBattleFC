@@ -1,11 +1,5 @@
 declare('QuestDialog', function() {
-    include('Element');
     include('Dialog');
-    include('CoreUtils');
-    include('Resources');
-    include('ProgressBar');
-    include('Button');
-    include('Game');
 
     QuestDialog.prototype = dialog.prototype();
     QuestDialog.prototype.$super = parent;

@@ -1,10 +1,5 @@
 declare('MercenaryDialog', function() {
-    include('Element');
     include('Dialog');
-    include('CoreUtils');
-    include('Resources');
-    include('ProgressBar');
-    include('Button');
     include('Game');
     include('GameData');
     include('StaticData');

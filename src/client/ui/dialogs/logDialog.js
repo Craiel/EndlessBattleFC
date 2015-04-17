@@ -1,5 +1,4 @@
 declare('LogDialog', function() {
-    include('Element');
     include('CoreUtils');
     include('Dialog');
     include('Resources');

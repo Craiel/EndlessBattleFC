@@ -1,7 +1,5 @@
 declare('Monster', function () {
     include('Actor');
-    include('StaticData');
-    include('ParticleManager');
     include('StatUtils');
 
     Monster.prototype = actor.prototype();

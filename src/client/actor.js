@@ -2,8 +2,6 @@ declare('Actor', function () {
     include('Assert');
     include('Log');
     include('Component');
-    include('Save');
-    include('SaveKeys');
     include('StaticData');
     include('GameData');
     include('Storage');

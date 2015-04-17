@@ -7,11 +7,6 @@ declare('BattleDialog', function() {
     include('Button');
     include('Game');
     include('GameData');
-    include('InterfaceState');
-    include('EventAggregate');
-    include('StaticData');
-
-
 
     BattleDialog.prototype = dialog.prototype();
     BattleDialog.prototype.$super = parent;

@@ -1,7 +1,5 @@
 declare('Button', function() {
-    include('Log');
     include('Assert');
-    include('StaticData');
     include('Element');
     include('CoreUtils');
 

@@ -1,11 +1,5 @@
 declare('ItemIcon', function() {
-    include('Log');
-    include('Assert');
-    include('StaticData');
     include('Element');
-    include('CoreUtils');
-    include('Resources');
-    include('Panel');
     include('ItemUtils');
 
     ItemIcon.prototype = element.prototype();

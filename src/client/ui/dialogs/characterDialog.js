@@ -1,16 +1,13 @@
 declare('CharacterDialog', function() {
     include('Element');
     include('Dialog');
-    include('CoreUtils');
     include('Resources');
-    include('ProgressBar');
     include('Button');
     include('Game');
     include('GameData');
     include('Panel');
     include('InventoryControl');
     include('InventorySlotControl');
-    include('Button');
 
     CharacterDialog.prototype = dialog.prototype();
     CharacterDialog.prototype.$super = parent;

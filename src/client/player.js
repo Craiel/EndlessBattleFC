@@ -2,11 +2,8 @@ declare('Player', function () {
     include('Assert');
     include('Log');
     include('Actor');
-    include('Component');
     include('StaticData');
     include('Utils');
-    include('ParticleManager');
-    include('Resources');
     include('Save');
     include('SaveKeys');
     include('GameData');
