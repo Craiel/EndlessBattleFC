@@ -77,7 +77,7 @@
   "DataTarget": "src\\data\\generated\\data.js",
   "StyleSheetTarget": "bin\\client\\endless.css",
   "ImageRoot": "data\\www\\images\\",
-  "ImageTemplate": "src\\data\\generated\\imagesTemplate.js",
+  "ImageTemplate": "src\\data\\templates\\imagesTemplate.js",
   "ImageTarget": "src\\data\\generated\\images.js",
   "ContentTarget": "bin\\client\\"
 }
