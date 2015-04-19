@@ -1,7 +1,7 @@
 declare('Dialog', function() {
     include('StaticData');
     include('Element');
-    include('Resources');
+    include('Images');
     include('Panel');
     include('Button');
 
@@ -15,6 +15,8 @@ declare('Dialog', function() {
         this.id = id;
 
         this.setTemplate("dialog");
+
+        this.resources = {};
 
         this.isVisible = true;
         this.canClose = true;
@@ -33,6 +35,10 @@ declare('Dialog', function() {
     // ---------------------------------------------------------------------------
     Dialog.prototype.elementInit = Dialog.prototype.init;
     Dialog.prototype.init = function(parent, attributes) {
+
+        this.resources.close = images.use(this.id, images.iconClose);
+        this.resources.closeHover = images.use(this.id, images.iconCloseHover);
+
         this.elementInit(parent, attributes);
 
         this.headerPanel = panel.create(this.id + "Header");
@@ -62,7 +68,7 @@ declare('Dialog', function() {
             this.closeButton.callback = function (obj) { obj.data.arg.onDialogClose(); };
             this.closeButton.callbackArgument = this;
             this.closeButton.init(this);
-            this.closeButton.setImages(resources.ImageIconClose, resources.ImageIconCloseHover, undefined);
+            this.closeButton.setImages(this.resources.close, this.resources.closeHover, undefined);
             this.closeButton.addClass("dialogCloseButton");
             this.addManagedChild(this.closeButton);
         }

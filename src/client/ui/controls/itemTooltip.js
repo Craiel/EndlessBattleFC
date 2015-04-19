@@ -1,6 +1,6 @@
 declare('ItemTooltip', function() {
     include('Element');
-    include('Resources');
+    include('Images');
     include('Panel');
     include('ItemIcon');
     include('CurrencyControl');
@@ -19,6 +19,8 @@ declare('ItemTooltip', function() {
 
         this.setTemplate("itemTooltip");
 
+        this.resources = {};
+
         this.headerPanel = undefined;
         this.headerText = undefined;
         this.topPanel = undefined;
@@ -31,6 +33,8 @@ declare('ItemTooltip', function() {
     ItemTooltip.prototype.elementInit = ItemTooltip.prototype.init;
     ItemTooltip.prototype.init = function(parent, attributes) {
         this.elementInit(parent, attributes);
+
+        this.resources.coin = images.use(this.id, images.iconGoldCoin);
 
         this.headerPanel = panel.create(this.id + "Header");
         this.headerPanel.init(this);
@@ -146,7 +150,7 @@ declare('ItemTooltip', function() {
         currency.classPrefix = "itemTooltipCurrency";
         currency.init(bottomContent);
         currency.addClass("itemTooltipSellValue");
-        currency.setImage(resources.ImageIconCoin);
+        currency.setImage(this.resources.coin);
         currency.setValue(data.metaData.stats.gold);
         currency.setHeight(16);
         this.addManagedChild(currency);

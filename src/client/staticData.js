@@ -58,6 +58,9 @@ declare('StaticData', function () {
 
     StaticData.prototype.setRoot = function(value) {
         this.imageRoot = value + 'images/';
+        this.imageRootInterface = this.imageRoot + "interface/";
+        this.imageRootArmor = this.imageRoot + 'armor/';
+        this.imageRootIcon = this.imageRoot + 'icon/';
     };
 
     StaticData.prototype.getImagePath = function(fileName) {

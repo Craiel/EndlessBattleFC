@@ -290,19 +290,6 @@ declare('UserInterface', function () {
         }
     }
 
-
-    UserInterface.prototype.stoneButtonHover = function(obj) {
-        $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 75px');
-    }
-
-    UserInterface.prototype.stoneButtonReset = function(obj) {
-        $(this).css('background', 'url("' + resources.ImageStoneButtons + '") 0 0px');
-    }
-
-    UserInterface.prototype.closeButtonHover = function(obj) {
-        obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageCloseButton) + ' 14px 0';
-    }
-
     UserInterface.prototype.closeButtonClick = function(obj) {
         switch (obj.id) {
             case "statUpgradesWindowCloseButton":
@@ -333,10 +320,6 @@ declare('UserInterface', function () {
                 this.questsWindowShown = false;
                 break;
         }
-    }
-
-    UserInterface.prototype.closeButtonReset = function(obj) {
-        obj.currentTarget.style.background = coreUtils.getImageUrl(resources.ImageCloseButton) + ' 0 0';
     }
 
     UserInterface.prototype.updateWindowDepths = function(obj) {

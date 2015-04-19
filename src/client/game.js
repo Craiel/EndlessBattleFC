@@ -6,7 +6,6 @@ declare('Game', function() {
     include('Stats');
     include('Options');
     include('StaticData');
-    include('ParticleManager');
     include('Save');
     include('SaveKeys');
     include('GameData');
@@ -71,9 +70,6 @@ declare('Game', function() {
 
         ////////////////////// TODO: Remove / refactor below
         this.reset();
-
-        particleManager.init();
-
         this.load();
     };
 
@@ -95,8 +91,6 @@ declare('Game', function() {
         this.updateAutoSave(gameTime);
 
         /////////////////////TODO: Remove / refactor below
-
-        particleManager.update(gameTime);
         this.stats.update(gameTime);
 
         return true;

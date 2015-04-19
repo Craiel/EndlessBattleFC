@@ -55,6 +55,13 @@
       "Option": 1
     }
   ],
+  "Images": [
+	{
+	  "Directory": "data\\www\\images\\",
+	  "FilterStrings": [ "*" ],
+	  "Option": 1
+	}
+  ],
   "Contents": [
     {
       "Directory": "data\\www\\",
@@ -69,5 +76,8 @@
   "TemplateTarget": "src\\data\\generated\\templates.js",
   "DataTarget": "src\\data\\generated\\data.js",
   "StyleSheetTarget": "bin\\client\\endless.css",
+  "ImageRoot": "data\\www\\images\\",
+  "ImageTemplate": "src\\data\\generated\\imagesTemplate.js",
+  "ImageTarget": "src\\data\\generated\\images.js",
   "ContentTarget": "bin\\client\\"
 }
