@@ -10,7 +10,10 @@ declare('ItemUtils', function () {
     // main functions
     // ---------------------------------------------------------------------------
     ItemUtils.prototype.getItemIconUrl = function(type) {
-        return coreUtils.getImageUrl(ResImg(placeHolder));
+
+        return coreUtils.getImageUrl("{0}{1}Default.png".format(staticData.imageRootItem, type));
+
+        //return coreUtils.getImageUrl(ResImg(placeHolder));
 
         // TODO:
         /*var key = 'ImageItemDefault_' + type;
