@@ -1,10 +1,10 @@
 declare('ItemTooltip', function() {
     include('Element');
-    include('Images');
     include('Panel');
     include('ItemIcon');
     include('CurrencyControl');
     include('GameData');
+    include('StaticData');
 
     var nextId = 0;
 
@@ -19,8 +19,6 @@ declare('ItemTooltip', function() {
 
         this.setTemplate("itemTooltip");
 
-        this.resources = {};
-
         this.headerPanel = undefined;
         this.headerText = undefined;
         this.topPanel = undefined;
@@ -34,11 +32,9 @@ declare('ItemTooltip', function() {
     ItemTooltip.prototype.init = function(parent, attributes) {
         this.elementInit(parent, attributes);
 
-        this.resources.coin = images.use(this.id, images.iconGoldCoin);
-
         this.headerPanel = panel.create(this.id + "Header");
         this.headerPanel.init(this);
-        resources.setPanelImages(this.headerPanel, "Blue");
+        this.headerPanel.setStyle("Blue");
         this.headerPanel.addClass("itemTooltipHeaderPanel");
         this.addManagedChild(this.headerPanel);
 
@@ -50,14 +46,14 @@ declare('ItemTooltip', function() {
 
         this.topPanel = panel.create(this.id + "Top");
         this.topPanel.init(this);
-        resources.setPanelImages(this.topPanel, "Blue");
+        this.topPanel.setStyle("Blue");
         this.topPanel.addClass("itemTooltipTopContentPanel");
         this.topPanel.addClass("globalNoDrag");
         this.addManagedChild(this.topPanel);
 
         this.bottomPanel = panel.create(this.id + "Bottom");
         this.bottomPanel.init(this);
-        resources.setPanelImages(this.bottomPanel, "Blue");
+        this.bottomPanel.setStyle("Blue");
         this.bottomPanel.addClass("itemTooltipBottomContentPanel");
         this.bottomPanel.addClass("globalNoDrag");
         this.addManagedChild(this.bottomPanel);
@@ -150,7 +146,7 @@ declare('ItemTooltip', function() {
         currency.classPrefix = "itemTooltipCurrency";
         currency.init(bottomContent);
         currency.addClass("itemTooltipSellValue");
-        currency.setImage(this.resources.coin);
+        currency.setImage(ResImg(iconGold));
         currency.setValue(data.metaData.stats.gold);
         currency.setHeight(16);
         this.addManagedChild(currency);

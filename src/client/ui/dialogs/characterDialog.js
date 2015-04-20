@@ -1,13 +1,13 @@
 declare('CharacterDialog', function() {
     include('Element');
     include('Dialog');
-    include('Resources');
     include('Button');
     include('Game');
     include('GameData');
     include('Panel');
     include('InventoryControl');
     include('InventorySlotControl');
+    include('StaticData');
 
     CharacterDialog.prototype = dialog.prototype();
     CharacterDialog.prototype.$super = parent;
@@ -58,20 +58,20 @@ declare('CharacterDialog', function() {
 
         this.equipBackground = panel.create(this.id + 'EquipBackGround');
         this.equipBackground.init(this.getContentArea());
-        resources.setPanelImages(this.equipBackground, "BeigeInset");
+        this.equipBackground.setStyle("BeigeInset");
         this.equipBackground.addClass('characterEquipBackGround');
         this.addManagedChild(this.equipBackground);
 
         this.statsBackground = panel.create(this.id + 'StatsBackground');
         this.statsBackground.init(this.getContentArea());
-        resources.setPanelImages(this.statsBackground, "BeigeInset");
+        this.statsBackground.setStyle("BeigeInset");
         this.statsBackground.addClass('characterStatsBackground');
         this.statsBackground.getContentArea().setStyle({"overflow-y": "scroll"});
         this.addManagedChild(this.statsBackground);
 
         this.inventoryBackground = panel.create(this.id + 'InventoryBackground');
         this.inventoryBackground.init(this.getContentArea());
-        resources.setPanelImages(this.inventoryBackground, "BeigeInset");
+        this.inventoryBackground.setStyle("BeigeInset");
         this.inventoryBackground.addClass('characterInventoryBackground');
         this.addManagedChild(this.inventoryBackground);
 
@@ -195,7 +195,7 @@ declare('CharacterDialog', function() {
                     statButton.callback = function(obj) { obj.data.arg.game.spendStatPoint(obj.data.arg.statId); }
                     statButton.init(characterStatLine);
                     statButton.addClass("characterStatButton");
-                    statButton.setImages(resources.ImageIconPlus, undefined, undefined);
+                    statButton.setImages(ResImg(iconPlusBlue), undefined, undefined);
                 }
 
                 var statHeader = element.create("playerStatHeader" + stat.id);

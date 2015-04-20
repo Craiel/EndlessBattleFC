@@ -1,8 +1,8 @@
 declare('SystemDialog', function() {
     include('Dialog');
-    include('Resources');
     include('Button');
     include('InterfaceState');
+    include('StaticData');
 
     SystemDialog.prototype = dialog.prototype();
     SystemDialog.prototype.$super = parent;
@@ -35,7 +35,7 @@ declare('SystemDialog', function() {
         this.inventoryWindowButton.callback = function(obj) { obj.data.arg.toggleInventoryWindow(); };
         this.inventoryWindowButton.callbackArgument = this;
         this.inventoryWindowButton.init(this.getContentArea());
-        this.inventoryWindowButton.setImages(resources.ImageIconBackpack, resources.ImageIconBackpackHover, undefined);
+        this.inventoryWindowButton.setImages(ResImg(iconBackpack), ResImg(iconBackpackHover), undefined);
         this.inventoryWindowButton.setTooltip("Inventory");
         this.addManagedChild(this.inventoryWindowButton);
 
@@ -43,7 +43,7 @@ declare('SystemDialog', function() {
         this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
         this.characterWindowButton.callbackArgument = this;
         this.characterWindowButton.init(this.getContentArea());
-        this.characterWindowButton.setImages(resources.ImageIconCharacter, resources.ImageIconCharacterHover, undefined);
+        this.characterWindowButton.setImages(ResImg(iconCharacter), ResImg(iconCharacterHover), undefined);
         this.characterWindowButton.setTooltip("Character");
         this.addManagedChild(this.characterWindowButton);
 
@@ -51,7 +51,7 @@ declare('SystemDialog', function() {
         this.questWindowButton.callback = function(obj) { obj.data.arg.toggleQuestWindow(); };
         this.questWindowButton.callbackArgument = this;
         this.questWindowButton.init(this.getContentArea());
-        this.questWindowButton.setImages(resources.ImageIconQuest, resources.ImageIconQuestHover, undefined);
+        this.questWindowButton.setImages(ResImg(iconQuest), ResImg(iconQuestHover), undefined);
         this.questWindowButton.setTooltip("Quests");
         this.addManagedChild(this.questWindowButton);
 
@@ -59,7 +59,7 @@ declare('SystemDialog', function() {
         this.mercenaryWindowButton.callback = function(obj) { obj.data.arg.toggleMercenaryWindow(); };
         this.mercenaryWindowButton.callbackArgument = this;
         this.mercenaryWindowButton.init(this.getContentArea());
-        this.mercenaryWindowButton.setImages(resources.ImageIconMercenary, resources.ImageIconMercenaryHover, undefined);
+        this.mercenaryWindowButton.setImages(ResImg(iconMercenary), ResImg(iconMercenaryHover), undefined);
         this.mercenaryWindowButton.setTooltip("Mercenaries");
         this.addManagedChild(this.mercenaryWindowButton);
 
@@ -67,7 +67,7 @@ declare('SystemDialog', function() {
         this.upgradeWindowButton.callback = function(obj) { obj.data.arg.toggleUpgradeWindow(); };
         this.upgradeWindowButton.callbackArgument = this;
         this.upgradeWindowButton.init(this.getContentArea());
-        this.upgradeWindowButton.setImages(resources.ImageIconUpgrade, resources.ImageIconUpgradeHover, undefined);
+        this.upgradeWindowButton.setImages(ResImg(iconUpgrade), ResImg(iconUpgradeHover), undefined);
         this.upgradeWindowButton.setTooltip("Upgrades");
         this.addManagedChild(this.upgradeWindowButton);
     };

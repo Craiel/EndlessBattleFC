@@ -1,7 +1,7 @@
 declare('ItemUtils', function () {
     include('Assert');
     include('CoreUtils');
-    include('Resources');
+    include('StaticData');
 
     function ItemUtils() {
     }
@@ -10,10 +10,13 @@ declare('ItemUtils', function () {
     // main functions
     // ---------------------------------------------------------------------------
     ItemUtils.prototype.getItemIconUrl = function(type) {
-        var key = 'ImageItemDefault_' + type;
+        return coreUtils.getImageUrl(ResImg(placeHolder));
+
+        // TODO:
+        /*var key = 'ImageItemDefault_' + type;
         assert.isDefined(resources[key], "ItemType has no Icon set: " + type);
 
-        return coreUtils.getImageUrl(resources[key]);
+        return coreUtils.getImageUrl(resources[key]);*/
     };
 
     return new ItemUtils;

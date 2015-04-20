@@ -1,7 +1,6 @@
 declare('PlayerDialog', function() {
     include('Element');
     include('Dialog');
-    include('Resources');
     include('ProgressBar');
     include('Game');
     include('GameData');
@@ -33,15 +32,15 @@ declare('PlayerDialog', function() {
         this.playerHealthBar = progressBar.create("playerHealthBar");
         this.playerHealthBar.init(this.getContentArea());
         this.playerHealthBar.animate = true;
-        this.playerHealthBar.setImages(resources.ImageProgressGreenHorizontalLeft, resources.ImageProgressGreenHorizontalMid, resources.ImageProgressGreenHorizontalRight);
-        this.playerHealthBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.playerHealthBar.setStyle("Green");
+        this.playerHealthBar.setBackgroundStyle("Back");
         this.addManagedChild(this.playerHealthBar);
 
         this.playerManaBar = progressBar.create("playerManaBar");
         this.playerManaBar.init(this.getContentArea());
         this.playerManaBar.animate = true;
-        this.playerManaBar.setImages(resources.ImageProgressBlueHorizontalLeft, resources.ImageProgressBlueHorizontalMid, resources.ImageProgressBlueHorizontalRight);
-        this.playerManaBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.playerManaBar.setStyle("Blue");
+        this.playerManaBar.setBackgroundStyle("Back");
         this.addManagedChild(this.playerManaBar);
 
         this.experienceTitle = element.create("experienceTitle");
@@ -54,8 +53,8 @@ declare('PlayerDialog', function() {
         this.experienceBar = progressBar.create("experienceBar");
         this.experienceBar.init(this.getContentArea());
         this.experienceBar.animate = true;
-        this.experienceBar.setImages(resources.ImageProgressPurpleHorizontalLeft, resources.ImageProgressPurpleHorizontalMid, resources.ImageProgressPurpleHorizontalRight);
-        this.experienceBar.setBackgroundImages(resources.ImageProgressBackHorizontalLeft, resources.ImageProgressBackHorizontalMid, resources.ImageProgressBackHorizontalRight);
+        this.experienceBar.setStyle("Purple");
+        this.experienceBar.setBackgroundStyle("Back");
         this.addManagedChild(this.experienceBar);
     };
 

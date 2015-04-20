@@ -1,7 +1,6 @@
 declare('LogDialog', function() {
     include('CoreUtils');
     include('Dialog');
-    include('Resources');
     include('EventAggregate');
     include('StaticData');
 
@@ -166,7 +165,7 @@ declare('LogDialog', function() {
     LogDialog.prototype.getGoldEventText = function(eventData) {
         var textElement = this.getBasicEventText();
         textElement.append($('<span class="logEntryNormal">received </span>'));
-        textElement.append($('<img class="logEntryGoldIcon" src="'+ resources.ImageIconCoin +'"></img>'));
+        textElement.append($('<img class="logEntryGoldIcon" src="'+ ResImg(iconGold) +'"></img>'));
         textElement.append($('<span class="logEntryGold"> ' + eventData.value + ' </span>'));
         textElement.append($('<span class="logEntryNormal"> Gold</span>'));
         return textElement;

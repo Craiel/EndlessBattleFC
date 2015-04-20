@@ -2,9 +2,9 @@ declare('MercenaryControl', function() {
     include('Assert');
     include('Element');
     include('CoreUtils');
-    include('Resources');
     include('Panel');
     include('CurrencyControl');
+    include('StaticData');
 
     MercenaryControl.prototype = element.prototype();
     MercenaryControl.prototype.$super = parent;
@@ -57,7 +57,7 @@ declare('MercenaryControl', function() {
         this.currencyElement.init(this);
         this.currencyElement.addClass("mercenaryCurrency");
         this.currencyElement.addClass("globalNoDrag");
-        this.currencyElement.setImage(resources.ImageIconCoin);
+        this.currencyElement.setImage(ResImg(iconGold));
         this.addManagedChild(this.currencyElement);
 
         this.countElement = element.create(this.id + "Count");
@@ -80,15 +80,13 @@ declare('MercenaryControl', function() {
 
     MercenaryControl.prototype._setupEvents = function() {
         var hoverCallback = function (obj) {
-            include('Resources');
-            resources.setPanelImages(obj.data.self.backgroundPanel, "BeigeLightInset");
+            obj.data.self.backgroundPanel.setStyle("BeigeLightInset");
         };
         this.getMainElement().mouseover({self: this}, hoverCallback );
         this.getMainElement().mouseup({self: this}, hoverCallback );
 
         var resetCallback = function (obj) {
-            include('Resources');
-            resources.setPanelImages(obj.data.self.backgroundPanel, "BeigeInset");
+            obj.data.self.backgroundPanel.setStyle("BeigeInset");
         };
         this.getMainElement().mouseout({self: this}, resetCallback );
 

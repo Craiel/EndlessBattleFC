@@ -1,7 +1,6 @@
 declare('Dialog', function() {
     include('StaticData');
     include('Element');
-    include('Images');
     include('Panel');
     include('Button');
 
@@ -15,8 +14,6 @@ declare('Dialog', function() {
         this.id = id;
 
         this.setTemplate("dialog");
-
-        this.resources = {};
 
         this.isVisible = true;
         this.canClose = true;
@@ -36,14 +33,11 @@ declare('Dialog', function() {
     Dialog.prototype.elementInit = Dialog.prototype.init;
     Dialog.prototype.init = function(parent, attributes) {
 
-        this.resources.close = images.use(this.id, images.iconClose);
-        this.resources.closeHover = images.use(this.id, images.iconCloseHover);
-
         this.elementInit(parent, attributes);
 
         this.headerPanel = panel.create(this.id + "Header");
         this.headerPanel.init(this);
-        resources.setPanelImages(this.headerPanel, "Brown");
+        this.headerPanel.setStyle("Brown");
         this.headerPanel.addClass("dialogHeaderPanel");
         this.addManagedChild(this.headerPanel);
 
@@ -55,7 +49,7 @@ declare('Dialog', function() {
 
         this.contentPanel = panel.create(this.id + "Content");
         this.contentPanel.init(this);
-        resources.setPanelImages(this.contentPanel, "Brown");
+        this.contentPanel.setStyle("Brown");
         this.contentPanel.addClass("dialogContentPanel");
         this.contentPanel.addClass("globalNoDrag");
         if(this.canScroll === true) {
@@ -68,7 +62,7 @@ declare('Dialog', function() {
             this.closeButton.callback = function (obj) { obj.data.arg.onDialogClose(); };
             this.closeButton.callbackArgument = this;
             this.closeButton.init(this);
-            this.closeButton.setImages(this.resources.close, this.resources.closeHover, undefined);
+            this.closeButton.setImages(ResImg(iconClose), ResImg(iconCloseHover), undefined);
             this.closeButton.addClass("dialogCloseButton");
             this.addManagedChild(this.closeButton);
         }

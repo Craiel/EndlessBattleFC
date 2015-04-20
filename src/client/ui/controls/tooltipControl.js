@@ -1,7 +1,6 @@
 declare('TooltipControl', function() {
     include('StaticData');
     include('Element');
-    include('Resources');
     include('Panel');
     include('EventAggregate');
 
@@ -35,7 +34,7 @@ declare('TooltipControl', function() {
 
         this.backgroundPanel = panel.create(this.id + "Background");
         this.backgroundPanel.init(this);
-        resources.setPanelImages(this.backgroundPanel, "Tooltip");
+        this.backgroundPanel.setStyle("Tooltip");
         this.addManagedChild(this.backgroundPanel);
 
         this.content = element.create(this.id + "Content");

@@ -1,6 +1,5 @@
 declare('UserInterface', function () {
     include('Component');
-    include('Resources');
     include('Save');
     include('SaveKeys');
     include('GameData');

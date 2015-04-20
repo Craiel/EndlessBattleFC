@@ -5,7 +5,6 @@ Endless.main = function() {
 	include('Game');
 	include('GameTime');
 	include('UserInterface');
-	include('Resources');
 
 	log.info("Initializing");
 
@@ -14,7 +13,6 @@ Endless.main = function() {
 	
 	// override our data root if we have it stored somewhere else
 	staticData.setRoot("");
-	resources.init();
 	
 	// Set the template data
 	include('TemplateProvider').SetData(include('TemplateContent'));

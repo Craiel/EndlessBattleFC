@@ -1,9 +1,9 @@
 declare('CurrencyDialog', function() {
     include('Dialog');
-    include('Resources');
     include('Game');
     include('GameData');
     include('CurrencyControl');
+    include('StaticData');
 
     CurrencyDialog.prototype = dialog.prototype();
     CurrencyDialog.prototype.$super = parent;
@@ -31,7 +31,7 @@ declare('CurrencyDialog', function() {
         this.currencyGoldControl = currencyControl.create("currencyGold");
         this.currencyGoldControl.trackChanges = true;
         this.currencyGoldControl.init(this.getContentArea());
-        this.currencyGoldControl.setImage(resources.ImageIconCoin);
+        this.currencyGoldControl.setImage(ResImg(iconGold));
         this.currencyGoldControl.addClass("currencyGoldControl");
         this.addManagedChild(this.currencyGoldControl);
     };
