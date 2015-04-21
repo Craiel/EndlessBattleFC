@@ -63,6 +63,22 @@ declare('Player', function () {
 
         this.storage = storage.create(this.id);
         this.storage.init(this.slotCountBasic);
+
+        this.addEquipmentSlot(gameData.ItemSlots.head, staticData.EquipSlotHead);
+        this.addEquipmentSlot(gameData.ItemSlots.chest, staticData.EquipSlotChest);
+        this.addEquipmentSlot(gameData.itemSlots.waist, staticData.EquipSlotWaist);
+        this.addEquipmentSlot(gameData.itemSlots.legs, staticData.EquipSlotLegs);
+        this.addEquipmentSlot(gameData.itemSlots.feet, staticData.EquipSlotFeet);
+        this.addEquipmentSlot(gameData.itemSlots.shoulder, staticData.EquipSlotShoulder);
+        this.addEquipmentSlot(gameData.itemSlots.wrist, staticData.EquipSlotWrist);
+        this.addEquipmentSlot(gameData.itemSlots.hand, staticData.EquipSlotHands);
+        this.addEquipmentSlot(gameData.itemSlots.neck, staticData.EquipSlotNeck);
+        this.addEquipmentSlot(gameData.itemSlots.ring, staticData.EquipSlotRing1);
+        this.addEquipmentSlot(gameData.itemSlots.ring, staticData.EquipSlotRing2);
+        this.addEquipmentSlot(gameData.itemSlots.weapon, staticData.EquipSlotMainHand);
+        this.addEquipmentSlot(gameData.itemSlots.weapon, staticData.EquipSlotOffHand);
+        this.addEquipmentSlot(gameData.itemSlots.trinket, staticData.EquipSlotTrinket1);
+        this.addEquipmentSlot(gameData.itemSlots.trinket, staticData.EquipSlotTrinket2);
     };
 
     Player.prototype.actorUpdate = Player.prototype.update;

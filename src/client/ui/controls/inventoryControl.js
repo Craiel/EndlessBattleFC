@@ -5,6 +5,7 @@ declare('InventoryControl', function() {
     include('Panel');
     include('StaticData');
     include('InventorySlotControl');
+    include('Game');
 
     InventoryControl.prototype = element.prototype();
     InventoryControl.prototype.$super = parent;
@@ -39,7 +40,7 @@ declare('InventoryControl', function() {
     InventoryControl.prototype.init = function(parent, attributes) {
         this.elementInit(parent, attributes);
 
-        assert.isDefined(this.storage, "Storage  must be set");
+        assert.isDefined(this.storage, "Storage must be set");
 
         this.backgroundPanel = panel.create(this.id + "Background");
         this.backgroundPanel.init(this);
@@ -119,6 +120,7 @@ declare('InventoryControl', function() {
                 // Create the slots
                 var slot = inventorySlotControl.create(this.id + "Slot" + row + "_" + column);
                 slot.init(rowElement);
+                slot.parent = this;
                 slot.setSize({x: slotSize, y: slotSize});
                 slot.setPosition({x: column * slotFullSize, y: 0});
                 slot.setOnDoubleClick(this.onSlotDoubleClick);
@@ -142,10 +144,11 @@ declare('InventoryControl', function() {
         return Math.floor(Math.sqrt(surface)) - 1;
     };
 
-    InventoryControl.prototype.onSlotDoubleClick = function(slot)
+    InventoryControl.prototype.onSlotDoubleClick = function(slotElement)
     {
-        console.log("Slot DBLCLick: ");
-        console.log(slot);
+        if(slotElement.slot !== undefined) {
+            game.handleSlotAction(this.self.parent.mode, slotElement.slot)
+        }
     };
 
     var surrogate = function(){};

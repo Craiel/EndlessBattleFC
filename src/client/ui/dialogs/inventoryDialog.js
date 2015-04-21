@@ -2,6 +2,7 @@ declare('InventoryDialog', function() {
     include('Dialog');
     include('Game');
     include('InventoryControl');
+    include('StaticData');
 
     InventoryDialog.prototype = dialog.prototype();
     InventoryDialog.prototype.$super = parent;
@@ -27,6 +28,7 @@ declare('InventoryDialog', function() {
         this.characterInventory = inventoryControl.create("characterInventoryDialog");
         this.characterInventory.isDynamic = true;
         this.characterInventory.storage = game.player.storage;
+        this.characterInventory.mode = staticData.InventoryModePlayer;
         this.characterInventory.init(this.getContentArea());
         this.addManagedChild(this.characterInventory);
 

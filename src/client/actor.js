@@ -35,6 +35,9 @@ declare('Actor', function () {
         this.actorStats = {};
         this.statsChanged = true;
 
+        this.nextEquipmentSlotId = 0;
+        this.equipmentSlots = {};
+
         // Combat
         this.abilitySet = {};
         this.abilityCooldown = {};
@@ -60,6 +63,8 @@ declare('Actor', function () {
         if(this.componentUpdate(gameTime) !== true) {
             return false;
         }
+
+        this.updateEquipmentSlots(gameTime);
 
         // Check if we need to recompute the actor state
         if(this.statsChanged === true) {
@@ -202,7 +207,29 @@ declare('Actor', function () {
         }
 
         return chance;
-    }
+    };
+
+    // ---------------------------------------------------------------------------
+    // equipment functions
+    // ---------------------------------------------------------------------------
+    Actor.prototype.updateEquipmentSlots = function(gameTime) {
+        for(var type in this.equipmentSlots) {
+            for(var i = 0; i < this.equipmentSlots[type].length; i++) {
+                var slot = this.equipmentSlots[type][i];
+                slot.update(gameTime);
+            }
+        }
+    };
+
+    Actor.prototype.addEquipmentSlot = function(type) {
+        if(this.equipmentSlots[type] === undefined) {
+            this.equipmentSlots[type] = [];
+        }
+
+        var slot = equipmentSlot.create(this.id  + type + (this.nextEquipmentSlotId++));
+        slot.init();
+        this.equipmentSlots[type].push(slot);
+    };
 
     // ---------------------------------------------------------------------------
     // actor functions

@@ -347,6 +347,20 @@ declare('Game', function() {
         return test;
     };
 
+    Game.prototype.handleSlotAction = function(mode, slot) {
+        assert.isDefined(slot);
+        switch(mode) {
+            case staticData.InventoryModePlayer: {
+                log.info("HandleSlotAction for Player");
+                console.log(slot);
+            }
+
+            default: {
+                log.warning("HandleSlotAction not implemented for " + mode);
+            }
+        }
+    };
+
     // ---------------------------------------------------------------------------
     // save / load functions
     // ---------------------------------------------------------------------------
