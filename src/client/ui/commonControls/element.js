@@ -289,6 +289,11 @@ declare('Element', function() {
         this._mainDiv.click({ target: target, self: this }, function(event) { event.data.target(event.data.self); });
     };
 
+    UIElement.prototype.setOnDoubleClick = function(target) {
+        assert.isDefined(target);
+        this._mainDiv.dblclick({ target: target, self: this }, function(event) { event.data.target(event.data.self); });
+    };
+
     UIElement.prototype.setKeyPress = function(code, callback) {
         this._mainDiv.keypress({self: this}, function(event) {
             if(event.which === code) {

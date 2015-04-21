@@ -79,6 +79,7 @@ declare('CharacterDialog', function() {
 
         this.characterInventory = inventoryControl.create("characterInventory");
         this.characterInventory.storage = game.player.storage;
+        this.characterInventory.mode = staticData.InventoryModePlayer;
         this.characterInventory.init(this.inventoryBackground.getContentArea());
         this.addManagedChild(this.characterInventory);
 

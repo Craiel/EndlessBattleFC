@@ -3,6 +3,7 @@ declare('InventoryControl', function() {
     include('Assert');
     include('Element');
     include('Panel');
+    include('StaticData');
     include('InventorySlotControl');
 
     InventoryControl.prototype = element.prototype();
@@ -19,6 +20,8 @@ declare('InventoryControl', function() {
         this.backgroundPanel = undefined;
         this.minSlotSize = 32;
         this.isDynamic = false;
+
+        this.mode = staticData.InventoryModeUnknown;
 
         this.fixedSlotSize = 36;
         this.fixedSlotRowCount = 14;
@@ -87,7 +90,6 @@ declare('InventoryControl', function() {
     };
 
     InventoryControl.prototype._rebuildStorageSlots = function() {
-        console.log(this.getMainElement());
         var inventorySize = this.getSize();
         var slotCount = this.storage.getSize();
         var slotSize = this.fixedSlotSize;
@@ -119,6 +121,7 @@ declare('InventoryControl', function() {
                 slot.init(rowElement);
                 slot.setSize({x: slotSize, y: slotSize});
                 slot.setPosition({x: column * slotFullSize, y: 0});
+                slot.setOnDoubleClick(this.onSlotDoubleClick);
                 this.slots.push(slot);
                 slotCounter++;
 
@@ -137,6 +140,12 @@ declare('InventoryControl', function() {
 
         var surface = Math.floor((side * side) / slotCount);
         return Math.floor(Math.sqrt(surface)) - 1;
+    };
+
+    InventoryControl.prototype.onSlotDoubleClick = function(slot)
+    {
+        console.log("Slot DBLCLick: ");
+        console.log(slot);
     };
 
     var surrogate = function(){};

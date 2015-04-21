@@ -32,6 +32,10 @@ declare('StaticData', function () {
         this.EventItemGain = "eventItemGain";
         this.EventTooltip = "eventTooltip";
 
+        this.InventoryModeUnknown = "inventoryUnknown";
+        this.InventoryModePlayer = "inventoryPlayer";
+        this.InventoryModeVendor = "inventoryVendor";
+
         // These match the data in ItemSlots
         this.EquipSlotHead = "head";
         this.EquipSlotChest = "chest";
