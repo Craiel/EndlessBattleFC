@@ -102,7 +102,7 @@ declare('Storage', function() {
             slot.metaData = undefined;
             slot.count = 0;
 
-            delete self.itemSlotMap[id];
+            delete this.itemSlotMap[id];
         }
 
         this.changed = true;

@@ -347,18 +347,49 @@ declare('Game', function() {
         return test;
     };
 
-    Game.prototype.handleSlotAction = function(mode, slot) {
-        assert.isDefined(slot);
+    Game.prototype.handleSlotAction = function(mode, item) {
+        assert.isDefined(item);
         switch(mode) {
             case staticData.InventoryModePlayer: {
-                log.info("HandleSlotAction for Player");
-                console.log(slot);
+                if(item.metaData !== undefined && item.metaData.slot !== undefined) {
+                    this.handlePlayerSlotEquipAction(mode, item);
+                } else {
+                    log.warning("HandleSlotAction for Non-Equip Item");
+                }
+
+                break;
             }
 
             default: {
                 log.warning("HandleSlotAction not implemented for " + mode);
             }
         }
+    };
+
+    Game.prototype.handlePlayerSlotEquipAction = function(mode, item, targetSlot) {
+        if(targetSlot === undefined) {
+            targetSlot = this.getTargetSlotForItem(item);
+        }
+
+        if(targetSlot === undefined) {
+            log.warning("Could not determine target slot for item {0}, slot {1}".format(item.metaData.name, item.metaData.slot));
+            return;
+        }
+
+        this.player.equipItem(item, targetSlot);
+    };
+
+    Game.prototype.getTargetSlotForItem = function(item) {
+        // Pick a target slot from the item type
+        for(var i = 0; i < staticData.EquipSlots.length; i++) {
+            var slotType = staticData.EquipSlots[i];
+            var segments = slotType.split("|");
+            if(segments[0] === item.metaData.slot) {
+                return slotType;
+            }
+        }
+
+        return undefined;
     };
 
     // ---------------------------------------------------------------------------

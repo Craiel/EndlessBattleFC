@@ -8,6 +8,7 @@ declare('Actor', function () {
     include('StatUtils');
     include('CoreUtils');
     include('EventAggregate');
+    include('EquipmentSlot');
 
     Actor.prototype = component.prototype();
     Actor.prototype.$super = parent;
@@ -35,7 +36,6 @@ declare('Actor', function () {
         this.actorStats = {};
         this.statsChanged = true;
 
-        this.nextEquipmentSlotId = 0;
         this.equipmentSlots = {};
 
         // Combat
@@ -118,6 +118,8 @@ declare('Actor', function () {
     // Item functions
     // ---------------------------------------------------------------------------
     Actor.prototype.giveItem = function(item, count) {
+        assert.isDefined(item);
+
         var storage = this.getStorage();
         if(storage === undefined) {
             log.error("Actor {0} has no Storage".format(this.id));
@@ -135,7 +137,23 @@ declare('Actor', function () {
         if(item.isStatic !== true) {
             storage.setMetadata(item.id, item);
         }
-    }
+    };
+
+    Actor.prototype.takeItem = function(item, count) {
+        assert.isDefined(item);
+
+        var storage = this.getStorage();
+        if(storage === undefined) {
+            log.error("Actor {0} has no Storage". format(this.id))
+        }
+
+        if(storage.hasItem(item.id) === false) {
+            log.warning("Could not remove item {0}, not in storage".format(item.id));
+            return;
+        }
+
+        storage.remove(item.id, count);
+    };
 
     // ---------------------------------------------------------------------------
     // Stats functions
@@ -221,14 +239,51 @@ declare('Actor', function () {
         }
     };
 
-    Actor.prototype.addEquipmentSlot = function(type) {
-        if(this.equipmentSlots[type] === undefined) {
-            this.equipmentSlots[type] = [];
+    Actor.prototype.addEquipmentSlot = function(type, id) {
+        if(this.equipmentSlots[id] !== undefined) {
+            log.error("Slot {0} already added to actor {1}".format(id, this.id));
+            return;
         }
 
-        var slot = equipmentSlot.create(this.id  + type + (this.nextEquipmentSlotId++));
+        var slot = equipmentSlot.create(this.id  + id);
         slot.init();
-        this.equipmentSlots[type].push(slot);
+        slot.setItem(this.getEquipment()[type]);
+        this.equipmentSlots[id] = slot;
+    };
+
+    Actor.prototype.getEquippedItem = function(targetSlot) {
+        if(this.equipmentSlots[targetSlot] !== undefined) {
+            return this.equipmentSlots[targetSlot].getItem();
+        }
+
+        return undefined;
+    };
+
+    Actor.prototype.equipItem = function(item, targetSlot) {
+        console.log(item);
+        console.log(this.equipmentSlots);
+        if(this.equipmentSlots[targetSlot] === undefined) {
+            log.warning("Could not equip {0}, target slot {1} does not exist".format(item.metaData.name, targetSlot));
+            return false;
+        }
+
+        // Have to copy the item, the storage holds ownership of the item
+        var itemCopy = JSON.parse(JSON.stringify(item));
+        log.info("Equipping Item: " + itemCopy.id);
+        console.log(itemCopy);
+
+        var currentItem = this.getEquippedItem(targetSlot);
+        this.equipmentSlots[targetSlot].setItem(itemCopy);
+        this.getEquipment()[targetSlot] = itemCopy;
+
+        // Todo: For now we assume equipped items have to be in the actor's inventory
+        this.takeItem(item);
+
+        if(currentItem !== undefined) {
+            this.giveItem(currentItem);
+        }
+
+        return true;
     };
 
     // ---------------------------------------------------------------------------

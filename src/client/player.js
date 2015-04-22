@@ -66,19 +66,19 @@ declare('Player', function () {
 
         this.addEquipmentSlot(gameData.ItemSlots.head, staticData.EquipSlotHead);
         this.addEquipmentSlot(gameData.ItemSlots.chest, staticData.EquipSlotChest);
-        this.addEquipmentSlot(gameData.itemSlots.waist, staticData.EquipSlotWaist);
-        this.addEquipmentSlot(gameData.itemSlots.legs, staticData.EquipSlotLegs);
-        this.addEquipmentSlot(gameData.itemSlots.feet, staticData.EquipSlotFeet);
-        this.addEquipmentSlot(gameData.itemSlots.shoulder, staticData.EquipSlotShoulder);
-        this.addEquipmentSlot(gameData.itemSlots.wrist, staticData.EquipSlotWrist);
-        this.addEquipmentSlot(gameData.itemSlots.hand, staticData.EquipSlotHands);
-        this.addEquipmentSlot(gameData.itemSlots.neck, staticData.EquipSlotNeck);
-        this.addEquipmentSlot(gameData.itemSlots.ring, staticData.EquipSlotRing1);
-        this.addEquipmentSlot(gameData.itemSlots.ring, staticData.EquipSlotRing2);
-        this.addEquipmentSlot(gameData.itemSlots.weapon, staticData.EquipSlotMainHand);
-        this.addEquipmentSlot(gameData.itemSlots.weapon, staticData.EquipSlotOffHand);
-        this.addEquipmentSlot(gameData.itemSlots.trinket, staticData.EquipSlotTrinket1);
-        this.addEquipmentSlot(gameData.itemSlots.trinket, staticData.EquipSlotTrinket2);
+        this.addEquipmentSlot(gameData.ItemSlots.waist, staticData.EquipSlotWaist);
+        this.addEquipmentSlot(gameData.ItemSlots.legs, staticData.EquipSlotLegs);
+        this.addEquipmentSlot(gameData.ItemSlots.feet, staticData.EquipSlotFeet);
+        this.addEquipmentSlot(gameData.ItemSlots.shoulder, staticData.EquipSlotShoulder);
+        this.addEquipmentSlot(gameData.ItemSlots.wrist, staticData.EquipSlotWrist);
+        this.addEquipmentSlot(gameData.ItemSlots.hand, staticData.EquipSlotHands);
+        this.addEquipmentSlot(gameData.ItemSlots.neck, staticData.EquipSlotNeck);
+        this.addEquipmentSlot(gameData.ItemSlots.ring, staticData.EquipSlotRing1);
+        this.addEquipmentSlot(gameData.ItemSlots.ring, staticData.EquipSlotRing2);
+        this.addEquipmentSlot(gameData.ItemSlots.weapon, staticData.EquipSlotMainHand);
+        this.addEquipmentSlot(gameData.ItemSlots.weapon, staticData.EquipSlotOffHand);
+        this.addEquipmentSlot(gameData.ItemSlots.trinket, staticData.EquipSlotTrinket1);
+        this.addEquipmentSlot(gameData.ItemSlots.trinket, staticData.EquipSlotTrinket2);
     };
 
     Player.prototype.actorUpdate = Player.prototype.update;
@@ -137,6 +137,10 @@ declare('Player', function () {
 
     Player.prototype.getStorage = function() {
         return this.storage;
+    };
+
+    Player.prototype.getEquipment = function() {
+        return this[saveKeys.idnPlayerEquip];
     };
 
     Player.prototype.modifySkillPoints = function(value) {

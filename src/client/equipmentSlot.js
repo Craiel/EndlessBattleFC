@@ -1,4 +1,5 @@
 declare('EquipmentSlot', function () {
+    include('Component');
 
     EquipmentSlot.prototype = component.prototype();
     EquipmentSlot.prototype.$super = parent;
@@ -11,6 +12,9 @@ declare('EquipmentSlot', function () {
 
         this.type = undefined;
 
+        this.item = undefined;
+
+        this.itemChanged = undefined;
     }
 
     // ---------------------------------------------------------------------------
@@ -20,7 +24,7 @@ declare('EquipmentSlot', function () {
     EquipmentSlot.prototype.init = function(baseStats) {
         this.componentInit();
 
-    }
+    };
 
     EquipmentSlot.prototype.componentUpdate = EquipmentSlot.prototype.update;
     EquipmentSlot.prototype.update = function(gameTime) {
@@ -30,7 +34,21 @@ declare('EquipmentSlot', function () {
 
 
         return true;
-    }
+    };
+
+    // ---------------------------------------------------------------------------
+    // item functions
+    // ---------------------------------------------------------------------------
+    EquipmentSlot.prototype.getItem = function() {
+        return this.item;
+    };
+
+    EquipmentSlot.prototype.setItem = function(item) {
+        this.item = item;
+        if(this.itemChanged !== undefined) {
+            this.itemChanged(this);
+        }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = EquipmentSlot.prototype;

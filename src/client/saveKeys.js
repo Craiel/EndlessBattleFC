@@ -10,6 +10,7 @@ declare('SaveKeys', function() {
         idnPlayerStatPoints: StrSha('playerStatPoints'),
 		idnPlayerStorageSlots: StrSha('playerStorageSlots'),
         idnPlayerInventoryPurchased: StrSha('playerInventoryPurchased'),
+		idnPlayerEquipment: StrSha('playerEquipment'),
 		idnMercenariesPurchased: StrSha('mercPurchased'),
 
         idnPlayerEquip: StrSha('playerEquip'),
