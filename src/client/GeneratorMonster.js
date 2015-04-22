@@ -84,22 +84,19 @@ declare('GeneratorMonster', function () {
             } else {
                 temp[key] = this.getStatValue(level, 1.01);
             }
-            console.log("Primary: " + key + ": " + temp[key]);
+
             statUtils.doMergeStats(temp, stats);
         }
 
-        console.log("Rolling Secondary stats " + secondaryRolls);
         for(var i = 0; i < secondaryRolls; i++) {
             var secondaryStat = this.getRandomSecondaryStat();
             var temp = {};
             if(secondaryStat.isMultiplier === true) {
                 temp[secondaryStat.id] = this.getMultiplierStatValue();
-                console.log("Multiplier Roll");
             } else {
                 temp[secondaryStat.id] = this.getStatValue(Math.ceil(level / 2), 1.01);
             }
 
-            console.log("Secondary: " + secondaryStat.id + ": " + temp[secondaryStat.id]);
             statUtils.doMergeStats(temp, stats);
         }
 
@@ -111,8 +108,6 @@ declare('GeneratorMonster', function () {
         temp[gameData.StatDefinition.gold.id] = this.getStatValue(level, 1.05);
         statUtils.doMergeStats(temp, stats);
 
-        console.log("Final Stats");
-        console.log(stats);
         return stats;
     };
 

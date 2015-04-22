@@ -167,7 +167,6 @@ declare('CharacterDialog', function() {
         }
 
         for(var category in categories) {
-            console.log(categories[category]);
             var categoryHeader = element.create("playerStatCategory_" + category);
             categoryHeader.templateName = "characterStatDisplayCategory";
             categoryHeader.init(this.statsBackground.getContentArea());

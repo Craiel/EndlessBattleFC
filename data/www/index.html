@@ -21,7 +21,7 @@
 -------------------------------------------------------- NAVIGATION BAR --------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------->
 <div id="navBar">
-    <div id="version">Version 0.2</div>
+    <div id="version">Version #.#</div>
     <div id="updates" class="navBarText textButton" style="padding: 5px 10px 5px 15px; float: left">Updates</div>
     <div id="options" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left">Options</div>
     <div id="stats" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left">Stats</div>
@@ -32,189 +32,6 @@
 </div>
 
 <div id="gameArea" class="gameArea">
-    <canvas id="particleCanvas" width="675" height="550" style="position: absolute; left: 0; right: 0; top: 0px; bottom: 0; margin: auto"></canvas>
-
-    <div id="updatesWindow" class="navBarWindow" style="display: none;">
-        <div id="updatesWindowTitle" class="statsWindowLargeText navBarWindowTitle">Updates</div>
-
-        <div id="updatesWindowTextArea">
-            <div class="updatesWindowUpdateTitle">Beta Version 0.2 - 16/05/14</div>
-            <div class="updatesWindowUpdate">- Renamed the Thief's special ability upgrades to something more fitting</div>
-            <div class="updatesWindowUpdate">- The window will now resize automatically on any resolution</div>
-            <div class="updatesWindowUpdate">- Dragging and dropping items should now be bug free</div>
-            <div class="updatesWindowUpdate">- Your stat bonuses from leveling up now load properly, you have not lost any stats on current saves</div>
-            <div class="updatesWindowUpdate">- Recreated how particles are created and drawn</div>
-            <div class="updatesWindowUpdate">- Condensed a lot of the code</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where the Thief's special ability upgrades would not increase by the right amount, all current saves will now load with the correct amount, you have not lost anything</div>
-            <div class="updatesWindowUpdate">- You can now unlock new attacks through the upgrades menu after meeting certain requirements</div>
-            <div class="updatesWindowUpdate">- You can now unlock auto selling upgrades</div>
-            <div class="updatesWindowUpdate">- Epic and Legendary items can now have special effects</div>
-            <div class="updatesWindowUpdate">- Added the first events, these occur randomly every hour</div>
-            <div class="updatesWindowUpdate">- Added new Quests that occur from events, these reward powerful buffs in addition to their other rewards</div>
-            <div class="updatesWindowUpdate">- All interface windows are now independant and can be dragged around the screen</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where stats displayed in the Character window could overlap other stats</div>
-            <div class="updatesWindowUpdate">- Added a loading screen</div>
-            <div class="updatesWindowUpdate">- Added a new stat: Evasion</div>
-            <div class="updatesWindowUpdate">- Thieves have turned into Assassins</div>
-            <div class="updatesWindowUpdate">- Assassins grant a bonus to Evasion instead of armor</div>
-            <div class="updatesWindowUpdate">- Rejuvenating Strikes is now weaker in the early game but stronger in the late game</div>
-            <div class="updatesWindowUpdate">- Items and Monsters have been rebalanced, you should now be able to progress further faster</div>
-            <div class="updatesWindowUpdate">- Weapons of higher rarities will now always have higher damage than weapons of lower rarities</div>
-            <div class="updatesWindowUpdate">- Strength, Agility and Stamina have been changed. Crit chance should now be a more valuable stat on high level items</div>
-            <div class="updatesWindowUpdate">- The armor formula has been changed, it should no longer be an easy feat to reach maximum damage reduction</div>
-            <div class="updatesWindowUpdate">- The amount of stacks on a debuff is now displayed on the debuff's icon</div>
-            <div class="updatesWindowUpdate">- Because of the power of the new items, the spawn chance of bosses and drop rates of higher rarity items has been decreased</div>
-            <div class="updatesWindowUpdate">- The power of abilities has been reduced to make them more balanced with the new weapon damage</div>
-            <div class="updatesWindowUpdate">- You can no longer choose a bonus to Crit Chance when leveling up, this is to make Crit Chance on higher level items more appealing</div>
-            <div class="updatesWindowUpdate">- An alert will appear when a new quest or upgrade is available</div>
-            <div class="updatesWindowUpdate">- The quests button will now glow when there is a new quest</div>
-            <div class="updatesWindowUpdate">- Resetting the game will now grant you an amount of power shards depending on how well you did</div>
-            <div class="updatesWindowUpdate">- Added some ads under the game to help me keep the server running. If you don't like the ads you are free to use adblock, but please remember that these ads are needed to pay for the server</div>
-            <br>
-            <div class="updatesWindowUpdateTitle">Beta Version 0.1b</div>
-            <div class="updatesWindowUpdate">- The critical strike particle now uses the correct particle</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where damage bonuses from leveling up would not work</div>
-            <div class="updatesWindowUpdate">- Added a tooltip to the damage bonus stat in the character window</div>
-            <div class="updatesWindowUpdate">- The damage bonus upgrade option from leveling up no longer displays an incorrect tooltip</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where the game would attempt to equip items that did not exist</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where the monster damage particles option would not work correctly</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where mercenary ability upgrades would expire</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where gold gain would increase mercenary Gps by twice the amount</div>
-            <div class="updatesWindowUpdate">- Increased the amount of experience required to gain levels. Leveling felt too easy and and this should make Exp Gain a more valuable stat</div>
-            <div class="updatesWindowUpdate">- Sadly the mercenary ability upgrades and the damage bonuses from leveling up you have already obtained will not be recoverable. So I've added stat increases to health and hp5 when you level up. This WILL work from current saves so it's up to you if you want to reset. I'm really sorry about this.</div>
-            <br>
-            <div class="updatesWindowUpdateTitle">Beta Version 0.1a</div>
-            <div class="updatesWindowUpdate">- Commanders now increase your Health and Thieves increase your Armor. Their gold gain abilities made them incredibly overpowered :( More gold gain features are planned though.</div>
-            <div class="updatesWindowUpdate">- Nerfed the Cleric, Mage and Warlock bonuses to 5%. 100% bonuses for just 10 mercenaries made them too powerful</div>
-            <div class="updatesWindowUpdate">- Gold Earned is now correctly formatted in the stats menu</div>
-            <div class="updatesWindowUpdate">- Added more tooltips to the stats in the equipment window</div>
-            <div class="updatesWindowUpdate">- Added a "Sell All" button to the inventory</div>
-            <div class="updatesWindowUpdate">- Repositioned the inventory so it doesn't cover up the experience bar</div>
-            <div class="updatesWindowUpdate">- Quest descriptions can now english better</div>
-            <div class="updatesWindowUpdate">- When you level up, some of the stat upgrades will now have tooltips</div>
-            <div class="updatesWindowUpdate">- The Upgrades Button will now glow when a new upgrade becomes available</div>
-            <div class="updatesWindowUpdate">- You can now alt-right-click to equip a trinket into the second slot</div>
-            <div class="updatesWindowUpdate">- Resetting will now reset the Resurrection interfaces</div>
-            <div class="updatesWindowUpdate">- Removed annoying console logs</div>
-            <div class="updatesWindowUpdate">- You can no longer drag inventory/equipment slots around the screen</div>
-            <div class="updatesWindowUpdate">- You can now right click an equipped item to unequip it</div>
-            <div class="updatesWindowUpdate">- Item tooltips now display the item's level, all current items did not have this feature and so will have an undefined item level</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where stat bonuses from leveling up would not work properly. Sadly any bonuses you gained have been lost, you can either continue without them gaining new ones as you level, or reset your save. I'm sorry :(</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where battle level buttons would not load in the correct state</div>
-            <div class="updatesWindowUpdate">- Your battle level will now save</div>
-            <div class="updatesWindowUpdate">- Hovering over a monster's health bar will now show their health</div>
-            <div class="updatesWindowUpdate">- Added an options menu:</div>
-            <div class="updatesWindowUpdateIndent">- Control which battle particles show</div>
-            <div class="updatesWindowUpdateIndent">- Toggle player health, monster health and experience to always show</div>
-            <div class="updatesWindowUpdate">- Items now have a coloured border depending on their rarity</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where special upgrades would make normal upgrades unpurchasable</div>
-            <div class="updatesWindowUpdate">- Fixed a bug where items in your inventory would still be displayed after resetting</div>
-            <div class="updatesWindowUpdate">- Cleaned up the code a bit and removed a lot of unused graphics</div>
-            <div class="updatesWindowUpdate">- After killing a monster, the new one will not get a free attack in</div>
-        </div>
-        <div id="updatesWindowCloseButton" class="closeButton button"></div>
-    </div>
-
-    <div id="statsWindow" class="navBarWindow" style="display: none;">
-        <div id="statsWindowTitle" class="statsWindowLargeText navBarWindowTitle">Stats</div>
-        <div id="statsWindowStatsArea">
-            <div id="statsWindowPowerShards" class="statsWindowText">Power Shards:</div>
-            <div id="statsWindowGold" class="statsWindowText">Gold:</div>
-            <div id="statsWindowGps" class="statsWindowText">Gps:</div>
-            <div id="statsWindowGoldEarned" class="statsWindowText">Gold Earned:</div>
-            <div id="statsWindowGoldFromMonsters" class="statsWindowText">Gold from Monsters:</div>
-            <div id="statsWindowGoldFromMercenaries" class="statsWindowText">Gold from Mercenaries:</div>
-            <div id="statsWindowGoldFromQuests" class="statsWindowText">Gold from Quests:</div>
-            <div id="statsWindowGoldFromItems" class="statsWindowText">Gold from Items:</div>
-            <div id="statsWindowExperience" class="statsWindowText">Experience:</div>
-            <div id="statsWindowExperienceEarned" class="statsWindowText">Experience Earned:</div>
-            <div id="statsWindowExperienceFromMonsters" class="statsWindowText">Experience from Monsters:</div>
-            <div id="statsWindowExperienceFromQuests" class="statsWindowText">Experience from Quests:</div>
-            <div id="statsWindowStartDate" class="statsWindowText">Start Date:</div>
-            <div id="statsWindowMercenariesOwned" class="statsWindowText">Mercenaries Owned:</div>
-            <div id="statsWindowUpgradesUnlocked" class="statsWindowText">Upgrades Unlocked:</div>
-            <div id="statsWindowItemsLooted" class="statsWindowText">Items Looted:</div>
-            <div id="statsWindowItemsSold" class="statsWindowText">Items Sold:</div>
-            <div id="statsWindowQuestsCompleted" class="statsWindowText">Quests Completed:</div>
-            <div id="statsWindowMonstersKilled" class="statsWindowText">Monsters Killed:</div>
-            <div id="statsWindowDamageDealt" class="statsWindowText">Damage Dealt:</div>
-            <div id="statsWindowDamageTaken" class="statsWindowText">Damage Taken:</div>
-        </div>
-        <div id="statsWindowStatValuesArea">
-            <div id="statsWindowPowerShardsValue" class="statsWindowText">0.00</div>
-            <div id="statsWindowGoldValue" class="statsWindowText">0.00</div>
-            <div id="statsWindowGpsValue" class="statsWindowText">0.00</div>
-            <div id="statsWindowGoldEarnedValue" class="statsWindowText">0.00</div>
-            <div id="statsWindowGoldFromMonstersValue" class="statsWindowText">392,265.10</div>
-            <div id="statsWindowGoldFromMercenariesValue" class="statsWindowText">0.00</div>
-            <div id="statsWindowGoldFromQuestsValue" class="statsWindowText">0</div>
-            <div id="statsWindowGoldFromItemsValue" class="statsWindowText">11,900,844</div>
-            <div id="statsWindowExperienceValue" class="statsWindowText">7,458.99</div>
-            <div id="statsWindowExperienceEarnedValue" class="statsWindowText">323,417.99</div>
-            <div id="statsWindowExperienceFromMonstersValue" class="statsWindowText">323,417.99</div>
-            <div id="statsWindowExperienceFromQuestsValue" class="statsWindowText">0</div>
-            <div id="statsWindowStartDateValue" class="statsWindowText">Mon May 12 2014 7:41:30 PM</div>
-            <div id="statsWindowMercenariesOwnedValue" class="statsWindowText">190</div>
-            <div id="statsWindowUpgradesUnlockedValue" class="statsWindowText">12</div>
-            <div id="statsWindowItemsLootedValue" class="statsWindowText">1,773</div>
-            <div id="statsWindowItemsSoldValue" class="statsWindowText">1,755</div>
-            <div id="statsWindowQuestsCompletedValue" class="statsWindowText">0</div>
-            <div id="statsWindowMonstersKilledValue" class="statsWindowText">13,775</div>
-            <div id="statsWindowDamageDealtValue" class="statsWindowText">854,991,150</div>
-            <div id="statsWindowDamageTakenValue" class="statsWindowText">20,294,811</div>
-        </div>
-        <div id="statsWindowCloseButton" class="closeButton button"></div>
-    </div>
-
-    <div id="optionsWindow" class="navBarWindow" style="display: none;">
-        <div id="optionsWindowTitle" class="statsWindowLargeText navBarWindowTitle">Options</div>
-        <div id="optionsWindowOptionsArea">
-            <div id="particleOptionsTitle" class="optionsWindowOptionsTitle">Particles</div>
-            <div id="skullParticlesOption" class="optionsWindowOption">Monster death particles: ON</div>
-            <div id="goldParticlesOption" class="optionsWindowOption">Gold particles: ON</div>
-            <div id="experienceParticlesOption" class="optionsWindowOption">Experience particles: ON</div>
-            <div id="playerDamageParticlesOption" class="optionsWindowOption">Player damage particles: ON</div>
-            <div id="monsterDamageParticlesOption" class="optionsWindowOption">Monster damage particles: ON</div>
-
-            <div id="interfaceOptionsTitle" class="optionsWindowOptionsTitle">Interface</div>
-            <div id="playerHealthOption" class="optionsWindowOption">Always display player health: ON</div>
-            <div id="monsterHealthOption" class="optionsWindowOption">Always display monster health: ON</div>
-            <div id="expBarOption" class="optionsWindowOption">Always display experience: ON</div>
-        </div>
-        <div id="optionsWindowCloseButton" class="closeButton button"></div>
-    </div>
-
-    <div id="resetConfirmWindow" style="display: none;">
-        <div id="resetConfirmWindowTitle">Confirm Reset</div>
-        <div id="resetConfirmWindowDescription">
-            <div id="resetDescription">Resetting will erase all progress and not be recoverable. Are you sure you want to reset?<br><br></div>
-            <div id="resetConfirmWindowPowerShard" class="powerShard" style="width: 34px; height: 41px"></div>
-            <div id="powerShardsDescription" class="resetConfirmWindowIndentText">You will earn UNKNOWN Power Shards from resetting.</div>
-        </div>
-        <div id="resetConfirmWindowYesButton">Yes</div>
-        <div id="resetConfirmWindowNoButton">No</div>
-    </div>
-
-    <!--<div id="tutorialArea" style="left: 0px; right: 0px; top: 0px; bottom: 0px; margin: auto; padding-right: 660px; padding-bottom: 50px; display: none;">
-        <div id="tutorialWindow">
-            <div id="tutorialTitle">Tutorial</div>
-            <div id="tutorialDescription">Welcome to Endless Battle, to get started click the enter battle button.</div>
-            <div id="tutorialContinueButton" class="textButton" style="display: none;">Continue</div>
-        </div>
-        <div id="tutorialRightArrow" class="tutorialRightArrow" style="left: 290px; top: 67px;"></div>
-    </div>-->
-
-    <div id="eventsArea"></div>
-
-    <div id="buffsArea"></div>
-
-    <!--<div id="playerHealthBarArea" class="smallBarArea">
-        <div id="playerHealthBarBackground" class="smallBarBackground"></div>
-        <div id="playerHealthBar" class="smallBar" style="width: 198px; height: 23px;"></div>
-        <div id="playerHealthBarBorder" class="smallBarBorder"></div>
-        <div id="playerHealthBarText" class="smallBarText" style="display: block;">#ERR/#ERR</div>
-    </div>-->
-
     <!-- Dialogs -->
     <div id="currencyDialog"></div>
     <div id="systemDialog"></div>
@@ -225,6 +42,7 @@
     <div id="characterDialog"></div>
     <div id="questDialog"></div>
     <div id="logDialog"></div>
+    <div id="debugDialog"></div>
 </div>
 
 <div id="tooltip"></div>

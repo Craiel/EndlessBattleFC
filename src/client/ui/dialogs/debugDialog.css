@@ -1,0 +1,7 @@
+.debugDialog {
+    width: 600px;
+    height: 400px;
+    position: absolute;
+    left: 100px;
+    top: 200px;
+}

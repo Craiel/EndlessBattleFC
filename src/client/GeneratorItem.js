@@ -74,9 +74,6 @@ declare('GeneratorItem', function () {
 
         itemData.typeName = coreUtils.pickRandomProperty(gameData["WeaponNames_" + itemData.type]);
 
-        console.log("Found Weapon Type: " );
-        console.log(itemData);
-
         switch(itemData.rarity) {
             case "unique": {
                 log.warning("Unique items not implemented!");
@@ -142,23 +139,18 @@ declare('GeneratorItem', function () {
         var primaryStat = this.getRandomPrimaryStat();
         stats[primaryStat.id] = this.getStatValue(level, 1.01, multiplier);
 
-        console.log("Rolling Secondary stats " + secondaryRolls);
         for(var i = 0; i < secondaryRolls; i++) {
             var secondaryStat = this.getRandomSecondaryStat();
             var temp = {};
             if(secondaryStat.isMultiplier === true) {
                 temp[secondaryStat.id] = this.getMultiplierStatValue(multiplier);
-                console.log("Multiplier Roll");
             } else {
                 temp[secondaryStat.id] = this.getStatValue(Math.ceil(level / 2), 1.01, multiplier);
             }
 
-            console.log("Secondary: " + secondaryStat.id + ": " + temp[secondaryStat.id]);
             statUtils.doMergeStats(temp, stats);
         }
 
-        console.log("Final Stats");
-        console.log(stats);
         return stats;
     };
 

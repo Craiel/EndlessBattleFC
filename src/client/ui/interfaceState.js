@@ -9,6 +9,7 @@ declare('InterfaceState', function() {
         this.updatesWindowShown = false;
         this.statsWindowShown = false;
         this.optionsWindowShown = false;
+        this.debugWindowShown = false;
     }
 
     return new InterfaceState();

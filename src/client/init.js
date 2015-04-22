@@ -30,6 +30,9 @@ var StrLoc = function(str) {
 
 // #IfDebug
 Endless.isDebug = true;
+Endless.showDebug = function() {
+    include('InterfaceState').debugWindowShown = true;
+}
 // #EndIf
 
 if (typeof window !== 'undefined') {

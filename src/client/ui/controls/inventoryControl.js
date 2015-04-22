@@ -103,7 +103,7 @@ declare('InventoryControl', function() {
         }
 
         var rowCount = Math.ceil(slotCount / slotsPerRow);
-        var padding = Math.floor((inventorySize.x - (slotsPerRow * slotFullSize)) / 2);            console.log(padding);
+        var padding = Math.floor((inventorySize.x - (slotsPerRow * slotFullSize)) / 2);
 
         this._clearStorageSlots();
 

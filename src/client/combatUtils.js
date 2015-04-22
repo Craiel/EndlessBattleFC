@@ -26,7 +26,6 @@ declare('CombatUtils', function () {
         }
 
         targetActor.modifyStat(gameData.StatDefinition.hp.id, -hit.damageTotal);
-        console.log(hit);
     }
 
     CombatUtils.prototype.resolveCombat = function(sourceActor, targetActor) {
@@ -44,13 +43,11 @@ declare('CombatUtils', function () {
         hit.targetActorName = targetActor.getName();
 
         if(hit.wasHit !== true) {
-            console.log("Missed");
             return hit;
         }
 
         this.applyEvasion(targetActor, hit);
         if(hit.wasEvaded !== false) {
-            console.log("Evaded");
             return hit;
         }
 

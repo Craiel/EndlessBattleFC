@@ -69,7 +69,6 @@ declare('Monster', function () {
     };
 
     Monster.prototype.setType = function(type) {
-        console.log(type);
         this.type = type;
         this.name = type.name;
         this.typeStats = statUtils.getStatsFromData(type);

@@ -17,6 +17,9 @@ declare('SaveKeys', function() {
 
         idnNextItemId: StrSha('nextItemId'),
 
+        idnSettingsInternalInfoToConsole: StrSha('setIntInfoToConsole'),
+        idnSettingsInternalWarningToConsole: StrSha('setIntWarningToConsole'),
+
 		///// Potentially remove:
 		idnMercenaryUpdateTime: StrSha('mercUpdateTime')
 	};

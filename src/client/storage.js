@@ -184,15 +184,12 @@ declare('Storage', function() {
 
         if(getEmptyIfNotFound === true) {
             var index = 0;
-            console.log("Finding empty slot");
             while(index < this.itemSlotSize - 1) {
                 if(this.itemSlots.length - 1 < index) {
-                    console.log("Pushing new Slot");
                     this.itemSlots.push({id: undefined, metaData: undefined, count: 0 });
                 }
 
                 if(this.itemSlots[index].id === undefined) {
-                    console.log("Found empty slot");
                     return this.itemSlots[index];
                 }
 

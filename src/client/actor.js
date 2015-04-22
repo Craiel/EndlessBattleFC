@@ -260,8 +260,6 @@ declare('Actor', function () {
     };
 
     Actor.prototype.equipItem = function(item, targetSlot) {
-        console.log(item);
-        console.log(this.equipmentSlots);
         if(this.equipmentSlots[targetSlot] === undefined) {
             log.warning("Could not equip {0}, target slot {1} does not exist".format(item.metaData.name, targetSlot));
             return false;
@@ -270,7 +268,6 @@ declare('Actor', function () {
         // Have to copy the item, the storage holds ownership of the item
         var itemCopy = JSON.parse(JSON.stringify(item));
         log.info("Equipping Item: " + itemCopy.id);
-        console.log(itemCopy);
 
         var currentItem = this.getEquippedItem(targetSlot);
         this.equipmentSlots[targetSlot].setItem(itemCopy);
