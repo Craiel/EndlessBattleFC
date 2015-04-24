@@ -1,5 +1,5 @@
 declare('GeneratorMonster', function () {
-    include('Log');
+    include('Debug');
     include('Assert');
     include('GameData');
     include('Generator');
@@ -60,7 +60,7 @@ declare('GeneratorMonster', function () {
             }
 
             if(tryCount >= 10) {
-                log.error("Could not determine monster rarity!");
+                debug.logError("Could not determine monster rarity!");
                 break;
             }
         }
@@ -114,7 +114,7 @@ declare('GeneratorMonster', function () {
     GeneratorMonster.prototype.rebuildLookupData = function() {
         this.rarityList.length = 0;
 
-        log.info("Rebuilding Monster Generator lookup gameData!");
+        debug.logInfo("Rebuilding Monster Generator lookup gameData!");
         for(var key in gameData.MonsterRarity) {
             this.rarityList.push(gameData.MonsterRarity[key]);
         }

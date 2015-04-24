@@ -51,13 +51,13 @@ declare('Monster', function () {
         if(this.rarityStats !== undefined) {
             stats.push(this.rarityStats);
         } else {
-            log.warning("Monster has no Rarity set!");
+            debug.logWarning("Monster has no Rarity set!");
         }
 
         if(this.typeStats !== undefined) {
             stats.push(this.typeStats);
         } else {
-            log.warning("Monster has no Type set!");
+            debug.logWarning("Monster has no Type set!");
         }
 
         return stats;

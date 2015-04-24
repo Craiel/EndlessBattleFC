@@ -13,8 +13,11 @@ declare('Settings', function () {
 
         this.id = "Settings";
 
+        this.logContextDefaultValue = false;
+
         save.register(this, saveKeys.idnSettingsInternalInfoToConsole).asBool().withDefault(false);
         save.register(this, saveKeys.idnSettingsInternalWarningToConsole).asBool().withDefault(false);
+        save.register(this, saveKeys.idnSettingsInternalLogContexts).asJson();
     }
 
     // ---------------------------------------------------------------------------
@@ -39,12 +42,20 @@ declare('Settings', function () {
     // ---------------------------------------------------------------------------
     // setting functions
     // ---------------------------------------------------------------------------
-    Settings.prototype.getInternalVerboseElements = function() {
-        return this[saveKeys.idnSettingsInternalVerboseElements];
+    Settings.prototype.getLogContextEnabled = function(context) {
+        if(this[saveKeys.idnSettingsInternalLogContexts][context] !== undefined) {
+            return this[saveKeys.idnSettingsInternalLogContexts][context];
+        }
+
+        return this.logContextDefaultValue;
     };
 
-    Settings.prototype.setInternalVerboseElements = function(value) {
-        this[saveKeys.idnSettingsInternalVerboseElements] = value;
+    Settings.prototype.setLogContextEnabled = function(context, value) {
+        if(this[saveKeys.idnSettingsInternalLogContexts][context] === undefined) {
+            this[saveKeys.idnSettingsInternalLogContexts][context] = this.logContextDefaultValue;
+        }
+
+        this[saveKeys.idnSettingsInternalLogContexts][context] = value;
     };
 
     return new Settings();

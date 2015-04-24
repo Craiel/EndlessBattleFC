@@ -1,5 +1,5 @@
 declare('Game', function() {
-    include('Log');
+    include('Debug');
     include('Assert');
     include('Component');
     include('Player');
@@ -243,7 +243,7 @@ declare('Game', function() {
         var gold = Math.floor(monster.getStat(gameData.StatDefinition.gold.id) * monster.getStat(gameData.StatDefinition.goldMult.id));
 
         if(xp <= 0 || gold <= 0) {
-            log.warning("Warning, Monster gave no gold or xp!");
+            debug.logWarning("Warning, Monster gave no gold or xp!");
         }
 
         // For now just flat chance of 15% to spawn an item
@@ -345,14 +345,14 @@ declare('Game', function() {
                 if(item.metaData !== undefined && item.metaData.slot !== undefined) {
                     this.handlePlayerSlotEquipAction(mode, item);
                 } else {
-                    log.warning("HandleSlotAction for Non-Equip Item");
+                    debug.logWarning("HandleSlotAction for Non-Equip Item");
                 }
 
                 break;
             }
 
             default: {
-                log.warning("HandleSlotAction not implemented for " + mode);
+                debug.logWarning("HandleSlotAction not implemented for " + mode);
             }
         }
     };
@@ -363,7 +363,7 @@ declare('Game', function() {
         }
 
         if(targetSlot === undefined) {
-            log.warning("Could not determine target slot for item {0}, slot {1}".format(item.metaData.name, item.metaData.slot));
+            debug.logWarning("Could not determine target slot for item {0}, slot {1}".format(item.metaData.name, item.metaData.slot));
             return;
         }
 

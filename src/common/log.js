@@ -1,12 +1,12 @@
 declare("Log", function() {
 	include("CoreUtils");
-        
+
     var level = {
-            debug : 1,
-            info : 2,
-            error : 3,
-            warning: 4
-        };
+        debug : 1,
+        info : 2,
+        error : 3,
+        warning: 4
+    };
     
     var getLevelDisplay = function(targetLevel) {
         switch(targetLevel) {
@@ -54,10 +54,15 @@ declare("Log", function() {
     function Log() {
         this.startTime = Date.now();
         this.lastLogTime = Date.now();
+        this.level = level;
         
         // ---------------------------------------------------------------------------
         // logging functions
         // ---------------------------------------------------------------------------
+        this.log = function(message, level) {
+            logFormat(Date.now() - this.startTime, level, message);
+        };
+
         this.info = function(message, silent) {
             logFormat(Date.now() - this.startTime, level.info, message);
         };

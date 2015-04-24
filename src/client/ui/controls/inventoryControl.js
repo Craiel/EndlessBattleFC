@@ -1,5 +1,5 @@
 declare('InventoryControl', function() {
-    include('Log');
+    include('Debug');
     include('Assert');
     include('Element');
     include('Panel');

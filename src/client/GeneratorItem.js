@@ -1,5 +1,5 @@
 declare('GeneratorItem', function () {
-    include('Log');
+    include('Debug');
     include('GameData');
     include('Generator');
     include('StatUtils');
@@ -76,12 +76,12 @@ declare('GeneratorItem', function () {
 
         switch(itemData.rarity) {
             case "unique": {
-                log.warning("Unique items not implemented!");
+                debug.logWarning("Unique items not implemented!");
                 return undefined;
             }
 
             case "set": {
-                log.warning("Set items not implemented!");
+                debug.logWarning("Set items not implemented!");
                 return undefined;
             }
 
@@ -103,12 +103,12 @@ declare('GeneratorItem', function () {
 
         switch(itemData.rarity) {
             case "unique": {
-                log.warning("Unique items not implemented!");
+                debug.logWarning("Unique items not implemented!");
                 return undefined;
             }
 
             case "set": {
-                log.warning("Set items not implemented!");
+                debug.logWarning("Set items not implemented!");
                 return undefined;
             }
 
@@ -186,7 +186,7 @@ declare('GeneratorItem', function () {
             }
 
             if(tryCount >= 10) {
-                log.error("Could not determine item rarity!");
+                debug.logError("Could not determine item rarity!");
                 break;
             }
         }
@@ -197,7 +197,7 @@ declare('GeneratorItem', function () {
     GeneratorItem.prototype.rebuildLookupData = function() {
         this.rarityList.length = 0;
 
-        log.info("Rebuilding Item Generator lookup gameData!");
+        debug.logInfo("Rebuilding Item Generator lookup gameData!");
         for(var key in gameData.ItemRarity) {
             this.rarityList.push(gameData.ItemRarity[key]);
         }

@@ -1,5 +1,5 @@
 declare('Element', function() {
-	include('Log');
+	include('Debug');
 	include('Assert');
 	include('TemplateProvider');
 	include('Component');
@@ -41,6 +41,8 @@ declare('Element', function() {
 
         this.id = id;
 
+        this.logContext = "element";
+
         this.tooltip = undefined;
         
         this.isVisible = true;
@@ -71,17 +73,17 @@ declare('Element', function() {
         this.componentInit();
 
         // Check the parent
-        if(Endless.isVerboseDebug === true) { log.debug(StrLoc(" ELEMENT: {0}").format(this.id)); }
+        if(Endless.isVerboseDebug === true) { debug.logDebug(StrLoc(" ELEMENT: {0}").format(this.id), this.logContext); }
         if (parent !== undefined) {
             if (parent === RootParentKey) {
-                log.warning(StrLoc("  --> Appending to ROOT!"));
+                debug.logWarning(StrLoc("  --> Appending to ROOT!"), this.logContext);
                 this.parent = $(document.body);
             } else {
-                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> Appending to {0}").format(parent.id)); }
+                if(Endless.isVerboseDebug === true) { debug.logDebug(StrLoc("  --> Appending to {0}").format(parent.id), this.logContext); }
                 this.parent = parent;
             }
         } else {
-            if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> skipping parent")); }
+            if(Endless.isVerboseDebug === true) { debug.logDebug(StrLoc("  --> skipping parent"), this.logContext); }
         }
 
         // try to get our element target
@@ -98,7 +100,7 @@ declare('Element', function() {
             if(existingElement !== undefined && existingElement.length > 0) {
                 this._mainDiv = content;
                 existingElement.replaceWith(content);
-                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template (replacing content)")); }
+                if(Endless.isVerboseDebug === true) { debug.logDebug(StrLoc("  --> from template (replacing content)"), this.logContext); }
             } else {
                 this._mainDiv = content;
 
@@ -110,11 +112,11 @@ declare('Element', function() {
                     parent.getMainElement().append(this._mainDiv);
                 }
 
-                if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from template")); }
+                if(Endless.isVerboseDebug === true) { debug.logDebug(StrLoc("  --> from template"), this.logContext); }
             }
         } else {
             this._mainDiv = existingElement;
-            if(Endless.isVerboseDebug === true) { log.debug(StrLoc("  --> from content")); }
+            if(Endless.isVerboseDebug === true) { debug.logDebug(StrLoc("  --> from content"), this.logContext); }
         }
 
         assert.isDefined(this._mainDiv, "MainDiv must be assigned after init: " + this.id);
@@ -203,7 +205,7 @@ declare('Element', function() {
             return;
         }
 
-        log.warning(StrLoc("ClassVerifyError: {0} on {1}").format(className, this.id));
+        debug.logWarning(StrLoc("ClassVerifyError: {0} on {1}").format(className, this.id), this.logContext);
     };
 
     UIElement.prototype.addClass = function(className) {
@@ -305,7 +307,7 @@ declare('Element', function() {
 
     UIElement.prototype.setTemplate = function(name) {
         if(this.templateName !== undefined) {
-            log.error("Replacing template " + this.templateName + " with " + name + " for " + this.id);
+            debug.logError("Replacing template " + this.templateName + " with " + name + " for " + this.id, this.logContext);
         }
 
         this.templateName = name;

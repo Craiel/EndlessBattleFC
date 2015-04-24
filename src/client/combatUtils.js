@@ -1,5 +1,5 @@
 declare('CombatUtils', function () {
-    include('Log');
+    include('Debug');
     include('GameData');
     include('CoreUtils');
 
@@ -21,7 +21,7 @@ declare('CombatUtils', function () {
 
     CombatUtils.prototype.applyHit = function(targetActor, hit) {
         if(hit.wasHit !== true || hit.wasEvaded !== false) {
-            log.warning("Tried to apply missed or evaded hit!");
+            debug.logWarning("Tried to apply missed or evaded hit!");
             return;
         }
 

@@ -47,6 +47,7 @@ declare("GameTime", function() {
     };
     
     return {
+        getCurrentLocalTime: function() { return Date.now() - timeZoneOffset; },
         create: function() {
         	// We make sure game time is always initialized
         	var time = new GameTime();

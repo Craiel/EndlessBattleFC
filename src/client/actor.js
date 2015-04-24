@@ -1,6 +1,6 @@
 declare('Actor', function () {
     include('Assert');
-    include('Log');
+    include('Debug');
     include('Component');
     include('StaticData');
     include('GameData');
@@ -98,7 +98,7 @@ declare('Actor', function () {
     // ---------------------------------------------------------------------------
     Actor.prototype.addAbility = function(key) {
         if(this.abilitySet[key] !== undefined) {
-            log.warning("Ability {0} already added to actor {1}".format(key, this.id));
+            debug.logWarning("Ability {0} already added to actor {1}".format(key, this.id));
             return;
         }
 
@@ -122,12 +122,12 @@ declare('Actor', function () {
 
         var storage = this.getStorage();
         if(storage === undefined) {
-            log.error("Actor {0} has no Storage".format(this.id));
+            debug.logError("Actor {0} has no Storage".format(this.id));
             return;
         }
 
         if(storage.canAdd(item) === false) {
-            log.warning("Could not add item " + item);
+            debug.logError("Could not add item " + item);
             return;
         }
 
@@ -144,11 +144,11 @@ declare('Actor', function () {
 
         var storage = this.getStorage();
         if(storage === undefined) {
-            log.error("Actor {0} has no Storage". format(this.id))
+            debug.logError("Actor {0} has no Storage". format(this.id))
         }
 
         if(storage.hasItem(item.id) === false) {
-            log.warning("Could not remove item {0}, not in storage".format(item.id));
+            debug.logError("Could not remove item {0}, not in storage".format(item.id));
             return;
         }
 
@@ -241,7 +241,7 @@ declare('Actor', function () {
 
     Actor.prototype.addEquipmentSlot = function(type, id) {
         if(this.equipmentSlots[id] !== undefined) {
-            log.error("Slot {0} already added to actor {1}".format(id, this.id));
+            debug.logError("Slot {0} already added to actor {1}".format(id, this.id));
             return;
         }
 
@@ -261,13 +261,13 @@ declare('Actor', function () {
 
     Actor.prototype.equipItem = function(item, targetSlot) {
         if(this.equipmentSlots[targetSlot] === undefined) {
-            log.warning("Could not equip {0}, target slot {1} does not exist".format(item.metaData.name, targetSlot));
+            debug.logWarning("Could not equip {0}, target slot {1} does not exist".format(item.metaData.name, targetSlot));
             return false;
         }
 
         // Have to copy the item, the storage holds ownership of the item
         var itemCopy = JSON.parse(JSON.stringify(item));
-        log.info("Equipping Item: " + itemCopy.id);
+        debug.logInfo("Equipping Item: " + itemCopy.id);
 
         var currentItem = this.getEquippedItem(targetSlot);
         this.equipmentSlots[targetSlot].setItem(itemCopy);

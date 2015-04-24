@@ -1,7 +1,41 @@
 .debugDialog {
-    width: 600px;
+    width: 700px;
     height: 400px;
     position: absolute;
     left: 100px;
     top: 200px;
+}
+
+.debugDialogButtonPanel {
+    position: relative;
+    left: 9px;
+    height: 30px;
+    width: calc(100% - 18px);
+}
+
+.debugDialogContentPanel {
+    position: relative;
+    left: 9px;
+    top: 39px;
+    height: calc(100% - 30px);
+    width: calc(100% - 18px);
+}
+
+.debugDialogContentPanelContent {
+    include: globalTextFont;
+    include: globalColorWhite;
+    font-size: 12px;
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 9px);
+}
+
+.debugDialogLevelButton {
+    include: globalTextFont;
+    include: globalColorWhite;
+    font-weight: bold;
+    width: 150px;
+    float: left;
+    margin-left: 4px;
+    text-align: center;
 }

@@ -1,6 +1,6 @@
 declare('Player', function () {
     include('Assert');
-    include('Log');
+    include('Debug');
     include('Actor');
     include('StaticData');
     include('Utils');
@@ -225,7 +225,7 @@ declare('Player', function () {
         if(this.resurrectionDelay > this.resurrectionDelayMin) {
             this.resurrectionDelay -= this.resurrectionDelayIncrement;
             this.resurrectionDelayDecreaseTime = gameTime.current + this.resurrectionDelayDecreaseInterval;
-            log.info("Decreasing res time to " + this.resurrectionDelay);
+            debug.logInfo("Decreasing res time to " + this.resurrectionDelay);
         }
     };
 
@@ -251,7 +251,7 @@ declare('Player', function () {
         if(this.resurrectionDelay < this.resurrectionDelayMax) {
             this.resurrectionDelay += this.resurrectionDelayIncrement;
             this.resurrectionDelayDecreaseTime = gameTime.current + this.resurrectionDelayDecreaseInterval;
-            log.info("Increasing res time to " + this.resurrectionDelay);
+            debug.logInfo("Increasing res time to " + this.resurrectionDelay);
         }
     };
 

@@ -105,12 +105,12 @@ declare('LogDialog', function() {
         }
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
-    LogDialog.prototype.trimEvents = function(eventData) {
+    LogDialog.prototype.trimEvents = function() {
         var count = this.getContentArea().getChildCount();
         if(count <= this.maxEventCount) {
             return;
@@ -119,13 +119,13 @@ declare('LogDialog', function() {
         for(var i = this.maxEventCount; i < count; i++) {
             this.getContentArea().removeFirstChild();
         }
-    }
+    };
 
     LogDialog.prototype.getBasicEventText = function(eventData) {
         var textElement = $('<div\>');
         textElement.append($('<span class="logEntryNormal">[' + coreUtils.getTimeDisplay(this.currentTime) + '] </span>'));
         return textElement;
-    }
+    };
 
     LogDialog.prototype.getCombatEventText = function(eventData) {
         var textElement = this.getBasicEventText();
@@ -146,13 +146,13 @@ declare('LogDialog', function() {
         textElement.append($('<span class="combatLogDamage">' + eventData.damageTotal + '</span>'));
         textElement.append($('<span class="logEntryNormal"> damage</span>'));
         return textElement;
-    }
+    };
 
     LogDialog.prototype.getCombatDeathEventText = function(eventData) {
         var textElement = this.getBasicEventText();
         textElement.append($('<span class="combatLogActor">' + eventData.actorName + ' was defeated!</span>'));
         return textElement;
-    }
+    };
 
     LogDialog.prototype.getXpEventText = function(eventData) {
         var textElement = this.getBasicEventText();
@@ -160,7 +160,7 @@ declare('LogDialog', function() {
         textElement.append($('<span class="logEntryXp">' + eventData.value + '</span>'));
         textElement.append($('<span class="logEntryNormal"> XP</span>'));
         return textElement;
-    }
+    };
 
     LogDialog.prototype.getGoldEventText = function(eventData) {
         var textElement = this.getBasicEventText();
@@ -169,13 +169,13 @@ declare('LogDialog', function() {
         textElement.append($('<span class="logEntryGold"> ' + eventData.value + ' </span>'));
         textElement.append($('<span class="logEntryNormal"> Gold</span>'));
         return textElement;
-    }
+    };
 
     LogDialog.prototype.getItemEventText = function(eventData) {
         var textElement = this.getBasicEventText();
         textElement.append($('<span class="logEntryNormal">ITEM RECEIVED TODO!!</span>'));
         return textElement;
-    }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = LogDialog.prototype;

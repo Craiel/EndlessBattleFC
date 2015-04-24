@@ -31,6 +31,7 @@ declare('StaticData', function () {
         this.EventGoldGain = "eventGoldGain";
         this.EventItemGain = "eventItemGain";
         this.EventTooltip = "eventTooltip";
+        this.EventDebugLog = "eventDebugLog";
 
         this.InventoryModeUnknown = "inventoryUnknown";
         this.InventoryModePlayer = "inventoryPlayer";

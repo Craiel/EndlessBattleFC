@@ -1,12 +1,12 @@
 Endless.main = function() {
 	include('Assert');
-	include('Log');
+	include('Debug');
 	include('StaticData');
 	include('Game');
 	include('GameTime');
 	include('UserInterface');
 
-	log.info("Initializing");
+	debug.logInfo("Initializing");
 
 	// Todo: this sets game as a global for now until we upgrade the code to not do so
 	window.game = game;
@@ -18,6 +18,7 @@ Endless.main = function() {
 	include('TemplateProvider').SetData(include('TemplateContent'));
 	
 	// Initialize components
+	debug.init();
 	staticData.init();
     game.init();
     userInterface.init();
@@ -42,6 +43,11 @@ Endless.main = function() {
 
 		Endless.currentUpdateTick++;
 		gameTime.update();
+
+		// Update the debug control if enabled
+		if(Endless.isDebug === true) {
+			debug.update(gameTime);
+		}
 	
 	    Endless.resetFrame();
 		staticData.update(gameTime);

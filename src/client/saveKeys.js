@@ -19,6 +19,7 @@ declare('SaveKeys', function() {
 
         idnSettingsInternalInfoToConsole: StrSha('setIntInfoToConsole'),
         idnSettingsInternalWarningToConsole: StrSha('setIntWarningToConsole'),
+		idnSettingsInternalLogContexts: StrSha('setIntLogContexts'),
 
 		///// Potentially remove:
 		idnMercenaryUpdateTime: StrSha('mercUpdateTime')
