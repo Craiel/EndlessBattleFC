@@ -92,14 +92,14 @@ declare('InventorySlotControl', function() {
             this.iconControl.setItem(undefined);
             this.setTooltip(undefined);
         } else {
-            if(this.slot.count === 1 && this.slot.metaData !== undefined) {
+            if(this.slot.count === 1 && this.slot.item !== undefined) {
                 this.countControl.setText(undefined);
             } else {
                 this.countControl.setText(this.slot.count);
             }
 
             // Slot Metadata
-            this.iconControl.setItem(this.slot.metaData);
+            this.iconControl.setItem(this.slot.item);
             this.updateTooltip(this.slot);
         }
     };

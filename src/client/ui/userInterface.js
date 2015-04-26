@@ -92,6 +92,10 @@ declare('UserInterface', function () {
 
         this.tooltip = tooltipControl.create();
         this.tooltip.init();
+
+        $('#version').text("Version " + game[saveKeys.idnGameVersion]);
+        $('#resetButton').click({game: game}, function(args) { args.data.game.reset(); });
+        $('#saveButton').click({game: game}, function(args) { args.data.game.save(); });
     };
 
     UserInterface.prototype.componentUpdate = UserInterface.prototype.update;
@@ -116,8 +120,6 @@ declare('UserInterface', function () {
         }
 
         this.updateTooltip(gameTime);
-
-        $('#version').text("Version " + game[saveKeys.idnGameVersion]);
 
         return true;
     }

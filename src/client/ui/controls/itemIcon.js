@@ -59,10 +59,10 @@ declare('ItemIcon', function() {
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
-    ItemIcon.prototype.setItem = function(itemMetaData) {
-        if(itemMetaData !== undefined) {
-            this.itemRarity = itemMetaData.rarity;
-            this.itemType = itemMetaData.type;
+    ItemIcon.prototype.setItem = function(item) {
+        if(item !== undefined) {
+            this.itemRarity = item.rarity;
+            this.itemType = item.type;
         } else {
             this.itemRarity = undefined;
             this.itemType = undefined;

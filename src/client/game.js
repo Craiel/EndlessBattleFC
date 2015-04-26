@@ -338,11 +338,15 @@ declare('Game', function() {
         return test;
     };
 
-    Game.prototype.handleSlotAction = function(mode, item) {
+    Game.prototype.handleSlotAction = function(mode, slot) {
+        var item = slot.item;
         assert.isDefined(item);
+
         switch(mode) {
             case staticData.InventoryModePlayer: {
-                if(item.metaData !== undefined && item.metaData.slot !== undefined) {
+
+                debug.logDebug("PlayerInventory Slot Action Received");
+                if(item !== undefined && item.slot !== undefined) {
                     this.handlePlayerSlotEquipAction(mode, item);
                 } else {
                     debug.logWarning("HandleSlotAction for Non-Equip Item");
@@ -363,10 +367,11 @@ declare('Game', function() {
         }
 
         if(targetSlot === undefined) {
-            debug.logWarning("Could not determine target slot for item {0}, slot {1}".format(item.metaData.name, item.metaData.slot));
+            debug.logWarning("Could not determine target slot for item {0}, slot {1}".format(item.name, item.slot));
             return;
         }
 
+        debug.logDebug("Calling Player EquipItem() for item " + item.id);
         this.player.equipItem(item, targetSlot);
     };
 
@@ -375,7 +380,7 @@ declare('Game', function() {
         for(var i = 0; i < staticData.EquipSlots.length; i++) {
             var slotType = staticData.EquipSlots[i];
             var segments = slotType.split("|");
-            if(segments[0] === item.metaData.slot) {
+            if(segments[0] === item.slot) {
                 return slotType;
             }
         }

@@ -6,6 +6,7 @@ declare('GeneratorItem', function () {
     include('CoreUtils');
     include('Save');
     include('SaveKeys');
+    include('Item');
 
     GeneratorItem.prototype = generator.prototype();
     GeneratorItem.prototype.$super = parent;
@@ -39,7 +40,7 @@ declare('GeneratorItem', function () {
     };
 
     GeneratorItem.prototype.generate = function(level) {
-        var itemData = { id: this.getNextItemId(), name: undefined, stats: {} };
+        var itemData = item.create(this.getNextItemId());
         statUtils.initStats(itemData.stats, false);
 
         // Find out which slot we are generating for

@@ -29,6 +29,11 @@ declare('Save', function() {
         return localStorage[storageKey];
     };
 
+    Save.prototype.doGetSize = function() {
+        var storageKey = this.getStorageKey();
+        return localStorage[storageKey].length;
+    };
+
     // ---------------------------------------------------------------------------
     // utility functions
     // ---------------------------------------------------------------------------

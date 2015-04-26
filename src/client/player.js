@@ -277,6 +277,9 @@ declare('Player', function () {
         // Update the storage slot data with the object from the save
         this.storage.setSlotData(this[saveKeys.idnPlayerStorageSlots]);
 
+        // Reload the current equipment slot contents from the save
+        this.reloadEquipmentSlots();
+
         // TODO:
         this.baseExperienceRequired = 10;
         this.experienceRequired = Math.ceil(utils.Sigma(this[saveKeys.idnLevel] * 2) * Math.pow(1.05, this[saveKeys.idnLevel]) + this.baseExperienceRequired);
@@ -284,8 +287,7 @@ declare('Player', function () {
 
     Player.prototype.receiveItem = function(item) {
         // Stub for now, but functional:
-        this.storage.add(item.id);
-        this.storage.setMetadata(item.id, item);
+        this.storage.add(item);
     };
 
     var surrogate = function(){};

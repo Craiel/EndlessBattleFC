@@ -1,18 +1,17 @@
 declare('Storage', function() {
 	include('Assert');
 	include('Component');
+    include('ItemUtils');
 
 	Storage.prototype = component.prototype();
 	Storage.prototype.$super = parent;
 	Storage.prototype.constructor = Storage;
 
-	/* Sample item slot
-	var ItemSlot = {
-		Id: undefined,
-		metadata: {},
-		count: 0
-	}
-	*/
+    function StorageSlot() {
+        this.id = undefined;
+        this.item = undefined;
+        this.count = 0;
+    }
 
 	function Storage(id) {
         component.construct(this);
@@ -25,7 +24,7 @@ declare('Storage', function() {
         this.itemSlotSize = 36;
 
 		this.changed = false;
-	};
+	}
 
     // ---------------------------------------------------------------------------
     // basic functions
@@ -56,8 +55,8 @@ declare('Storage', function() {
         return this._getSlot(id, true) !== undefined;
     }
 
-    Storage.prototype.add = function(id, count) {
-        assert.isDefined(id);
+    Storage.prototype.add = function(item, count) {
+        itemUtils.checkItemIsValid(item);
 
         // Calling add will add exactly 1 if not specified
         if(count === undefined) {
@@ -67,11 +66,12 @@ declare('Storage', function() {
         assert.isTrue(count > 0, "Can not add null or negative item count!");
 
         // Get the target slot
-        var slot = this._getSlot(id, true);
+        var slot = this._getSlot(item.id, true);
         if(slot.id === undefined) {
-            slot.id = id;
+            slot.id = item.id;
+            slot.item = item;
             slot.count = 0;
-            this.itemSlotMap[id] = slot;
+            this.itemSlotMap[item.id] = slot;
         }
 
         // Add the item count to the slot
@@ -80,11 +80,11 @@ declare('Storage', function() {
         this.changed = true;
     };
 
-    Storage.prototype.remove = function(id, count) {
-        assert.isDefined(id);
+    Storage.prototype.remove = function(item, count) {
+        itemUtils.checkItemIsValid(item);
 
         // Todo: Remove later when the code is more hardened
-        assert.isTrue(this.hasItem(id), "remove(<id>) called with non-existing item, call hasItem(<id>) first!");
+        assert.isTrue(this.hasItem(item.id), "remove(<id>) called with non-existing item, call hasItem(<id>) first!");
 
         // Calling remove will remove exactly 1 if not specified
         if(count === undefined) {
@@ -92,17 +92,17 @@ declare('Storage', function() {
         }
 
         // Get the target slot
-        var slot = this._getSlot(id);
+        var slot = this._getSlot(item.id);
         assert.isDefined(slot, "Invalid slot found in Remove()");
         slot.count -= count;
 
         if(slot.count <= 0) {
             // If we no longer have any left clear out the slot
             slot.id = undefined;
-            slot.metaData = undefined;
+            slot.item = undefined;
             slot.count = 0;
 
-            delete this.itemSlotMap[id];
+            delete this.itemSlotMap[item.id];
         }
 
         this.changed = true;
@@ -139,20 +139,6 @@ declare('Storage', function() {
         return this.itemSlotMap[id].count;
     };
 
-    Storage.prototype.setMetadata = function(id, metadata) {
-        var slot = this._getSlot(id);
-        assert.isDefined(slot, "setMetadata() called on invalid item: " + id);
-
-        slot.metaData = metadata;
-    };
-
-    Storage.prototype.getMetadata = function(id) {
-        var slot = this._getSlot(id);
-        assert.isDefined(slot, "getMetadata() called on invalid item: " + id);
-
-        return slot.metaData;
-    };
-
     // ---------------------------------------------------------------------------
     // loading / saving / reset
     // ---------------------------------------------------------------------------
@@ -186,7 +172,7 @@ declare('Storage', function() {
             var index = 0;
             while(index < this.itemSlotSize - 1) {
                 if(this.itemSlots.length - 1 < index) {
-                    this.itemSlots.push({id: undefined, metaData: undefined, count: 0 });
+                    this.itemSlots.push(new StorageSlot());
                 }
 
                 if(this.itemSlots[index].id === undefined) {

@@ -1,10 +1,12 @@
 declare('ItemTooltip', function() {
+    include('Assert');
     include('Element');
     include('Panel');
     include('ItemIcon');
     include('CurrencyControl');
     include('GameData');
     include('StaticData');
+    include('ItemUtils');
 
     var nextId = 0;
 
@@ -71,26 +73,30 @@ declare('ItemTooltip', function() {
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
-    ItemTooltip.prototype.setSlotData = function(data) {
+    ItemTooltip.prototype.setSlotData = function(slot) {
+        console.log(slot.item);
+        assert.isDefined(slot.item, "Item for tooltip was not defined!");
+        itemUtils.checkItemIsValid(slot.item);
+
         // Todo: Build to tooltip for the equipped item...
         var prefix = "Current";
 
-        this.headerText.setText(data.metaData.name);
+        this.headerText.setText(slot.item.name);
 
-        this.buildTooltipTopArea(data, prefix, this.topPanel);
-        this.buildTooltipBottomArea(data, prefix, this.bottomPanel);
+        this.buildTooltipTopArea(slot.item, prefix, this.topPanel);
+        this.buildTooltipBottomArea(slot.item, prefix, this.bottomPanel);
     };
 
-    ItemTooltip.prototype.buildTooltipTopArea = function(data, idSuffix, topPanel) {
+    ItemTooltip.prototype.buildTooltipTopArea = function(item, idSuffix, topPanel) {
         topPanel.getContentArea().removeContent();
 
         var attributes = {};
-        attributes.type = data.metaData.typeName;
-        attributes.slot = data.metaData.baseTypeName;
-        attributes.value = this.getValueContent(data);
-        attributes.desc = this.getDescriptiveContent(data);
-        attributes.details = this.getDetailContent(data);
-        attributes.stats = this.getStatContent(data);
+        attributes.type = item.typeName;
+        attributes.slot = item.baseTypeName;
+        attributes.value = this.getValueContent(item);
+        attributes.desc = this.getDescriptiveContent(item);
+        attributes.details = this.getDetailContent(item);
+        attributes.stats = this.getStatContent(item);
 
         var contentId = this.id + idSuffix + "TopContent";
         var topContent = element.create(contentId);
@@ -99,43 +105,43 @@ declare('ItemTooltip', function() {
 
         var icon = itemIcon.create(contentId + "Icon");
         icon.init(topContent);
-        icon.setItem(data.metaData);
+        icon.setItem(item);
         this.addManagedChild(icon);
         this.addManagedChild(topContent);
     };
 
-    ItemTooltip.prototype.dataIsDpsType = function(data) {
-        return data.metaData.slot === gameData.ItemSlots.weapon.id
-            && data.metaData.type !== gameData.WeaponTypes.shield.id;
+    ItemTooltip.prototype.dataIsDpsType = function(item) {
+        return item.slot === gameData.ItemSlots.weapon.id
+            && item.type !== gameData.WeaponTypes.shield.id;
     };
 
-    ItemTooltip.prototype.getValueContent = function(data) {
-        if(this.dataIsDpsType(data)) {
+    ItemTooltip.prototype.getValueContent = function(item) {
+        if(this.dataIsDpsType(item)) {
             // Compute DPS...
             return "<TODO>";
         }
 
-        return data.metaData.stats.armor;
+        return item.stats.armor;
     };
 
-    ItemTooltip.prototype.getDetailContent = function(data) {
+    ItemTooltip.prototype.getDetailContent = function(item) {
         var content = "";
-        if(this.dataIsDpsType(data)) {
+        if(this.dataIsDpsType(item)) {
             content = "Damage Per Second";
         } else {
             content = "Armor"
         }
     }
 
-    ItemTooltip.prototype.getDescriptiveContent = function(data) {
+    ItemTooltip.prototype.getDescriptiveContent = function(item) {
         return "Desc - TODO";
     };
 
-    ItemTooltip.prototype.getStatContent = function(data) {
+    ItemTooltip.prototype.getStatContent = function(item) {
         return "STAT - TODO";
     };
 
-    ItemTooltip.prototype.buildTooltipBottomArea = function(data, idSuffix, bottomPanel) {
+    ItemTooltip.prototype.buildTooltipBottomArea = function(item, idSuffix, bottomPanel) {
         var contentId = this.id + idSuffix + "BottomContent";
         var bottomContent = element.create(contentId);
         bottomContent.templateName = "itemTooltipBottom";
@@ -147,7 +153,7 @@ declare('ItemTooltip', function() {
         currency.init(bottomContent);
         currency.addClass("itemTooltipSellValue");
         currency.setImage(ResImg(iconGold));
-        currency.setValue(data.metaData.stats.gold);
+        currency.setValue(item.stats.gold);
         currency.setHeight(16);
         this.addManagedChild(currency);
 

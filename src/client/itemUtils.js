@@ -22,5 +22,17 @@ declare('ItemUtils', function () {
         return coreUtils.getImageUrl(resources[key]);*/
     };
 
+    // ---------------------------------------------------------------------------
+    // item functions
+    // ---------------------------------------------------------------------------
+    ItemUtils.prototype.checkItemIsValid = function(item) {
+        assert.isDefined(item.name);
+        assert.isDefined(item.rarity);
+        assert.isDefined(item.slot);
+        assert.isDefined(item.type);
+        assert.isDefined(item.typeName);
+        assert.isDefined(item.baseTypeName);
+    };
+
     return new ItemUtils;
 });

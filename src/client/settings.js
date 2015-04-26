@@ -13,7 +13,7 @@ declare('Settings', function () {
 
         this.id = "Settings";
 
-        this.logContextDefaultValue = false;
+        this.logContextDefaultValue = true;
 
         save.register(this, saveKeys.idnSettingsInternalInfoToConsole).asBool().withDefault(false);
         save.register(this, saveKeys.idnSettingsInternalWarningToConsole).asBool().withDefault(false);

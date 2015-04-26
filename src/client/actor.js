@@ -131,12 +131,7 @@ declare('Actor', function () {
             return;
         }
 
-        storage.add(item.id, count);
-
-        // If it's not a static item store it's meta information
-        if(item.isStatic !== true) {
-            storage.setMetadata(item.id, item);
-        }
+        storage.add(item, count);
     };
 
     Actor.prototype.takeItem = function(item, count) {
@@ -152,7 +147,7 @@ declare('Actor', function () {
             return;
         }
 
-        storage.remove(item.id, count);
+        storage.remove(item, count);
     };
 
     // ---------------------------------------------------------------------------
@@ -230,6 +225,13 @@ declare('Actor', function () {
     // ---------------------------------------------------------------------------
     // equipment functions
     // ---------------------------------------------------------------------------
+    Actor.prototype.reloadEquipmentSlots = function(gameTime) {
+        for (var type in this.equipmentSlots) {
+            var item = this.getEquipment()[type];
+            this.equipmentSlots[type].setItem(item);
+        }
+    };
+
     Actor.prototype.updateEquipmentSlots = function(gameTime) {
         for(var type in this.equipmentSlots) {
             for(var i = 0; i < this.equipmentSlots[type].length; i++) {
@@ -261,13 +263,13 @@ declare('Actor', function () {
 
     Actor.prototype.equipItem = function(item, targetSlot) {
         if(this.equipmentSlots[targetSlot] === undefined) {
-            debug.logWarning("Could not equip {0}, target slot {1} does not exist".format(item.metaData.name, targetSlot));
+            debug.logWarning("Could not equip {0}, target slot {1} does not exist".format(item.name, targetSlot));
             return false;
         }
 
         // Have to copy the item, the storage holds ownership of the item
         var itemCopy = JSON.parse(JSON.stringify(item));
-        debug.logInfo("Equipping Item: " + itemCopy.id);
+        debug.logDebug("Equipping Item: " + itemCopy.id + " in slot " + targetSlot);
 
         var currentItem = this.getEquippedItem(targetSlot);
         this.equipmentSlots[targetSlot].setItem(itemCopy);

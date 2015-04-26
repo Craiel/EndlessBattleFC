@@ -199,7 +199,7 @@ declare('CoreSave', function(require) {
                 throw e;
             }
 
-            log.debug(StrLoc("SaveMapping: {0} -> {1}").format(key, value));
+            // log.debug(StrLoc("SaveMapping: {0} -> {1}").format(key, value));
             data[key] = value;
 
             // Call the callback if present
@@ -230,7 +230,7 @@ declare('CoreSave', function(require) {
             var mapping = this.mappings[i];
             var key = mapping.getKey();
 
-            log.debug(StrLoc("LoadMapping: {0} -> {1}").format(key, data[key]));
+            //log.debug(StrLoc("LoadMapping: {0} -> {1}").format(key, data[key]));
             if(data[key] === undefined) {
                 continue;
             }
