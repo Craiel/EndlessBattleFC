@@ -31,7 +31,11 @@ declare('Save', function() {
 
     Save.prototype.doGetSize = function() {
         var storageKey = this.getStorageKey();
-        return localStorage[storageKey].length;
+        if(localStorage[storageKey] !== undefined) {
+            return localStorage[storageKey].length;
+        }
+
+        return 0;
     };
 
     // ---------------------------------------------------------------------------

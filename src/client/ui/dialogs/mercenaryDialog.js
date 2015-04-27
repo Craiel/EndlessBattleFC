@@ -36,7 +36,7 @@ declare('MercenaryDialog', function() {
             control.callbackArgument = game;
             control.init(this.getContentArea());
             control.setMercenaryName(gameData.Mercenaries[key].name);
-            control.setMercenaryImage(staticData.imageRoot + gameData.Mercenaries[key].icon);
+            control.setMercenaryImage(staticData.imageRootIcon + gameData.Mercenaries[key].icon);
             this.mercenaryControls[key] = control;
         }
 
