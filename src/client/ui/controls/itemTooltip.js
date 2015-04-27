@@ -91,8 +91,8 @@ declare('ItemTooltip', function() {
         topPanel.getContentArea().removeContent();
 
         var attributes = {};
-        attributes.type = item.typeName;
-        attributes.slot = item.baseTypeName;
+        attributes.type = item.type.id;
+        attributes.slot = item.baseType.id;
         attributes.value = this.getValueContent(item);
         attributes.desc = this.getDescriptiveContent(item);
         attributes.details = this.getDetailContent(item);

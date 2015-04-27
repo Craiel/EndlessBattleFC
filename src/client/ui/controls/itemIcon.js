@@ -17,6 +17,7 @@ declare('ItemIcon', function() {
 
         this.itemChanged = true;
         this.itemRarity = undefined;
+        this.itemBaseType = undefined;
         this.itemType = undefined;
 
         this.borderControl = undefined;
@@ -49,7 +50,7 @@ declare('ItemIcon', function() {
 
         if(this.itemChanged === true) {
             this.updateRarityClass(this.itemRarity);
-            this.updateIcon(this.itemType);
+            this.updateIcon(this.itemBaseType, this.itemType);
             this.itemChanged = false;
         }
 
@@ -62,9 +63,11 @@ declare('ItemIcon', function() {
     ItemIcon.prototype.setItem = function(item) {
         if(item !== undefined) {
             this.itemRarity = item.rarity;
+            this.itemBaseType = item.baseType;
             this.itemType = item.type;
         } else {
             this.itemRarity = undefined;
+            this.itemBaseType = undefined;
             this.itemType = undefined;
         }
 
@@ -79,19 +82,19 @@ declare('ItemIcon', function() {
         if(rarity === undefined) {
             this.currentRarityClass = "itemIconRarityDefault";
         } else {
-            this.currentRarityClass = "itemIconRarity_" + rarity;
+            this.currentRarityClass = "itemIconRarity_" + rarity.id;
         }
 
         this.addClass(this.currentRarityClass);
     };
 
-    ItemIcon.prototype.updateIcon = function(type) {
+    ItemIcon.prototype.updateIcon = function(baseType, type) {
         var style = {'background-repeat': 'no-repeat', 'background-size': '70% 70%', 'background-position': "center"};
 
-        if(type === undefined) {
+        if(baseType === undefined) {
             style['background-image'] = undefined;
         } else {
-            style['background-image'] = itemUtils.getItemIconUrl(type);
+            style['background-image'] = itemUtils.getItemIconUrl(baseType, type);
         }
 
         this.imageControl.setStyle(style);

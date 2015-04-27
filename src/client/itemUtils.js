@@ -9,9 +9,13 @@ declare('ItemUtils', function () {
     // ---------------------------------------------------------------------------
     // main functions
     // ---------------------------------------------------------------------------
-    ItemUtils.prototype.getItemIconUrl = function(type) {
+    ItemUtils.prototype.getItemIconUrl = function(baseType, type) {
 
-        return coreUtils.getImageUrl("{0}{1}Default.png".format(staticData.imageRootItem, type));
+        if(type.icon === undefined) {
+            return coreUtils.getImageUrl("{0}{1}Default.png".format(staticData.imageRootItem, baseType.id));
+        }
+
+        return coreUtils.getImageUrl("{0}{1}.png".format(staticData.imageRootItem, type.icon));
 
         //return coreUtils.getImageUrl(ResImg(placeHolder));
 
@@ -29,9 +33,8 @@ declare('ItemUtils', function () {
         assert.isDefined(item.name);
         assert.isDefined(item.rarity);
         assert.isDefined(item.slot);
+        assert.isDefined(item.baseType);
         assert.isDefined(item.type);
-        assert.isDefined(item.typeName);
-        assert.isDefined(item.baseTypeName);
     };
 
     return new ItemUtils;

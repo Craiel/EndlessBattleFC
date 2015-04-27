@@ -12,8 +12,7 @@ declare('Item', function() {
         this.rarity = undefined;
         this.slot = undefined;
         this.type = undefined;
-        this.typeName = undefined;
-        this.baseTypeName = undefined;
+        this.baseType = undefined;
 
         this.stats = {};
         this.metaData = {};
