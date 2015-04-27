@@ -2,7 +2,6 @@ declare('Settings', function () {
     include('Component');
     include('Save');
     include('SaveKeys');
-    include('Type');
 
     Settings.prototype = component.prototype();
     Settings.prototype.$super = parent;

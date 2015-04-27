@@ -79,42 +79,42 @@ declare('SystemDialog', function() {
         }
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
     SystemDialog.prototype.toggleInventoryWindow = function() {
         interfaceState.inventoryWindowShown = !interfaceState.inventoryWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleCharacterWindow = function() {
         interfaceState.characterWindowShown = !interfaceState.characterWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleMercenaryWindow = function() {
         interfaceState.mercenaryWindowShown = !interfaceState.mercenaryWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleUpgradeWindow = function() {
         interfaceState.upgradeWindowShown = !interfaceState.upgradeWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleQuestWindow = function() {
         interfaceState.questWindowShown = !interfaceState.questWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleUpdatesWindow = function() {
         interfaceState.updatesWindowShown = !interfaceState.updatesWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleOptionsWindow = function() {
         interfaceState.optionsWindowShown = !interfaceState.optionsWindowShown;
-    }
+    };
 
     SystemDialog.prototype.toggleStatsWindow = function() {
         interfaceState.statsWindowShown = !interfaceState.statsWindowShown;
-    }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = SystemDialog.prototype;

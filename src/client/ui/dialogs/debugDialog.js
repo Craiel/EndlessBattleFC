@@ -1,9 +1,7 @@
 declare('DebugDialog', function() {
     include('Log');
-    include('Debug');
     include('Element');
     include('Dialog');
-    include('Debug');
     include('Button');
     include('Panel');
     include('EventAggregate');

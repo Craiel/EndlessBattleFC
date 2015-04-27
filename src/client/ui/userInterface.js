@@ -2,8 +2,6 @@ declare('UserInterface', function () {
     include('Component');
     include('Save');
     include('SaveKeys');
-    include('GameData');
-    include('CoreUtils');
     include('InterfaceState');
 
     // UI Components
