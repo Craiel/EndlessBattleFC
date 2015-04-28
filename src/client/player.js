@@ -174,11 +174,12 @@ declare('Player', function () {
     };
 
     Player.prototype.updateEquipment = function(gameTime) {
-        for(var i = 0; i < staticData.EquipSlots.length; i++) {
+        // Not sure why i would want put this to null...
+        /*for(var i = 0; i < staticData.EquipSlots.length; i++) {
             if(this[saveKeys.idnPlayerEquip][staticData.EquipSlots[i]] === undefined) {
                 this[saveKeys.idnPlayerEquip][staticData.EquipSlots[i]] = null;
             }
-        }
+        }*/
     };
 
     Player.prototype.updateExperience = function(gameTime) {

@@ -81,6 +81,11 @@ declare('InventorySlotControl', function() {
     // ---------------------------------------------------------------------------
     InventorySlotControl.prototype.setSlot = function(slot) {
         if(this.slot !== slot) {
+            // Avoid setting the same item again
+            if(this.slot !== undefined && slot !== undefined && this.slot.id === slot.id) {
+                return;
+            }
+
             this.slot = slot;
             this.slotChanged = true;
         }

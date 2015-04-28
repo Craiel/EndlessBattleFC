@@ -1,4 +1,5 @@
 declare('CharacterDialog', function() {
+    include('Debug');
     include('Element');
     include('Dialog');
     include('Button');
@@ -22,21 +23,7 @@ declare('CharacterDialog', function() {
         this.statsBackground = undefined;
         this.inventoryBackground = undefined;
 
-        this.headSlot = undefined;
-        this.chestSlot = undefined;
-        this.waistSlot = undefined;
-        this.legSlot = undefined;
-        this.feetSlot = undefined;
-        this.shoulderSlot = undefined;
-        this.wristSlot = undefined;
-        this.armSlot = undefined;
-        this.neckSlot = undefined;
-        this.ring1Slot = undefined;
-        this.ring2Slot = undefined;
-        this.mainHandSlot = undefined;
-        this.offHandSlot = undefined;
-        this.trinket1Slot = undefined;
-        this.trinket2Slot = undefined;
+        this.equipSlots = {};
 
         this.characterInventory = undefined;
 
@@ -75,7 +62,8 @@ declare('CharacterDialog', function() {
         this.inventoryBackground.addClass('characterInventoryBackground');
         this.addManagedChild(this.inventoryBackground);
 
-        this.initEquipmentSlots();
+        // For now we just assume there's only the one player
+        this.initEquipmentSlots(game.player);
 
         this.characterInventory = inventoryControl.create("characterInventory");
         this.characterInventory.storage = game.player.storage;
@@ -101,6 +89,7 @@ declare('CharacterDialog', function() {
         // Update the child components if the window is visible
         this.updateInventory(gameTime);
         this.updateStats(gameTime);
+        this.updateEquipment(gameTime, game.player);
 
         return true;
     };
@@ -210,33 +199,36 @@ declare('CharacterDialog', function() {
                 this.statElements[category].push({id: stat.id, header: statHeader, value: statElement, button: statButton});
             }
         }
-    }
+    };
 
-    CharacterDialog.prototype.initEquipmentSlots = function() {
-        this.headSlot = this.createEquipSlot('equipSlotHead');
-        this.chestSlot = this.createEquipSlot('equipSlotChest');
-        this.waistSlot = this.createEquipSlot('equipSlotWaist');
-        this.legSlot = this.createEquipSlot('equipSlotLegs');
-        this.feetSlot = this.createEquipSlot('equipSlotFeet');
-        this.shoulderSlot = this.createEquipSlot('equipSlotShoulder');
-        this.wristSlot = this.createEquipSlot('equipSlotWrist');
-        this.armSlot = this.createEquipSlot('equipSlotArms');
-        this.neckSlot = this.createEquipSlot('equipSlotNeck');
-        this.ring1Slot = this.createEquipSlot('equipSlotRing1');
-        this.ring2Slot = this.createEquipSlot('equipSlotRing2');
-        this.mainHandSlot = this.createEquipSlot('equipSlotMainHand');
-        this.offHandSlot = this.createEquipSlot('equipSlotOffHand');
-        this.trinket1Slot = this.createEquipSlot('equipSlotTrinket1');
-        this.trinket2Slot = this.createEquipSlot('equipSlotTrinket2');
-    }
+    CharacterDialog.prototype.initEquipmentSlots = function(actor) {
+        for (var type in actor.equipmentSlots) {
+            debug.logDebug("CreateEquipSlot: " + type);
+            this.equipSlots[type] = this.createEquipSlot('equipSlot_' + type.replace('|', "_"));
+        }
+    };
 
     CharacterDialog.prototype.createEquipSlot = function(id) {
         var slot = inventorySlotControl.create(this.id + id);
         slot.init(this.equipBackground);
         slot.addClass(id);
         return slot;
-    }
+    };
 
+    CharacterDialog.prototype.updateEquipment = function(gameTime, actor) {
+        for (var type in actor.equipmentSlots) {
+            var item = actor.getEquippedItem(type);
+            var slot = {id: undefined, item: undefined, count: 0};
+            if(item !== undefined) {
+                slot.id = item.id;
+                slot.item = item;
+                slot.count = 1;
+            }
+
+            this.equipSlots[type].setSlot(slot);
+            this.equipSlots[type].update(gameTime);
+        }
+    };
 
     var surrogate = function(){};
     surrogate.prototype = CharacterDialog.prototype;
