@@ -21,6 +21,7 @@ declare('InventorySlotControl', function() {
 
         this.slotChanged = true;
         this.slot = undefined;
+        this.slotItemId = undefined;
 
         this.iconControl = undefined;
         this.countControl = undefined;
@@ -52,6 +53,14 @@ declare('InventorySlotControl', function() {
     InventorySlotControl.prototype.update = function(gameTime) {
         if(this.elementUpdate(gameTime) !== true) {
             return false;
+        }
+
+        // Check if the item in the slot has changed
+        if(this.slot !== undefined) {
+            if(this.slotItemId !== this.slot.id) {
+                this.slotChanged = true;
+                this.slotItemId = this.slot.id;
+            }
         }
 
         if(this.slotChanged === true) {
@@ -87,6 +96,7 @@ declare('InventorySlotControl', function() {
             }
 
             this.slot = slot;
+            this.slotItemId = slot.id;
             this.slotChanged = true;
         }
     };

@@ -7,6 +7,7 @@ declare('ItemTooltip', function() {
     include('GameData');
     include('StaticData');
     include('ItemUtils');
+    include('StatUtils');
 
     var nextId = 0;
 
@@ -138,7 +139,21 @@ declare('ItemTooltip', function() {
     };
 
     ItemTooltip.prototype.getStatContent = function(item) {
-        return "STAT - TODO";
+        var defaultStats = {};
+        statUtils.initStats(defaultStats, false);
+        var actualStats = {};
+        for(var stat in item.stats) {
+            if(defaultStats[stat] !== item.stats[stat]) {
+                actualStats[stat] = item.stats[stat];
+            }
+        }
+
+        // Todo: Have to make this more refined and format based on type
+        var result = "";
+        for(stat in actualStats) {
+            result += "<div class=\"itemTooltipStatText\">+{0} {1}</div>".format(actualStats[stat], stat);
+        }
+        return result;
     };
 
     ItemTooltip.prototype.buildTooltipBottomArea = function(item, idSuffix, bottomPanel) {

@@ -32,6 +32,11 @@
     width: 100%;
 }
 
+.itemTooltipStatText {
+    include: globalTextFont;
+    include: globalColorWhite;
+}
+
 .itemTooltipSellValueLabel {
     include: globalTextFont;
     include: globalColorWhite;

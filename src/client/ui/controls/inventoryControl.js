@@ -28,6 +28,8 @@ declare('InventoryControl', function() {
 
         this.elementSize = undefined;
 
+        this.storage = undefined;
+
         this.rows = [];
         this.slots = [];
     }

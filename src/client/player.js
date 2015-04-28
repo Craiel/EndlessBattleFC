@@ -71,7 +71,7 @@ declare('Player', function () {
         this.addEquipmentSlot(gameData.ItemSlots.feet, staticData.EquipSlotFeet);
         this.addEquipmentSlot(gameData.ItemSlots.shoulder, staticData.EquipSlotShoulder);
         this.addEquipmentSlot(gameData.ItemSlots.wrist, staticData.EquipSlotWrist);
-        this.addEquipmentSlot(gameData.ItemSlots.hand, staticData.EquipSlotHands);
+        this.addEquipmentSlot(gameData.ItemSlots.hands, staticData.EquipSlotHands);
         this.addEquipmentSlot(gameData.ItemSlots.neck, staticData.EquipSlotNeck);
         this.addEquipmentSlot(gameData.ItemSlots.ring, staticData.EquipSlotRing1);
         this.addEquipmentSlot(gameData.ItemSlots.ring, staticData.EquipSlotRing2);

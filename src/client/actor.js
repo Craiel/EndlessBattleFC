@@ -187,6 +187,14 @@ declare('Actor', function () {
             stats = this.getStatLists();
         }
 
+        // Collect the stats of the equipped items
+        for (var type in this.equipmentSlots) {
+            var item = this.equipmentSlots[type].getItem();
+            if(item !== undefined) {
+                stats.push(item.stats);
+            }
+        }
+
         stats.splice(0, 0, this.getBaseStats());
         this.actorStats = statUtils.mergeStats(stats);
         this.statsChanged = false;
@@ -282,6 +290,7 @@ declare('Actor', function () {
             this.giveItem(currentItem);
         }
 
+        this.statsChanged = true;
         return true;
     };
 
