@@ -92,7 +92,7 @@ declare('ItemIcon', function() {
         var style = {'background-repeat': 'no-repeat', 'background-size': '70% 70%', 'background-position': "center"};
 
         if(baseType === undefined) {
-            style['background-image'] = undefined;
+            style['background-image'] = "none";
         } else {
             style['background-image'] = itemUtils.getItemIconUrl(baseType, type);
         }

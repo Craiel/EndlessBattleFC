@@ -8,6 +8,7 @@ declare('Item', function() {
 
         this.id = id;
 
+        this.level = undefined;
         this.name = undefined;
         this.rarity = undefined;
         this.slot = undefined;

@@ -288,12 +288,12 @@ declare('Element', function() {
 
     UIElement.prototype.setOnClick = function(target) {
         assert.isDefined(target);
-        this._mainDiv.click({ target: target, self: this }, function(event) { event.data.target(event.data.self); });
+        this._mainDiv.click({ target: target, self: this }, function(event) { event.data.target(event.data.self, event); });
     };
 
     UIElement.prototype.setOnDoubleClick = function(target) {
         assert.isDefined(target);
-        this._mainDiv.dblclick({ target: target, self: this }, function(event) { event.data.target(event.data.self); });
+        this._mainDiv.dblclick({ target: target, self: this }, function(event) { event.data.target(event.data.self, event); });
     };
 
     UIElement.prototype.setKeyPress = function(code, callback) {

@@ -146,7 +146,7 @@ declare('Game', function() {
     };
 
     Game.prototype.gainRandomItem = function() {
-        item = this.generateRandomItem();
+        item = this.generateRandomItem(this.player.level);
         this.gainItem(item, staticData.ItemSourceUnknown);
     }
 
@@ -248,7 +248,7 @@ declare('Game', function() {
 
         // For now just flat chance of 15% to spawn an item
         if(Math.random() <= 0.15) {
-            item = this.generateRandomItem();
+            item = this.generateRandomItem(monster.level);
             this.gainItem(item, staticData.ItemSourceMonster);
         }
 
@@ -333,30 +333,52 @@ declare('Game', function() {
     // ---------------------------------------------------------------------------
     // item functions
     // ---------------------------------------------------------------------------
-    Game.prototype.generateRandomItem = function() {
-        var test = generatorItem.generate(this.player.getLevel());
-        return test;
+    Game.prototype.generateRandomItem = function(level) {
+        return generatorItem.generate(level);
     };
 
-    Game.prototype.handleSlotAction = function(mode, slot) {
+    Game.prototype.handleSlotSellAction = function(mode, slot) {
         var item = slot.item;
         assert.isDefined(item);
 
         switch(mode) {
             case staticData.InventoryModePlayer: {
 
-                debug.logDebug("PlayerInventory Slot Action Received");
+                debug.logDebug("PlayerInventory Slot Sell Action Received");
                 if(item !== undefined && item.slot !== undefined) {
-                    this.handlePlayerSlotEquipAction(mode, item);
+                    this.handlePlayerSlotSellAction(mode, item);
                 } else {
-                    debug.logWarning("HandleSlotAction for Non-Equip Item");
+                    debug.logWarning("handleSlotSellAction for Non-Equip Item");
                 }
 
                 break;
             }
 
             default: {
-                debug.logWarning("HandleSlotAction not implemented for " + mode);
+                debug.logWarning("handleSlotSellAction not implemented for " + mode);
+            }
+        }
+    };
+
+    Game.prototype.handleSlotEquipAction = function(mode, slot) {
+        var item = slot.item;
+        assert.isDefined(item);
+
+        switch(mode) {
+            case staticData.InventoryModePlayer: {
+
+                debug.logDebug("PlayerInventory Slot Equip Action Received");
+                if(item !== undefined && item.slot !== undefined) {
+                    this.handlePlayerSlotEquipAction(mode, item);
+                } else {
+                    debug.logWarning("handleSlotEquipAction for Non-Equip Item");
+                }
+
+                break;
+            }
+
+            default: {
+                debug.logWarning("handleSlotEquipAction not implemented for " + mode);
             }
         }
     };
@@ -373,6 +395,12 @@ declare('Game', function() {
 
         debug.logDebug("Calling Player EquipItem() for item " + item.id);
         this.player.equipItem(item, targetSlot);
+    };
+
+    Game.prototype.handlePlayerSlotSellAction = function(mode, item) {
+        this.player.takeItem(item, 1);
+        game.gainGold(item.stats.gold, staticData.GoldSourceItemSale);
+        console.log("Sold Item {0} for {1} gold".format(item.name, item.stats.gold));
     };
 
     Game.prototype.getTargetSlotForItem = function(item) {

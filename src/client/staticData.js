@@ -21,6 +21,7 @@ declare('StaticData', function () {
 
         this.GoldSourceMonster = 0;
         this.GoldSourceMercenary = 1;
+        this.GoldSourceItemSale = 2;
 
         this.ItemSourceUnknown = 0;
         this.ItemSourceMonster = 1;

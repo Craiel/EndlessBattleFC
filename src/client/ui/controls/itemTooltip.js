@@ -143,6 +143,10 @@ declare('ItemTooltip', function() {
         statUtils.initStats(defaultStats, false);
         var actualStats = {};
         for(var stat in item.stats) {
+            if(stat === gameData.StatDefinition.gold.id) {
+                continue;
+            }
+
             if(defaultStats[stat] !== item.stats[stat]) {
                 actualStats[stat] = item.stats[stat];
             }
@@ -151,7 +155,13 @@ declare('ItemTooltip', function() {
         // Todo: Have to make this more refined and format based on type
         var result = "";
         for(stat in actualStats) {
-            result += "<div class=\"itemTooltipStatText\">+{0} {1}</div>".format(actualStats[stat], stat);
+            var value = actualStats[stat];
+            if(gameData.StatDefinition[stat].isMultiplier === true) {
+                value = Math.floor((value - 1) * 100);
+            }
+
+            var formattedValue = gameData.StatDefinition[stat].displayValue.format(value);
+            result += "<div class=\"itemTooltipStatText\">+{0} {1}</div>".format(formattedValue, gameData.StatDefinition[stat].displayHeader);
         }
         return result;
     };

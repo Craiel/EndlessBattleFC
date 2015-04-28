@@ -1,5 +1,6 @@
 declare('InventoryControl', function() {
     include('Assert');
+    include('Debug');
     include('Element');
     include('Panel');
     include('StaticData');
@@ -125,6 +126,7 @@ declare('InventoryControl', function() {
                 slot.setSize({x: slotSize, y: slotSize});
                 slot.setPosition({x: column * slotFullSize, y: 0});
                 slot.setOnDoubleClick(this.onSlotDoubleClick);
+                slot.setOnClick(this.onSlotClick);
                 this.slots.push(slot);
                 slotCounter++;
 
@@ -145,10 +147,17 @@ declare('InventoryControl', function() {
         return Math.floor(Math.sqrt(surface)) - 1;
     };
 
-    InventoryControl.prototype.onSlotDoubleClick = function(slotElement)
+    InventoryControl.prototype.onSlotDoubleClick = function(slotElement, event)
     {
         if(slotElement.slot !== undefined) {
-            game.handleSlotAction(this.self.parent.mode, slotElement.slot)
+            game.handleSlotEquipAction(this.self.parent.mode, slotElement.slot);
+        }
+    };
+
+    InventoryControl.prototype.onSlotClick = function(slotElement, event)
+    {
+        if(event.shiftKey === true) {
+            game.handleSlotSellAction(this.self.parent.mode, slotElement.slot);
         }
     };
 

@@ -40,28 +40,33 @@ declare('GeneratorItem', function () {
     };
 
     GeneratorItem.prototype.generate = function(level) {
+        debug.logDebug("GenerateItem: " + level);
+
         var itemData = item.create(this.getNextItemId());
         statUtils.initStats(itemData.stats, false);
+        itemData.level = level;
 
         // Find out which slot we are generating for
         var slot = coreUtils.pickRandomProperty(gameData.ItemSlots);
         itemData.slot = slot.id;
         if(itemData.slot === "weapon") {
             // We are generating weapons
-            this.generateWeapon(level, itemData);
+            this.generateWeapon(itemData);
         } else {
             // We are generating armor
-            this.generateArmor(level, itemData);
+            this.generateArmor(itemData);
         }
 
         var prefix = coreUtils.pickRandomProperty(gameData.ItemPrefix);
         var suffix = coreUtils.pickRandomProperty(gameData.ItemSuffix);
         itemData.name = prefix +" " + itemData.type.id + " " + suffix;
 
+        this.adjustItemPrice(itemData);
+
         return itemData;
     };
 
-    GeneratorItem.prototype.generateWeapon = function(level, itemData) {
+    GeneratorItem.prototype.generateWeapon = function(itemData) {
         // Generate the rarity first
         itemData.rarity = this.getItemRarity();
         itemData.baseType = coreUtils.pickRandomProperty(gameData.WeaponTypes);
@@ -79,12 +84,12 @@ declare('GeneratorItem', function () {
             }
 
             default: {
-                this.generateDynamicItemStats(level, itemData);
+                this.generateDynamicItemStats(itemData);
             }
         }
     };
 
-    GeneratorItem.prototype.generateArmor = function(level, itemData) {
+    GeneratorItem.prototype.generateArmor = function(itemData) {
         // Generate the rarity first
         itemData.rarity = this.getItemRarity();
         itemData.baseType = gameData.ArmorTypes[itemData.slot];
@@ -102,18 +107,18 @@ declare('GeneratorItem', function () {
             }
 
             default: {
-                this.generateDynamicItemStats(level, itemData);
+                this.generateDynamicItemStats(itemData);
             }
         }
     };
 
-    GeneratorItem.prototype.generateDynamicItemStats = function(level, itemData) {
+    GeneratorItem.prototype.generateDynamicItemStats = function(itemData) {
         // Determine if we are adding sockets and calculate the secondary stats
         var slot = gameData.ItemSlots[itemData.slot];
         var socketCount = this.getSocketCount(slot.maxSockets, itemData.rarity.socketRolls);
         var secondaryStatRolls = itemData.rarity.secondaryStatRolls - socketCount;
 
-        var stats = this.getItemStats(level, secondaryStatRolls, itemData.rarity.multiplier);
+        var stats = this.getItemStats(itemData.level, secondaryStatRolls, itemData.rarity.multiplier);
         statUtils.doMergeStats(stats, itemData.stats);
     };
 
@@ -141,6 +146,25 @@ declare('GeneratorItem', function () {
         }
 
         return stats;
+    };
+
+    GeneratorItem.prototype.adjustItemPrice = function(itemData) {
+        var defaultStats = {};
+        statUtils.initStats(defaultStats, false);
+
+        var basePrice = this.getStatValue(itemData.level, 1.01);
+        var multiplier = 1.0;
+
+        for(var stat in itemData.stats) {
+            if(defaultStats[stat] !== itemData.stats[stat]) {
+                var statMultiplier = gameData.StatDefinition[stat].valueMultiplier;
+                if(statMultiplier !== undefined) {
+                    multiplier += statMultiplier;
+                }
+            }
+        }
+
+        itemData.stats.gold = Math.floor(basePrice * multiplier);
     };
 
     GeneratorItem.prototype.getSocketCount = function(maxSockets, socketRolls) {
@@ -181,7 +205,7 @@ declare('GeneratorItem', function () {
         }
 
         return rarity;
-    }
+    };
 
     GeneratorItem.prototype.rebuildLookupData = function() {
         this.rarityList.length = 0;
@@ -192,11 +216,11 @@ declare('GeneratorItem', function () {
         }
 
         this.rarityList.sort(this.sortItemRarity);
-    }
+    };
 
     GeneratorItem.prototype.sortItemRarity = function(a, b) {
         return a.dropChance > b.dropChance;
-    }
+    };
 
     return new GeneratorItem();
 
