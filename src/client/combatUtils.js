@@ -28,17 +28,9 @@ declare('CombatUtils', function () {
         targetActor.modifyStat(gameData.StatDefinition.hp.id, -hit.damageTotal);
     }
 
-    CombatUtils.prototype.resolveCombat = function(sourceActor, targetActor) {
-        // Todo: Abilities etc, probably not here though
-        /*var ability = gameData.Abilities.basic.id;
-        var sourceAbility = sourceActor.getAbility(ability);
-        var sourceCooldown = sourceActor.getAbilityCooldown(ability);
-        var targetAbility = targetActor.getAbility(ability);
-        var targetCooldown = targetActor.getAbilityCooldown(ability);
+    CombatUtils.prototype.resolveCombat = function(sourceActor, targetActor, ability) {
 
-        console.log(sourceAbility + "." + sourceCooldown);*/
-
-        var hit = this.computeHit(sourceActor);
+        var hit = this.computeHit(sourceActor, ability);
         hit.sourceActorName = sourceActor.getName();
         hit.targetActorName = targetActor.getName();
 

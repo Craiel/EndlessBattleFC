@@ -56,7 +56,7 @@ declare('Actor', function () {
 
         // Add the basic attack ability to the actor, this everyone will have
         this.addAbility(gameData.Abilities.basic.id);
-    }
+    };
 
     Actor.prototype.componentUpdate = Actor.prototype.update;
     Actor.prototype.update = function(gameTime) {
@@ -80,18 +80,18 @@ declare('Actor', function () {
         }
 
         return true;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // getters / setters
     // ---------------------------------------------------------------------------
     Actor.prototype.getName = function() {
         return this.name;
-    }
+    };
 
     Actor.prototype.getLevel = function() {
         return this.level;
-    }
+    };
 
     // ---------------------------------------------------------------------------
     // Ability functions
@@ -104,15 +104,25 @@ declare('Actor', function () {
 
         this.abilitySet[key] = gameData.Abilities[key];
         this.abilityCooldown[key] = 0;
-    }
+    };
 
     Actor.prototype.getAbility = function(key) {
         return this.abilitySet[key];
-    }
+    };
 
     Actor.prototype.getAbilityCooldown = function(key) {
         return this.abilityCooldown[key];
-    }
+    };
+
+    Actor.prototype.triggerAbilityCooldown = function(key, gameTime) {
+        assert.isDefined(this.abilitySet[key]);
+
+        this.abilityCooldown[cooldown] = 60 / this.abilitySet[key].ppm;
+    };
+
+    Actor.prototype.getAbilities = function() {
+        return this.abilitySet;
+    };
 
     // ---------------------------------------------------------------------------
     // Item functions
@@ -163,7 +173,7 @@ declare('Actor', function () {
         }
 
         return this.actorStats[stat];
-    }
+    };
 
     Actor.prototype.getBaseStat = function(stat) {
         if(this.getBaseStats()[stat] === undefined) {
@@ -171,15 +181,15 @@ declare('Actor', function () {
         }
 
         return this.getBaseStats()[stat];
-    }
+    };
 
     Actor.prototype.setStat = function(stat, value) {
         this.statsChanged = statUtils.doSetStat(stat, value, this.getBaseStats());
-    }
+    };
 
     Actor.prototype.modifyStat = function(stat, value) {
         this.statsChanged = statUtils.doModifyStat(stat, value, this.getBaseStats());
-    }
+    };
 
     Actor.prototype.computeActorStats = function() {
         var stats = [];
@@ -198,23 +208,23 @@ declare('Actor', function () {
         stats.splice(0, 0, this.getBaseStats());
         this.actorStats = statUtils.mergeStats(stats);
         this.statsChanged = false;
-    }
+    };
 
     Actor.prototype.getHitChance = function() {
         return this.getRatingValue(gameData.StatDefinition.hitRate.id, gameData.StatDefinition.hitRateMult.id, this.hitChanceMin, this.hitChanceMax, this.baseRatingMultiplier);
-    }
+    };
 
     Actor.prototype.getCritChance = function() {
         return this.getRatingValue(gameData.StatDefinition.critRate.id, gameData.StatDefinition.critRateMult.id, this.critChanceMin, this.critChanceMax, this.baseRatingMultiplier);
-    }
+    };
 
     Actor.prototype.getEvadeChance = function() {
         return this.getRatingValue(gameData.StatDefinition.evaRate.id, gameData.StatDefinition.evaRateMult.id, this.evadeChanceMin, this.evadeChanceMax, this.baseRatingMultiplier);
-    }
+    };
 
     Actor.prototype.getArmorDmgReduction = function() {
         return this.getRatingValue(gameData.StatDefinition.armor.id, gameData.StatDefinition.armorMult.id, 0, this.armorReductionMax, this.armorRatingMultiplier);
-    }
+    };
 
     Actor.prototype.getRatingValue = function(ratingStat, ratingMultStat, min, max, multiplier) {
         var requiredRating = coreUtils.getSigma(this.getLevel()) * multiplier;

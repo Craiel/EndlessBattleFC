@@ -13,6 +13,7 @@ declare('Game', function() {
     include('StatUtils');
     include('CombatUtils');
     include('EventAggregate');
+    include('CombatSystem');
 
     Game.prototype = component.prototype();
     Game.prototype.$super = parent;
@@ -61,6 +62,7 @@ declare('Game', function() {
         statUtils.init();
         generatorMonster.init();
         generatorItem.init();
+        combatSystem.init(this);
 
         this.player.init();
 
@@ -85,6 +87,8 @@ declare('Game', function() {
 
         // Update misc components
         this.updateAutoSave(gameTime);
+
+        combatSystem.update(gameTime);
 
         return true;
     };
@@ -213,6 +217,10 @@ declare('Game', function() {
     // ---------------------------------------------------------------------------
     // monster functions
     // ---------------------------------------------------------------------------
+    Game.prototype.getMonsters = function() {
+        return this.monsters;
+    };
+
     Game.prototype.updateMonsters = function(gameTime) {
         var aliveMonsters = 0;
         for(var key in this.monsters) {
@@ -319,6 +327,10 @@ declare('Game', function() {
         this.inBattle = false;
 
         this.despawnMonsters();
+    };
+
+    Game.prototype.getInCombat = function() {
+        return this.inBattle;
     };
 
     Game.prototype.attack = function() {
