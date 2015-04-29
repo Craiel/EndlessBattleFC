@@ -68,7 +68,7 @@ declare('PlayerDialog', function() {
         this.playerHealthBar.show();
         this.experienceBar.show();
 
-        this.setHeaderText(game.player.getName());
+        this.setHeaderText("{0} - Level {1}".format(game.player.getName(), game.player.getLevel()));
 
         var hp = game.player.getStat(gameData.StatDefinition.hp.id);
         var hpMax = game.player.getStat(gameData.StatDefinition.hpMax.id);

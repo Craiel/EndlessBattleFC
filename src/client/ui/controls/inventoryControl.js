@@ -6,6 +6,7 @@ declare('InventoryControl', function() {
     include('StaticData');
     include('InventorySlotControl');
     include('Game');
+    include('EventAggregate');
 
     InventoryControl.prototype = element.prototype();
     InventoryControl.prototype.$super = parent;
@@ -158,6 +159,9 @@ declare('InventoryControl', function() {
     {
         if(event.shiftKey === true) {
             game.handleSlotSellAction(this.self.parent.mode, slotElement.slot);
+
+            // Fire a null tooltip event to clear it out after selling
+            eventAggregate.publish(staticData.EventTooltip , {content: null});
         }
     };
 
