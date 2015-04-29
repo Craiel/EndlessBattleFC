@@ -288,6 +288,11 @@ declare('Player', function () {
 
     Player.prototype.receiveItem = function(item) {
         // Stub for now, but functional:
+        if(this.storage.canAdd(item) !== true) {
+            debug.logError("Could not add item, storage is full or did not accept!");
+            return;
+        }
+        
         this.storage.add(item);
     };
 

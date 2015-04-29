@@ -79,6 +79,13 @@ declare('Actor', function () {
             eventAggregate.publish(staticData.EventCombatDeath, { actorName: this.getName() });
         }
 
+        // Check cooldowns
+        for(var key in this.abilityCooldown) {
+            if(this.abilityCooldown[key] !== undefined && this.abilityCooldown[key] < gameTime.current) {
+                this.abilityCooldown[key] = undefined;
+            }
+        }
+
         return true;
     };
 
@@ -116,8 +123,7 @@ declare('Actor', function () {
 
     Actor.prototype.triggerAbilityCooldown = function(key, gameTime) {
         assert.isDefined(this.abilitySet[key]);
-
-        this.abilityCooldown[cooldown] = 60 / this.abilitySet[key].ppm;
+        this.abilityCooldown[key] = gameTime.current + Math.floor(1000 + (60 / this.abilitySet[key].ppm));
     };
 
     Actor.prototype.getAbilities = function() {
