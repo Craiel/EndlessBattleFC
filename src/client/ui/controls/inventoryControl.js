@@ -152,6 +152,7 @@ declare('InventoryControl', function() {
     {
         if(slotElement.slot !== undefined) {
             game.handleSlotEquipAction(this.self.parent.mode, slotElement.slot);
+            this.self.parent.clearTooltip();
         }
     };
 
@@ -159,10 +160,12 @@ declare('InventoryControl', function() {
     {
         if(event.shiftKey === true) {
             game.handleSlotSellAction(this.self.parent.mode, slotElement.slot);
-
-            // Fire a null tooltip event to clear it out after selling
-            eventAggregate.publish(staticData.EventTooltip , {content: null});
+            this.self.parent.clearTooltip();
         }
+    };
+
+    InventoryControl.prototype.clearTooltip = function() {
+        eventAggregate.publish(staticData.EventTooltip , {content: null});
     };
 
     var surrogate = function(){};

@@ -434,18 +434,32 @@ declare('Game', function() {
         }
     };
 
-    Game.prototype.handlePlayerSlotEquipAction = function(mode, item, targetSlot) {
-        if(targetSlot === undefined) {
-            targetSlot = this.getTargetSlotForItem(item);
+    Game.prototype.handlePlayerSlotEquipAction = function(mode, item, targetSlots) {
+        if(targetSlots === undefined) {
+            targetSlots = this.getTargetSlotsForItem(item);
         }
 
-        if(targetSlot === undefined) {
+        if(targetSlots === undefined || targetSlots.length <= 0) {
             debug.logWarning("Could not determine target slot for item {0}, slot {1}".format(item.name, item.slot));
             return;
         }
 
+        console.log("Available Slots: ");
+        console.log(targetSlots);
+        // By default we try to add it in the first slot, but will look for an empty one as well
+        var target = targetSlots[0];
+        console.log("Targetslot: " + target);
+        for(var i = 0; i < targetSlots.length; i++) {
+            var slot = targetSlots[i];
+            if(this.player.getEquippedItem(targetSlots[i]) === undefined) {
+                console.log("Putting item into slot " + targetSlots[i]);
+                target = targetSlots[i];
+                break;
+            }
+        }
+
         debug.logDebug("Calling Player EquipItem() for item " + item.id);
-        this.player.equipItem(item, targetSlot);
+        this.player.equipItem(item, target);
     };
 
     Game.prototype.handlePlayerSlotSellAction = function(mode, item) {
@@ -454,17 +468,34 @@ declare('Game', function() {
         debug.logInfo("Sold Item {0} for {1} gold".format(item.name, item.stats.gold));
     };
 
-    Game.prototype.getTargetSlotForItem = function(item) {
+    Game.prototype.getTargetSlotsForItem = function(item) {
+        var slots = [];
+
+        // Special handling of weapons
+        if(item.slot === "weapon") {
+            if(item.baseType.allowMainHand === true) {
+                return [staticData.EquipSlotMainHand];
+            }
+
+            if(item.baseType.allowOffHand === true) {
+                return [staticData.EquipSlotOffHand];
+            }
+
+            return slots;
+        }
+
         // Pick a target slot from the item type
+        var slots = [];
+        console.log(item);
         for(var i = 0; i < staticData.EquipSlots.length; i++) {
             var slotType = staticData.EquipSlots[i];
             var segments = slotType.split("|");
             if(segments[0] === item.slot) {
-                return slotType;
+                slots.push(slotType);
             }
         }
 
-        return undefined;
+        return slots;
     };
 
     // ---------------------------------------------------------------------------
