@@ -10,6 +10,8 @@ declare('StaticData', function () {
 
         this.id = "StaticData";
 
+        this.versionFile = "version.txt";
+
         this.dialogDefaultZIndex = 5;
         this.dragZIndex = 100;
 

@@ -16,6 +16,7 @@ declare('UserInterface', function () {
     include('LogDialog');
     include('DebugDialog');
     include('TooltipControl');
+    include('UpdateNoticeControl');
 
     UserInterface.prototype = component.prototype();
     UserInterface.prototype.$super = parent;
@@ -43,6 +44,7 @@ declare('UserInterface', function () {
 
         this.questArea = undefined;
 
+        this.updateNotice = undefined;
         this.tooltip = undefined;
     }
 
@@ -88,10 +90,14 @@ declare('UserInterface', function () {
             this.debugDialog.init();
         }
 
+        this.updateNotice = updateNoticeControl.create();
+        this.updateNotice.init();
+        this.updateNotice.hide();
+
         this.tooltip = tooltipControl.create();
         this.tooltip.init();
 
-        $('#version').text("Version " + game[saveKeys.idnGameVersion]);
+        $('#version').text("Version " + game.getCurrentVersion());
         $('#resetButton').click({game: game}, function(args) { args.data.game.reset(); });
         $('#saveButton').click({game: game}, function(args) { args.data.game.save(); });
     };
@@ -117,6 +123,7 @@ declare('UserInterface', function () {
             this.debugDialog.update(gameTime);
         }
 
+        this.updateUpdateNotice(gameTime);
         this.updateTooltip(gameTime);
 
         return true;
@@ -143,6 +150,18 @@ declare('UserInterface', function () {
     UserInterface.prototype.updateTooltip = function(gameTime) {
         this.tooltip.setMousePosition(this.mousePosition);
         this.tooltip.update(gameTime);
+    };
+
+    UserInterface.prototype.updateUpdateNotice = function(gameTime) {
+        var currentVersion = game.getCurrentVersion();
+        var versionData = game.getVersionCheckData();
+        if(versionData !== undefined && versionData.version > currentVersion) {
+            this.updateNotice.setVersionData(versionData);
+            this.updateNotice.show();
+            return;
+        }
+
+        this.updateNotice.hide();
     };
 
     UserInterface.prototype.updateDialogVisibility = function() {

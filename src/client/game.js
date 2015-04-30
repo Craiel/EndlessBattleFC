@@ -33,6 +33,10 @@ declare('Game', function() {
         this.autoSaveDelay = 30000; // 30s default
         this.autoSaveTime = undefined;
 
+        this.versionCheckDelay = 12000;
+        this.versionCheckTime = undefined;
+        this.versionCheckData = undefined;
+
         this.mercenaryGps = 0;
         this.mercenaryGpsTime = 0;
         this.mercenaryGpsDelay = 1000;
@@ -87,10 +91,22 @@ declare('Game', function() {
 
         // Update misc components
         this.updateAutoSave(gameTime);
+        this.updateVersionCheck(gameTime);
 
         combatSystem.update(gameTime);
 
         return true;
+    };
+
+    // ---------------------------------------------------------------------------
+    // game functions
+    // ---------------------------------------------------------------------------
+    Game.prototype.getCurrentVersion = function() {
+        return this[saveKeys.idnGameVersion];
+    };
+
+    Game.prototype.getVersionCheckData = function() {
+        return this.versionCheckData;
     };
 
     Game.prototype.updateAutoSave = function(gameTime) {
@@ -104,6 +120,30 @@ declare('Game', function() {
             this.save();
             this.autoSaveTime = gameTime.current;
         }
+    };
+
+    Game.prototype.updateVersionCheck = function(gameTime) {
+        if(this.versionCheckTime  === undefined) {
+            // Skip the first auto save cycle
+            this.versionCheckTime = gameTime.current;
+            return;
+        }
+
+        if (gameTime.current > this.versionCheckTime + this.versionCheckDelay) {
+            $.ajax({
+                url : staticData.versionFile,
+                success : this.handleVersionCheckResult(this)
+            });
+
+            this.versionCheckTime = gameTime.current;
+        }
+    };
+
+    Game.prototype.handleVersionCheckResult = function(self) {
+        return function(data, textStatus, jqXHR) {
+            self.versionCheckData = JSON.parse(data);
+            var versionData = JSON.parse(data);
+        };
     };
 
     // ---------------------------------------------------------------------------
@@ -412,7 +452,7 @@ declare('Game', function() {
     Game.prototype.handlePlayerSlotSellAction = function(mode, item) {
         this.player.takeItem(item, 1);
         game.gainGold(item.stats.gold, staticData.GoldSourceItemSale);
-        console.log("Sold Item {0} for {1} gold".format(item.name, item.stats.gold));
+        debug.logInfo("Sold Item {0} for {1} gold".format(item.name, item.stats.gold));
     };
 
     Game.prototype.getTargetSlotForItem = function(item) {

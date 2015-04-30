@@ -1,0 +1,5 @@
+{
+    "version": 0.4,
+    "changeTitle": "Version Check Update",
+    "changeDetails": "Testing the Version update system"
+}

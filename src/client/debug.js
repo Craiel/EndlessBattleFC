@@ -63,6 +63,7 @@ declare('Debug', function () {
     };
 
     Debug.prototype.log = function(level, message, context) {
+        // #IfDebug
         if(this.isActiveContext(context) !== true) {
             return;
         }
@@ -75,6 +76,7 @@ declare('Debug', function () {
         this.entries[level].push(message);
         log.log(message, level);
         eventAggregate.publish(staticData.EventDebugLog, { time: this.currentTime, level: level, context: context, message: message });
+        // #EndIf
     };
 
     Debug.prototype.popMessages = function(level) {

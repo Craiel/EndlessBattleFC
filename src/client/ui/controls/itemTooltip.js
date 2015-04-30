@@ -75,7 +75,6 @@ declare('ItemTooltip', function() {
     // dialog functions
     // ---------------------------------------------------------------------------
     ItemTooltip.prototype.setSlotData = function(slot) {
-        console.log(slot.item);
         assert.isDefined(slot.item, "Item for tooltip was not defined!");
         itemUtils.checkItemIsValid(slot.item);
 
