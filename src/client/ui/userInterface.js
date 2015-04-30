@@ -155,6 +155,7 @@ declare('UserInterface', function () {
     UserInterface.prototype.updateUpdateNotice = function(gameTime) {
         var currentVersion = game.getCurrentVersion();
         var versionData = game.getVersionCheckData();
+
         if(versionData !== undefined && versionData.version > currentVersion) {
             this.updateNotice.setVersionData(versionData);
             this.updateNotice.show();

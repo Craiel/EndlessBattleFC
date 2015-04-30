@@ -142,7 +142,6 @@ declare('Game', function() {
     Game.prototype.handleVersionCheckResult = function(self) {
         return function(data, textStatus, jqXHR) {
             self.versionCheckData = JSON.parse(data);
-            var versionData = JSON.parse(data);
         };
     };
 
