@@ -4,6 +4,8 @@ declare('PlayerDialog', function() {
     include('ProgressBar');
     include('Game');
     include('GameData');
+    include('CurrencyControl');
+    include('StaticData');
 
     PlayerDialog.prototype = dialog.prototype();
     PlayerDialog.prototype.$super = parent;
@@ -20,6 +22,8 @@ declare('PlayerDialog', function() {
         this.playerManaBar = undefined;
         this.experienceTitle = undefined;
         this.experienceBar = undefined;
+
+        this.currencyGoldControl = undefined;
     };
 
     // ---------------------------------------------------------------------------
@@ -56,6 +60,13 @@ declare('PlayerDialog', function() {
         this.experienceBar.setStyle("Purple");
         this.experienceBar.setBackgroundStyle("Back");
         this.addManagedChild(this.experienceBar);
+
+        this.currencyGoldControl = currencyControl.create("currencyGold");
+        this.currencyGoldControl.trackChanges = true;
+        this.currencyGoldControl.init(this.getContentArea());
+        this.currencyGoldControl.setImage(ResImg(iconGold));
+        this.currencyGoldControl.addClass("playerCurrencyGoldControl");
+        this.addManagedChild(this.currencyGoldControl);
     };
 
     PlayerDialog.prototype.dialogUpdate = PlayerDialog.prototype.update;
@@ -84,6 +95,8 @@ declare('PlayerDialog', function() {
         var xp = game.player.getStat(gameData.StatDefinition.xp.id);
         this.experienceBar.setProgress(xp, requiredXP);
         this.experienceBar.setProgressText("{0} / {1}".format(xp, requiredXP));
+
+        this.currencyGoldControl.setValue(game.player.getStat(gameData.StatDefinition.gold.id));
 
         return true;
     }

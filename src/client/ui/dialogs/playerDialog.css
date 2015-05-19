@@ -1,6 +1,6 @@
 .playerDialog {
     width: 300px;
-    height: 150px;
+    height: 200px;
     position: absolute;
     left: 0;
     top: 100px;
@@ -37,4 +37,10 @@
     left: 9px;
     width: calc(100% - 18px);
     height: 18px;
+}
+
+.playerCurrencyGoldControl {
+    top: 100px;
+    left: 9px;
+    width: calc(100% - 18px);
 }

@@ -26,7 +26,6 @@ declare('BattleDialog', function() {
         this.leaveBattleButton = undefined;
         this.battleLevelDownButton = undefined;
         this.battleLevelUpButton = undefined;
-        this.levelUpButton = undefined;
         this.attackButton = undefined;
     };
 
@@ -90,13 +89,6 @@ declare('BattleDialog', function() {
         this.attackButton.init(this.getContentArea());
         this.attackButton.setImages(ResImg(interfaceButtonLongBlue), ResImg(interfaceButtonLongBlueHover), ResImg(iconAttack));
         this.addManagedChild(this.attackButton);
-
-        this.levelUpButton = button.create('levelUpButton');
-        this.levelUpButton.callback = function(obj) { if(game.player.getSkillPoints() > 0) { include('UserInterface'); userInterface.displayLevelUpWindow(); }};
-        this.levelUpButton.init(this.getContentArea());
-        this.levelUpButton.setImages(ResImg(interfaceButtonLongBlue), ResImg(interfaceButtonLongBlueHover));
-        this.levelUpButton.setButtonText("Level Up");
-        this.addManagedChild(this.levelUpButton);
     };
 
     BattleDialog.prototype.dialogUpdate = BattleDialog.prototype.update;
@@ -113,7 +105,6 @@ declare('BattleDialog', function() {
         this.leaveBattleButton.hide();
         this.battleLevelDownButton.hide();
         this.battleLevelUpButton.hide();
-        this.levelUpButton.hide();
         this.attackButton.hide();
 
         // Check the alive state
@@ -126,10 +117,6 @@ declare('BattleDialog', function() {
             var progress = totalResurrectionTime - remainingResurrectionTime;
             this.resurrectionBar.setProgress(progress, totalResurrectionTime);
             this.resurrectionBar.setProgressText("Resurrecting in " + coreUtils.getDurationDisplay(remainingResurrectionTime));
-        }
-
-        if(isAlive === true && game.player.getSkillPoints() > 0) {
-            this.levelUpButton.show();
         }
 
         var currentLevel = game.getBattleLevel();

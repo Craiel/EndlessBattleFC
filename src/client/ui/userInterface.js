@@ -8,7 +8,6 @@ declare('UserInterface', function () {
     include('SystemDialog');
     include('BattleDialog');
     include('PlayerDialog');
-    include('CurrencyDialog');
     include('MercenaryDialog');
     include('InventoryDialog');
     include('QuestDialog');
@@ -30,7 +29,6 @@ declare('UserInterface', function () {
         this.mousePosition = { x: 0, y: 0};
 
         this.playerDialog = undefined;
-        this.currencyDialog = undefined;
         this.systemDialog = undefined;
         this.battleDialog = undefined;
         this.mercenaryDialog = undefined;
@@ -66,9 +64,6 @@ declare('UserInterface', function () {
 
         this.playerDialog = playerDialog.create();
         this.playerDialog.init();
-
-        this.currencyDialog = currencyDialog.create();
-        this.currencyDialog.init();
 
         this.mercenaryDialog = mercenaryDialog.create();
         this.mercenaryDialog.init();
@@ -113,7 +108,6 @@ declare('UserInterface', function () {
         this.systemDialog.update(gameTime);
         this.battleDialog.update(gameTime);
         this.playerDialog.update(gameTime);
-        this.currencyDialog.update(gameTime);
         this.mercenaryDialog.update(gameTime);
         this.inventoryDialog.update(gameTime);
         this.questDialog.update(gameTime);
