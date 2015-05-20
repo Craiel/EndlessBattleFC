@@ -7,34 +7,28 @@
     margin: auto;
 }
 
-.inventoryWindowIcon {
+.systemWindowIcon {
     position: absolute;
     height: 32px;
     width: 32px;
 }
 
-.inventoryWindowButton {
-    include: inventoryWindowIcon;
-    position: relative;
+.characterWindowButton {
+    include: systemWindowIcon;
     left: 9px;
 }
 
-.characterWindowButton {
-    include: inventoryWindowIcon;
+.questWindowButton {
+    include: systemWindowIcon;
     left: 42px;
 }
 
-.questWindowButton {
-    include: inventoryWindowIcon;
+.mercenaryWindowButton {
+    include: systemWindowIcon;
     left: 75px;
 }
 
-.mercenaryWindowButton {
-    include: inventoryWindowIcon;
-    left: 108px;
-}
-
 .upgradeWindowButton {
-    include: inventoryWindowIcon;
-    left: 141px;
+    include: systemWindowIcon;
+    left: 108px;
 }

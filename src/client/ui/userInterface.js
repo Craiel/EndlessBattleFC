@@ -9,7 +9,6 @@ declare('UserInterface', function () {
     include('BattleDialog');
     include('PlayerDialog');
     include('MercenaryDialog');
-    include('InventoryDialog');
     include('QuestDialog');
     include('CharacterDialog');
     include('LogDialog');
@@ -32,7 +31,6 @@ declare('UserInterface', function () {
         this.systemDialog = undefined;
         this.battleDialog = undefined;
         this.mercenaryDialog = undefined;
-        this.inventoryDialog = undefined;
         this.questDialog = undefined;
         this.characterDialog = undefined;
         this.logDialog = undefined;
@@ -67,9 +65,6 @@ declare('UserInterface', function () {
 
         this.mercenaryDialog = mercenaryDialog.create();
         this.mercenaryDialog.init();
-
-        this.inventoryDialog = inventoryDialog.create();
-        this.inventoryDialog.init();
 
         this.questDialog = questDialog.create();
         this.questDialog.init();
@@ -109,7 +104,6 @@ declare('UserInterface', function () {
         this.battleDialog.update(gameTime);
         this.playerDialog.update(gameTime);
         this.mercenaryDialog.update(gameTime);
-        this.inventoryDialog.update(gameTime);
         this.questDialog.update(gameTime);
         this.characterDialog.update(gameTime);
         this.logDialog.update(gameTime);
@@ -161,7 +155,6 @@ declare('UserInterface', function () {
 
     UserInterface.prototype.updateDialogVisibility = function() {
         this.mercenaryDialog.setVisibility(interfaceState.mercenaryWindowShown);
-        this.inventoryDialog.setVisibility(interfaceState.inventoryWindowShown);
         this.questDialog.setVisibility(interfaceState.questWindowShown);
         this.characterDialog.setVisibility(interfaceState.characterWindowShown);
         if(Endless.isDebug === true) {

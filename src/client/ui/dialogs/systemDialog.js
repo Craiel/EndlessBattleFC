@@ -15,7 +15,6 @@ declare('SystemDialog', function() {
 
         this.canClose = false;
 
-        this.inventoryWindowButton = undefined;
         this.characterWindowButton = undefined;
         this.questWindowButton = undefined;
         this.mercenaryWindowButton = undefined;
@@ -30,14 +29,6 @@ declare('SystemDialog', function() {
         this.dialogInit(parent, attributes);
 
         this.setHeaderText("System Menu");
-
-        this.inventoryWindowButton = button.create("inventoryWindowButton");
-        this.inventoryWindowButton.callback = function(obj) { obj.data.arg.toggleInventoryWindow(); };
-        this.inventoryWindowButton.callbackArgument = this;
-        this.inventoryWindowButton.init(this.getContentArea());
-        this.inventoryWindowButton.setImages(ResImg(iconBackpack), ResImg(iconBackpackHover), undefined);
-        this.inventoryWindowButton.setTooltip("Inventory");
-        this.addManagedChild(this.inventoryWindowButton);
 
         this.characterWindowButton = button.create("characterWindowButton");
         this.characterWindowButton.callback = function(obj) { obj.data.arg.toggleCharacterWindow(); };
@@ -84,10 +75,6 @@ declare('SystemDialog', function() {
     // ---------------------------------------------------------------------------
     // dialog functions
     // ---------------------------------------------------------------------------
-    SystemDialog.prototype.toggleInventoryWindow = function() {
-        interfaceState.inventoryWindowShown = !interfaceState.inventoryWindowShown;
-    };
-
     SystemDialog.prototype.toggleCharacterWindow = function() {
         interfaceState.characterWindowShown = !interfaceState.characterWindowShown;
     };

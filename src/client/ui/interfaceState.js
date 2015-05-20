@@ -5,7 +5,6 @@ declare('InterfaceState', function() {
         this.mercenaryWindowShown = false;
         this.upgradeWindowShown = false;
         this.questWindowShown = false;
-        this.inventoryWindowShown = false;
         this.updatesWindowShown = false;
         this.statsWindowShown = false;
         this.optionsWindowShown = false;
