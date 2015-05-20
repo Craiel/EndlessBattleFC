@@ -57,7 +57,7 @@ declare('MercenaryDialog', function() {
             var control = this.mercenaryControls[key];
             control.setMercenaryCost(game.getMercenaryCost(key));
             control.setMercenaryCount(game.getMercenaryCount(key));
-            control.setPlayerGold(game.player.getStat(gameData.StatDefinition.gold.id));
+            control.setCurrentCurrency(game.player.getStat(gameData.StatDefinition.fame.id));
             control.update(gameTime);
         }
 

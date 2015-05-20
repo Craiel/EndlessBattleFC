@@ -180,6 +180,18 @@ declare('Game', function() {
         }
     };
 
+    Game.prototype.gainFame = function(value, source) {
+        if(isNaN(value) || value === undefined) {
+            return;
+        }
+
+        // Todo: Apply modifiers etc
+        this.player.modifyStat(gameData.StatDefinition.fame.id, value);
+
+        // Report fame gain from sources that qualify
+        eventAggregate.publish(staticData.EventFameGain, {value: value});
+    };
+
     Game.prototype.gainItem = function(item, source) {
         if(item === undefined) {
             return;
@@ -212,11 +224,11 @@ declare('Game', function() {
     // ---------------------------------------------------------------------------
     Game.prototype.purchaseMercenary = function(key) {
         var cost = this.getMercenaryCost(key);
-        if(this.player.getStat(gameData.StatDefinition.gold.id) < cost) {
+        if(this.player.getStat(gameData.StatDefinition.fame.id) < cost) {
             return;
         }
 
-        this.player.modifyStat(gameData.StatDefinition.gold.id, -cost);
+        this.player.modifyStat(gameData.StatDefinition.fame.id, -cost);
 
         if(this[saveKeys.idnMercenariesPurchased][key] === undefined) {
             this[saveKeys.idnMercenariesPurchased][key] = 0;
@@ -228,7 +240,7 @@ declare('Game', function() {
 
     Game.prototype.getMercenaryCost = function(key) {
         var owned = this.getMercenaryCount(key);
-        return Math.floor(gameData.Mercenaries[key].gold * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
+        return Math.floor(gameData.Mercenaries[key].fame * Math.pow(staticData.mercenaryPriceIncreaseFactor, owned));
     };
 
     Game.prototype.getMercenaryCount = function(key) {
@@ -301,6 +313,9 @@ declare('Game', function() {
 
         this.gainXp(xp, staticData.XpSourceMonster);
         this.gainGold(gold, staticData.GoldSourceMonster);
+
+        // We only give 1 fame per kill for now
+        this.gainFame(1, staticData.FameSourceMonster);
 
         this.monsters[position].remove();
         this.monsters[position] = undefined;

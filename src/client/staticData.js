@@ -28,6 +28,8 @@ declare('StaticData', function () {
         this.ItemSourceUnknown = 0;
         this.ItemSourceMonster = 1;
 
+        this.FameSourceMonster = 0;
+
         this.EventCombatHit = "eventCombatHit";
         this.EventCombatDeath = "eventCombatDeath";
         this.EventXpGain = "eventXpGain";
@@ -35,6 +37,7 @@ declare('StaticData', function () {
         this.EventItemGain = "eventItemGain";
         this.EventTooltip = "eventTooltip";
         this.EventDebugLog = "eventDebugLog";
+        this.EventFameGain = "eventFameGain";
 
         this.InventoryModeUnknown = "inventoryUnknown";
         this.InventoryModePlayer = "inventoryPlayer";

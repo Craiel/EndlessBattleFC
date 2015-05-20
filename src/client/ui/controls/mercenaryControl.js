@@ -57,7 +57,7 @@ declare('MercenaryControl', function() {
         this.currencyElement.init(this);
         this.currencyElement.addClass("mercenaryCurrency");
         this.currencyElement.addClass("globalNoDrag");
-        this.currencyElement.setImage(ResImg(iconGold));
+        this.currencyElement.setImage(ResImg(iconFame));
         this.addManagedChild(this.currencyElement);
 
         this.countElement = element.create(this.id + "Count");
@@ -113,7 +113,7 @@ declare('MercenaryControl', function() {
         this.countElement.setText(value);
     }
 
-    MercenaryControl.prototype.setPlayerGold = function(value) {
+    MercenaryControl.prototype.setCurrentCurrency = function(value) {
         this.currencyElement.setOwnedValue(value);
     }
 

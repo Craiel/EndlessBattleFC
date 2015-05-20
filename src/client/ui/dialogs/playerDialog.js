@@ -24,6 +24,7 @@ declare('PlayerDialog', function() {
         this.experienceBar = undefined;
 
         this.currencyGoldControl = undefined;
+        this.currencyFameControl = undefined;
     };
 
     // ---------------------------------------------------------------------------
@@ -67,6 +68,13 @@ declare('PlayerDialog', function() {
         this.currencyGoldControl.setImage(ResImg(iconGold));
         this.currencyGoldControl.addClass("playerCurrencyGoldControl");
         this.addManagedChild(this.currencyGoldControl);
+
+        this.currencyFameControl = currencyControl.create("currencyFame");
+        this.currencyFameControl.trackChanges = true;
+        this.currencyFameControl.init(this.getContentArea());
+        this.currencyFameControl.setImage(ResImg(iconFame));
+        this.currencyFameControl.addClass("playerCurrencyFameControl");
+        this.addManagedChild(this.currencyFameControl);
     };
 
     PlayerDialog.prototype.dialogUpdate = PlayerDialog.prototype.update;
@@ -97,6 +105,7 @@ declare('PlayerDialog', function() {
         this.experienceBar.setProgressText("{0} / {1}".format(xp, requiredXP));
 
         this.currencyGoldControl.setValue(game.player.getStat(gameData.StatDefinition.gold.id));
+        this.currencyFameControl.setValue(game.player.getStat(gameData.StatDefinition.fame.id));
 
         return true;
     }
