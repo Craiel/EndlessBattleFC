@@ -449,6 +449,15 @@ declare('Game', function() {
         }
     };
 
+    Game.prototype.handlePlayerSlotUnequipAction = function(slot) {
+        debug.logDebug("PlayerUnequip Slot Equip Action Received");
+        if(slot !== undefined) {
+            //this.handlePlayerSlotUnequipAction(mode, item);
+        } else {
+            debug.logWarning("handleSlotUnequipAction for Non-Equip Item");
+        }
+    };
+
     Game.prototype.handlePlayerSlotEquipAction = function(mode, item, targetSlots) {
         if(targetSlots === undefined) {
             targetSlots = this.getTargetSlotsForItem(item);

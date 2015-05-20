@@ -212,7 +212,28 @@ declare('CharacterDialog', function() {
         var slot = inventorySlotControl.create(this.id + id);
         slot.init(this.equipBackground);
         slot.addClass(id);
+        slot.setOnDoubleClick(this.onEquipSlotDoubleClick);
+        slot.setOnClick(this.onSlotClick);
         return slot;
+    };
+
+    CharacterDialog.prototype.onEquipSlotDoubleClick = function(slotElement, event)
+    {
+        // Todo: Check parent relations
+        //staticData.InventoryModeUnknown
+        if(slotElement.slot !== undefined) {
+            game.handlePlayerSlotUnequipAction(slotElement.slot);
+            //this.self.parent.clearTooltip();
+        }
+    };
+
+    CharacterDialog.prototype.onSlotClick = function(slotElement, event)
+    {
+        // We don't really want to sell directly from the equipped inventory...
+        /*if(event.shiftKey === true) {
+            game.handleSlotSellAction(this.self.parent.mode, slotElement.slot);
+            this.self.parent.clearTooltip();
+        }*/
     };
 
     CharacterDialog.prototype.updateEquipment = function(gameTime, actor) {
