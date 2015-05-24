@@ -1,5 +1,5 @@
 body {
-    background-image: url("includes/images/background.png");
+
     font-family: 'Gentium Book Basic';
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
@@ -290,6 +290,7 @@ body:hover {
 .powerShard {
     background: url("includes/images/powerShard.png");
     background-size: 100%;
+    background-repeat: no-repeat;
     position: absolute;
 }
 
@@ -745,7 +746,7 @@ windowArea {
 #mercenariesWindow {
     background-image: url("includes/images/upgradesWindow2.png");
     position: absolute;
-    right: 50px;
+    right: 247px;
     top: 10px;
     width: 187px;
     height: 391px;
@@ -819,7 +820,7 @@ windowArea {
 #upgradesWindow {
     background-image: url("includes/images/upgradesWindow2.png");
     position: absolute;
-    right: 50px;
+    right: 247px;
     top: 10px;
     width: 187px;
     height: 391px;
@@ -1147,54 +1148,6 @@ windowArea {
     font-size: 16px;
 }
 
-#tutorialArea {
-    position: absolute;
-    width: 415px;
-    height: 190px;
-}
-#tutorialWindow {
-    background: url("includes/images/tutorialWindow.png");
-    position: absolute;
-    width: 285px;
-    height: 190px;
-}
-#tutorialTitle {
-    font-size: 20px;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    position: absolute;
-    left: 3px;
-    top: 3px;
-    width: 279px;
-    height: 22px;
-    line-height: 22px;
-    text-align: center;
-}
-#tutorialDescription {
-    font-size: 16px;
-    color: #fff; 
-    position: absolute;
-    left: 4px;
-    top: 29px;
-    width: 277px;
-    height: 134px;
-}
-#tutorialContinueButton {
-    font-size: 20px;
-    text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    color: #fff; 
-    position: absolute;
-    right: 6px;
-    top: 165px;
-    line-height: 22px;
-}
-.tutorialRightArrow {
-    background: url("includes/images/tutorialRightArrow.png");
-    position: absolute;
-    width: 100px;
-    height: 57px;
-}
-
 #button:hover
 {
     cursor: pointer;
@@ -1217,15 +1170,6 @@ windowArea {
 .textParticle {
     font-size: 16px;
 }
-
-
-
-
-#checkboxWhite { left: 4px; }
-#checkboxGreen { left: 18px; }
-#checkboxBlue { left: 32px; }
-#checkboxPurple { left: 46px; }
-#checkboxOrange { left: 60px; }
 
 .checkbox {
     position: absolute;

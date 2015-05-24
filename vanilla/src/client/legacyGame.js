@@ -131,31 +131,34 @@ function Player() {
 
     // Stat calculation functions
     this.getMaxHealth = function getMaxHealth() {
-        return Math.floor((this.getStrength() * 5) + (((this.baseStats.health + this.levelUpBonuses.health + this.baseItemBonuses.health) * (((game.mercenaryManager.getCommanderHealthPercentBonus() * game.mercenaryManager.commandersOwned) / 100) + 1)) * ((this.powerShards / 100) + 1)));
+        return Math.floor((this.getStrength() * 5) + (((this.baseStats.health + this.levelUpBonuses.health + this.baseItemBonuses.health) * (((legacyGame.mercenaryManager.getCommanderHealthPercentBonus() * legacyGame.mercenaryManager.commandersOwned) / 100) + 1)) * legacyGame.getPowerShardBonus()));
     }
     this.getHp5 = function getHp5() {
-        return Math.floor(this.getStamina() + (((this.baseStats.hp5 + this.levelUpBonuses.hp5 + this.chosenLevelUpBonuses.hp5 + this.baseItemBonuses.hp5) * ((game.mercenaryManager.getClericHp5PercentBonus() * game.mercenaryManager.clericsOwned) / 100 + 1)) * ((this.powerShards / 100) + 1)));
+        return Math.floor(this.getStamina() + (((this.baseStats.hp5 + this.levelUpBonuses.hp5 + this.chosenLevelUpBonuses.hp5 + this.baseItemBonuses.hp5) * ((legacyGame.mercenaryManager.getClericHp5PercentBonus() * legacyGame.mercenaryManager.clericsOwned) / 100 + 1)) * legacyGame.getPowerShardBonus()));
+    }
+    this.getDamageBonusMultiplier = function() {
+        return (this.getDamageBonus() + 100) / 100;
     }
     this.getMinDamage = function getMinDamage() {
         // If the player has a weapon equipped then remove the 1 unarmed damage
-        if (game.equipment.weapon() != null) {
-            return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage - 1) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+        if (legacyGame.equipment.weapon() != null) {
+            return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage - 1) * this.getDamageBonusMultiplier()) * this.buffs.getDamageMultiplier()) * legacyGame.getPowerShardBonus());
         }
         else {
-            return Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+            return this.baseStats.strength + Math.floor((((this.baseStats.minDamage + this.baseItemBonuses.minDamage) * this.getDamageBonusMultiplier()) * this.buffs.getDamageMultiplier()) * legacyGame.getPowerShardBonus());
         }
     }
     this.getMaxDamage = function getMaxDamage() {
         // If the player has a weapon equipped then remove the 2 unarmed damage
-        if (game.equipment.weapon() != null) {
-            return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage - 1) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+        if (legacyGame.equipment.weapon() != null) {
+            return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage - 1) * this.getDamageBonusMultiplier()) * this.buffs.getDamageMultiplier()) * legacyGame.getPowerShardBonus());
         }
         else {
-            return Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage) * ((this.getDamageBonus() + 100) / 100)) * this.buffs.getDamageMultiplier()) * ((this.powerShards / 100) + 1));
+            return this.baseStats.strength + Math.floor((((this.baseStats.maxDamage + this.baseItemBonuses.maxDamage) * this.getDamageBonusMultiplier()) * this.buffs.getDamageMultiplier()) * legacyGame.getPowerShardBonus());
         }
     }
     this.getDamageBonus = function getDamageBonus() {
-        return this.getStrength() + ((this.baseStats.damageBonus + this.chosenLevelUpBonuses.damageBonus + this.baseItemBonuses.damageBonus + (game.mercenaryManager.getMageDamagePercentBonus() * game.mercenaryManager.magesOwned)) * ((this.powerShards / 100) + 1));
+        return this.getStrength() + ((this.baseStats.damageBonus + this.chosenLevelUpBonuses.damageBonus + this.baseItemBonuses.damageBonus + (legacyGame.mercenaryManager.getMageDamagePercentBonus() * legacyGame.mercenaryManager.magesOwned)) * legacyGame.getPowerShardBonus());
     }
     this.getAverageDamage = function getAverageDamage() {
         var average = this.getMaxDamage() - this.getMinDamage();
@@ -163,34 +166,34 @@ function Player() {
         return average;
     }
     this.getArmour = function getArmour() {
-        return Math.floor(((this.baseStats.armour + this.chosenLevelUpBonuses.armour + this.baseItemBonuses.armour) * ((this.getStamina() / 100) + 1)) * ((this.powerShards / 100) + 1));
+        return Math.floor(((this.baseStats.armour + this.chosenLevelUpBonuses.armour + this.baseItemBonuses.armour) * ((this.getStamina() / 100) + 1)) * legacyGame.getPowerShardBonus());
     }
     this.getEvasion = function getEvasion() {
-        return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (game.mercenaryManager.getAssassinEvasionPercentBonus() * game.mercenaryManager.assassinsOwned)) / 100) + 1)) * ((this.powerShards / 100) + 1));
+        return Math.floor(((this.baseStats.evasion + this.chosenLevelUpBonuses.evasion + this.baseItemBonuses.evasion) * (((this.getAgility() + (legacyGame.mercenaryManager.getAssassinEvasionPercentBonus() * legacyGame.mercenaryManager.assassinsOwned)) / 100) + 1)) * legacyGame.getPowerShardBonus());
     }
     this.getStrength = function getStrength() {
-        return Math.floor((this.baseStats.strength + this.chosenLevelUpBonuses.strength + this.baseItemBonuses.strength) * ((this.powerShards / 100) + 1));
+        return Math.floor((this.baseStats.strength + this.chosenLevelUpBonuses.strength + this.baseItemBonuses.strength) * legacyGame.getPowerShardBonus());
     }
     this.getStamina = function getStamina() {
-        return Math.floor((this.baseStats.stamina + this.chosenLevelUpBonuses.stamina + this.baseItemBonuses.stamina) * ((this.powerShards / 100) + 1));
+        return Math.floor((this.baseStats.stamina + this.chosenLevelUpBonuses.stamina + this.baseItemBonuses.stamina) * legacyGame.getPowerShardBonus());
     }
     this.getAgility = function getAgility() {
-        return Math.floor((this.baseStats.agility + this.chosenLevelUpBonuses.agility + this.baseItemBonuses.agility) * ((this.powerShards / 100) + 1));
+        return Math.floor((this.baseStats.agility + this.chosenLevelUpBonuses.agility + this.baseItemBonuses.agility) * legacyGame.getPowerShardBonus());
     }
     this.getCritChance = function getCritChance() {
-        return ((this.baseStats.critChance + this.chosenLevelUpBonuses.critChance + this.baseItemBonuses.critChance)) * ((this.powerShards / 100) + 1);
+        return ((this.baseStats.critChance + this.chosenLevelUpBonuses.critChance + this.baseItemBonuses.critChance)) * legacyGame.getPowerShardBonus();
     }
     this.getCritDamage = function getCritDamage() {
-        return ((this.baseStats.critDamage + this.chosenLevelUpBonuses.critDamage + this.baseItemBonuses.critDamage) + (this.getAgility() * 0.2) + (game.mercenaryManager.getWarlockCritDamageBonus() * game.mercenaryManager.warlocksOwned)) * ((this.powerShards / 100) + 1);
+        return ((this.baseStats.critDamage + this.chosenLevelUpBonuses.critDamage + this.baseItemBonuses.critDamage) + (this.getAgility() * 0.2) + (legacyGame.mercenaryManager.getWarlockCritDamageBonus() * legacyGame.mercenaryManager.warlocksOwned)) * legacyGame.getPowerShardBonus();
     }
     this.getItemRarity = function getItemRarity() {
-        return (this.baseStats.itemRarity + this.chosenLevelUpBonuses.itemRarity + this.baseItemBonuses.itemRarity) * ((this.powerShards / 100) + 1);
+        return (this.baseStats.itemRarity + this.chosenLevelUpBonuses.itemRarity + this.baseItemBonuses.itemRarity) * legacyGame.getPowerShardBonus();
     }
     this.getGoldGain = function getGoldGain() {
-        return (this.baseStats.goldGain + this.chosenLevelUpBonuses.goldGain + this.baseItemBonuses.goldGain) * ((this.powerShards / 100) + 1);
+        return (this.baseStats.goldGain + this.chosenLevelUpBonuses.goldGain + this.baseItemBonuses.goldGain) * legacyGame.getPowerShardBonus();
     }
     this.getExperienceGain = function getExperienceGain() {
-        return (this.baseStats.experienceGain + this.chosenLevelUpBonuses.experienceGain + this.baseItemBonuses.experienceGain) * ((this.powerShards / 100) + 1);
+        return (this.baseStats.experienceGain + this.chosenLevelUpBonuses.experienceGain + this.baseItemBonuses.experienceGain) * legacyGame.getPowerShardBonus();
     }
 
     // Get the power of a certain special effect
@@ -225,11 +228,6 @@ function Player() {
         // Alter the player's skill points
         this.skillPoints--;
         this.skillPointsSpent++;
-
-        // Show the Level Up button if there are still skill points remaining
-        if (this.skillPoints > 0) {
-            $("#levelUpButton").show();
-        }
     }
 
     // Use all the abilities the player has
@@ -240,7 +238,7 @@ function Player() {
         // REND
         if (this.abilities.getRendLevel() > 0) {
             // Apply the bleed effect to the monster
-            game.monster.addDebuff(DebuffType.BLEED, this.abilities.getRendDamage(0), this.abilities.rendDuration);
+            legacyGame.monster.addDebuff(DebuffType.BLEED, this.abilities.getRendDamage(0), this.abilities.rendDuration);
         }
         // REJUVENATING STRIKES
         if (this.abilities.getRejuvenatingStrikesLevel() > 0) {
@@ -257,10 +255,10 @@ function Player() {
                 criticalHappened = true;
             }
             // Damage the monster
-            game.monster.takeDamage(damage, criticalHappened, false);
+            game.monsterTakeDamage(damage, criticalHappened, false);
 
             // Apply the chill effect to the monster
-            game.monster.addDebuff(DebuffType.CHILL, 0, this.abilities.iceBladeChillDuration);
+            legacyGame.monster.addDebuff(DebuffType.CHILL, 0, this.abilities.iceBladeChillDuration);
         }
         // FIRE BLADE
         if (this.abilities.getFireBladeLevel() > 0) {
@@ -272,10 +270,10 @@ function Player() {
                 criticalHappened = true;
             }
             // Damage the monster
-            game.monster.takeDamage(damage, criticalHappened, false);
+            game.monsterTakeDamage(damage, criticalHappened, false);
 
             // Apply the burn effect to the monster
-            game.monster.addDebuff(DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
+            legacyGame.monster.addDebuff(DebuffType.BURN, this.abilities.getFireBladeBurnDamage(0), this.abilities.fireBladeBurnDuration);
         }
     }
 
@@ -297,46 +295,17 @@ function Player() {
         }
     }
 
-    // Gain an amount of gold, this can include bonuses from gold gain and it also can not
-    this.gainGold = function gainGold(amount, includeBonuses) {
-        if (includeBonuses) {
-            amount *= 1 + (this.getGoldGain() / 100);
-            amount *= this.buffs.getGoldMultiplier();
-            this.gold += amount;
-            this.lastGoldGained = amount;
-        }
-        else {
-            this.gold += amount;
-            this.lastGoldGained = amount;
-        }
-        game.stats.goldEarned += this.lastGoldGained;
-    }
-
-    // Gain an amount of experience, this can include bonuses from exp gain and it also can not
-    this.gainExperience = function gainExperience(amount, includeBonuses) {
-        if (includeBonuses) {
-            amount *= 1 + (this.getExperienceGain() / 100);
-            amount *= this.buffs.getExperienceMultiplier();
-            this.experience += amount;
-            this.lastExperienceGained = amount;
-        }
-        else {
-            this.experience += amount;
-            this.lastExperienceGained = amount;
-        }
-        game.stats.experienceEarned += this.lastExperienceGained;
-
+    this.checkLevelUp = function() {
         // Give the player a level if enough experience was gained
         while (this.experience >= this.experienceRequired) {
             this.experience -= this.experienceRequired;
             this.level++;
             this.skillPoints++;
             this.experienceRequired = Math.ceil(Sigma(this.level * 2) * Math.pow(1.05, this.level) + this.baseExperienceRequired);
-            $("#levelUpButton").show();
 
             // If this number is not divisible by 5 then add a random stat upgrade
             if (this.level % 5 != 0) {
-                game.statUpgradesManager.addRandomUpgrades(this.level);
+                legacyGame.statUpgradesManager.addRandomUpgrades(this.level);
             }
 
             // Add stats to the player for leveling up
@@ -355,7 +324,7 @@ function Player() {
         // Take the damage
         this.health -= newDamage;
         this.lastDamageTaken = newDamage;
-        game.stats.damageTaken += newDamage;
+        legacyGame.stats.damageTaken += newDamage;
 
         // Reflect a percentage of the damage if the player has any Barrier effects
         var reflectAmount = 0;
@@ -365,7 +334,7 @@ function Player() {
         }
         reflectAmount = this.lastDamageTaken * (reflectAmount / 100);
         if (reflectAmount > 0) {
-            game.monster.takeDamage(reflectAmount, false, false);
+            game.monsterTakeDamage(reflectAmount, false, false);
         }
 
         // Check if the player is dead
@@ -374,7 +343,8 @@ function Player() {
         }
 
         // Create the monster's damage particle
-        game.particleManager.createParticle(newDamage, ParticleType.MONSTER_DAMAGE);
+        legacyGame.particleManager.createParticle(newDamage, ParticleType.MONSTER_DAMAGE);
+        return newDamage;
     }
 
     // Calculate the amount of reduction granted by armour
@@ -509,7 +479,7 @@ function Player() {
         // If the player is bleeding
         if (this.debuffs.bleeding) {
             // Cause the player to take damage
-            this.takeDamage(this.debuffs.bleedDamage);
+            game.playerTakeDamage(this.debuffs.bleedDamage);
             // Increase the duration of this debuff
             this.debuffs.bleedDuration++;
             // If the debuff has expired then remove it
@@ -544,7 +514,7 @@ function Player() {
         // If the player is burning
         if (this.debuffs.burning) {
             // Cause the player to take damage
-            this.takeDamage(this.debuffs.burningDamage);
+            game.playerTakeDamage(this.debuffs.burningDamage);
             // Increase the duration of this debuff
             this.debuffs.burningDuration++;
             // If the debuff has expired then remove it
@@ -630,9 +600,6 @@ function Player() {
 
             this.skillPointsSpent = parseInt(localStorage.playerSkillPointsSpent);
             this.skillPoints = parseInt(localStorage.playerSkillPoints);
-            if (this.skillPoints > 0) {
-                $("#levelUpButton").show();
-            }
             this.abilities.load();
             this.changeAttack(localStorage.attackType);
 
@@ -668,7 +635,7 @@ function Abilities() {
     this.baseRendLevel = 0;
     this.getRendLevel = function getRendLevel() {
         var level = this.baseRendLevel;
-        var effects = game.player.getEffectsOfType(EffectType.WOUNDING);
+        var effects = legacyGame.player.getEffectsOfType(EffectType.WOUNDING);
         for (var x = 0; x < effects.length; x++) {
             level += effects[x].value;
         }
@@ -676,26 +643,26 @@ function Abilities() {
     }
     this.rendDuration = 5;
     this.getRendDamage = function getRendDamage(levelBonus) {
-        return Math.ceil((game.player.getAverageDamage() / 17) + (game.player.level / 1.5)) * (this.getRendLevel() + levelBonus);
+        return Math.ceil((legacyGame.player.getAverageDamage() / 17) + (legacyGame.player.level / 1.5)) * (this.getRendLevel() + levelBonus);
     }
 
     this.baseRejuvenatingStrikesLevel = 0;
     this.getRejuvenatingStrikesLevel = function getRejuvenatingStrikesLevel() {
         var level = this.baseRejuvenatingStrikesLevel;
-        var effects = game.player.getEffectsOfType(EffectType.CURING);
+        var effects = legacyGame.player.getEffectsOfType(EffectType.CURING);
         for (var x = 0; x < effects.length; x++) {
             level += effects[x].value;
         }
         return level;
     }
     this.getRejuvenatingStrikesHealAmount = function getRejuvenatingStrikesHealAmount(levelBonus) {
-        return Math.ceil((game.player.getAverageDamage() / 54) + (game.player.level / 2)) * (this.getRejuvenatingStrikesLevel() + levelBonus);
+        return Math.ceil((legacyGame.player.getAverageDamage() / 54) + (legacyGame.player.level / 2)) * (this.getRejuvenatingStrikesLevel() + levelBonus);
     }
 
     this.baseIceBladeLevel = 0;
     this.getIceBladeLevel = function getIceBladeLevel() {
         var level = this.baseIceBladeLevel;
-        var effects = game.player.getEffectsOfType(EffectType.FROST_SHARDS);
+        var effects = legacyGame.player.getEffectsOfType(EffectType.FROST_SHARDS);
         for (var x = 0; x < effects.length; x++) {
             level += effects[x].value;
         }
@@ -703,13 +670,13 @@ function Abilities() {
     }
     this.iceBladeChillDuration = 5;
     this.getIceBladeDamage = function getIceBladeDamage(levelBonus) {
-        return Math.ceil((game.player.getAverageDamage() / 12) + game.player.level) * (this.getIceBladeLevel() + levelBonus);
+        return Math.ceil((legacyGame.player.getAverageDamage() / 12) + legacyGame.player.level) * (this.getIceBladeLevel() + levelBonus);
     }
 
     this.baseFireBladeLevel = 0;
     this.getFireBladeLevel = function getFireBladeLevel() {
         var level = this.baseFireBladeLevel;
-        var effects = game.player.getEffectsOfType(EffectType.FLAME_IMBUED);
+        var effects = legacyGame.player.getEffectsOfType(EffectType.FLAME_IMBUED);
         for (var x = 0; x < effects.length; x++) {
             level += effects[x].value;
         }
@@ -717,10 +684,10 @@ function Abilities() {
     }
     this.fireBladeBurnDuration = 5;
     this.getFireBladeDamage = function getFireBladeDamage(levelBonus) {
-        return Math.ceil((game.player.getAverageDamage() / 12) + game.player.level) * (this.getFireBladeLevel() + levelBonus);
+        return Math.ceil((legacyGame.player.getAverageDamage() / 12) + legacyGame.player.level) * (this.getFireBladeLevel() + levelBonus);
     }
     this.getFireBladeBurnDamage = function getFireBladeBurnDamage(levelBonus) {
-        return Math.ceil((game.player.getAverageDamage() / 9) + game.player.level) * (this.getFireBladeLevel() + levelBonus);
+        return Math.ceil((legacyGame.player.getAverageDamage() / 9) + legacyGame.player.level) * (this.getFireBladeLevel() + levelBonus);
     }
 
     this.save = function save() {
@@ -800,43 +767,43 @@ function StatUpgradesManager() {
             switch (upgradeIds[x]) {
                 case 0:
                     upgradeTypes.push(StatUpgradeType.DAMAGE);
-                    upgradeAmounts.push(game.statGenerator.getRandomDamageBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomDamageBonus(level));
                     break;
                 case 1:
                     upgradeTypes.push(StatUpgradeType.STRENGTH);
-                    upgradeAmounts.push(game.statGenerator.getRandomStrengthBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomStrengthBonus(level));
                     break;
                 case 2:
                     upgradeTypes.push(StatUpgradeType.AGILITY);
-                    upgradeAmounts.push(game.statGenerator.getRandomAgilityBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomAgilityBonus(level));
                     break;
                 case 3:
                     upgradeTypes.push(StatUpgradeType.STAMINA);
-                    upgradeAmounts.push(game.statGenerator.getRandomStaminaBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomStaminaBonus(level));
                     break;
                 case 4:
                     upgradeTypes.push(StatUpgradeType.ARMOUR);
-                    upgradeAmounts.push(game.statGenerator.getRandomArmourBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomArmourBonus(level));
                     break;
                 case 5:
                     upgradeTypes.push(StatUpgradeType.HP5);
-                    upgradeAmounts.push(game.statGenerator.getRandomHp5Bonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomHp5Bonus(level));
                     break;
                 case 6:
                     upgradeTypes.push(StatUpgradeType.CRIT_DAMAGE);
-                    upgradeAmounts.push(game.statGenerator.getRandomCritDamageBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomCritDamageBonus(level));
                     break;
                 case 7:
                     upgradeTypes.push(StatUpgradeType.ITEM_RARITY);
-                    upgradeAmounts.push(game.statGenerator.getRandomItemRarityBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomItemRarityBonus(level));
                     break;
                 case 8:
                     upgradeTypes.push(StatUpgradeType.GOLD_GAIN);
-                    upgradeAmounts.push(game.statGenerator.getRandomGoldGainBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomGoldGainBonus(level));
                     break;
                 case 9:
                     upgradeTypes.push(StatUpgradeType.EXPERIENCE_GAIN);
-                    upgradeAmounts.push(game.statGenerator.getRandomExperienceGainBonus(level));
+                    upgradeAmounts.push(legacyGame.statGenerator.getRandomExperienceGainBonus(level));
                     break;
             }
         }
@@ -987,40 +954,40 @@ function mercenaryManager() {
 
     // Get the amount that a mercenary's special effect gives
     this.getClericHp5PercentBonus = function getClericHp5PercentBonus() {
-        return this.baseClericHp5PercentBonus + (this.clericHp5PercentUpgradeValue * game.upgradeManager.clericSpecialUpgradesPurchased);
+        return this.baseClericHp5PercentBonus + (this.clericHp5PercentUpgradeValue * legacyGame.upgradeManager.clericSpecialUpgradesPurchased);
     }
     this.getCommanderHealthPercentBonus = function getCommanderHealthPercentBonus() {
-        return this.baseCommanderHealthPercentBonus + (this.commanderHealthPercentUpgradeValue * game.upgradeManager.commanderSpecialUpgradesPurchased);
+        return this.baseCommanderHealthPercentBonus + (this.commanderHealthPercentUpgradeValue * legacyGame.upgradeManager.commanderSpecialUpgradesPurchased);
     }
     this.getMageDamagePercentBonus = function getMageDamagePercentBonus() {
-        return this.baseMageDamagePercentBonus + (this.mageDamagePercentUpgradeValue * game.upgradeManager.mageSpecialUpgradesPurchased);
+        return this.baseMageDamagePercentBonus + (this.mageDamagePercentUpgradeValue * legacyGame.upgradeManager.mageSpecialUpgradesPurchased);
     }
     this.getAssassinEvasionPercentBonus = function getAssassinEvasionPercentBonus() {
-        return this.baseAssassinEvasionPercentBonus + (this.assassinEvasionPercentUpgradeValue * game.upgradeManager.assassinSpecialUpgradesPurchased);
+        return this.baseAssassinEvasionPercentBonus + (this.assassinEvasionPercentUpgradeValue * legacyGame.upgradeManager.assassinSpecialUpgradesPurchased);
     }
     this.getWarlockCritDamageBonus = function getWarlockCritDamageBonus() {
-        return this.baseWarlockCritDamageBonus + (this.warlockCritDamageUpgradeValue * game.upgradeManager.warlockSpecialUpgradesPurchased);
+        return this.baseWarlockCritDamageBonus + (this.warlockCritDamageUpgradeValue * legacyGame.upgradeManager.warlockSpecialUpgradesPurchased);
     }
 
     this.getMercenaryBaseGps = function getMercenaryBaseGps(type) {
         switch (type) {
             case MercenaryType.FOOTMAN:
-                return (this.baseFootmanGps * Math.pow(2, game.upgradeManager.footmanUpgradesPurchased));
+                return (this.baseFootmanGps * Math.pow(2, legacyGame.upgradeManager.footmanUpgradesPurchased));
                 break;
             case MercenaryType.CLERIC:
-                return (this.baseClericGps * Math.pow(2, game.upgradeManager.clericUpgradesPurchased));
+                return (this.baseClericGps * Math.pow(2, legacyGame.upgradeManager.clericUpgradesPurchased));
                 break;
             case MercenaryType.COMMANDER:
-                return (this.baseCommanderGps * Math.pow(2, game.upgradeManager.commanderUpgradesPurchased));
+                return (this.baseCommanderGps * Math.pow(2, legacyGame.upgradeManager.commanderUpgradesPurchased));
                 break;
             case MercenaryType.MAGE:
-                return (this.baseMageGps * Math.pow(2, game.upgradeManager.mageUpgradesPurchased));
+                return (this.baseMageGps * Math.pow(2, legacyGame.upgradeManager.mageUpgradesPurchased));
                 break;
             case MercenaryType.ASSASSIN:
-                return (this.baseAssassinGps * Math.pow(2, game.upgradeManager.assassinUpgradesPurchased));
+                return (this.baseAssassinGps * Math.pow(2, legacyGame.upgradeManager.assassinUpgradesPurchased));
                 break;
             case MercenaryType.WARLOCK:
-                return (this.baseWarlockGps * Math.pow(2, game.upgradeManager.warlockUpgradesPurchased));
+                return (this.baseWarlockGps * Math.pow(2, legacyGame.upgradeManager.warlockUpgradesPurchased));
                 break;
         }
     }
@@ -1029,22 +996,22 @@ function mercenaryManager() {
     this.getMercenariesGps = function getMercenariesGps(type) {
         switch (type) {
             case MercenaryType.FOOTMAN:
-                return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
+                return (this.getMercenaryBaseGps(type) * ((legacyGame.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * legacyGame.player.buffs.getGoldMultiplier();
                 break;
             case MercenaryType.CLERIC:
-                return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
+                return (this.getMercenaryBaseGps(type) * ((legacyGame.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * legacyGame.player.buffs.getGoldMultiplier();
                 break;
             case MercenaryType.COMMANDER:
-                return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
+                return (this.getMercenaryBaseGps(type) * ((legacyGame.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * legacyGame.player.buffs.getGoldMultiplier();
                 break;
             case MercenaryType.MAGE:
-                return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
+                return (this.getMercenaryBaseGps(type) * ((legacyGame.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * legacyGame.player.buffs.getGoldMultiplier();
                 break;
             case MercenaryType.ASSASSIN:
-                return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
+                return (this.getMercenaryBaseGps(type) * ((legacyGame.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * legacyGame.player.buffs.getGoldMultiplier();
                 break;
             case MercenaryType.WARLOCK:
-                return (this.getMercenaryBaseGps(type) * ((game.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * game.player.buffs.getGoldMultiplier();
+                return (this.getMercenaryBaseGps(type) * ((legacyGame.player.getGoldGain() / 100) + 1) * ((100 - this.gpsReduction) / 100)) * legacyGame.player.buffs.getGoldMultiplier();
                 break;
         }
     }
@@ -1076,8 +1043,6 @@ function mercenaryManager() {
 
             if (this.gpsReductionTimeRemaining <= 0) {
                 this.gpsReduction = 0;
-
-                $("#gps").css('color', '#ffd800');
             }
         }
 
@@ -1091,18 +1056,11 @@ function mercenaryManager() {
             }
 
             for (var x = 0; x < this.mercenaries.length; x++) {
-                game.player.gainGold(((this.getMercenariesGps(this.mercenaries[x].type) / 1000) * gpsUpdateDelay) * gainTimes, false);
-                game.stats.goldFromMercenaries += game.player.lastGoldGained;
+                var amount = ((this.getMercenariesGps(this.mercenaries[x].type) / 1000) * gpsUpdateDelay) * gainTimes;
+                game.gainGold(amount, false, true);
+                legacyGame.stats.goldFromMercenaries += legacyGame.player.lastGoldGained;
             }
         }
-
-        gps = this.getGps();
-
-        // Update the gps amount on the screen and reposition it
-        var element = document.getElementById('gps');
-        element.innerHTML = gps + 'gps';
-        var leftReduction = element.scrollWidth / 2;
-        $("#gps").css('left', (($("#gameArea").width() / 2) - leftReduction) + 'px');
     }
 
     // Purchasing a new Footman
@@ -1117,9 +1075,9 @@ function mercenaryManager() {
             case MercenaryType.WARLOCK: price = this.warlockPrice; break;
         }
         // Can the player afford it?
-        if (game.player.gold >= price) {
+        if (legacyGame.player.gold >= price) {
             // Remove the gold from the player
-            game.player.gold -= price;
+            legacyGame.player.gold -= price;
 
             // Add the mercenary
             this.addMercenary(type);
@@ -1177,8 +1135,6 @@ function mercenaryManager() {
     this.addGpsReduction = function addGpsReduction(percentage, duration) {
         this.gpsReduction = percentage;
         this.gpsReductionTimeRemaining = (duration * 1000);
-
-        $("#gps").css('color', '#ff0000');
     }
 
     this.save = function save() {
@@ -1305,10 +1261,9 @@ function Equipment() {
             // If the slot is empty then just equip it
             if (this.slots[newSlotIndex] == null) {
                 this.slots[newSlotIndex] = item;
-                $(".equipItem" + (newSlotIndex + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
-                game.inventory.removeItem(currentSlotIndex);
+                legacyGame.inventory.removeItem(currentSlotIndex);
 
-                game.player.gainItemsStats(item);
+                legacyGame.player.gainItemsStats(item);
             }
             // If there is already an item in this slot, then swap the two items
             else {
@@ -1317,44 +1272,43 @@ function Equipment() {
 
                 // Change the equipped item
                 this.slots[newSlotIndex] = item;
-                $(".equipItem" + (newSlotIndex + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
-                game.player.gainItemsStats(item);
+                legacyGame.player.gainItemsStats(item);
 
                 // Change the inventory item
-                game.inventory.addItemToSlot(savedItem, currentSlotIndex);
-                game.player.loseItemsStats(savedItem);
+                legacyGame.inventory.addItemToSlot(savedItem, currentSlotIndex);
+                legacyGame.player.loseItemsStats(savedItem);
             }
 
             // If there is a new item in the old slot, change the tooltip
-            if (game.inventory.slots[currentSlotIndex] != null) {
-                var item = game.inventory.slots[currentSlotIndex];
+            if (legacyGame.inventory.slots[currentSlotIndex] != null) {
+                var item = legacyGame.inventory.slots[currentSlotIndex];
                 // If there is already an item equipped in the slot this item would go into, then get that item
                 // Get the slot Id if there is an item equipped
                 var equippedSlot = -1
                 var twoTrinkets = false;
                 switch (item.type) {
-                    case ItemType.HELM:         if (game.equipment.helm() != null) { equippedSlot = 0 } break;
-                    case ItemType.SHOULDERS:    if (game.equipment.shoulders() != null) { equippedSlot = 1; } break;
-                    case ItemType.CHEST:        if (game.equipment.chest() != null) { equippedSlot = 2; } break;
-                    case ItemType.LEGS:         if (game.equipment.legs() != null) { equippedSlot = 3; } break;
-                    case ItemType.WEAPON:       if (game.equipment.weapon() != null) { equippedSlot = 4; } break;
-                    case ItemType.GLOVES:       if (game.equipment.gloves() != null) { equippedSlot = 5; } break;
-                    case ItemType.BOOTS:        if (game.equipment.boots() != null) { equippedSlot = 6; } break;
-                    case ItemType.TRINKET:      if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
+                    case ItemType.HELM:         if (legacyGame.equipment.helm() != null) { equippedSlot = 0 } break;
+                    case ItemType.SHOULDERS:    if (legacyGame.equipment.shoulders() != null) { equippedSlot = 1; } break;
+                    case ItemType.CHEST:        if (legacyGame.equipment.chest() != null) { equippedSlot = 2; } break;
+                    case ItemType.LEGS:         if (legacyGame.equipment.legs() != null) { equippedSlot = 3; } break;
+                    case ItemType.WEAPON:       if (legacyGame.equipment.weapon() != null) { equippedSlot = 4; } break;
+                    case ItemType.GLOVES:       if (legacyGame.equipment.gloves() != null) { equippedSlot = 5; } break;
+                    case ItemType.BOOTS:        if (legacyGame.equipment.boots() != null) { equippedSlot = 6; } break;
+                    case ItemType.TRINKET:      if (legacyGame.equipment.trinket1() != null || legacyGame.equipment.trinket2() != null) {
                                                     equippedSlot = 7;
                                                     // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
-                                                    if (game.equipment.trinket1() != null && game.equipment.trinket2() != null) {
+                                                    if (legacyGame.equipment.trinket1() != null && legacyGame.equipment.trinket2() != null) {
                                                         twoTrinkets = true;
                                                     }
                                                 }
                                                 break;
-                    case ItemType.OFF_HAND:     if (game.equipment.off_hand() != null) { equippedSlot = 9; } break;
+                    case ItemType.OFF_HAND:     if (legacyGame.equipment.off_hand() != null) { equippedSlot = 9; } break;
                 }
-                var item2 = game.equipment.slots[equippedSlot];
+                var item2 = legacyGame.equipment.slots[equippedSlot];
 
                 // If the item type is a trinket and there are two trinkets equipped then we need to display two compare tooltips
                 if (twoTrinkets) {
-                    var item3 = game.equipment.trinket2();
+                    var item3 = legacyGame.equipment.trinket2();
                 }
 
                 // Get the item slot's location
@@ -1362,7 +1316,7 @@ function Equipment() {
                 var rect = slot.getBoundingClientRect();
 
                 // Display the tooltip
-                game.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
+                legacyGame.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
             }
             // Else hide the tooltip
             else {
@@ -1379,35 +1333,35 @@ function Equipment() {
             this.equipItemInSlot(item, 8, itemSlot);
 
             // If there is a new item in the old slot, change the tooltip
-            if (game.inventory.slots[itemSlot] != null) {
-                var item = game.inventory.slots[itemSlot];
+            if (legacyGame.inventory.slots[itemSlot] != null) {
+                var item = legacyGame.inventory.slots[itemSlot];
                 // If there is already an item equipped in the slot this item would go into, then get that item
                 // Get the slot Id if there is an item equipped
                 var equippedSlot = -1
                 var twoTrinkets = false;
                 switch (item.type) {
-                    case ItemType.HELM: if (game.equipment.helm() != null) { equippedSlot = 0 } break;
-                    case ItemType.SHOULDERS: if (game.equipment.shoulders() != null) { equippedSlot = 1; } break;
-                    case ItemType.CHEST: if (game.equipment.chest() != null) { equippedSlot = 2; } break;
-                    case ItemType.LEGS: if (game.equipment.legs() != null) { equippedSlot = 3; } break;
-                    case ItemType.WEAPON: if (game.equipment.weapon() != null) { equippedSlot = 4; } break;
-                    case ItemType.GLOVES: if (game.equipment.gloves() != null) { equippedSlot = 5; } break;
-                    case ItemType.BOOTS: if (game.equipment.boots() != null) { equippedSlot = 6; } break;
-                    case ItemType.TRINKET: if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
+                    case ItemType.HELM: if (legacyGame.equipment.helm() != null) { equippedSlot = 0 } break;
+                    case ItemType.SHOULDERS: if (legacyGame.equipment.shoulders() != null) { equippedSlot = 1; } break;
+                    case ItemType.CHEST: if (legacyGame.equipment.chest() != null) { equippedSlot = 2; } break;
+                    case ItemType.LEGS: if (legacyGame.equipment.legs() != null) { equippedSlot = 3; } break;
+                    case ItemType.WEAPON: if (legacyGame.equipment.weapon() != null) { equippedSlot = 4; } break;
+                    case ItemType.GLOVES: if (legacyGame.equipment.gloves() != null) { equippedSlot = 5; } break;
+                    case ItemType.BOOTS: if (legacyGame.equipment.boots() != null) { equippedSlot = 6; } break;
+                    case ItemType.TRINKET: if (legacyGame.equipment.trinket1() != null || legacyGame.equipment.trinket2() != null) {
                             equippedSlot = 7;
                             // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
-                            if (game.equipment.trinket1() != null && game.equipment.trinket2() != null) {
+                            if (legacyGame.equipment.trinket1() != null && legacyGame.equipment.trinket2() != null) {
                                 twoTrinkets = true;
                             }
                         }
                         break;
-                    case ItemType.OFF_HAND: if (game.equipment.off_hand() != null) { equippedSlot = 9; } break;
+                    case ItemType.OFF_HAND: if (legacyGame.equipment.off_hand() != null) { equippedSlot = 9; } break;
                 }
-                var item2 = game.equipment.slots[equippedSlot];
+                var item2 = legacyGame.equipment.slots[equippedSlot];
 
                 // If the item type is a trinket and there are two trinkets equipped then we need to display two compare tooltips
                 if (twoTrinkets) {
-                    var item3 = game.equipment.trinket2();
+                    var item3 = legacyGame.equipment.trinket2();
                 }
 
                 // Get the item slot's location
@@ -1415,7 +1369,7 @@ function Equipment() {
                 var rect = slot.getBoundingClientRect();
 
                 // Display the tooltip
-                game.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
+                legacyGame.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
             }
             // Else hide the tooltip
             else {
@@ -1447,10 +1401,9 @@ function Equipment() {
             // If the slot is empty then just equip it
             if (this.slots[newSlotIndex] == null) {
                 this.slots[newSlotIndex] = item;
-                $(".equipItem" + (newSlotIndex + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
-                game.inventory.removeItem(currentSlotIndex);
+                legacyGame.inventory.removeItem(currentSlotIndex);
 
-                game.player.gainItemsStats(item);
+                legacyGame.player.gainItemsStats(item);
             }
             // If there is already an item in this slot, then swap the two items
             else {
@@ -1459,28 +1412,26 @@ function Equipment() {
 
                 // Change the equipped item
                 this.slots[newSlotIndex] = item;
-                $(".equipItem" + (newSlotIndex + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
-                game.player.gainItemsStats(item);
+                legacyGame.player.gainItemsStats(item);
 
                 // Change the inventory item
-                game.inventory.addItemToSlot(savedItem, currentSlotIndex);
-                game.player.loseItemsStats(savedItem);
+                legacyGame.inventory.addItemToSlot(savedItem, currentSlotIndex);
+                legacyGame.player.loseItemsStats(savedItem);
             }
         }
     }
 
     this.removeItem = function removeItem(index) {
-        game.player.loseItemsStats(this.slots[index]);
+        legacyGame.player.loseItemsStats(this.slots[index]);
         this.slots[index] = null;
-        $(".equipItem" + (index + 1)).css('background', 'url("includes/images/NULL.png")');
     }
 
     // Unequip an item to the first available slot
     this.unequipItem = function unequipItem(slot) {
         // Find the first available slot
         var newSlot = -1;
-        for (var x = 0; x < game.inventory.slots.length; x++) {
-            if (game.inventory.slots[x] == null) {
+        for (var x = 0; x < legacyGame.inventory.slots.length; x++) {
+            if (legacyGame.inventory.slots[x] == null) {
                 newSlot = x;
                 break;
             }
@@ -1488,18 +1439,18 @@ function Equipment() {
 
         // If there was an available slot; unequip the item
         if (newSlot != -1) {
-            game.inventory.addItemToSlot(this.slots[slot], newSlot);
+            legacyGame.inventory.addItemToSlot(this.slots[slot], newSlot);
             this.removeItem(slot);
         }
     }
 
     // Attempt to remove an item from the equipment into a designated inventory slot
     this.unequipItemToSlot = function unequipItemToSlot(currentSlotIndex, newSlotIndex) {
-        var inventorySlotItem = game.inventory.slots[newSlotIndex];
+        var inventorySlotItem = legacyGame.inventory.slots[newSlotIndex];
 
         // If the inventory slot contains no item, just send the item to it
         if (inventorySlotItem == null) {
-            game.inventory.addItemToSlot(this.slots[currentSlotIndex], newSlotIndex);
+            legacyGame.inventory.addItemToSlot(this.slots[currentSlotIndex], newSlotIndex);
             this.removeItem(currentSlotIndex);
         }
         // Else; check to see if the items are the same type
@@ -1510,12 +1461,11 @@ function Equipment() {
 
             // Change the equipped item
             this.slots[currentSlotIndex] = inventorySlotItem;
-            game.player.gainItemsStats(inventorySlotItem);
-            $(".equipItem" + (currentSlotIndex + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + inventorySlotItem.iconSourceX + 'px ' + inventorySlotItem.iconSourceY + 'px');
+            legacyGame.player.gainItemsStats(inventorySlotItem);
 
             // Change the inventory item
-            game.inventory.addItemToSlot(savedItem, newSlotIndex);
-            game.player.loseItemsStats(savedItem);
+            legacyGame.inventory.addItemToSlot(savedItem, newSlotIndex);
+            legacyGame.player.loseItemsStats(savedItem);
         }
     }
 
@@ -1526,21 +1476,9 @@ function Equipment() {
 
         // Change the first slot item
         this.slots[7] = this.slots[8];
-        if (this.slots[7] != null) {
-            $(".equipItem" + 8).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[7].iconSourceX + 'px ' + this.slots[7].iconSourceY + 'px');
-        }
-        else {
-            $(".equipItem" + 8).css('background', 'url("includes/images/NULL.png")');
-        }
 
         // Change the second slot item
         this.slots[8] = savedItem;
-        if (savedItem != null) {
-            $(".equipItem" + 9).css('background', 'url("includes/images/itemSheet3.png") ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
-        }
-        else {
-            $(".equipItem" + 9).css('background', 'url("includes/images/NULL.png")');
-        }
     }
 
     this.save = function save() {
@@ -1564,24 +1502,6 @@ function Equipment() {
                     }
                 }
             }
-
-            // Display the equipment in the window for all these slots
-            if (localStorage.version != null) {
-                for (var x = 0; x < this.slots.length; x++) {
-                    if (this.slots[x] != null) {
-                        $(".equipItem" + (x + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                    }
-                }
-            }
-            else {
-                for (var x = 0; x < this.slots.length; x++) {
-                    if (this.slots[x] != null) {
-                        this.slots[x].iconSourceX = (this.slots[x].iconSourceX / 4) * 3.5;
-                        this.slots[x].iconSourceY = (this.slots[x].iconSourceY / 4) * 3.5;
-                        $(".equipItem" + (x + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                    }
-                }
-            }
         }
     }
 }
@@ -1592,13 +1512,6 @@ function Equipment() {
 function Inventory() {
     this.slots = new Array();
     this.maxSlots = 25;
-    this.autoSellCommons = false;
-    this.autoSellUncommons = false;
-    this.autoSellRares = false;
-    this.autoSellEpics = false;
-    this.autoSellLegendaries = false;
-    this.autoSellTimeRemaining = 5000;
-    this.autoSellInterval = 5000;
 
     // Initialize the slots
     for (var x = 0; x < this.maxSlots; x++) {
@@ -1610,8 +1523,7 @@ function Inventory() {
         for (var x = 0; x < this.maxSlots; x++) {
             if (this.slots[x] == null) {
                 this.slots[x] = item;
-                $("#inventoryItem" + (x + 1)).css('background', ('url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px'));
-                game.stats.itemsLooted++;
+                legacyGame.stats.itemsLooted++;
                 break;
             }
         }
@@ -1622,32 +1534,18 @@ function Inventory() {
         var savedItem = this.slots[index1];
 
         this.slots[index1] = this.slots[index2];
-        if (this.slots[index1] != null) {
-            $("#inventoryItem" + (index1 + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[index1].iconSourceX + 'px ' + this.slots[index1].iconSourceY + 'px');
-        }
-        else {
-            $("#inventoryItem" + (index1 + 1)).css('background', 'url("includes/images/NULL.png")');
-        }
 
         this.slots[index2] = savedItem;
-        if (this.slots[index2] != null) {
-            $("#inventoryItem" + (index2 + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + savedItem.iconSourceX + 'px ' + savedItem.iconSourceY + 'px');
-        }
-        else {
-            $("#inventoryItem" + (index2 + 1)).css('background', 'url("includes/images/NULL.png")');
-        }
     }
 
     // Remove an item from the inventory
     this.removeItem = function removeItem(index) {
         this.slots[index] = null;
-        $("#inventoryItem" + (index + 1)).css('background', 'url("includes/images/NULL.png")');
     }
 
     // Add an item to a specified slot
     this.addItemToSlot = function addItemToSlot(item, index) {
         this.slots[index] = item;
-        $("#inventoryItem" + (index + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + item.iconSourceX + 'px ' + item.iconSourceY + 'px');
     }
 
     // Sell an item in a specified slot
@@ -1655,12 +1553,12 @@ function Inventory() {
         if (this.slots[slot] != null) {
             // Get the sell value and give the gold to the player; don't use the gainGold function as it will include gold gain bonuses
             var value = this.slots[slot].sellValue;
-            game.player.gold += value;
+            legacyGame.player.gold += value;
             // Remove the item and hide the tooltip
             this.removeItem(slot);
             $('#itemTooltip').hide();
-            game.stats.itemsSold++;
-            game.stats.goldFromItems += value;
+            legacyGame.stats.itemsSold++;
+            legacyGame.stats.goldFromItems += value;
         }
     }
 
@@ -1668,17 +1566,6 @@ function Inventory() {
     this.sellAll = function sellAll() {
         for (var x = 0; x < this.slots.length; x++) {
             this.sellItem(x);
-        }
-    }
-
-    // Unlock the ability to auto sell an item rarity
-    this.unlockAutoSell = function unlockAutoSell(rarity) {
-        switch (rarity) {
-            case ItemRarity.COMMON: $("#checkboxWhite").show(); break;
-            case ItemRarity.UNCOMMON: $("#checkboxGreen").show(); break;
-            case ItemRarity.RARE: $("#checkboxBlue").show(); break;
-            case ItemRarity.EPIC: $("#checkboxPurple").show(); break;
-            case ItemRarity.LEGENDARY: $("#checkboxOrange").show(); break;
         }
     }
 
@@ -1703,53 +1590,7 @@ function Inventory() {
                     }
                 }
             }
-
-            // Go through all the slots and show their image in the inventory
-            if (localStorage.version != null) {
-                for (var x = 0; x < this.slots.length; x++) {
-                    if (this.slots[x] != null) {
-                        $("#inventoryItem" + (x + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                    }
-                }
-            }
-            else {
-                for (var x = 0; x < this.slots.length; x++) {
-                    if (this.slots[x] != null) {
-                        this.slots[x].iconSourceX = (this.slots[x].iconSourceX / 4) * 3.5;
-                        this.slots[x].iconSourceY = (this.slots[x].iconSourceY / 4) * 3.5;
-                        $("#inventoryItem" + (x + 1)).css('background', 'url("includes/images/itemSheet3.png") ' + this.slots[x].iconSourceX + 'px ' + this.slots[x].iconSourceY + 'px');
-                    }
-                }
-            }
         }
-    }
-
-    this.update = function update(ms) {
-        // If enough time has passed ell any items the player wants auto selling
-        this.autoSellTimeRemaining -= ms;
-        if (this.autoSellTimeRemaining <= 0) {
-            this.autoSellTimeRemaining = this.autoSellInterval;
-            for (var x = 0; x < this.slots.length; x++) {
-                if (this.slots[x] != null) {
-                    if ((this.slots[x].rarity == ItemRarity.COMMON && this.autoSellCommons) || (this.slots[x].rarity == ItemRarity.UNCOMMON && this.autoSellUncommons) ||
-                    (this.slots[x].rarity == ItemRarity.RARE && this.autoSellRares) || (this.slots[x].rarity == ItemRarity.EPIC && this.autoSellEpics) ||
-                    (this.slots[x].rarity == ItemRarity.LEGENDARY && this.autoSellLegendaries)) {
-                        this.sellItem(x);
-                    }
-                }
-            }
-        }
-    }
-}
-
-// When one of the sell all checkboxes are clicked, update the player's auto sell preferance
-function sellAllCheckboxClicked(checkbox, id) {
-    switch (id) {
-        case 1: game.inventory.autoSellCommons = checkbox.checked; break;
-        case 2: game.inventory.autoSellUncommons = checkbox.checked; break;
-        case 3: game.inventory.autoSellRares = checkbox.checked; break;
-        case 4: game.inventory.autoSellEpics = checkbox.checked; break;
-        case 5: game.inventory.autoSellLegendaries = checkbox.checked; break;
     }
 }
 
@@ -1777,7 +1618,7 @@ function Quest(name, description, type, typeId, typeAmount, goldReward, expRewar
     this.complete = false;
 
     // The Id that this quest will use to display in the quests window
-    this.displayId = game.questsManager.quests.length + 1;
+    this.displayId = legacyGame.questsManager.quests.length + 1;
 
     this.update = function update() {
         // Update this quest depending on the type that it is
@@ -1792,32 +1633,32 @@ function Quest(name, description, type, typeId, typeAmount, goldReward, expRewar
             case QuestType.MERCENARIES:
                 switch (this.typeId) {
                     case 0:
-                        if (game.mercenaryManager.footmenOwned >= this.typeAmount) {
+                        if (legacyGame.mercenaryManager.footmenOwned >= this.typeAmount) {
                             this.complete = true;
                         }
                         break;
                     case 1:
-                        if (game.mercenaryManager.clericsOwned >= this.typeAmount) {
+                        if (legacyGame.mercenaryManager.clericsOwned >= this.typeAmount) {
                             this.complete = true;
                         }
                         break;
                     case 2:
-                        if (game.mercenaryManager.commandersOwned >= this.typeAmount) {
+                        if (legacyGame.mercenaryManager.commandersOwned >= this.typeAmount) {
                             this.complete = true;
                         }
                         break;
                     case 3:
-                        if (game.mercenaryManager.magesOwned >= this.typeAmount) {
+                        if (legacyGame.mercenaryManager.magesOwned >= this.typeAmount) {
                             this.complete = true;
                         }
                         break;
                     case 4:
-                        if (game.mercenaryManager.assassinsOwned >= this.typeAmount) {
+                        if (legacyGame.mercenaryManager.assassinsOwned >= this.typeAmount) {
                             this.complete = true;
                         }
                         break;
                     case 5:
-                        if (game.mercenaryManager.warlocksOwned >= this.typeAmount) {
+                        if (legacyGame.mercenaryManager.warlocksOwned >= this.typeAmount) {
                             this.complete = true;
                         }
                         break;
@@ -1825,7 +1666,7 @@ function Quest(name, description, type, typeId, typeAmount, goldReward, expRewar
                 break;
             // Upgrade Quest - Check if the required upgrade has been purchased  
             case QuestType.UPGRADE:
-                if (game.upgradeManager.upgrades[this.typeId].purchased) {
+                if (legacyGame.upgradeManager.upgrades[this.typeId].purchased) {
                     this.complete = true;
                 }
                 break;
@@ -1833,12 +1674,12 @@ function Quest(name, description, type, typeId, typeAmount, goldReward, expRewar
     }
 
     this.grantReward = function grantReward() {
-        game.player.gainGold(this.goldReward, false);
-        game.stats.goldFromQuests += game.player.lastGoldGained;
-        game.player.gainExperience(this.expReward, false);
-        game.stats.experienceFromQuests += game.player.lastExperienceGained;
+        game.gainGold(this.goldReward, false);
+        legacyGame.stats.goldFromQuests += legacyGame.player.lastGoldGained;
+        game.gainExperience(this.expReward, false);
+        legacyGame.stats.experienceFromQuests += legacyGame.player.lastExperienceGained;
         if (this.buffReward != null) {
-            game.player.buffs.addBuff(this.buffReward);
+            legacyGame.player.buffs.addBuff(this.buffReward);
         }
     }
 }
@@ -1850,7 +1691,7 @@ function QuestsManager() {
 
     this.addQuest = function addQuest(quest) {
         this.quests.push(quest);
-        game.displayAlert("New quest received!");
+        legacyGame.displayAlert("New quest received!");
         this.glowQuestsButton();
 
         // Create the quest entry in the quest window for this quest
@@ -1874,18 +1715,8 @@ function QuestsManager() {
             this.quests[x].update();
             if (this.quests[x].complete) {
                 this.quests[x].grantReward();
-                // If this is a tutorial quest then update the tutorial
-                if (this.quests[x].name == "A Beginner's Task") {
-                    game.tutorialManager.quest1Complete = true;
-                }
-                else if (this.quests[x].name == "A Helping Hand") {
-                    game.tutorialManager.quest2Complete = true;
-                }
-                else if (this.quests[x].name == "Strengthening your Forces") {
-                    game.tutorialManager.quest3Complete = true;
-                }
                 this.removeQuest(x);
-                game.stats.questsCompleted++;
+                legacyGame.stats.questsCompleted++;
             }
         }
     }
@@ -2027,7 +1858,7 @@ function BuffManager() {
     this.addBuff = function addBuff(buff) {
         buff.id = this.buffs.length + 1;
         this.buffs.push(buff);
-        game.displayAlert(buff.name);
+        legacyGame.displayAlert(buff.name);
 
         var newDiv = document.createElement('div');
         newDiv.id = 'buffContainer' + buff.id;
@@ -2143,7 +1974,7 @@ function EventManager() {
         // Create a random quest
         var name = QuestNamePrefixes[Math.floor(Math.random() * 5)] + ' the ' + QuestNameSuffixes[Math.floor(Math.random() * 5)];
         var amount = Math.floor(Math.random() * 6) + 7;
-        event.quest = new Quest(name, ("Kill " + amount + " level " + level + " monsters."), QuestType.KILL, level, amount, (level * 10), (level * 10), game.player.buffs.getRandomQuestRewardBuff());
+        event.quest = new Quest(name, ("Kill " + amount + " level " + level + " monsters."), QuestType.KILL, level, amount, (level * 10), (level * 10), legacyGame.player.buffs.getRandomQuestRewardBuff());
         this.events.push(event);
 
         var newDiv = document.createElement('div');
@@ -2159,7 +1990,7 @@ function EventManager() {
         this.eventSpawnTimeRemaining -= ms;
         if (this.eventSpawnTimeRemaining <= 0) {
             this.eventSpawnTimeRemaining = this.eventSpawnTime;
-            this.addRandomEvent(game.player.level);
+            this.addRandomEvent(legacyGame.player.level);
         }
 
         // Keep all the event buttons falling down
@@ -2179,7 +2010,7 @@ function EventManager() {
     this.startEvent = function startEvent(obj, id) {
         // Remove the event button
         obj.parentNode.removeChild(obj);
-        game.questsManager.addQuest(this.events[id - 1].quest);
+        legacyGame.questsManager.addQuest(this.events[id - 1].quest);
         this.events.splice(id - 1, 1);
 
         // Change all the ids of the events that need changing
@@ -2190,426 +2021,22 @@ function EventManager() {
 }
 
 function clickEventButton(obj, id) {
-    game.eventManager.startEvent(obj, id);
-}
-
-/* ========== ========== ========== ========== ==========  ========== ========== ========== ========== ==========  /
-/                                                     TUTORIALS                                                       
-/  ========== ========== ========== ========== ==========  ========== ========== ========== ========== ========== */
-function TutorialManager() {
-    this.currentTutorial = 0;
-    // If each of the tutorials have had the continue button pressed
-    this.tutorialContinued = new Array();
-    this.tutorialsAmount = 12;
-
-    // Tutorial 1
-    this.battleButtonClicked = false;
-    // Tutorial 2
-    this.monsterKilled = false;
-    // Tutorial 4
-    this.statUpgradeChosen = false;
-    // Tutorial 5
-    this.leaveBattleButtonPressed = false;
-    // Tutorial 7
-    this.quest1Complete = false;
-    // Tutorial 8
-    this.inventoryOpened = false;
-    // Tutorial 9
-    this.equipmentOpened = false;
-    // Tutorial 10
-    this.quest2Complete = false;
-    // Tutorial 11
-    this.quest3Complete = false;
-
-    for (var x = 0; x < this.tutorialsAmount; x++) {
-        this.tutorialContinued.push(false);
-    }
-
-    this.tutorialDescriptions = new Array(
-        "Welcome to Endless Battle, to get started click the enter battle button.",
-        "Entering battle will engage you with a random monster. If your current opponent is too strong, you can leave the battle and enter again. Let's get started with some combat, use your Attack ability to kill the monster.",
-        "Well fought, keep killing monsters until you reach level 2.",
-        "Congratulations! When you level up you get to choose a random upgrade. Click the level up button and choose an upgrade.",
-        "Click the Leave Battle button so we can continue.",
-        "When out of battle, you can increase the level of the monsters you will fight. However you can only fight monsters lower than or equal to your own level.",
-        "It's time for your first quest. Open the quests window and complete that quest, then we shall continue.",
-        "You've killed quite a few monsters now, open your inventory and see if you've gathered any loot.",
-        "When you equip your loot you can view your stats and equipment here.",
-        "Killing monsters for gold is good, but if you really want to get rich you should hire mercenaries. I've given you a new quest, purchase 5 footmen and then we'll continue.",
-        "Mercenaries are good, but to make them more worth their money you can purchase upgrades. It's time for another quest, get a total of 10 Footmen to unlock the Footman Training upgrade and then purchase it.",
-        "Well done! You're off to a great start, but there's dangerous monsters, powerful loot and riches ahead. This concludes the tutorial, good luck!");
-
-    this.initialize = function initialize() {
-        document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[0];
-        $("#tutorialContinueButton").hide();
-
-        // Animate the quest arrows
-        this.animateRightArrow();
-
-        $("#tutorialArea").css('left', '0');
-        $("#tutorialArea").css('right', '0');
-        $("#tutorialArea").css('top', '0');
-        $("#tutorialArea").css('bottom', '0');
-        $("#tutorialArea").css('margin', 'auto');
-        $("#tutorialArea").css('padding-right', '660px');
-        $("#tutorialArea").css('padding-bottom', '50px');
-        $("#tutorialArea").show();
-
-        $("#tutorialRightArrow").stop(true);
-        $("#tutorialRightArrow").css('left', '290px');
-        $("#tutorialRightArrow").css('top', '67px');
-        this.animateRightArrow();
-    }
-
-    this.animateRightArrow = function animateRightArrow() {
-        $("#tutorialRightArrow").animate({ left:'+=20px' }, 400);
-        $("#tutorialRightArrow").animate({ left:'-=20px' }, 400, function() { animateRightArrow(); });
-    }
-
-    this.advanceTutorial = function advanceTutorial() {
-        this.currentTutorial++;
-        if (this.currentTutorial < this.tutorialsAmount) {
-            document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-        }
-        $("#tutorialWindow").show();
-        $("#tutorialRightArrow").show();
-    }
-
-    this.continueTutorial = function continueTutorial() {
-        this.tutorialContinued[this.currentTutorial] = true;
-        this.hideTutorial();
-    }
-
-    this.hideTutorial = function hideTutorial() {
-        $("#tutorialWindow").hide();
-        $("#tutorialRightArrow").hide();
-    }
-
-    this.update = function update() {
-        // Check the requirements of the current tutorial, if it is completed then start the next tutorial
-        switch (this.currentTutorial) {
-            case 0:
-                if (this.battleButtonClicked) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                }
-                break;
-            case 1:
-                if (this.monsterKilled) {
-                    this.advanceTutorial();
-                    $("#expBarArea").show();
-                }
-                break;
-            case 2:
-                if (game.player.level >= 2) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '');
-                    $("#tutorialArea").css('bottom', '-40px');
-                }
-                break;
-            case 3:
-                if (this.statUpgradeChosen) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '97px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '0');
-                    $("#tutorialArea").css('bottom', '0');
-                }
-                break;
-            case 4:
-                if (this.leaveBattleButtonPressed) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '67px');
-                    $("#tutorialRightArrow").css('z-index', '3');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('padding-right', '200px');
-                    $("#tutorialArea").css('z-index', '');
-                    $("#tutorialWindow").css('z-index', '3');
-                    $("#tutorialContinueButton").show();
-                }
-            case 5://
-                if (this.tutorialContinued[5]) {
-                    this.advanceTutorial();
-                    game.questsManager.addQuest(new Quest("A Beginner's Task", "It's time for your first quest as well as more combat experience. Increase the battle level and slay a level 2 monster and the tutorial will continue.", QuestType.KILL, 2, 1, 5, 5, null));
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '67px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('left', '');
-                    $("#tutorialArea").css('right', '50px');
-                    $("#tutorialArea").css('top', '55px');
-                    $("#tutorialArea").css('bottom', '');
-                    $("#tutorialArea").css('margin', '');
-                    $("#tutorialArea").css('padding-right', '');
-                    $("#tutorialContinueButton").hide();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                }
-            case 6://
-                if (this.quest1Complete) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").show();
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '');
-                    $("#tutorialArea").css('bottom', '5px');
-                    $("#tutorialArea").css('padding-bottom', '');
-                    $(".inventoryWindowButton").show();
-                }
-                break;
-            case 7://
-                if (this.inventoryOpened) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '0px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '5px');
-                    $("#tutorialArea").css('bottom', '');
-                    $(".characterWindowButton").show();
-                }
-                break;
-            case 8://
-                if (this.equipmentOpened) {
-                    this.advanceTutorial();
-                    game.questsManager.addQuest(new Quest("A Helping Hand", "You've slain monsters, but if you really want a lot of gold you'll need to hire mercenaries to help you. Hire 5 Footmen to continue the tutorial.", QuestType.MERCENARIES, 0, 5, 10, 10, null));
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '38px');
-                    this.animateRightArrow();
-                    $(".mercenariesWindowButton").show();
-                }
-                break;
-            case 9:
-                if (this.quest2Complete) {
-                    this.advanceTutorial();
-                    game.questsManager.addQuest(new Quest("Strengthening your Forces", "Purchasing those footmen is a good start, but they can get pricey. To negate this inflation you'll need to upgrade them. Hire a total of 10 Footmen and then buy the Footman Training upgrade.", QuestType.UPGRADE, 0, 0, 50, 50, null));
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '67px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '14px');
-                    $(".upgradesWindowButton").show();
-                    $("#upgradesWindowButtonGlow").show();
-                }
-                break;
-            case 10:
-                if (this.quest3Complete) {
-                    this.advanceTutorial();
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").hide();
-                    $("#tutorialArea").css('left', '0');
-                    $("#tutorialArea").css('right', '0');
-                    $("#tutorialArea").css('top', '0');
-                    $("#tutorialArea").css('bottom', '0');
-                    $("#tutorialArea").css('margin', 'auto');
-                    $("#tutorialArea").css('padding-right', '660px');
-                    $("#tutorialArea").css('padding-bottom', '50px');
-                    $("#tutorialContinueButton").show();
-                }
-                break;
-        }
-    }
-
-    this.save = function save() {
-        localStorage.tutorialSaved = true;
-        localStorage.currentTutorial = this.currentTutorial;
-    }
-
-    this.load = function load() {
-        if (localStorage.tutorialSaved != null) {
-            this.currentTutorial = parseInt(localStorage.currentTutorial);
-
-            switch (this.currentTutorial) {
-                case 0:
-                    break;
-                case 1:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 2:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                    $("#expBarArea").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 3://
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '');
-                    $("#tutorialArea").css('bottom', '-40px');
-                    $("#expBarArea").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 4:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '97px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('top', '0');
-                    $("#tutorialArea").css('bottom', '0');
-                    $("#expBarArea").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 5:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '67px');
-                    $("#tutorialRightArrow").css('z-index', '3');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('padding-right', '200px');
-                    $("#tutorialWindow").css('z-index', '3');
-                    $("#tutorialContinueButton").show();
-                    $("#expBarArea").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 6:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '67px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('left', '');
-                    $("#tutorialArea").css('right', '50px');
-                    $("#tutorialArea").css('top', '55px');
-                    $("#tutorialArea").css('bottom', '');
-                    $("#tutorialArea").css('margin', '');
-                    $("#tutorialArea").css('padding-right', '');
-                    $("#expBarArea").show();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 7://
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").show();
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '137px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('left', '');
-                    $("#tutorialArea").css('right', '50px');
-                    $("#tutorialArea").css('top', '');
-                    $("#tutorialArea").css('bottom', '5px');
-                    $("#tutorialArea").css('margin', '');
-                    $("#tutorialArea").css('padding-right', '');
-                    $("#tutorialArea").css('padding-bottom', '');
-                    $("#expBarArea").show();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                    $(".inventoryWindowButton").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 8://
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '0px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('left', '');
-                    $("#tutorialArea").css('right', '50px');
-                    $("#tutorialArea").css('top', '5px');
-                    $("#tutorialArea").css('bottom', '');
-                    $("#tutorialArea").css('margin', '');
-                    $("#tutorialArea").css('padding-right', '');
-                    $("#tutorialArea").css('padding-bottom', '');
-                    $("#expBarArea").show();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                    $(".inventoryWindowButton").show();
-                    $(".characterWindowButton").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 9:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '38px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('left', '');
-                    $("#tutorialArea").css('right', '50px');
-                    $("#tutorialArea").css('top', '5px');
-                    $("#tutorialArea").css('bottom', '');
-                    $("#tutorialArea").css('margin', '');
-                    $("#tutorialArea").css('padding-right', '');
-                    $("#tutorialArea").css('padding-bottom', '');
-                    $("#expBarArea").show();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                    $(".inventoryWindowButton").show();
-                    $(".characterWindowButton").show();
-                    $(".mercenariesWindowButton").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 10:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialRightArrow").css('left', '290px');
-                    $("#tutorialRightArrow").css('top', '67px');
-                    this.animateRightArrow();
-                    $("#tutorialArea").css('left', '');
-                    $("#tutorialArea").css('right', '50px');
-                    $("#tutorialArea").css('top', '14px');
-                    $("#tutorialArea").css('bottom', '');
-                    $("#tutorialArea").css('margin', '');
-                    $("#tutorialArea").css('padding-right', '');
-                    $("#tutorialArea").css('padding-bottom', '');
-                    $("#expBarArea").show();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                    $(".inventoryWindowButton").show();
-                    $(".characterWindowButton").show();
-                    $(".mercenariesWindowButton").show();
-                    $(".upgradesWindowButton").show();
-                    $("#upgradesWindowButtonGlow").show();
-                    document.getElementById("tutorialDescription").innerHTML = this.tutorialDescriptions[this.currentTutorial];
-                    break;
-                case 11:
-                    $("#tutorialRightArrow").stop(true);
-                    $("#tutorialArea").hide();
-                    $("#expBarArea").show();
-                    $(".questsWindowButton").show();
-                    $("#questsWindowButtonGlow").show();
-                    $(".inventoryWindowButton").show();
-                    $(".characterWindowButton").show();
-                    $(".mercenariesWindowButton").show();
-                    $(".upgradesWindowButton").show();
-                    $("#upgradesWindowButtonGlow").show();
-                    break;
-            }
-        }
-    }
+    legacyGame.eventManager.startEvent(obj, id);
 }
 
 /* ========== ========== ========== ========== ==========  ========== ========== ========== ========== ==========  /
 /                                                       STATS                                                       
 /  ========== ========== ========== ========== ==========  ========== ========== ========== ========== ========== */
 function Stats() {
-    this.getGold = function getGold() { return game.player.gold; }
+    this.getGold = function getGold() { return legacyGame.player.gold; }
     this.goldEarned = 0;
     this.startDate = new Date();
-    this.getMercenariesOwned = function getMercenariesOwned() { return game.mercenaryManager.mercenaries.length; }
-    this.getGps = function getGps() { return game.mercenaryManager.getGps(); }
+    this.getMercenariesOwned = function getMercenariesOwned() { return legacyGame.mercenaryManager.mercenaries.length; }
+    this.getGps = function getGps() { return legacyGame.mercenaryManager.getGps(); }
     this.goldFromMonsters = 0;
     this.goldFromMercenaries = 0;
     this.goldFromQuests = 0;
-    this.getUpgradesUnlocked = function getUpgradesUnlocked() { return game.upgradeManager.upgradesPurchased; }
-    this.getExperience = function getExperience() { return game.player.experience; }
+    this.getExperience = function getExperience() { return legacyGame.player.experience; }
     this.experienceEarned = 0;
     this.experienceFromMonsters = 0;
     this.experienceFromQuests = 0;
@@ -2621,9 +2048,20 @@ function Stats() {
     this.damageDealt = 0;
     this.damageTaken = 0;
 
+    this.getUpgradesUnlocked = function getUpgradesUnlocked() {
+        var unlocked = 0;
+        for(var i = 0; i < legacyGame.upgradeManager.upgrades.length; i++) {
+            if(legacyGame.upgradeManager.upgrades[i].purchased === true) {
+                unlocked++;
+            }
+        }
+
+        return unlocked;
+    }
+
     this.update = function update() {
         // Update the stats window
-        document.getElementById("statsWindowPowerShardsValue").innerHTML = game.player.powerShards.formatMoney(2);
+        document.getElementById("statsWindowPowerShardsValue").innerHTML = legacyGame.player.powerShards.formatMoney(2);
         document.getElementById("statsWindowGoldValue").innerHTML = this.getGold().formatMoney(2);
         document.getElementById("statsWindowGoldEarnedValue").innerHTML = this.goldEarned.formatMoney(2);
         document.getElementById("statsWindowStartDateValue").innerHTML = this.startDate.toDateString() + " " + this.startDate.toLocaleTimeString();
@@ -2718,31 +2156,31 @@ function Monster(name, level, rarity, health, damage, armour, goldWorth, experie
     this.getRandomLoot = function getRandomLoot() {
         var loot = new Loot();
         loot.gold = this.goldWorth;
-        loot.item = game.itemCreator.createRandomItem(this.level, game.itemCreator.getRandomItemRarity(this.rarity));
+        loot.item = legacyGame.itemCreator.createRandomItem(this.level, legacyGame.itemCreator.getRandomItemRarity(this.rarity));
         return loot;
     }
 
     this.takeDamage = function takeDamage(damage, isCritical, displayParticle) {
         this.health -= damage;
         this.lastDamageTaken = damage;
-        game.stats.damageDealt += damage;
+        legacyGame.stats.damageDealt += damage;
 
         // Create the player's damage particle
         if (displayParticle) {
             if (isCritical) {
-                game.particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_CRITICAL);
+                legacyGame.particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_CRITICAL);
             }
             else {
-                game.particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_DAMAGE);
+                legacyGame.particleManager.createParticle(Math.round(this.lastDamageTaken), ParticleType.PLAYER_DAMAGE);
             }
         }
 
         if (this.health <= 0) {
             this.alive = false;
-            game.stats.monstersKilled++;
-            // Update the 2nd tutorial
-            game.tutorialManager.monsterKilled = true;
+            legacyGame.stats.monstersKilled++;
         }
+
+        return damage;
     }
 
     // Add a debuff to this monster of the specified type, damage and duration
@@ -2762,7 +2200,7 @@ function Monster(name, level, rarity, health, damage, armour, goldWorth, experie
                     $("#monsterBleedingIcon").css('left', left + 'px');
                 }
                 // Check to see if the player has any Rupture effects
-                var effects = game.player.getEffectsOfType(EffectType.RUPTURE);
+                var effects = legacyGame.player.getEffectsOfType(EffectType.RUPTURE);
                 var maxStacks = 5;
                 if (effects.length > 0) {
                     for (var x = 0; x < effects.length; x++) {
@@ -2795,7 +2233,7 @@ function Monster(name, level, rarity, health, damage, armour, goldWorth, experie
                 this.debuffs.burningDuration = 0;
                 this.debuffs.burningMaxDuration = duration;
                 // Check to see if the player has any Combustion effects allowing them to stack burning
-                var effects = game.player.getEffectsOfType(EffectType.COMBUSTION);
+                var effects = legacyGame.player.getEffectsOfType(EffectType.COMBUSTION);
                 var maxStacks = 0;
                 if (effects.length > 0) {
                     for (var x = 0; x < effects.length; x++) {
@@ -2835,7 +2273,7 @@ function Monster(name, level, rarity, health, damage, armour, goldWorth, experie
         // If there are bleed stacks on this monster
         if (this.debuffs.bleeding) {
             // Cause the monster to take damage
-            this.takeDamage(this.debuffs.bleedDamage * this.debuffs.bleedStacks, false, false);
+            game.monsterTakeDamage(this.debuffs.bleedDamage * this.debuffs.bleedStacks, false, false);
             // Increase the duration of this debuff
             this.debuffs.bleedDuration++;
             // If the debuff has expired then remove it
@@ -2855,7 +2293,7 @@ function Monster(name, level, rarity, health, damage, armour, goldWorth, experie
 
         // If this monster is burning
         if (this.debuffs.burning) {
-            this.takeDamage(this.debuffs.burningDamage * this.debuffs.burningStacks, false, false);
+            game.monsterTakeDamage(this.debuffs.burningDamage * this.debuffs.burningStacks, false, false);
             // Increase the duration of this debuff
             this.debuffs.burningDuration++;
             // If the debuff has expired then remove it
@@ -3094,87 +2532,81 @@ function Options() {
 
             if (this.alwaysDisplayPlayerHealth) {
                 document.getElementById("playerHealthOption").innerHTML = "Always display player health: ON";
-                $("#playerHealthBarText").show();
             }
             if (this.alwaysDisplayMonsterHealth) {
                 document.getElementById("monsterHealthOption").innerHTML = "Always display monster health: ON";
-                game.displayMonsterHealth = true;
+                legacyGame.displayMonsterHealth = true;
             }
             if (this.alwaysDisplayExp) {
                 document.getElementById("expBarOption").innerHTML = "Always display experience: ON";
-                $("#expBarText").show();
             }
         }
     }
 }
 
 function skullParticlesOptionClick() {
-    game.options.displaySkullParticles = !game.options.displaySkullParticles;
-    if (game.options.displaySkullParticles) {
+    legacyGame.options.displaySkullParticles = !legacyGame.options.displaySkullParticles;
+    if (legacyGame.options.displaySkullParticles) {
         document.getElementById("skullParticlesOption").innerHTML = "Monster death particles: ON";
     }
     else { document.getElementById("skullParticlesOption").innerHTML = "Monster death particles: OFF"; }
 }
 function goldParticlesOptionClick() {
-    game.options.displayGoldParticles = !game.options.displayGoldParticles;
-    if (game.options.displayGoldParticles) {
+    legacyGame.options.displayGoldParticles = !legacyGame.options.displayGoldParticles;
+    if (legacyGame.options.displayGoldParticles) {
         document.getElementById("goldParticlesOption").innerHTML = "Gold particles: ON";
     }
     else { document.getElementById("goldParticlesOption").innerHTML = "Gold particles: OFF"; }
 }
 function experienceParticlesOptionClick() {
-    game.options.displayExpParticles = !game.options.displayExpParticles;
-    if (game.options.displayExpParticles) {
+    legacyGame.options.displayExpParticles = !legacyGame.options.displayExpParticles;
+    if (legacyGame.options.displayExpParticles) {
         document.getElementById("experienceParticlesOption").innerHTML = "Experience particles: ON";
     }
     else { document.getElementById("experienceParticlesOption").innerHTML = "Experience particles: OFF"; }
 }
 function playerDamageParticlesOptionClick() {
-    game.options.displayPlayerDamageParticles = !game.options.displayPlayerDamageParticles;
-    if (game.options.displayPlayerDamageParticles) {
+    legacyGame.options.displayPlayerDamageParticles = !legacyGame.options.displayPlayerDamageParticles;
+    if (legacyGame.options.displayPlayerDamageParticles) {
         document.getElementById("playerDamageParticlesOption").innerHTML = "Player damage particles: ON";
     }
     else { document.getElementById("playerDamageParticlesOption").innerHTML = "Player damage particles: OFF"; }
 }
 function monsterDamageParticlesOptionClick() {
-    game.options.displayMonsterDamageParticles = !game.options.displayMonsterDamageParticles;
-    if (game.options.displayMonsterDamageParticles) {
+    legacyGame.options.displayMonsterDamageParticles = !legacyGame.options.displayMonsterDamageParticles;
+    if (legacyGame.options.displayMonsterDamageParticles) {
         document.getElementById("monsterDamageParticlesOption").innerHTML = "Monster damage particles: ON";
     }
     else { document.getElementById("monsterDamageParticlesOption").innerHTML = "Monster damage particles: OFF"; }
 }
 
 function playerHealthOptionClick() {
-    game.options.alwaysDisplayPlayerHealth = !game.options.alwaysDisplayPlayerHealth;
-    if (game.options.alwaysDisplayPlayerHealth) {
+    legacyGame.options.alwaysDisplayPlayerHealth = !legacyGame.options.alwaysDisplayPlayerHealth;
+    if (legacyGame.options.alwaysDisplayPlayerHealth) {
         document.getElementById("playerHealthOption").innerHTML = "Always display player health: ON";
-        $("#playerHealthBarText").show();
     }
     else { 
-        document.getElementById("playerHealthOption").innerHTML = "Always display player health: OFF"; 
-        $("#playerHealthBarText").hide();
+        document.getElementById("playerHealthOption").innerHTML = "Always display player health: OFF";
     }
 }
 function monsterHealthOptionClick() {
-    game.options.alwaysDisplayMonsterHealth = !game.options.alwaysDisplayMonsterHealth;
-    if (game.options.alwaysDisplayMonsterHealth) {
+    legacyGame.options.alwaysDisplayMonsterHealth = !legacyGame.options.alwaysDisplayMonsterHealth;
+    if (legacyGame.options.alwaysDisplayMonsterHealth) {
         document.getElementById("monsterHealthOption").innerHTML = "Always display monster health: ON";
-        game.displayMonsterHealth = true;
+        legacyGame.displayMonsterHealth = true;
     }
     else { 
         document.getElementById("monsterHealthOption").innerHTML = "Always display monster health: OFF"; 
-        game.displayMonsterHealth = false;
+        legacyGame.displayMonsterHealth = false;
     }
 }
 function expBarOptionClick() {
-    game.options.alwaysDisplayExp = !game.options.alwaysDisplayExp;
-    if (game.options.alwaysDisplayExp) {
+    legacyGame.options.alwaysDisplayExp = !legacyGame.options.alwaysDisplayExp;
+    if (legacyGame.options.alwaysDisplayExp) {
         document.getElementById("expBarOption").innerHTML = "Always display experience: ON";
-        $("#expBarText").show();
     }
     else { 
-        document.getElementById("expBarOption").innerHTML = "Always display experience: OFF"; 
-        $("#expBarText").hide();
+        document.getElementById("expBarOption").innerHTML = "Always display experience: OFF";
     }
 }
 
@@ -3257,12 +2689,12 @@ function ParticleManager() {
     this.createParticle = function createParticle(text, imageType) {
         // If the type should not be displayed, end this function
         switch (imageType) {
-            case ParticleType.SKULL: if (game.options.displaySkullParticles == false) { return; } break;
-            case ParticleType.GOLD: if (game.options.displayGoldParticles == false) { return; } break;
-            case ParticleType.EXP_ORB: if (game.options.displayExpParticles == false) { return; } break;
-            case ParticleType.PLAYER_DAMAGE: if (game.options.displayPlayerDamageParticles == false) { return; } break;
-            case ParticleType.PLAYER_CRITICAL: if (game.options.displayPlayerDamageParticles == false) { return; } break;
-            case ParticleType.MONSTER_DAMAGE: if (game.options.displayMonsterDamageParticles == false) { return; } break;
+            case ParticleType.SKULL: if (legacyGame.options.displaySkullParticles == false) { return; } break;
+            case ParticleType.GOLD: if (legacyGame.options.displayGoldParticles == false) { return; } break;
+            case ParticleType.EXP_ORB: if (legacyGame.options.displayExpParticles == false) { return; } break;
+            case ParticleType.PLAYER_DAMAGE: if (legacyGame.options.displayPlayerDamageParticles == false) { return; } break;
+            case ParticleType.PLAYER_CRITICAL: if (legacyGame.options.displayPlayerDamageParticles == false) { return; } break;
+            case ParticleType.MONSTER_DAMAGE: if (legacyGame.options.displayMonsterDamageParticles == false) { return; } break;
         }
 
         // Calculate the left and top positions
@@ -3756,7 +3188,7 @@ function Item(name, level, rarity, type, sellValue, iconSourceX, iconSourceY, it
     this.level = level;
     this.rarity = rarity;
     this.type = type;
-    this.sellValue = sellValue * (Math.pow(2, game.upgradeManager.autoSellUpgradesPurchased));
+    this.sellValue = sellValue;
     this.iconSourceX = iconSourceX;
     this.iconSourceY = iconSourceY;
 
@@ -3791,26 +3223,26 @@ function ItemCreator() {
             case MonsterRarity.COMMON:
                 if (rand < 0.20) {
                     rand = Math.random();
-                    if (rand < (0.00001 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
-                    else if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.EPIC; }
-                    else if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.RARE; }
-                    else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.UNCOMMON; }
+                    if (rand < (0.00001 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
+                    else if (rand < (0.0001 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.EPIC; }
+                    else if (rand < (0.001 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.RARE; }
+                    else if (rand < (0.01 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.UNCOMMON; }
                     else { return ItemRarity.COMMON; }
                 }
                 break;
             case MonsterRarity.RARE:
-                if (rand < (0.0001 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
-                else if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.EPIC; }
-                else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.RARE; }
+                if (rand < (0.0001 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
+                else if (rand < (0.001 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.EPIC; }
+                else if (rand < (0.01 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.RARE; }
                 else { return ItemRarity.UNCOMMON; }
                 break;
             case MonsterRarity.ELITE:
-                if (rand < (0.001 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
-                else if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.EPIC; }
+                if (rand < (0.001 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
+                else if (rand < (0.01 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.EPIC; }
                 else { return ItemRarity.RARE; }
                 break;
             case MonsterRarity.BOSS:
-                if (rand < (0.01 * ((game.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
+                if (rand < (0.01 * ((legacyGame.player.getItemRarity() / 100) + 1))) { return ItemRarity.LEGENDARY; }
                 else { return ItemRarity.EPIC; }
                 break;
         }
@@ -4116,7 +3548,6 @@ var UpgradeType = new Object();
 UpgradeType.GPS = "GPS";
 UpgradeType.SPECIAL = "SPECIAL";
 UpgradeType.ATTACK = "ATTACK";
-UpgradeType.AUTO_SELL = "AUTO_SELL";
 
 var UpgradeRequirementType = new Object();
 UpgradeRequirementType.FOOTMAN = "FOOTMAN";
@@ -4145,9 +3576,6 @@ function Upgrade(name, cost, type, requirementType, requirementAmount, descripti
 function UpgradeManager() {
     this.upgradesButtonGlowing = false;
 
-    this.upgradesAvailable = 0;
-    this.upgradesPurchased = 0;
-
     this.footmanUpgradesPurchased = 0;
     this.clericUpgradesPurchased = 0;
     this.commanderUpgradesPurchased = 0;
@@ -4161,101 +3589,89 @@ function UpgradeManager() {
     this.assassinSpecialUpgradesPurchased = 0;
     this.warlockSpecialUpgradesPurchased = 0;
 
-    this.autoSellUpgradesPurchased = 0;
-
-    // The Id of the upgrade that each button is linked to
-    this.purchaseButtonUpgradeIds = new Array();
-
     this.upgrades = new Array();
 
     this.initialize = function initialize() {
         // Footman Basic Upgrades
-        this.upgrades.push(new Upgrade("Footman Training", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 10, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training II", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 19)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 20, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training III", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 29)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 30, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training IV", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 50, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training V", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 74)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 75, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training VI", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 100, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training VII", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 150, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training VIII", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 200, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training IX", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 249)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 250, "Doubles the GPS of your Footmen", 0, 0));
-        this.upgrades.push(new Upgrade("Footman Training X", Math.floor((game.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 300, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 10, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training II", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 19)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 20, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training III", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 29)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 30, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training IV", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 50, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training V", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 74)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 75, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training VI", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 100, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training VII", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 150, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training VIII", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 200, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training IX", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 249)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 250, "Doubles the GPS of your Footmen", 0, 0));
+        this.upgrades.push(new Upgrade("Footman Training X", Math.floor((legacyGame.mercenaryManager.baseFootmanPrice * Math.pow(1.15, 199)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.FOOTMAN, 300, "Doubles the GPS of your Footmen", 0, 0));
 
         // Cleric Basic Upgrades
-        this.upgrades.push(new Upgrade("Cleric Training", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 10, "Doubles the GPS of your Clerics", 200, 0));
-        this.upgrades.push(new Upgrade("Cleric Training II", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 25, "Doubles the GPS of your Clerics", 200, 0));
-        this.upgrades.push(new Upgrade("Cleric Training III", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 50, "Doubles the GPS of your Clerics", 200, 0));
-        this.upgrades.push(new Upgrade("Cleric Training IV", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 100, "Doubles the GPS of your Clerics", 200, 0));
-        this.upgrades.push(new Upgrade("Cleric Training V", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 150, "Doubles the GPS of your Clerics", 200, 0));
+        this.upgrades.push(new Upgrade("Cleric Training", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 10, "Doubles the GPS of your Clerics", 200, 0));
+        this.upgrades.push(new Upgrade("Cleric Training II", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 25, "Doubles the GPS of your Clerics", 200, 0));
+        this.upgrades.push(new Upgrade("Cleric Training III", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 50, "Doubles the GPS of your Clerics", 200, 0));
+        this.upgrades.push(new Upgrade("Cleric Training IV", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 100, "Doubles the GPS of your Clerics", 200, 0));
+        this.upgrades.push(new Upgrade("Cleric Training V", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.CLERIC, 150, "Doubles the GPS of your Clerics", 200, 0));
 
         // Commander Basic Upgrades
-        this.upgrades.push(new Upgrade("Commander Training", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 10, "Doubles the GPS of your Commanders", 160, 0));
-        this.upgrades.push(new Upgrade("Commander Training II", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 25, "Doubles the GPS of your Commanders", 160, 0));
-        this.upgrades.push(new Upgrade("Commander Training III", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 50, "Doubles the GPS of your Commanders", 160, 0));
-        this.upgrades.push(new Upgrade("Commander Training IV", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 100, "Doubles the GPS of your Commanders", 160, 0));
-        this.upgrades.push(new Upgrade("Commander Training V", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 150, "Doubles the GPS of your Commanders", 160, 0));
+        this.upgrades.push(new Upgrade("Commander Training", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 10, "Doubles the GPS of your Commanders", 160, 0));
+        this.upgrades.push(new Upgrade("Commander Training II", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 25, "Doubles the GPS of your Commanders", 160, 0));
+        this.upgrades.push(new Upgrade("Commander Training III", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 50, "Doubles the GPS of your Commanders", 160, 0));
+        this.upgrades.push(new Upgrade("Commander Training IV", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 100, "Doubles the GPS of your Commanders", 160, 0));
+        this.upgrades.push(new Upgrade("Commander Training V", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.COMMANDER, 150, "Doubles the GPS of your Commanders", 160, 0));
 
         // Mage Basic Upgrades
-        this.upgrades.push(new Upgrade("Mage Training", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 10, "Doubles the GPS of your Mages", 120, 0));
-        this.upgrades.push(new Upgrade("Mage Training II", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 25, "Doubles the GPS of your Mages", 120, 0));
-        this.upgrades.push(new Upgrade("Mage Training III", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 50, "Doubles the GPS of your Mages", 120, 0));
-        this.upgrades.push(new Upgrade("Mage Training IV", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 100, "Doubles the GPS of your Mages", 120, 0));
-        this.upgrades.push(new Upgrade("Mage Training V", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 150, "Doubles the GPS of your Mages", 120, 0));
+        this.upgrades.push(new Upgrade("Mage Training", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 10, "Doubles the GPS of your Mages", 120, 0));
+        this.upgrades.push(new Upgrade("Mage Training II", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 25, "Doubles the GPS of your Mages", 120, 0));
+        this.upgrades.push(new Upgrade("Mage Training III", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 50, "Doubles the GPS of your Mages", 120, 0));
+        this.upgrades.push(new Upgrade("Mage Training IV", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 100, "Doubles the GPS of your Mages", 120, 0));
+        this.upgrades.push(new Upgrade("Mage Training V", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.MAGE, 150, "Doubles the GPS of your Mages", 120, 0));
 
         // Assassin Basic Upgrades
-        this.upgrades.push(new Upgrade("Assassin Training", Math.floor((game.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 10, "Doubles the GPS of your Assassin", 80, 0));
-        this.upgrades.push(new Upgrade("Assassin Training II", Math.floor((game.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 25, "Doubles the GPS of your Assassin", 80, 0));
-        this.upgrades.push(new Upgrade("Assassin Training III", Math.floor((game.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 50, "Doubles the GPS of your Assassin", 80, 0));
-        this.upgrades.push(new Upgrade("Assassin Training IV", Math.floor((game.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 100, "Doubles the GPS of your Assassin", 80, 0));
-        this.upgrades.push(new Upgrade("Assassin Training V", Math.floor((game.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 150, "Doubles the GPS of your Assassin", 80, 0));
+        this.upgrades.push(new Upgrade("Assassin Training", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 10, "Doubles the GPS of your Assassin", 80, 0));
+        this.upgrades.push(new Upgrade("Assassin Training II", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 25, "Doubles the GPS of your Assassin", 80, 0));
+        this.upgrades.push(new Upgrade("Assassin Training III", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 50, "Doubles the GPS of your Assassin", 80, 0));
+        this.upgrades.push(new Upgrade("Assassin Training IV", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 100, "Doubles the GPS of your Assassin", 80, 0));
+        this.upgrades.push(new Upgrade("Assassin Training V", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.ASSASSIN, 150, "Doubles the GPS of your Assassin", 80, 0));
 
         // Warlock Basic Upgrades
-        this.upgrades.push(new Upgrade("Warlock Training", ((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 10, "Doubles the GPS of your Warlocks", 40, 0));
-        this.upgrades.push(new Upgrade("Warlock Training II", ((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 25, "Doubles the GPS of your Warlocks", 40, 0));
-        this.upgrades.push(new Upgrade("Warlock Training III", ((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 50, "Doubles the GPS of your Warlocks", 40, 0));
-        this.upgrades.push(new Upgrade("Warlock Training IV", ((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 100, "Doubles the GPS of your Warlocks", 40, 0));
-        this.upgrades.push(new Upgrade("Warlock Training V", ((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 150, "Doubles the GPS of your Warlocks", 40, 0));
+        this.upgrades.push(new Upgrade("Warlock Training", ((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 9)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 10, "Doubles the GPS of your Warlocks", 40, 0));
+        this.upgrades.push(new Upgrade("Warlock Training II", ((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 24)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 25, "Doubles the GPS of your Warlocks", 40, 0));
+        this.upgrades.push(new Upgrade("Warlock Training III", ((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 49)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 50, "Doubles the GPS of your Warlocks", 40, 0));
+        this.upgrades.push(new Upgrade("Warlock Training IV", ((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 99)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 100, "Doubles the GPS of your Warlocks", 40, 0));
+        this.upgrades.push(new Upgrade("Warlock Training V", ((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 149)) * 1.5), UpgradeType.GPS, UpgradeRequirementType.WARLOCK, 150, "Doubles the GPS of your Warlocks", 40, 0));
 
         // Cleric Ability Upgrades
-        this.upgrades.push(new Upgrade("Holy Imbuement", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 50, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
-        this.upgrades.push(new Upgrade("Holy Imbuement II", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 100, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
-        this.upgrades.push(new Upgrade("Holy Imbuement III", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 150, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
-        this.upgrades.push(new Upgrade("Holy Imbuement IV", Math.floor((game.mercenaryManager.baseClericPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 200, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+        this.upgrades.push(new Upgrade("Holy Imbuement", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 50, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+        this.upgrades.push(new Upgrade("Holy Imbuement II", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 100, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+        this.upgrades.push(new Upgrade("Holy Imbuement III", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 150, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
+        this.upgrades.push(new Upgrade("Holy Imbuement IV", Math.floor((legacyGame.mercenaryManager.baseClericPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.CLERIC, 200, "Increases the hp5 bonus from your Clerics by 2.5%.", 200, 0));
 
         // Commander Ability Upgrades
-        this.upgrades.push(new Upgrade("Battle Morale", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 50, "Increases the health bonus from your Commanders by " + game.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
-        this.upgrades.push(new Upgrade("Battle Morale II", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 100, "Increases the health bonus from your Commanders by " + game.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
-        this.upgrades.push(new Upgrade("Battle Morale III", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 150, "Increases the health bonus from your Commanders by " + game.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
-        this.upgrades.push(new Upgrade("Battle Morale IV", Math.floor((game.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 200, "Increases the health bonus from your Commanders by " + game.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+        this.upgrades.push(new Upgrade("Battle Morale", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 50, "Increases the health bonus from your Commanders by " + legacyGame.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+        this.upgrades.push(new Upgrade("Battle Morale II", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 100, "Increases the health bonus from your Commanders by " + legacyGame.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+        this.upgrades.push(new Upgrade("Battle Morale III", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 150, "Increases the health bonus from your Commanders by " + legacyGame.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
+        this.upgrades.push(new Upgrade("Battle Morale IV", Math.floor((legacyGame.mercenaryManager.baseCommanderPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.COMMANDER, 200, "Increases the health bonus from your Commanders by " + legacyGame.mercenaryManager.commanderHealthPercentUpgradeValue + "%.", 160, 0));
 
         // Mage Ability Upgrades
-        this.upgrades.push(new Upgrade("Fire Mastery", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 50, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
-        this.upgrades.push(new Upgrade("Fire Mastery II", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 100, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
-        this.upgrades.push(new Upgrade("Fire Mastery III", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 150, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
-        this.upgrades.push(new Upgrade("Fire Mastery IV", Math.floor((game.mercenaryManager.baseMagePrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 200, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+        this.upgrades.push(new Upgrade("Fire Mastery", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 50, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+        this.upgrades.push(new Upgrade("Fire Mastery II", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 100, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+        this.upgrades.push(new Upgrade("Fire Mastery III", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 150, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
+        this.upgrades.push(new Upgrade("Fire Mastery IV", Math.floor((legacyGame.mercenaryManager.baseMagePrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.MAGE, 200, "Increases the damage bonus from your Mages by 2.5%.", 120, 0));
 
         // Assassin Ability Upgrades
-        this.upgrades.push(new Upgrade("Shadow Mastery", Math.floor((game.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 50, "Increases the evasion bonus from your assassins by " + game.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
-        this.upgrades.push(new Upgrade("Shadow Mastery II", Math.floor((game.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 100, "Increases the evasion bonus from your assassins by " + game.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
-        this.upgrades.push(new Upgrade("Shadow Mastery III", Math.floor((game.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 150, "Increases the evasion bonus from your assassins by " + game.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
-        this.upgrades.push(new Upgrade("Shadow Mastery IV", Math.floor((game.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 200, "Increases the evasion bonus from your assassins by " + game.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+        this.upgrades.push(new Upgrade("Shadow Mastery", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 50, "Increases the evasion bonus from your assassins by " + legacyGame.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+        this.upgrades.push(new Upgrade("Shadow Mastery II", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 100, "Increases the evasion bonus from your assassins by " + legacyGame.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+        this.upgrades.push(new Upgrade("Shadow Mastery III", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 150, "Increases the evasion bonus from your assassins by " + legacyGame.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
+        this.upgrades.push(new Upgrade("Shadow Mastery IV", Math.floor((legacyGame.mercenaryManager.baseAssassinPrice + Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.ASSASSIN, 200, "Increases the evasion bonus from your assassins by " + legacyGame.mercenaryManager.assassinEvasionPercentUpgradeValue + "%.", 80, 0));
 
         // Warlock Ability Upgrades
-        this.upgrades.push(new Upgrade("Corruption", Math.floor((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 50, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
-        this.upgrades.push(new Upgrade("Corruption II", Math.floor((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 100, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
-        this.upgrades.push(new Upgrade("Corruption III", Math.floor((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 150, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
-        this.upgrades.push(new Upgrade("Corruption IV", Math.floor((game.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 200, "Increases the crit damage bonus from Warlocks by 2.5%.", 40, 0));
+        this.upgrades.push(new Upgrade("Corruption", Math.floor((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 49)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 50, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
+        this.upgrades.push(new Upgrade("Corruption II", Math.floor((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 99)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 100, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
+        this.upgrades.push(new Upgrade("Corruption III", Math.floor((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 149)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 150, "Increases the crit damage bonus from your Warlocks by 2.5%.", 40, 0));
+        this.upgrades.push(new Upgrade("Corruption IV", Math.floor((legacyGame.mercenaryManager.baseWarlockPrice * Math.pow(1.15, 199)) * 3), UpgradeType.SPECIAL, UpgradeRequirementType.WARLOCK, 200, "Increases the crit damage bonus from Warlocks by 2.5%.", 40, 0));
 
         // Attack Upgrades
-        this.upgrades.push(new Upgrade("Power Strike", game.monsterCreator.calculateMonsterGoldWorth(50, MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
-        this.upgrades.push(new Upgrade("Double Strike", game.monsterCreator.calculateMonsterGoldWorth(100, MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
-
-        // Auto Loot Upgrades
-        this.upgrades.push(new Upgrade("Vendor", game.monsterCreator.calculateMonsterGoldWorth(25, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 100, "Doubles the amount of gold items are worth and allows you to automatically sell common items. This can be set in your inventory.", 200, 40));
-        this.upgrades.push(new Upgrade("Trader", game.monsterCreator.calculateMonsterGoldWorth(50, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 200, "Doubles the amount of gold items are worth and allows you to automatically sell uncommon items. This can be set in your inventory.", 200, 40));
-        this.upgrades.push(new Upgrade("Merchant", game.monsterCreator.calculateMonsterGoldWorth(100, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 400, "Doubles the amount of gold items are worth and allows you to automatically sell rare items. This can be set in your inventory.", 200, 40));
-        this.upgrades.push(new Upgrade("Storekeeper", game.monsterCreator.calculateMonsterGoldWorth(150, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 800, "Doubles the amount of gold items are worth and allows you to automatically sell epic items. This can be set in your inventory.", 200, 40));
-        this.upgrades.push(new Upgrade("Operator", game.monsterCreator.calculateMonsterGoldWorth(250, MonsterRarity.COMMON) * 200, UpgradeType.AUTO_SELL, UpgradeRequirementType.ITEMS_LOOTED, 1600, "Doubles the amount of gold items are worth and allows you to automatically sell legendary items. This can be set in your inventory.", 200, 40));
+        this.upgrades.push(new Upgrade("Power Strike", legacyGame.monsterCreator.calculateMonsterGoldWorth(50, MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 50, "Upgrades your attack to Power Strike", 0, 80));
+        this.upgrades.push(new Upgrade("Double Strike", legacyGame.monsterCreator.calculateMonsterGoldWorth(100, MonsterRarity.COMMON) * 400, UpgradeType.ATTACK, UpgradeRequirementType.LEVEL, 100, "Upgrades your attack to Double Strike", 200, 80));
     }
 
     this.update = function update() {
@@ -4271,78 +3687,22 @@ function UpgradeManager() {
 
                 // Find the matching requirement type, then see if it has been met
                 switch (currentUpgrade.requirementType) {
-                    case UpgradeRequirementType.FOOTMAN: if (game.mercenaryManager.footmenOwned >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.CLERIC: if (game.mercenaryManager.clericsOwned >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.COMMANDER: if (game.mercenaryManager.commandersOwned >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.MAGE: if (game.mercenaryManager.magesOwned >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.ASSASSIN: if (game.mercenaryManager.assassinsOwned >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.WARLOCK: if (game.mercenaryManager.warlocksOwned >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.ITEMS_LOOTED: if (game.stats.itemsLooted >= currentUpgrade.requirementAmount) { available = true; } break;
-                    case UpgradeRequirementType.LEVEL: if (game.player.level >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.FOOTMAN: if (legacyGame.mercenaryManager.footmenOwned >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.CLERIC: if (legacyGame.mercenaryManager.clericsOwned >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.COMMANDER: if (legacyGame.mercenaryManager.commandersOwned >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.MAGE: if (legacyGame.mercenaryManager.magesOwned >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.ASSASSIN: if (legacyGame.mercenaryManager.assassinsOwned >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.WARLOCK: if (legacyGame.mercenaryManager.warlocksOwned >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.ITEMS_LOOTED: if (legacyGame.stats.itemsLooted >= currentUpgrade.requirementAmount) { available = true; } break;
+                    case UpgradeRequirementType.LEVEL: if (legacyGame.player.level >= currentUpgrade.requirementAmount) { available = true; } break;
                 }
             }
 
             // If the upgrade is now available, then add it to the interface
             if (available) {
-                game.displayAlert("New upgrade available!");
+                legacyGame.displayAlert("New upgrade available!");
                 // Set the upgrade to available
                 currentUpgrade.available = true;
-                this.upgradesAvailable++;
-                this.purchaseButtonUpgradeIds.push(x);
-
-                // Create the button
-                var newDiv = document.createElement('div');
-                newDiv.id = 'upgradePurchaseButton' + this.upgradesAvailable;
-                newDiv.className = 'buyButton';
-                var id = this.upgradesAvailable;
-                newDiv.onmouseover = function () { upgradeButtonMouseOver(newDiv, id); }
-                newDiv.onmousedown = function () { upgradeButtonMouseDown(id); }
-                newDiv.onmouseup = function () { upgradeButtonMouseOver(newDiv, id); }
-                newDiv.onmouseout = function () { upgradeButtonMouseOut(id); }
-                var container = document.getElementById("upgradesBuyArea");
-                container.appendChild(newDiv);
-
-                // Create the text container
-                var newDiv2 = document.createElement('div');
-                newDiv2.className = 'buyButtonArea';
-                newDiv.appendChild(newDiv2);
-
-                // Create the icon
-                var icon = document.createElement('div');
-                icon.id = "upgradeIcon" + this.upgradesAvailable;
-                icon.className = 'buyButtonIcon';
-                icon.style.background = 'url("includes/images/bigIcons.png") ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
-                newDiv2.appendChild(icon);
-
-                // Create the name
-                var newDiv3 = document.createElement('div');
-                newDiv3.id = 'upgradeName' + this.upgradesAvailable;
-                newDiv3.className = 'mercenaryName';
-                newDiv3.innerHTML = currentUpgrade.name;
-                newDiv2.appendChild(newDiv3);
-
-                // Transform the cost
-                var cost = currentUpgrade.cost;
-                cost = cost.formatMoney(0);
-
-                // Create the cost
-                newDiv3 = document.createElement('div');
-                newDiv3.id = 'upgradeCost' + this.upgradesAvailable;
-                newDiv3.className = 'mercenaryAmount';
-                newDiv3.innerHTML = cost;
-                newDiv3.style.left = '53px';
-                newDiv2.appendChild(newDiv3);
-
-                // Create the gold coin
-                newDiv3 = document.createElement('div');
-                newDiv3.id = 'upgradeCoin' + this.upgradesAvailable;
-                newDiv3.className = 'goldCoin';
-                newDiv3.style.position = 'absolute';
-                newDiv3.style.top = '28px';
-                newDiv3.style.width = '12px';
-                newDiv3.style.height = '12px';
-                newDiv3.style.left = '41px';
-                newDiv2.appendChild(newDiv3);
 
                 // Make the Upgrades Button glow to tell the player a new upgrade is available
                 this.glowUpgradesButton();
@@ -4354,17 +3714,13 @@ function UpgradeManager() {
 
     this.purchaseUpgrade = function purchaseUpgrade(id) {
         // If the player can afford the upgrade
-        if (game.player.gold >= this.upgrades[this.purchaseButtonUpgradeIds[id]].cost) {
+        if (legacyGame.player.gold >= this.upgrades[id].cost) {
             // Purchase the upgrade
-            var upgrade = this.upgrades[this.purchaseButtonUpgradeIds[id]];
-            game.player.gold -= upgrade.cost;
+            var upgrade = this.upgrades[id];
+            legacyGame.player.gold -= upgrade.cost;
             upgrade.purchased = true;
             upgrade.available = false;
-            this.upgradesAvailable--;
-            this.upgradesPurchased++;
-            this.purchaseButtonUpgradeIds.splice(id, 1);
 
-            var autoSellUpgradePurchased = false;
             // Apply the bonus
             switch (upgrade.type) {
                 case UpgradeType.GPS:
@@ -4387,70 +3743,12 @@ function UpgradeManager() {
                         case UpgradeRequirementType.WARLOCK: this.warlockSpecialUpgradesPurchased++; break;
                     }
                     break;
-                case UpgradeType.AUTO_SELL:
-                    autoSellUpgradePurchased = true;
-                    this.autoSellUpgradesPurchased++;
-                    switch (upgrade.name) {
-                        case "Vendor": $("#checkboxWhite").show(); break;
-                        case "Trader": $("#checkboxGreen").show(); break;
-                        case "Merchant": $("#checkboxBlue").show(); break;
-                        case "Storekeeper": $("#checkboxPurple").show(); break;
-                        case "Operator": $("#checkboxOrange").show(); break;
-                    }
-                    break;
                 case UpgradeType.ATTACK:
                     switch (upgrade.name) {
-                        case "Power Strike": if (!this.upgrades[56].purchased) { game.player.changeAttack(AttackType.POWER_STRIKE); } break;
-                        case "Double Strike": game.player.changeAttack(AttackType.DOUBLE_STRIKE); break;
+                        case "Power Strike": if (!this.upgrades[56].purchased) { legacyGame.player.changeAttack(AttackType.POWER_STRIKE); } break;
+                        case "Double Strike": legacyGame.player.changeAttack(AttackType.DOUBLE_STRIKE); break;
                     }
             }
-
-            // If an auto sell upgrade was purchased then upgrade the gold value on all items the player currently has
-            if (autoSellUpgradePurchased) {
-                for (var x = 0; x < game.inventory.slots.length; x++) {
-                    if (game.inventory.slots[x] != null) {
-                        game.inventory.slots[x].sellValue *= 2;
-                    }
-                }
-                for (var x = 0; x < game.equipment.slots.length; x++) {
-                    if (game.equipment.slots[x] != null) {
-                        game.equipment.slots[x].sellValue *= 2;
-                    }
-                }
-            }
-
-            // Remove the button and organise the others
-            var currentElement;
-            var nextElement;
-            var buttonId;
-            for (var x = id; x < this.upgradesAvailable; x++) {
-                // Change the button
-                buttonId = x + 1;
-                currentElement = document.getElementById('upgradePurchaseButton' + buttonId);
-                nextElement = document.getElementById('upgradePurchaseButton' + (buttonId + 1));
-                currentElement.className = nextElement.className;
-
-                // Change the icon
-                currentElement = document.getElementById('upgradeIcon' + buttonId);
-                nextElement = document.getElementById('upgradeIcon' + (buttonId + 1));
-                currentElement.style.background = nextElement.style.background;
-
-                // Change the name
-                currentElement = document.getElementById('upgradeName' + buttonId);
-                nextElement = document.getElementById('upgradeName' + (buttonId + 1));
-                currentElement.innerHTML = nextElement.innerHTML;
-
-                // Change the cost
-                currentElement = document.getElementById('upgradeCost' + buttonId);
-                nextElement = document.getElementById('upgradeCost' + (buttonId + 1));
-                currentElement.innerHTML = nextElement.innerHTML;
-                currentElement.style.left = nextElement.style.left;
-            }
-
-            // Remove the last element and update the position for the next upgrade
-            currentElement = document.getElementById('upgradePurchaseButton' + (this.upgradesAvailable + 1));
-            currentElement.parentNode.removeChild(currentElement);
-            this.nextTopPosition -= this.topIncrement;
 
             // Hide the tooltip
             $("#otherTooltip").hide();
@@ -4495,8 +3793,6 @@ function UpgradeManager() {
         localStorage.mageSpecialUpgradesPurchased = this.mageSpecialUpgradesPurchased;
         localStorage.assassinSpecialUpgradesPurchased = this.assassinSpecialUpgradesPurchased;
         localStorage.warlockSpecialUpgradesPurchased = this.warlockSpecialUpgradesPurchased;
-
-        localStorage.autoSellUpgradesPurchased = this.autoSellUpgradesPurchased;
     }
 
     this.load = function load() {
@@ -4524,6 +3820,10 @@ function UpgradeManager() {
             if (localStorage.warlockSpecialUpgradesPurchased != null) { this.warlockSpecialUpgradesPurchased = localStorage.warlockSpecialUpgradesPurchased; }
 
             for (var x = 0; x < upgradesPurchasedArray.length; x++) {
+                if(this.upgrades[x] === undefined) {
+                    continue;
+                }
+
                 if (upgradesPurchasedArray[x]) {
                     this.upgradesPurchased++;
                     this.upgrades[x].purchased = upgradesPurchasedArray[x];
@@ -4532,80 +3832,6 @@ function UpgradeManager() {
                     this.upgrades[x].available = upgradesAvailableArray[x];
                 }
             }
-
-            // Show all the buttons for each available upgrade
-            for (var x = 0; x < this.upgrades.length; x++) {
-                if (this.upgrades[x].available && !this.upgrades[x].purchased) {
-                    // Set the upgrade to available
-                    var currentUpgrade = this.upgrades[x];
-                    this.upgradesAvailable++;
-                    this.purchaseButtonUpgradeIds.push(x);
-
-                    // Create the button
-                    var newDiv = document.createElement('div');
-                    newDiv.id = 'upgradePurchaseButton' + this.upgradesAvailable;
-                    newDiv.className = 'buyButton'
-                    newDiv.style.top = this.nextTopPosition + 'px';
-                    var id = this.upgradesAvailable;
-                    newDiv.onmouseover = upgradeButtonMouseOverFactory(newDiv, id);
-                    newDiv.onmousedown = upgradeButtonMouseDownFactory(id);
-                    newDiv.onmouseup = upgradeButtonMouseOverFactory(newDiv, id);
-                    newDiv.onmouseout = upgradeButtonMouseOutFactory(id)
-                    var container = document.getElementById("upgradesBuyArea");
-                    container.appendChild(newDiv);
-
-                    this.nextTopPosition += this.topIncrement;
-
-                    // Create the text container
-                    var newDiv2 = document.createElement('div');
-                    newDiv2.className = 'buyButtonArea';
-                    newDiv.appendChild(newDiv2);
-
-                    // Create the icon
-                    var icon = document.createElement('div');
-                    icon.className = 'buyButtonIcon button';
-                    icon.style.background = 'url("includes/images/bigIcons.png") ' + currentUpgrade.iconSourceLeft + 'px ' + currentUpgrade.iconSourceTop + 'px';
-                    newDiv2.appendChild(icon);
-
-                    // Create the name
-                    var newDiv3 = document.createElement('div');
-                    newDiv3.id = 'upgradeName' + this.upgradesAvailable;
-                    newDiv3.className = 'mercenaryName';
-                    newDiv3.innerHTML = currentUpgrade.name;
-                    newDiv2.appendChild(newDiv3);
-
-                    // Transform the cost
-                    var cost = currentUpgrade.cost;
-                    cost = cost.formatMoney(0);
-
-                    // Create the cost
-                    newDiv3 = document.createElement('div');
-                    newDiv3.id = 'upgradeCost' + this.upgradesAvailable;
-                    newDiv3.className = 'mercenaryAmount';
-                    newDiv3.innerHTML = cost;
-                    newDiv3.style.left = '53px';
-                    newDiv2.appendChild(newDiv3);
-
-                    // Create the gold coin
-                    newDiv3 = document.createElement('div');
-                    newDiv3.id = 'upgradeCoin' + this.upgradesAvailable;
-                    newDiv3.className = 'goldCoin';
-                    newDiv3.style.position = 'absolute';
-                    newDiv3.style.top = '28px';
-                    newDiv3.style.width = '12px';
-                    newDiv3.style.height = '12px';
-                    newDiv3.style.left = '41px';
-                    newDiv2.appendChild(newDiv3);
-                }
-            }
-
-            // Show the auto selling checkboxes the player has unlocked
-            if (this.upgrades[57].purchased) { $("#checkboxWhite").show(); }
-            if (this.upgrades[58].purchased) { $("#checkboxGreen").show(); }
-            if (this.upgrades[59].purchased) { $("#checkboxBlue").show(); }
-            if (this.upgrades[60].purchased) { $("#checkboxPurple").show(); }
-            if (this.upgrades[61].purchased) { $("#checkboxOrange").show(); }
-            if (localStorage.autoSellUpgradesPurchased != null) { this.autoSellUpgradesPurchased = parseInt(localStorage.autoSellUpgradesPurchased); }
         }
     }
 }
@@ -4620,10 +3846,9 @@ function upgradeButtonMouseOutFactory(id) {
     return function () { upgradeButtonMouseOut(id); }
 }
 
-function upgradeButtonMouseOver(obj, buttonId) {
-    var upgradeId = game.upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
-    var upgrade = game.upgradeManager.upgrades[upgradeId];
-    $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
+function upgradeButtonMouseOver(upgradeId) {
+    var upgrade = legacyGame.upgradeManager.upgrades[upgradeId];
+    $("#upgradePurchaseButton" + upgradeId).css('background', 'url("includes/images/buyButtonBase.png") 0 92px');
 
     $("#otherTooltipTitle").html(upgrade.name);
     $("#otherTooltipCooldown").html('');
@@ -4632,23 +3857,21 @@ function upgradeButtonMouseOver(obj, buttonId) {
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
-    var rect = obj.getBoundingClientRect();
+    var rect = document.getElementById('buyButton' + upgradeId).getBoundingClientRect();
     $("#otherTooltip").css('top', rect.top - 70);
     var leftReduction = document.getElementById("otherTooltip").scrollWidth;
     $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
 }
 
-function upgradeButtonMouseDown(buttonId) {
-    var upgradeId = game.upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
-    var upgrade = game.upgradeManager.upgrades[upgradeId];
-    $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.upgradeManager.purchaseUpgrade(buttonId - 1);
+function upgradeButtonMouseDown(upgradeId) {
+    var upgrade = legacyGame.upgradeManager.upgrades[upgradeId];
+    $("#upgradePurchaseButton" + upgradeId).css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
+    legacyGame.upgradeManager.purchaseUpgrade(upgradeId);
 }
 
-function upgradeButtonMouseOut(buttonId) {
-    var upgradeId = game.upgradeManager.purchaseButtonUpgradeIds[buttonId - 1];
-    var upgrade = game.upgradeManager.upgrades[upgradeId];
-    $("#upgradePurchaseButton" + buttonId).css('background', 'url("includes/images/buyButtonBase.png") 0 0');
+function upgradeButtonMouseOut(upgradeId) {
+    var upgrade = legacyGame.upgradeManager.upgrades[upgradeId];
+    $("#upgradePurchaseButton" + upgradeId).css('background', 'url("includes/images/buyButtonBase.png") 0 0');
     $("#otherTooltip").hide();
 }
 
@@ -4832,7 +4055,7 @@ function TooltipManager() {
             if (item3 != null) {
                 // Set the text of the item tooltip
                 var type3 = 'Trinket ';
-                var item3 = game.equipment.trinket2();
+                var item3 = legacyGame.equipment.trinket2();
                 stats1 = '';
                 stats2 = '';
                 if (item3.minDamage > 0) { stats1 += item3.minDamage + " - " + item3.maxDamage + " Damage"; }
@@ -4924,6 +4147,8 @@ function Game() {
     this.loadingTextInterval = 0;
     this.loadInterval = 0;
 
+    this.oldDate = new Date();
+
     // Player
     this.player = new Player();
     this.inventory = new Inventory();
@@ -4936,7 +4161,6 @@ function Game() {
     this.tooltipManager = new TooltipManager();
     this.questsManager = new QuestsManager();
     this.eventManager = new EventManager();
-    this.tutorialManager = new TutorialManager();
     this.stats = new Stats();
     this.options = new Options();
 
@@ -4970,7 +4194,6 @@ function Game() {
 
     this.initialize = function initialize() {
         this.beginLoading();
-        this.tutorialManager.initialize();
         this.mercenaryManager.initialize();
         this.upgradeManager.initialize();
         this.particleManager.initialize();
@@ -4979,6 +4202,10 @@ function Game() {
 
         document.getElementById("version").innerHTML = "Version " + this.version;
     }
+
+    this.getPowerShardBonus = function() {
+        return (this.player.powerShards / 100) + 1;
+    };
 
     this.beginLoading = function beginLoading() {
         this.loading = true;
@@ -5020,11 +4247,9 @@ function Game() {
         $("#leaveBattleButton").show();
         $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
         $("#monsterHealthBarArea").show();
-        game.tutorialManager.battleButtonClicked = true;
 
         // Hide the battle level buttons
-        $("#battleLevelDownButton").hide();
-        $("#battleLevelUpButton").hide();
+
 
         // Show the action buttons
         $("#attackButton").show();
@@ -5041,17 +4266,6 @@ function Game() {
         // Reset the battle depth
         this.resetBattle();
 
-        // Update the tutorial if it is active
-        if (this.tutorialManager.currentTutorial == 4) {
-            this.tutorialManager.leaveBattleButtonPressed = true;
-        }
-
-        // Show the battle level buttons if the player is higher than level 1
-        if (this.player.level > 1) {
-            $("#battleLevelDownButton").show();
-            $("#battleLevelUpButton").show();
-        }
-
         // Hide the attack button and debuffs
         $("#attackButton").hide();
         $("#monsterBleedingIcon").hide();
@@ -5066,7 +4280,7 @@ function Game() {
 
         // Attack the monster if the player can attack
         var monstersDamageTaken = 0;
-        if (game.player.canAttack) {
+        if (legacyGame.player.canAttack) {
             // Calculate how many attacks the player will do
             var attackAmount = 1;
             var successfulAttacks = 0;
@@ -5091,22 +4305,22 @@ function Game() {
                 }
 
                 // If the player has any crushing blows effects then deal the damage from those effects
-                var crushingBlowsEffects = game.player.getEffectsOfType(EffectType.CRUSHING_BLOWS);
+                var crushingBlowsEffects = legacyGame.player.getEffectsOfType(EffectType.CRUSHING_BLOWS);
                 var crushingBlowsDamage = 0;
                 if (crushingBlowsEffects.length > 0) {
                     for (var y = 0; y < crushingBlowsEffects.length; y++) {
                         crushingBlowsDamage += crushingBlowsEffects[y].value;
                     }
                     if (crushingBlowsDamage > 0) {
-                        this.monster.takeDamage((crushingBlowsDamage / 100) * this.monster.health, false, false);
+                        game.monsterTakeDamage((crushingBlowsDamage / 100) * this.monster.health, false, false);
                     }
                 }
-                this.monster.takeDamage(playerDamage, criticalHappened, true);
+                game.monsterTakeDamage(playerDamage, criticalHappened, true);
                 this.player.useAbilities();
                 successfulAttacks++;
 
                 // If the player has any Swiftness effects, see if the player generates any extra attacks
-                var swiftnessEffects = game.player.getEffectsOfType(EffectType.SWIFTNESS);
+                var swiftnessEffects = legacyGame.player.getEffectsOfType(EffectType.SWIFTNESS);
                 for (var z = 0; z < swiftnessEffects.length; z++) {
                     // Try to generate an extra attack
                     if (Math.random() < swiftnessEffects[z].chance / 100) {
@@ -5128,17 +4342,17 @@ function Game() {
                         }
 
                         // If the player has any crushing blows effects then deal the damage from those effects
-                        crushingBlowsEffects = game.player.getEffectsOfType(EffectType.CRUSHING_BLOWS);
+                        crushingBlowsEffects = legacyGame.player.getEffectsOfType(EffectType.CRUSHING_BLOWS);
                         crushingBlowsDamage = 0;
                         if (crushingBlowsEffects.length > 0) {
                             for (var y = 0; y < crushingBlowsEffects.length; y++) {
                                 crushingBlowsDamage += crushingBlowsEffects[y].value;
                             }
                             if (crushingBlowsDamage > 0) {
-                                this.monster.takeDamage((crushingBlowsDamage / 100) * this.monster.health, false, false);
+                                game.monsterTakeDamage((crushingBlowsDamage / 100) * this.monster.health, false, false);
                             }
                         }
-                        this.monster.takeDamage(playerDamage, criticalHappened, true);
+                        game.monsterTakeDamage(playerDamage, criticalHappened, true);
                         this.player.useAbilities();
                         successfulAttacks++;
                     }
@@ -5152,17 +4366,17 @@ function Game() {
             for (var x = 0; x < successfulAttacks; x++) {
                 for (var y = 0; y < pillagingEffects.length; y++) {
                     if (Math.random() < pillagingEffects[y].chance / 100) {
-                        game.player.gainGold(pillagingEffects[y].value, true);
+                        game.gainGold(pillagingEffects[y].value, true);
                     }
                 }
                 for (var y = 0; y < nourishmentEffects.length; y++) {
                     if (Math.random() < nourishmentEffects[y].chance / 100) {
-                        game.player.heal(nourishmentEffects[y].value);
+                        legacyGame.player.heal(nourishmentEffects[y].value);
                     }
                 }
                 for (var y = 0; y < berserkingEffects.length; y++) {
                     if (Math.random() < berserkingEffects[y].chance / 100) {
-                        game.monster.takeDamage(berserkingEffects[y].value, false, false);
+                        game.monsterTakeDamage(berserkingEffects[y].value, false, false);
                     }
                 }
             }
@@ -5174,7 +4388,7 @@ function Game() {
             // See if the player will dodge the attack
             if (Math.random() >= (this.player.calculateEvasionChance() / 100)) {
                 var monsterDamage = this.monster.damage;
-                this.player.takeDamage(monsterDamage);
+                game.playerTakeDamage(monsterDamage);
                 playersDamageTaken = monsterDamage;
             }
         }
@@ -5185,9 +4399,9 @@ function Game() {
 
             // Get the loot and experience from the monster and reward it to the player
             var loot = this.monster.getRandomLoot();
-            this.player.gainGold(loot.gold, true);
+            game.gainGold(loot.gold, true);
             this.stats.goldFromMonsters += this.player.lastGoldGained;
-            this.player.gainExperience(this.monster.experienceWorth, true);
+            game.gainExperience(this.monster.experienceWorth, true);
             this.stats.experienceFromMonsters += this.player.lastExperienceGained;
             if (loot.item != null) {
                 this.inventory.lootItem(loot.item);
@@ -5223,14 +4437,14 @@ function Game() {
     this.increaseBattleLevel = function increaseBattleLevel() {
         if (this.player.level > this.battleLevel) {
             this.battleLevel++;
-            this.displayAlert("Battle Level " + game.battleLevel);
+            this.displayAlert("Battle Level " + legacyGame.battleLevel);
         }
     }
 
     this.decreaseBattleLevel = function decreaseBattleLevel() {
         if (this.battleLevel != 1) {
             this.battleLevel--;
-            this.displayAlert("Battle Level " + game.battleLevel);
+            this.displayAlert("Battle Level " + legacyGame.battleLevel);
         }
     }
 
@@ -5249,8 +4463,6 @@ function Game() {
 
     // Triggered when the Level Up button is clicked
     this.displayLevelUpWindow = function displayLevelUpWindow() {
-        // Hide the Level Up button
-        $("#levelUpButton").hide();
 
         // Display the stat upgrade window or the ability upgrade window depending on the level
         // If the number is divisible by 5 then the player can choose an ability
@@ -5314,7 +4526,6 @@ function Game() {
     this.save = function save() {
         if (typeof (Storage) !== "undefined") {
             localStorage.version = this.version;
-            this.tutorialManager.save();
             this.inventory.save();
             this.equipment.save();
             this.player.save();
@@ -5331,7 +4542,6 @@ function Game() {
 
     this.load = function load() {
         if (typeof (Storage) !== "undefined") {
-            this.tutorialManager.load();
             this.inventory.load();
             this.equipment.load();
             this.player.load();
@@ -5342,11 +4552,6 @@ function Game() {
             this.stats.load();
             this.options.load();
 
-            // If the player is higher than level 2 then show the battle level buttons
-            if (this.player.level > 1) {
-                $("#battleLevelUpButton").show();
-                $("#battleLevelDownButton").show();
-            }
 
             if (localStorage.battleLevel != null) { this.battleLevel = parseInt(localStorage.battleLevel); }
             if (this.battleLevel > 1) {
@@ -5375,7 +4580,6 @@ function Game() {
         // Other
         this.questsManager = new QuestsManager();
         this.eventManager = new EventManager();
-        this.tutorialManager = new TutorialManager();
         this.stats = new Stats();
 
         // Combat
@@ -5406,32 +4610,13 @@ function Game() {
 
         // Items
         this.itemCreator = new ItemCreator();
-        // Reset all the inventory and equipment slots
-        for (var x = 0; x < this.inventory.slots.length; x++) {
-            $("#inventoryItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
-        }
-        for (var x = 0; x < this.equipment.slots.length; x++) {
-            $(".equipItem" + (x + 1)).css('background', 'url("includes/images/NULL.png")');
-        }
 
         this.initialize();
 
         $("#leaveBattleButton").hide();
-        $("#battleLevelDownButton").hide();
-        $("#battleLevelUpButton").hide();
         $("#monsterHealthBarArea").hide();
-        $("#levelUpButton").hide();
-        $("#expBarArea").hide();
         $("#attackButton").hide();
         $("#powerStrikeButton").hide();
-        $(".characterWindowButton").hide();
-        $(".mercenariesWindowButton").hide();
-        $(".upgradesWindowButton").hide();
-        $("#upgradesWindowButtonGlow").hide();
-        $(".questsWindowButton").hide();
-        $("#questsWindowButtonGlow").hide();
-        $(".inventoryWindowButton").hide();
-        $("#tutorialArea").show();
 
         $("#inventoryWindow").hide();
         $("#characterWindow").hide();
@@ -5440,15 +4625,9 @@ function Game() {
         $("#questsWindow").hide();
 
         $("#resurrectionBarArea").hide();
-        $("#gps").css('color', '#ffd800');
         $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
 
         $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 0');
-        $("#checkboxWhite").hide();
-        $("#checkboxGreen").hide();
-        $("#checkboxBlue").hide();
-        $("#checkboxPurple").hide();
-        $("#checkboxOrange").hide();
 
         // Reset the mercenary amounts and prices to default
         document.getElementById("footmanCost").innerHTML = this.mercenaryManager.footmanPrice.formatMoney(0);
@@ -5467,7 +4646,7 @@ function Game() {
 
     this.update = function update() {
         var newDate = new Date();
-        var ms = (newDate.getTime() - oldDate.getTime());
+        var ms = (newDate.getTime() - this.oldDate.getTime());
 
         // Check if the player is dead
         if (!this.player.alive) {
@@ -5494,7 +4673,7 @@ function Game() {
                 if (this.player.resurrectionTimeRemaining <= 0) {
                     // Make the player alive
                     this.player.resurrecting = false;
-                    this.player.health = 1;
+                    this.player.health = this.player.getMaxHealth();
                     this.player.alive = true;
 
                     // Hide the resurrection bar
@@ -5512,61 +4691,22 @@ function Game() {
         }
 
         this.mercenaryManager.update(ms);
-        this.inventory.update(ms);
         this.updateInterface(ms);
         this.questsManager.update();
         this.eventManager.update(ms);
-        this.tutorialManager.update();
         this.player.update(ms);
 
         // Save the progress if enough time has passed
-        game.saveTimeRemaining -= ms;
-        if (game.saveTimeRemaining <= 0) {
-            game.saveTimeRemaining = game.saveDelay;
-            game.save();
+        legacyGame.saveTimeRemaining -= ms;
+        if (legacyGame.saveTimeRemaining <= 0) {
+            legacyGame.saveTimeRemaining = legacyGame.saveDelay;
+            legacyGame.save();
         }
 
-        oldDate = newDate;
+        this.oldDate = newDate;
     }
 
     this.updateInterface = function updateInterface(ms) {
-        // Update the player's health bar
-        var hpBar = $("#playerHealthBar");
-        hpBar.css('width', 198 * (this.player.health / this.player.getMaxHealth()));
-        hpBar.css('height', '23');
-        document.getElementById("playerHealthBarText").innerHTML = Math.floor(this.player.health) + '/' + Math.floor(this.player.getMaxHealth());
-
-        // Update the player's exp bar
-        var expBar = $("#expBar");
-        expBar.css('width', 718 * (this.player.experience / this.player.experienceRequired));
-        expBar.css('height', '13');
-        document.getElementById("expBarText").innerHTML = Math.floor(this.player.experience) + '/' + this.player.experienceRequired;
-
-        // Update the monster's health bar
-        hpBar = $("#monsterHealthBar");
-        hpBar.css('width', 198 * (this.monster.health / this.monster.maxHealth));
-        hpBar.css('height', '23');
-        hpBar.css('color', game.monsterCreator.getRarityColour(this.monster.rarity));
-
-        // Set the monster's name or health on the screen
-        if (this.displayMonsterHealth) {
-            document.getElementById("monsterName").innerHTML = Math.floor(this.monster.health) + '/' + Math.floor(this.monster.maxHealth);
-            // Set the colour
-            $("#monsterName").css('color', game.monsterCreator.getRarityColour(this.monster.rarity));
-        }
-        else {
-            document.getElementById("monsterName").innerHTML = "(Lv" + this.monster.level + ") " + this.monster.name;
-            // Set the colour
-            $("#monsterName").css('color', this.monsterCreator.getRarityColour(this.monster.rarity));
-        }
-
-        // Update the gold and experience amounts
-        document.getElementById("goldAmount").innerHTML = this.player.gold.formatMoney(2);
-
-        // Move the gold icon and gold depending on the amount of gold the player has
-        var leftReduction = document.getElementById("goldAmount").scrollWidth / 2;
-        $("#goldAmount").css('left', (($("#gameArea").width() / 2) - leftReduction) + 'px');
-        $("#goldCoin").css('left', (($("#gameArea").width() / 2) - leftReduction - 21) + 'px');
 
         // Update the upgrades
         this.upgradeManager.update();
@@ -5685,13 +4825,14 @@ function Game() {
     }
 }
 
-var game = new Game();
+var legacyGame = new Game();
+/*var game = new Game();
 
 var intervalMS = 1000 / 60;
 var oldDate = new Date();
 setInterval(function () {
-    game.update();
-}, intervalMS);
+    legacyGame.update();
+}, intervalMS);*/
 
 /* ========== ========== ========== ========== ==========  ========== ========== ========== ========== ==========  /
 /                                                      BUTTONS                                                       
@@ -5708,7 +4849,7 @@ var slotNumberSelected;
 
 function attackButtonHover(obj) {
     // Display a different tooltip depending on the player's attack
-    switch (game.player.attackType) {
+    switch (legacyGame.player.attackType) {
         case AttackType.BASIC_ATTACK:
             $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 150px 0');
             $("#otherTooltipTitle").html('Attack');
@@ -5742,7 +4883,7 @@ function attackButtonHover(obj) {
     $("#otherTooltip").css('left', (rect.left - leftReduction - 10));
 }
 function attackButtonReset() {
-    switch (game.player.attackType) {
+    switch (legacyGame.player.attackType) {
         case AttackType.BASIC_ATTACK: $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 0'); break;
         case AttackType.POWER_STRIKE: $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 100px'); break;
         case AttackType.DOUBLE_STRIKE: $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 0 50px'); break;
@@ -5750,99 +4891,99 @@ function attackButtonReset() {
     $("#otherTooltip").hide();
 }
 function attackButtonClick() {
-    switch (game.player.attackType) {
+    switch (legacyGame.player.attackType) {
         case AttackType.BASIC_ATTACK: $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 0'); break;
         case AttackType.POWER_STRIKE: $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 100px'); break;
         case AttackType.DOUBLE_STRIKE: $("#attackButton").css('background', 'url("includes/images/attackButtons.png") 100px 50px'); break;
     }
-    if (game.inBattle == true) {
-        game.attack();
+    if (legacyGame.inBattle == true) {
+        legacyGame.attack();
     }
 }
 
 function enterBattleButtonHover(obj) {
-    if (game.inBattle == false && game.player.alive) {
+    if (legacyGame.inBattle == false && legacyGame.player.alive) {
         $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 75px');
     }
 }
 function enterBattleButtonReset(obj) {
-    if (game.inBattle == false && game.player.alive) {
+    if (legacyGame.inBattle == false && legacyGame.player.alive) {
         $("#enterBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
     }
 }
 function enterBattleButtonClick(obj) {
-    if (game.inBattle == false && game.player.alive) {
-        game.enterBattle();
+    if (legacyGame.inBattle == false && legacyGame.player.alive) {
+        legacyGame.enterBattle();
     }
 }
 
 function leaveBattleButtonHover(obj) {
-    if (game.inBattle == true) {
+    if (legacyGame.inBattle == true) {
         $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 75px');
     }
 }
 function leaveBattleButtonReset(obj) {
-    if (game.inBattle == true) {
+    if (legacyGame.inBattle == true) {
         $("#leaveBattleButton").css('background', 'url("includes/images/stoneButton1.png") 0 0px');
     }
 }
 function leaveBattleButtonClick(obj) {
     // If a battle is active
-    if (game.inBattle == true) {
-        game.leaveBattle();
+    if (legacyGame.inBattle == true) {
+        legacyGame.leaveBattle();
     }
 }
 
 function battleLevelUpButtonHover(obj) {
-    if (!game.maxBattleLevelReached()) {
+    if (!legacyGame.maxBattleLevelReached()) {
         obj.style.background = 'url("includes/images/battleLevelButton.png") 0 75px';
     }
 }
 function battleLevelUpButtonClick(obj) {
     obj.style.background = 'url("includes/images/battleLevelButton.png") 0 50px';
 
-    if (!game.maxBattleLevelReached()) { 
-        game.increaseBattleLevel();
+    if (!legacyGame.maxBattleLevelReached()) { 
+        legacyGame.increaseBattleLevel();
         $("#battleLevelDownButton").css('background', 'url("includes/images/battleLevelButton.png") 0 0px');
-        if (game.maxBattleLevelReached()) {
+        if (legacyGame.maxBattleLevelReached()) {
             obj.style.background = 'url("includes/images/battleLevelButton.png") 0 25px';
         }
     }
 }
 function battleLevelUpButtonReset(obj) {
-    if (!game.maxBattleLevelReached()) {
+    if (!legacyGame.maxBattleLevelReached()) {
         obj.style.background = 'url("includes/images/battleLevelButton.png") 0 0px';
     }
 }
 
 function battleLevelDownButtonHover(obj) {
-    if (game.battleLevel != 1) {
+    if (legacyGame.battleLevel != 1) {
         obj.style.background = 'url("includes/images/battleLevelButton.png") 0 75px';
     }
 }
 function battleLevelDownButtonClick(obj) {
     obj.style.background = 'url("includes/images/battleLevelButton.png") 0 50px';
 
-    if (game.battleLevel != 1) { 
-        game.decreaseBattleLevel();
+    if (legacyGame.battleLevel != 1) { 
+        legacyGame.decreaseBattleLevel();
         $("#battleLevelUpButton").css('background', 'url("includes/images/battleLevelButton.png") 0 0px');
-        if (game.battleLevel == 1) {
+        if (legacyGame.battleLevel == 1) {
             obj.style.background = 'url("includes/images/battleLevelButton.png") 0 25px';
         }
     }
 }
 function battleLevelDownButtonReset(obj) {
-    if (game.battleLevel != 1) {
+    if (legacyGame.battleLevel != 1) {
         obj.style.background = 'url("includes/images/battleLevelButton.png") 0 0px';
     }
 }
 
 function equipItemHover(obj, index) {
-    var item = game.equipment.slots[index - 1];
+    var item = legacyGame.equipment.slots[index - 1];
     // If there is an item in this slot then show the item tooltip
     if (item != null) {
         var rect = obj.getBoundingClientRect();
-        game.tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
+        legacyGame.tooltipManager.displayItemTooltip(item, null, null, rect.left, rect.top, false);
     }
 }
 function equipItemReset(obj, index) {
@@ -5862,7 +5003,7 @@ function equipItemClick(obj, index) {
 }
 
 function inventoryItemHover(obj, index) {
-    var item = game.inventory.slots[index - 1];
+    var item = legacyGame.inventory.slots[index - 1];
     // If there is an item in this slot then show the item tooltip
     if (item != null) {
         // If there is already an item equipped in the slot this item would go into, then get that item
@@ -5870,35 +5011,35 @@ function inventoryItemHover(obj, index) {
         var equippedSlot = -1
         var twoTrinkets = false;
         switch (item.type) {
-            case ItemType.HELM:         if (game.equipment.helm() != null) { equippedSlot = 0 } break;
-            case ItemType.SHOULDERS:    if (game.equipment.shoulders() != null) { equippedSlot = 1; } break;
-            case ItemType.CHEST:        if (game.equipment.chest() != null) { equippedSlot = 2; } break;
-            case ItemType.LEGS:         if (game.equipment.legs() != null) { equippedSlot = 3; } break;
-            case ItemType.WEAPON:       if (game.equipment.weapon() != null) { equippedSlot = 4; } break;
-            case ItemType.GLOVES:       if (game.equipment.gloves() != null) { equippedSlot = 5; } break;
-            case ItemType.BOOTS:        if (game.equipment.boots() != null) { equippedSlot = 6; } break;
-            case ItemType.TRINKET:      if (game.equipment.trinket1() != null || game.equipment.trinket2() != null) {
+            case ItemType.HELM:         if (legacyGame.equipment.helm() != null) { equippedSlot = 0 } break;
+            case ItemType.SHOULDERS:    if (legacyGame.equipment.shoulders() != null) { equippedSlot = 1; } break;
+            case ItemType.CHEST:        if (legacyGame.equipment.chest() != null) { equippedSlot = 2; } break;
+            case ItemType.LEGS:         if (legacyGame.equipment.legs() != null) { equippedSlot = 3; } break;
+            case ItemType.WEAPON:       if (legacyGame.equipment.weapon() != null) { equippedSlot = 4; } break;
+            case ItemType.GLOVES:       if (legacyGame.equipment.gloves() != null) { equippedSlot = 5; } break;
+            case ItemType.BOOTS:        if (legacyGame.equipment.boots() != null) { equippedSlot = 6; } break;
+            case ItemType.TRINKET:      if (legacyGame.equipment.trinket1() != null || legacyGame.equipment.trinket2() != null) {
                                             equippedSlot = 7;
                                             // Check to see if there are two trinkets equipped, then we will need to show two compare tooltips
-                                            if (game.equipment.trinket1() != null && game.equipment.trinket2() != null) {
+                                            if (legacyGame.equipment.trinket1() != null && legacyGame.equipment.trinket2() != null) {
                                                 twoTrinkets = true;
                                             }
                                         }
                                         break;
-            case ItemType.OFF_HAND:     if (game.equipment.off_hand() != null) { equippedSlot = 9; } break;
+            case ItemType.OFF_HAND:     if (legacyGame.equipment.off_hand() != null) { equippedSlot = 9; } break;
         }
-        var item2 = game.equipment.slots[equippedSlot];
+        var item2 = legacyGame.equipment.slots[equippedSlot];
 
         // If the item type is a trinket and there are two trinkets equipped then we need to display two compare tooltips
         if (twoTrinkets) {
-            var item3 = game.equipment.trinket2();
+            var item3 = legacyGame.equipment.trinket2();
         }
 
         // Get the item slot's location
         var rect = obj.getBoundingClientRect();
 
         // Display the tooltip
-        game.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
+        legacyGame.tooltipManager.displayItemTooltip(item, item2, item3, rect.left, rect.top, true);
     }
 }
 function inventoryItemReset(obj, index) {
@@ -5910,7 +5051,7 @@ function inventoryItemReset(obj, index) {
 function inventoryItemClick(obj, index, event) {
     // If the shift key is down then sell this item
     if (event.shiftKey == 1) {
-        game.inventory.sellItem(index - 1);
+        legacyGame.inventory.sellItem(index - 1);
     }
     // If the left mouse button was clicked
     else if (event.which == 1) {
@@ -5923,20 +5064,20 @@ function inventoryItemClick(obj, index, event) {
     }
 }
 function sellAllButtonClick() {
-    game.inventory.sellAll();
+    legacyGame.inventory.sellAll();
 }
 
 function equipInventoryItem(event, index) {
     // If the alt key was pressed try to equip this item as a second trinket
     if (event.altKey == 1) {
-        game.equipment.equipSecondTrinket(game.inventory.slots[index - 1], index - 1);
+        legacyGame.equipment.equipSecondTrinket(legacyGame.inventory.slots[index - 1], index - 1);
     }
     else {
-        game.equipment.equipItem(game.inventory.slots[index - 1], index - 1);
+        legacyGame.equipment.equipItem(legacyGame.inventory.slots[index - 1], index - 1);
     }
 }
 function equipItemRightClick(event, index) {
-    game.equipment.unequipItem(index - 1);
+    legacyGame.equipment.unequipItem(index - 1);
 }
 
 var sellButtonActive = false;
@@ -5975,7 +5116,7 @@ function levelUpButtonReset() {
 function levelUpButtonClick() {
     $("#levelUpButton").css("background", 'url("includes/images/stoneButton1.png") 0 50px');
 
-    game.displayLevelUpWindow();
+    legacyGame.displayLevelUpWindow();
 }
 
 /* ========== ========== ========== ========== ==========  ========== ========== ========== ========== ==========  /
@@ -5986,10 +5127,13 @@ var mercenariesWindowShown = false;
 var upgradesWindowShown = false;
 var questsWindowShown = false;
 var inventoryWindowShown = false;
+var fbOnDemandOptionsShown = false;
+var fbExtraStatsWindowShown = false;
+var fbCombatLogWindowShown = false;
 
 function characterWindowButtonHover(obj) {
     $(".characterWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 78px');
-    game.tooltipManager.displayBasicTooltip(obj, "Character");
+    legacyGame.tooltipManager.displayBasicTooltip(obj, "Character");
 }
 function characterWindowButtonClick(obj) {
     if (characterWindowShown) { $("#characterWindow").hide(); characterWindowShown = false; }
@@ -5997,8 +5141,6 @@ function characterWindowButtonClick(obj) {
         updateWindowDepths(document.getElementById("characterWindow"));
         $("#characterWindow").show();
         characterWindowShown = true;
-        // Update the tutorial
-        game.tutorialManager.equipmentOpened = true;
     }
 }
 function characterWindowButtonReset(obj) {
@@ -6008,7 +5150,7 @@ function characterWindowButtonReset(obj) {
 
 function mercenariesWindowButtonHover(obj) {
     $(".mercenariesWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 117px');
-    game.tooltipManager.displayBasicTooltip(obj, "Mercenaries");
+    legacyGame.tooltipManager.displayBasicTooltip(obj, "Mercenaries");
 }
 function mercenariesWindowButtonClick(obj) {
     if (mercenariesWindowShown) { $("#mercenariesWindow").hide(); mercenariesWindowShown = false; }
@@ -6016,10 +5158,6 @@ function mercenariesWindowButtonClick(obj) {
         $("#mercenariesWindow").show(); 
         mercenariesWindowShown = true; 
         updateWindowDepths(document.getElementById("mercenariesWindow")); 
-    }
-
-    if (game.tutorialManager.currentTutorial == 9) {
-        game.tutorialManager.hideTutorial();
     }
 }
 function mercenariesWindowButtonReset(obj) {
@@ -6030,19 +5168,15 @@ function mercenariesWindowButtonReset(obj) {
 function upgradesWindowButtonHover(obj) {
     $("#upgradesWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 39px 0');
     $(".upgradesWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 0');
-    game.tooltipManager.displayBasicTooltip(obj, "Upgrades");
+    legacyGame.tooltipManager.displayBasicTooltip(obj, "Upgrades");
 }
 function upgradesWindowButtonClick(obj) {
-    game.upgradeManager.stopGlowingUpgradesButton();
+    legacyGame.upgradeManager.stopGlowingUpgradesButton();
     if (upgradesWindowShown) { $("#upgradesWindow").hide(); upgradesWindowShown = false; }
     else { 
         $("#upgradesWindow").show(); 
         upgradesWindowShown = true; 
         updateWindowDepths(document.getElementById("upgradesWindow"));
-    }
-
-    if (game.tutorialManager.currentTutorial == 10) {
-        game.tutorialManager.hideTutorial();
     }
 }
 function upgradesWindowButtonReset(obj) {
@@ -6054,20 +5188,15 @@ function upgradesWindowButtonReset(obj) {
 function questsWindowButtonHover(obj) {
     $("#questsWindowButtonGlow").css('background', 'url("includes/images/windowButtons.png") 39px 195px');
     $(".questsWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 195px');
-    game.tooltipManager.displayBasicTooltip(obj, "Quests");
+    legacyGame.tooltipManager.displayBasicTooltip(obj, "Quests");
 }
 function questsWindowButtonClick(obj) {
-    game.questsManager.stopGlowingQuestsButton();
+    legacyGame.questsManager.stopGlowingQuestsButton();
     if (questsWindowShown) { $("#questsWindow").hide(); questsWindowShown = false; }
     else { 
         $("#questsWindow").show(); 
         questsWindowShown = true; 
         updateWindowDepths(document.getElementById("questsWindow")); 
-    }
-
-    // Hide the tutorial if this is the first quests tutorial
-    if (game.tutorialManager.currentTutorial == 6) {
-        game.tutorialManager.hideTutorial();
     }
 }
 function questsWindowButtonReset(obj) {
@@ -6077,13 +5206,13 @@ function questsWindowButtonReset(obj) {
 }
 
 function questNameClick(id) {
-    game.questsManager.selectedQuest = id;
+    legacyGame.questsManager.selectedQuest = id;
 }
 
 var inventoryWindowVisible = false;
 function inventoryWindowButtonHover(obj) {
     $(".inventoryWindowButton").css('background', 'url("includes/images/windowButtons.png") 117px 39px');
-    game.tooltipManager.displayBasicTooltip(obj, "Inventory");
+    legacyGame.tooltipManager.displayBasicTooltip(obj, "Inventory");
 }
 function inventoryWindowButtonClick(obj) {
     if (inventoryWindowShown) { $("#inventoryWindow").hide(); inventoryWindowShown = false; }
@@ -6091,8 +5220,6 @@ function inventoryWindowButtonClick(obj) {
         updateWindowDepths(document.getElementById("inventoryWindow"));
         $("#inventoryWindow").show(); 
         inventoryWindowShown = true;
-        // Update the 6th tutorial
-        game.tutorialManager.inventoryOpened = true;
     }
 }
 function inventoryWindowButtonReset(obj) {
@@ -6115,6 +5242,9 @@ function closeButtonClick(obj) {
         case "upgradesWindowCloseButton": $("#upgradesWindow").hide(); upgradesWindowShown = false; break;
         case "questsWindowCloseButton": $("#questsWindow").hide(); questsWindowShown = false; break;
         case "inventoryWindowCloseButton": $("#inventoryWindow").hide(); inventoryWindowShown = false; break;
+        case "fbOnDemandOptionsCloseButton": $("#fbOnDemandOptions").hide(); fbOnDemandOptionsShown = false; break;
+        case "fbExtraStatsCloseButton": $("#fbExtraStatsWindow").hide(); fbExtraStatsWindowShown = false; break;
+        case "fbCombatLogCloseButton": $("#fbCombatLogWindow").hide(); fbCombatLogWindowShown = false; break;
     }
 }
 function closeButtonReset(obj) {
@@ -6148,7 +5278,7 @@ function footmanBuyButtonMouseOver(obj) {
     $("#otherTooltipTitle").html('Footman');
     $("#otherTooltipCooldown").html('');
     $("#otherTooltipLevel").html('');
-    $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.FOOTMAN));
+    $("#otherTooltipDescription").html('GPS: ' + legacyGame.mercenaryManager.getMercenaryBaseGps(MercenaryType.FOOTMAN));
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
@@ -6159,7 +5289,7 @@ function footmanBuyButtonMouseOver(obj) {
 }
 function footmanBuyButtonMouseDown(obj) {
     $("#footmanBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.mercenaryManager.purchaseMercenary(MercenaryType.FOOTMAN);
+    legacyGame.mercenaryManager.purchaseMercenary(MercenaryType.FOOTMAN);
 }
 function footmanBuyButtonMouseOut(obj) {
     $("#footmanBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
@@ -6172,8 +5302,8 @@ function clericBuyButtonMouseOver(obj) {
     $("#otherTooltipTitle").html('Cleric');
     $("#otherTooltipCooldown").html('');
     $("#otherTooltipLevel").html('');
-    $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.CLERIC).formatMoney() + 
-        '<br>Clerics increase your hp5 by ' + game.mercenaryManager.getClericHp5PercentBonus() + '%.');
+    $("#otherTooltipDescription").html('GPS: ' + legacyGame.mercenaryManager.getMercenaryBaseGps(MercenaryType.CLERIC).formatMoney() + 
+        '<br>Clerics increase your hp5 by ' + legacyGame.mercenaryManager.getClericHp5PercentBonus() + '%.');
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
@@ -6184,7 +5314,7 @@ function clericBuyButtonMouseOver(obj) {
 }
 function clericBuyButtonMouseDown(obj) {
     $("#clericBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.mercenaryManager.purchaseMercenary(MercenaryType.CLERIC);
+    legacyGame.mercenaryManager.purchaseMercenary(MercenaryType.CLERIC);
 }
 function clericBuyButtonMouseOut(obj) {
     $("#clericBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
@@ -6197,8 +5327,8 @@ function commanderBuyButtonMouseOver(obj) {
     $("#otherTooltipTitle").html('Commander');
     $("#otherTooltipCooldown").html('');
     $("#otherTooltipLevel").html('');
-    $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.COMMANDER).formatMoney() +
-        '<br>Commanders increase your health by ' + game.mercenaryManager.getCommanderHealthPercentBonus() + '%.');
+    $("#otherTooltipDescription").html('GPS: ' + legacyGame.mercenaryManager.getMercenaryBaseGps(MercenaryType.COMMANDER).formatMoney() +
+        '<br>Commanders increase your health by ' + legacyGame.mercenaryManager.getCommanderHealthPercentBonus() + '%.');
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
@@ -6209,7 +5339,7 @@ function commanderBuyButtonMouseOver(obj) {
 }
 function commanderBuyButtonMouseDown(obj) {
     $("#commanderBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.mercenaryManager.purchaseMercenary(MercenaryType.COMMANDER);
+    legacyGame.mercenaryManager.purchaseMercenary(MercenaryType.COMMANDER);
 }
 function commanderBuyButtonMouseOut(obj) {
     $("#commanderBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
@@ -6222,8 +5352,8 @@ function mageBuyButtonMouseOver(obj) {
     $("#otherTooltipTitle").html('Mage');
     $("#otherTooltipCooldown").html('');
     $("#otherTooltipLevel").html('');
-    $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.MAGE).formatMoney() +
-        '<br>Mages increase your damage by ' + game.mercenaryManager.getMageDamagePercentBonus() + '%.');
+    $("#otherTooltipDescription").html('GPS: ' + legacyGame.mercenaryManager.getMercenaryBaseGps(MercenaryType.MAGE).formatMoney() +
+        '<br>Mages increase your damage by ' + legacyGame.mercenaryManager.getMageDamagePercentBonus() + '%.');
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
@@ -6234,7 +5364,7 @@ function mageBuyButtonMouseOver(obj) {
 }
 function mageBuyButtonMouseDown(obj) {
     $("#mageBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.mercenaryManager.purchaseMercenary(MercenaryType.MAGE);
+    legacyGame.mercenaryManager.purchaseMercenary(MercenaryType.MAGE);
 }
 function mageBuyButtonMouseOut(obj) {
     $("#mageBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
@@ -6247,8 +5377,8 @@ function assassinBuyButtonMouseOver(obj) {
     $("#otherTooltipTitle").html('Assassin');
     $("#otherTooltipCooldown").html('');
     $("#otherTooltipLevel").html('');
-    $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.ASSASSIN).formatMoney() + 
-        '<br>Assassins increase your evasion by ' + game.mercenaryManager.getAssassinEvasionPercentBonus() + '%.');
+    $("#otherTooltipDescription").html('GPS: ' + legacyGame.mercenaryManager.getMercenaryBaseGps(MercenaryType.ASSASSIN).formatMoney() + 
+        '<br>Assassins increase your evasion by ' + legacyGame.mercenaryManager.getAssassinEvasionPercentBonus() + '%.');
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
@@ -6259,7 +5389,7 @@ function assassinBuyButtonMouseOver(obj) {
 }
 function assassinBuyButtonMouseDown(obj) {
     $("#assassinBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.mercenaryManager.purchaseMercenary(MercenaryType.ASSASSIN);
+    legacyGame.mercenaryManager.purchaseMercenary(MercenaryType.ASSASSIN);
 }
 function assassinBuyButtonMouseOut(obj) {
     $("#assassinBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
@@ -6272,8 +5402,8 @@ function warlockBuyButtonMouseOver(obj) {
     $("#otherTooltipTitle").html('Warlock');
     $("#otherTooltipCooldown").html('');
     $("#otherTooltipLevel").html('');
-    $("#otherTooltipDescription").html('GPS: ' + game.mercenaryManager.getMercenaryBaseGps(MercenaryType.WARLOCK).formatMoney() +
-        '<br>Warlocks increase your critical strike damage by ' + game.mercenaryManager.getWarlockCritDamageBonus() + '%.');
+    $("#otherTooltipDescription").html('GPS: ' + legacyGame.mercenaryManager.getMercenaryBaseGps(MercenaryType.WARLOCK).formatMoney() +
+        '<br>Warlocks increase your critical strike damage by ' + legacyGame.mercenaryManager.getWarlockCritDamageBonus() + '%.');
     $("#otherTooltip").show();
 
     // Set the item tooltip's location
@@ -6284,7 +5414,7 @@ function warlockBuyButtonMouseOver(obj) {
 }
 function warlockBuyButtonMouseDown(obj) {
     $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 46px');
-    game.mercenaryManager.purchaseMercenary(MercenaryType.WARLOCK);
+    legacyGame.mercenaryManager.purchaseMercenary(MercenaryType.WARLOCK);
 }
 function warlockBuyButtonMouseOut(obj) {
     $("#warlockBuyButton").css('background', 'url("includes/images/buyButtonBase.png") 0 0');
@@ -6298,7 +5428,7 @@ function statUpgradeButtonHover(obj, index) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 92px';
 
     // Show a tooltip describing what the hovered stat does if neccessary
-    var upgrade = game.statUpgradesManager.upgrades[0][index - 1];
+    var upgrade = legacyGame.statUpgradesManager.upgrades[0][index - 1];
 
     switch (upgrade.type) {
         case StatUpgradeType.DAMAGE:
@@ -6361,35 +5491,27 @@ function statUpgradeButtonClick(obj, index) {
     $("#statUpgradesWindow").hide();
 
     // Upgrade a player's stat depending on which button was clicked
-    var upgrade = game.statUpgradesManager.upgrades[0][index - 1];
+    var upgrade = legacyGame.statUpgradesManager.upgrades[0][index - 1];
     switch (upgrade.type) {
-        case StatUpgradeType.DAMAGE:            game.player.chosenLevelUpBonuses.damageBonus += upgrade.amount;         break;
-        case StatUpgradeType.STRENGTH:          game.player.chosenLevelUpBonuses.strength += upgrade.amount;            break;
-        case StatUpgradeType.AGILITY:           game.player.chosenLevelUpBonuses.agility += upgrade.amount;             break;
-        case StatUpgradeType.STAMINA:           game.player.chosenLevelUpBonuses.stamina += upgrade.amount;             break;
-        case StatUpgradeType.ARMOUR:            game.player.chosenLevelUpBonuses.armour += upgrade.amount;              break;
-        case StatUpgradeType.EVASION:           game.player.chosenLevelUpBonuses.evasion += upgrade.amount;             break;
-        case StatUpgradeType.HP5:               game.player.chosenLevelUpBonuses.hp5 += upgrade.amount;                 break;
-        case StatUpgradeType.CRIT_DAMAGE:       game.player.chosenLevelUpBonuses.critDamage += upgrade.amount;          break;
-        case StatUpgradeType.ITEM_RARITY:       game.player.chosenLevelUpBonuses.itemRarity += upgrade.amount;          break;
-        case StatUpgradeType.EXPERIENCE_GAIN:   game.player.chosenLevelUpBonuses.experienceGain += upgrade.amount;      break;
-        case StatUpgradeType.GOLD_GAIN:         game.player.chosenLevelUpBonuses.goldGain += upgrade.amount;            break;
+        case StatUpgradeType.DAMAGE:            legacyGame.player.chosenLevelUpBonuses.damageBonus += upgrade.amount;         break;
+        case StatUpgradeType.STRENGTH:          legacyGame.player.chosenLevelUpBonuses.strength += upgrade.amount;            break;
+        case StatUpgradeType.AGILITY:           legacyGame.player.chosenLevelUpBonuses.agility += upgrade.amount;             break;
+        case StatUpgradeType.STAMINA:           legacyGame.player.chosenLevelUpBonuses.stamina += upgrade.amount;             break;
+        case StatUpgradeType.ARMOUR:            legacyGame.player.chosenLevelUpBonuses.armour += upgrade.amount;              break;
+        case StatUpgradeType.EVASION:           legacyGame.player.chosenLevelUpBonuses.evasion += upgrade.amount;             break;
+        case StatUpgradeType.HP5:               legacyGame.player.chosenLevelUpBonuses.hp5 += upgrade.amount;                 break;
+        case StatUpgradeType.CRIT_DAMAGE:       legacyGame.player.chosenLevelUpBonuses.critDamage += upgrade.amount;          break;
+        case StatUpgradeType.ITEM_RARITY:       legacyGame.player.chosenLevelUpBonuses.itemRarity += upgrade.amount;          break;
+        case StatUpgradeType.EXPERIENCE_GAIN:   legacyGame.player.chosenLevelUpBonuses.experienceGain += upgrade.amount;      break;
+        case StatUpgradeType.GOLD_GAIN:         legacyGame.player.chosenLevelUpBonuses.goldGain += upgrade.amount;            break;
     }
 
     // Remove the upgrade
-    game.statUpgradesManager.upgrades.splice(0, 1);
+    legacyGame.statUpgradesManager.upgrades.splice(0, 1);
 
     // Alter the player's skill points
-    game.player.skillPoints--;
-    game.player.skillPointsSpent++;
-
-    // Show the Level Up button if there are still skill points remaining
-    if (game.player.skillPoints > 0) {
-        $("#levelUpButton").show();
-    }
-
-    // Update the 4th tutorial
-    game.tutorialManager.statUpgradeChosen = true;
+    legacyGame.player.skillPoints--;
+    legacyGame.player.skillPointsSpent++;
 }
 function statUpgradeButtonReset(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
@@ -6402,10 +5524,10 @@ function rendUpgradeButtonHover(obj) {
     $("#abilityUpgradeTooltipTitle").html('Rend');
     $("#abilityUpgradeTooltipCooldown").html('');
     // If there is already a level in this ability then show the current version as well
-    if (game.player.abilities.getRendLevel() > 0) {
-        $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getRendLevel());
-        $("#abilityUpgradeTooltipDescription").html('Your attacks cause your opponent to bleed for <span class="yellowText">' + game.player.abilities.getRendDamage(0) + 
-            '</span> damage after every round for ' + game.player.abilities.rendDuration + ' rounds. Stacks up to 5 times.');
+    if (legacyGame.player.abilities.getRendLevel() > 0) {
+        $("#abilityUpgradeTooltipLevel").html('Level ' + legacyGame.player.abilities.getRendLevel());
+        $("#abilityUpgradeTooltipDescription").html('Your attacks cause your opponent to bleed for <span class="yellowText">' + legacyGame.player.abilities.getRendDamage(0) + 
+            '</span> damage after every round for ' + legacyGame.player.abilities.rendDuration + ' rounds. Stacks up to 5 times.');
         $("#abilityUpgradeTooltipLevel2").html('Next Level');
     }
     else {
@@ -6413,8 +5535,8 @@ function rendUpgradeButtonHover(obj) {
         $("#abilityUpgradeTooltipDescription").html('');
         $("#abilityUpgradeTooltipLevel2").html('Level 1');
     }
-    $("#abilityUpgradeTooltipDescription2").html('Your attacks cause your opponent to bleed for <span class="yellowText">' + game.player.abilities.getRendDamage(1) + 
-        '</span> damage after every round for ' + game.player.abilities.rendDuration + ' rounds. Stacks up to 5 times.');
+    $("#abilityUpgradeTooltipDescription2").html('Your attacks cause your opponent to bleed for <span class="yellowText">' + legacyGame.player.abilities.getRendDamage(1) + 
+        '</span> damage after every round for ' + legacyGame.player.abilities.rendDuration + ' rounds. Stacks up to 5 times.');
     $("#abilityUpgradeTooltip").show();
 
     // Set the item tooltip's location
@@ -6426,7 +5548,7 @@ function rendUpgradeButtonHover(obj) {
 function rendUpgradeButtonClick(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
     $("#abilityUpgradesWindow").hide();
-    game.player.increaseAbilityPower(AbilityName.REND);
+    legacyGame.player.increaseAbilityPower(AbilityName.REND);
 }
 function rendUpgradeButtonReset(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
@@ -6439,9 +5561,9 @@ function rejuvenatingStrikesUpgradeButtonHover(obj) {
     $("#abilityUpgradeTooltipTitle").html('Rejuvenating Strikes');
     $("#abilityUpgradeTooltipCooldown").html('');
     // If there is already a level in this ability then show the current version as well
-    if (game.player.abilities.getRejuvenatingStrikesLevel() > 0) {
-        $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getRejuvenatingStrikesLevel());
-        $("#abilityUpgradeTooltipDescription").html('Your attacks heal you for <span class="greenText">' + game.player.abilities.getRejuvenatingStrikesHealAmount(0) + 
+    if (legacyGame.player.abilities.getRejuvenatingStrikesLevel() > 0) {
+        $("#abilityUpgradeTooltipLevel").html('Level ' + legacyGame.player.abilities.getRejuvenatingStrikesLevel());
+        $("#abilityUpgradeTooltipDescription").html('Your attacks heal you for <span class="greenText">' + legacyGame.player.abilities.getRejuvenatingStrikesHealAmount(0) + 
             '</span> health.');
         $("#abilityUpgradeTooltipLevel2").html('Next Level');
     }
@@ -6450,7 +5572,7 @@ function rejuvenatingStrikesUpgradeButtonHover(obj) {
         $("#abilityUpgradeTooltipDescription").html('');
         $("#abilityUpgradeTooltipLevel2").html('Level 1');
     }
-    $("#abilityUpgradeTooltipDescription2").html('Your attacks heal you for <span class="greenText">' + game.player.abilities.getRejuvenatingStrikesHealAmount(1) + 
+    $("#abilityUpgradeTooltipDescription2").html('Your attacks heal you for <span class="greenText">' + legacyGame.player.abilities.getRejuvenatingStrikesHealAmount(1) + 
         '</span> health.');
     $("#abilityUpgradeTooltip").show();
 
@@ -6463,7 +5585,7 @@ function rejuvenatingStrikesUpgradeButtonHover(obj) {
 function rejuvenatingStrikesUpgradeButtonClick(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
     $("#abilityUpgradesWindow").hide();
-    game.player.increaseAbilityPower(AbilityName.REJUVENATING_STRIKES);
+    legacyGame.player.increaseAbilityPower(AbilityName.REJUVENATING_STRIKES);
 }
 function rejuvenatingStrikesUpgradeButtonReset(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
@@ -6476,10 +5598,10 @@ function iceBladeUpgradeButtonHover(obj) {
     $("#abilityUpgradeTooltipTitle").html('Ice Blade');
     $("#abilityUpgradeTooltipCooldown").html('');
     // If there is already a level in this ability then show the current version as well
-    if (game.player.abilities.getIceBladeLevel() > 0) {
-        $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getIceBladeLevel());
-        $("#abilityUpgradeTooltipDescription").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getIceBladeDamage(0) + 
-            '</span> bonus damage and chill them for ' + game.player.abilities.iceBladeChillDuration + ' rounds.');
+    if (legacyGame.player.abilities.getIceBladeLevel() > 0) {
+        $("#abilityUpgradeTooltipLevel").html('Level ' + legacyGame.player.abilities.getIceBladeLevel());
+        $("#abilityUpgradeTooltipDescription").html('Your attacks deal <span class="yellowText">' + legacyGame.player.abilities.getIceBladeDamage(0) + 
+            '</span> bonus damage and chill them for ' + legacyGame.player.abilities.iceBladeChillDuration + ' rounds.');
         $("#abilityUpgradeTooltipLevel2").html('Next Level');
     }
     else {
@@ -6487,8 +5609,8 @@ function iceBladeUpgradeButtonHover(obj) {
         $("#abilityUpgradeTooltipDescription").html('');
         $("#abilityUpgradeTooltipLevel2").html('Level 1');
     }
-    $("#abilityUpgradeTooltipDescription2").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getIceBladeDamage(1) + 
-        '</span> damage and chill them for ' + game.player.abilities.iceBladeChillDuration + ' rounds.');
+    $("#abilityUpgradeTooltipDescription2").html('Your attacks deal <span class="yellowText">' + legacyGame.player.abilities.getIceBladeDamage(1) + 
+        '</span> damage and chill them for ' + legacyGame.player.abilities.iceBladeChillDuration + ' rounds.');
     $("#abilityUpgradeTooltip").show();
 
     // Set the item tooltip's location
@@ -6500,7 +5622,7 @@ function iceBladeUpgradeButtonHover(obj) {
 function iceBladeUpgradeButtonClick(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
     $("#abilityUpgradesWindow").hide();
-    game.player.increaseAbilityPower(AbilityName.ICE_BLADE);
+    legacyGame.player.increaseAbilityPower(AbilityName.ICE_BLADE);
 }
 function iceBladeUpgradeButtonReset(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
@@ -6513,11 +5635,11 @@ function fireBladeUpgradeButtonHover(obj) {
     $("#abilityUpgradeTooltipTitle").html('Fire Blade');
     $("#abilityUpgradeTooltipCooldown").html('');
     // If there is already a level in this ability then show the current version as well
-    if (game.player.abilities.getFireBladeLevel() > 0) {
-        $("#abilityUpgradeTooltipLevel").html('Level ' + game.player.abilities.getFireBladeLevel());
-        $("#abilityUpgradeTooltipDescription").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getFireBladeDamage(0) + 
-            '</span> bonus damage and burn them for <span class="yellowText">' + game.player.abilities.getFireBladeBurnDamage(0) + 
-            '</span> damage after every round for ' + game.player.abilities.fireBladeBurnDuration + ' rounds.');
+    if (legacyGame.player.abilities.getFireBladeLevel() > 0) {
+        $("#abilityUpgradeTooltipLevel").html('Level ' + legacyGame.player.abilities.getFireBladeLevel());
+        $("#abilityUpgradeTooltipDescription").html('Your attacks deal <span class="yellowText">' + legacyGame.player.abilities.getFireBladeDamage(0) + 
+            '</span> bonus damage and burn them for <span class="yellowText">' + legacyGame.player.abilities.getFireBladeBurnDamage(0) + 
+            '</span> damage after every round for ' + legacyGame.player.abilities.fireBladeBurnDuration + ' rounds.');
         $("#abilityUpgradeTooltipLevel2").html('Next Level');
     }
     else {
@@ -6525,9 +5647,9 @@ function fireBladeUpgradeButtonHover(obj) {
         $("#abilityUpgradeTooltipDescription").html('');
         $("#abilityUpgradeTooltipLevel2").html('Level 1');
     }
-    $("#abilityUpgradeTooltipDescription2").html('Your attacks deal <span class="yellowText">' + game.player.abilities.getFireBladeDamage(1) + 
-        '</span> bonus damage and burn them for <span class="yellowText">' + game.player.abilities.getFireBladeBurnDamage(1) + 
-        '</span> damage after every round for ' + game.player.abilities.fireBladeBurnDuration + ' rounds.');
+    $("#abilityUpgradeTooltipDescription2").html('Your attacks deal <span class="yellowText">' + legacyGame.player.abilities.getFireBladeDamage(1) + 
+        '</span> bonus damage and burn them for <span class="yellowText">' + legacyGame.player.abilities.getFireBladeBurnDamage(1) + 
+        '</span> damage after every round for ' + legacyGame.player.abilities.fireBladeBurnDuration + ' rounds.');
     $("#abilityUpgradeTooltip").show();
 
     // Set the item tooltip's location
@@ -6539,7 +5661,7 @@ function fireBladeUpgradeButtonHover(obj) {
 function fireBladeUpgradeButtonClick(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 46px';
     $("#abilityUpgradesWindow").hide();
-    game.player.increaseAbilityPower(AbilityName.FIRE_BLADE);
+    legacyGame.player.increaseAbilityPower(AbilityName.FIRE_BLADE);
 }
 function fireBladeUpgradeButtonReset(obj) {
     obj.style.background = 'url("includes/images/buyButtonBase.png") 0 0';
@@ -6554,7 +5676,7 @@ function expBarAreaMouseOver() {
     $("#expBarText").show();
 }
 function expBarAreaMouseOut() {
-    if (!game.options.alwaysDisplayExp) {
+    if (!legacyGame.options.alwaysDisplayExp) {
         $("#expBarText").hide();
     }
 }
@@ -6564,18 +5686,18 @@ function playerHealthBarAreaMouseOver() {
     $("#playerHealthBarText").show();
 }
 function playerHealthBarAreaMouseOut() {
-    if (!game.options.alwaysDisplayPlayerHealth) {
+    if (!legacyGame.options.alwaysDisplayPlayerHealth) {
         $("#playerHealthBarText").hide();
     }
 }
 
 // Monster health bar
 function monsterHealthBarAreaMouseOver() {
-    game.displayMonsterHealth = true;
+    legacyGame.displayMonsterHealth = true;
 }
 function monsterHealthBarAreaMouseOut() {
-    if (!game.options.alwaysDisplayMonsterHealth) {
-        game.displayMonsterHealth = false;
+    if (!legacyGame.options.alwaysDisplayMonsterHealth) {
+        legacyGame.displayMonsterHealth = false;
     }
 }
 
@@ -6583,7 +5705,7 @@ function monsterHealthBarAreaMouseOut() {
 // Bleeding
 function bleedingIconMouseOver(obj) {
     $("#otherTooltipTitle").html("Bleeding");
-    $("#otherTooltipCooldown").html((game.monster.debuffs.bleedMaxDuration - game.monster.debuffs.bleedDuration) + ' rounds remaining');
+    $("#otherTooltipCooldown").html((legacyGame.monster.debuffs.bleedMaxDuration - legacyGame.monster.debuffs.bleedDuration) + ' rounds remaining');
     $("#otherTooltipLevel").html('');
     $("#otherTooltipDescription").html('This monster is bleeding, causing damage at the end of every round');
     $("#otherTooltip").show();
@@ -6600,7 +5722,7 @@ function bleedingIconMouseOut() {
 // Burning
 function burningIconMouseOver(obj) {
     $("#otherTooltipTitle").html("Burning");
-    $("#otherTooltipCooldown").html((game.monster.debuffs.burningMaxDuration - game.monster.debuffs.burningDuration) + ' rounds remaining');
+    $("#otherTooltipCooldown").html((legacyGame.monster.debuffs.burningMaxDuration - legacyGame.monster.debuffs.burningDuration) + ' rounds remaining');
     $("#otherTooltipLevel").html('');
     $("#otherTooltipDescription").html('This monster is burning, causing damage at the end of every round');
     $("#otherTooltip").show();
@@ -6617,7 +5739,7 @@ function burningIconMouseOut() {
 // Chilled
 function chilledIconMouseOver(obj) {
     $("#otherTooltipTitle").html("Chilled");
-    $("#otherTooltipCooldown").html((game.monster.debuffs.chillMaxDuration - game.monster.debuffs.chillDuration) + ' rounds remaining');
+    $("#otherTooltipCooldown").html((legacyGame.monster.debuffs.chillMaxDuration - legacyGame.monster.debuffs.chillDuration) + ' rounds remaining');
     $("#otherTooltipLevel").html('');
     $("#otherTooltipDescription").html('This monster is chilled, causing it to attack twice as slow');
     $("#otherTooltip").show();
@@ -6739,11 +5861,6 @@ function statTooltipReset() {
     $("#otherTooltip").hide();
 }
 
-// Tutorials
-function tutorialContinueButtonClick() {
-    game.tutorialManager.continueTutorial();
-}
-
 var updatesWindowShown = false;
 var statsWindowShown = false;
 var optionsWindowShown = false;
@@ -6779,6 +5896,38 @@ function statsWindowButtonClick() {
     }
 }
 
+function fbOptionsWindowButtonClick() {
+    if (!fbOnDemandOptionsShown) {
+        fbOnDemandOptionsShown = true;
+        $("#fbOnDemandOptions").show();
+    }
+    else {
+        fbOnDemandOptionsShown = false;
+        $("#fbOnDemandOptions").hide();
+    }
+}
+
+function fbStatsWindowButtonClick() {
+    if (!fbExtraStatsWindowShown) {
+        fbExtraStatsWindowShown = true;
+        $("#fbExtraStatsWindow").show();
+    }
+    else {
+        fbExtraStatsWindowShown = false;
+        $("#fbExtraStatsWindow").hide();
+    }
+}
+
+function fbCombatLogWindowButtonClick() {
+    if(!fbCombatLogWindowShown) {
+        fbCombatLogWindowShown = true;
+        $('#fbCombatLogWindow').show();
+    } else {
+        fbCombatLogWindowShown = false;
+        $('#fbCombatLogWindow').hide();
+    }
+}
+
 // Options Window
 function optionsWindowButtonClick() {
     if (!optionsWindowShown) {
@@ -6797,29 +5946,29 @@ function optionsWindowButtonClick() {
 
 // Save Button
 function saveButtonClick() {
-    game.save();
+    legacyGame.save();
 }
 
 // Reset Button
 var fullReset = false;
 function resetButtonClick() {
     fullReset = false;
-    var powerShardsAvailable = game.calculatePowerShardReward();
+    var powerShardsAvailable = legacyGame.calculatePowerShardReward();
     document.getElementById('resetDescription').innerHTML = 'This will erase all progress and not be recoverable. Are you sure you want to reset?';
     $("#resetConfirmWindowPowerShard").show();
-    document.getElementById('powerShardsDescription').innerHTML = "You will earn " + powerShardsAvailable + " Power Shards from resetting.";
+    document.getElementById('powerShardsDescription').innerHTML = "You will earn {0} Power Shards and {1}% overall bonus from resetting.".format(powerShardsAvailable, legacyGame.player.level - 1);
     $("#powerShardsDescription").show();
     $("#resetConfirmWindow").show();
 }
 function resetConfirmWindowYesButtonClick() {
     $("#resetConfirmWindow").hide();
     if (fullReset) {
-        game.reset();
+        legacyGame.reset();
     }
     else {
-        var powerShards = game.player.powerShards + game.calculatePowerShardReward();
-        game.reset();
-        game.player.powerShards = powerShards;
+        var powerShards = legacyGame.player.powerShards + legacyGame.calculatePowerShardReward();
+        legacyGame.reset();
+        legacyGame.player.powerShards = powerShards;
     }
 }
 function resetConfirmWindowNoButtonClick() {
@@ -6840,6 +5989,28 @@ function optionsWindowExitButtonClick() {
     $("#optionsWindow").hide();
 }
 
+function fbUpdateMouseOver() {
+    var data = game.getVersionCheckData();
+    if(data === undefined) {
+        return;
+    }
+
+    $("#otherTooltipTitle").html(data.changeTitle);
+    $("#otherTooltipCooldown").html('');
+    $("#otherTooltipLevel").html('');
+    $("#otherTooltipDescription").html(data.changeDetails);
+    $("#otherTooltip").show();
+
+    // Set the item tooltip's location
+    var rect = document.getElementById('fbUpdate').getBoundingClientRect();
+    $("#otherTooltip").css('top', rect.top + 10);
+    var leftReduction = document.getElementById("otherTooltip").scrollWidth;
+    $("#otherTooltip").css('left', (rect.left - leftReduction - 40));
+}
+
+function fbUpdateMouseOut() {
+    $("#otherTooltip").hide();
+}
 
 /*window.onload = function() {
     $("body").css('zoom', $(window).width() / 1280);

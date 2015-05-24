@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <style type="text/css" media="all">@import "layout.css";</style>
+    <style type="text/css" media="all">@import "endless.css";</style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 
-    <script src="Game.js"></script>
-    <script src="fbData.js"></script>
-    <script src="fbMain.js"></script>
-    <script src="utils.js"></script>
+    <script src="endless.js"></script>
 </head>
 
-<body>
+<body style="background-image: url(includes/images/background.png);">
 <!------------------------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------  ---------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------->
@@ -24,6 +21,10 @@
     <div id="updates" class="navBarText textButton" style="padding: 5px 10px 5px 15px; float: left" onmousedown="updatesWindowButtonClick()">Updates</div>
     <div id="options" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left" onmousedown="optionsWindowButtonClick()">Options</div>
     <div id="stats" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left" onmousedown="statsWindowButtonClick()">Stats</div>
+    <div id="fbOptions" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left" onmousedown="fbOptionsWindowButtonClick()">FB Options</div>
+    <div id="fbStats" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left" onmousedown="fbStatsWindowButtonClick()">FB Stats</div>
+    <div id="fbCombatLog" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left" onmousedown="fbCombatLogWindowButtonClick()">FB Combat Log</div>
+    <div id="fbUpdate" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: left; color: yellow" onmouseover="fbUpdateMouseOver()" onmouseout="fbUpdateMouseOut()">Update #.## Available!</div>
 
     <div id="fullReset" class="navBarText textButton" style="padding: 5px 25px 5px 10px; float: right" onmousedown="fullResetButtonClick()">Full Reset</div>
     <div id="reset" class="navBarText textButton" style="padding: 5px 10px 5px 10px; float: right" onmousedown="resetButtonClick()">Reset</div>
@@ -148,23 +149,23 @@
             <div id="statsWindowGoldValue" class="statsWindowText">0.00</div>
             <div id="statsWindowGpsValue" class="statsWindowText">0.00</div>
             <div id="statsWindowGoldEarnedValue" class="statsWindowText">0.00</div>
-            <div id="statsWindowGoldFromMonstersValue" class="statsWindowText">392,265.10</div>
+            <div id="statsWindowGoldFromMonstersValue" class="statsWindowText">0.00</div>
             <div id="statsWindowGoldFromMercenariesValue" class="statsWindowText">0.00</div>
             <div id="statsWindowGoldFromQuestsValue" class="statsWindowText">0</div>
-            <div id="statsWindowGoldFromItemsValue" class="statsWindowText">11,900,844</div>
-            <div id="statsWindowExperienceValue" class="statsWindowText">7,458.99</div>
-            <div id="statsWindowExperienceEarnedValue" class="statsWindowText">323,417.99</div>
-            <div id="statsWindowExperienceFromMonstersValue" class="statsWindowText">323,417.99</div>
+            <div id="statsWindowGoldFromItemsValue" class="statsWindowText">0</div>
+            <div id="statsWindowExperienceValue" class="statsWindowText">0</div>
+            <div id="statsWindowExperienceEarnedValue" class="statsWindowText">0</div>
+            <div id="statsWindowExperienceFromMonstersValue" class="statsWindowText">0</div>
             <div id="statsWindowExperienceFromQuestsValue" class="statsWindowText">0</div>
-            <div id="statsWindowStartDateValue" class="statsWindowText">Mon May 12 2014 7:41:30 PM</div>
-            <div id="statsWindowMercenariesOwnedValue" class="statsWindowText">190</div>
-            <div id="statsWindowUpgradesUnlockedValue" class="statsWindowText">12</div>
-            <div id="statsWindowItemsLootedValue" class="statsWindowText">1,773</div>
-            <div id="statsWindowItemsSoldValue" class="statsWindowText">1,755</div>
+            <div id="statsWindowStartDateValue" class="statsWindowText">N/A</div>
+            <div id="statsWindowMercenariesOwnedValue" class="statsWindowText">0</div>
+            <div id="statsWindowUpgradesUnlockedValue" class="statsWindowText">0</div>
+            <div id="statsWindowItemsLootedValue" class="statsWindowText">0</div>
+            <div id="statsWindowItemsSoldValue" class="statsWindowText">0</div>
             <div id="statsWindowQuestsCompletedValue" class="statsWindowText">0</div>
-            <div id="statsWindowMonstersKilledValue" class="statsWindowText">13,775</div>
-            <div id="statsWindowDamageDealtValue" class="statsWindowText">854,991,150</div>
-            <div id="statsWindowDamageTakenValue" class="statsWindowText">20,294,811</div>
+            <div id="statsWindowMonstersKilledValue" class="statsWindowText">0</div>
+            <div id="statsWindowDamageDealtValue" class="statsWindowText">0</div>
+            <div id="statsWindowDamageTakenValue" class="statsWindowText">0</div>
         </div>
         <div id="statsWindowCloseButton" class="closeButton button" onmouseover="closeButtonHover(this)" onmouseout="closeButtonReset(this)" onmousedown="closeButtonClick(this)" onmouseup="closeButtonReset(this)"></div>
     </div>
@@ -180,9 +181,9 @@
             <div id="monsterDamageParticlesOption" class="optionsWindowOption" onmousedown="monsterDamageParticlesOptionClick()">Monster damage particles: ON</div>
 
             <div id="interfaceOptionsTitle" class="optionsWindowOptionsTitle">Interface</div>
-            <div id="playerHealthOption" class="optionsWindowOption" onmousedown="playerHealthOptionClick()">Always display player health: ON</div>
-            <div id="monsterHealthOption" class="optionsWindowOption" onmousedown="monsterHealthOptionClick()">Always display monster health: ON</div>
-            <div id="expBarOption" class="optionsWindowOption" onmousedown="expBarOptionClick()">Always display experience: ON</div>
+            <div id="playerHealthOption" class="optionsWindowOption" onmousedown="playerHealthOptionClick()">Always display player health: OFF</div>
+            <div id="monsterHealthOption" class="optionsWindowOption" onmousedown="monsterHealthOptionClick()">Always display monster health: OFF</div>
+            <div id="expBarOption" class="optionsWindowOption" onmousedown="expBarOptionClick()">Always display experience: OFF</div>
         </div>
         <div id="optionsWindowCloseButton" class="closeButton button" onmouseover="closeButtonHover(this)" onmouseout="closeButtonReset(this)" onmousedown="closeButtonClick(this)" onmouseup="closeButtonReset(this)"></div>
     </div>
@@ -198,15 +199,6 @@
         <div id="resetConfirmWindowNoButton" onmousedown="resetConfirmWindowNoButtonClick()">No</div>
     </div>
 
-    <div id="tutorialArea" style="left: 0px; right: 0px; top: 0px; bottom: 0px; margin: auto; padding-right: 660px; padding-bottom: 50px; display: none;">
-        <div id="tutorialWindow">
-            <div id="tutorialTitle">Tutorial</div>
-            <div id="tutorialDescription">Welcome to Endless Battle, to get started click the enter battle button.</div>
-            <div id="tutorialContinueButton" class="textButton" onmousedown="tutorialContinueButtonClick()" style="display: none;">Continue</div>
-        </div>
-        <div id="tutorialRightArrow" class="tutorialRightArrow" style="left: 290px; top: 67px;"></div>
-    </div>
-
     <div id="eventsArea"></div>
 
     <div id="buffsArea"></div>
@@ -215,7 +207,7 @@
         <div id="playerHealthBarBackground" class="smallBarBackground"></div>
         <div id="playerHealthBar" class="smallBar" style="width: 198px; height: 23px;"></div>
         <div id="playerHealthBarBorder" class="smallBarBorder"></div>
-        <div id="playerHealthBarText" class="smallBarText" style="display: block;">3757/3757</div>
+        <div id="playerHealthBarText" class="smallBarText" style="display: block;">N/A / N/A</div>
     </div>
 
     <div id="battleArea">
@@ -230,7 +222,7 @@
             <div id="monsterHealthBarBackground" class="smallBarBackground"></div>
             <div id="monsterHealthBar" class="smallBar" style="width: 198px; height: 23px; color: rgb(255, 255, 255);"></div>
             <div id="monsterHealthBarBorder" class="smallBarBorder"></div>
-            <div id="monsterName" class="smallBarText" style="color: rgb(255, 255, 255);">8477/8477</div>
+            <div id="monsterName" class="smallBarText" style="color: rgb(255, 255, 255);">N/A / N/A</div>
         </div>
 
         <div id="enterBattleButton" class="stoneButton1 button" onmouseover="enterBattleButtonHover(this)" onmouseout="enterBattleButtonReset(this)" onmousedown="enterBattleButtonClick(this)" onmouseup="enterBattleButtonHover(this)" style="top: 30px; left: 120px;">Enter Battle</div>
@@ -262,7 +254,7 @@
         <div id="expBarBackground"></div>
         <div id="expBar" style="width: 101.067314096999px; height: 13px;"></div>
         <div id="expBarBorder"></div>
-        <div id="expBarText" style="display: block;">7458/52990</div>
+        <div id="expBarText" style="display: block;">N/A / N/A</div>
     </div>
 
     <div id="button" class="characterWindowButton" onmouseover="characterWindowButtonHover(this)" onmouseout="characterWindowButtonReset(this)" onmousedown="characterWindowButtonClick(this)" onmouseup="characterWindowButtonHover(this)" style="display: block;"></div>
@@ -280,88 +272,66 @@
             <div id="inventoryWindowTitle">Inventory</div>
 
             <!-- inventory SLOTS ROW 1 -->
-            <div id="inventoryItem1" class="button ui-draggable" style="position: absolute; left: 4px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 70px 70px;" onmouseover="inventoryItemHover(this, 1)" onmouseout="inventoryItemReset(this, 1)" onmousedown="inventoryItemClick(this, 1, event)" oncontextmenu="equipInventoryItem(event, 1)"></div>
+            <div id="inventoryItem1" class="button ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 70px 70px;" onmouseover="inventoryItemHover(this, 1)" onmouseout="inventoryItemReset(this, 1)" onmousedown="inventoryItemClick(this, 1, event)" oncontextmenu="equipInventoryItem(event, 1)"></div>
 
-            <div id="inventoryItem2" class="button ui-draggable" style="position: absolute; left: 40px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 140px 70px;" onmouseover="inventoryItemHover(this, 2)" onmouseout="inventoryItemReset(this, 2)" onmousedown="inventoryItemClick(this, 2, event)" oncontextmenu="equipInventoryItem(event, 2)"></div>
+            <div id="inventoryItem2" class="button ui-draggable globalNoDrag" style="position: absolute; left: 40px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 140px 70px;" onmouseover="inventoryItemHover(this, 2)" onmouseout="inventoryItemReset(this, 2)" onmousedown="inventoryItemClick(this, 2, event)" oncontextmenu="equipInventoryItem(event, 2)"></div>
 
-            <div id="inventoryItem3" class="button ui-draggable" style="position: absolute; left: 76px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 35px 70px;" onmouseover="inventoryItemHover(this, 3)" onmouseout="inventoryItemReset(this, 3)" onmousedown="inventoryItemClick(this, 3, event)" oncontextmenu="equipInventoryItem(event, 3)"></div>
+            <div id="inventoryItem3" class="button ui-draggable globalNoDrag" style="position: absolute; left: 76px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 35px 70px;" onmouseover="inventoryItemHover(this, 3)" onmouseout="inventoryItemReset(this, 3)" onmousedown="inventoryItemClick(this, 3, event)" oncontextmenu="equipInventoryItem(event, 3)"></div>
 
-            <div id="inventoryItem4" class="button ui-draggable" style="position: absolute; left: 112px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 105px 70px;" onmouseover="inventoryItemHover(this, 4)" onmouseout="inventoryItemReset(this, 4)" onmousedown="inventoryItemClick(this, 4, event)" oncontextmenu="equipInventoryItem(event, 4)"></div>
+            <div id="inventoryItem4" class="button ui-draggable globalNoDrag" style="position: absolute; left: 112px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 105px 70px;" onmouseover="inventoryItemHover(this, 4)" onmouseout="inventoryItemReset(this, 4)" onmousedown="inventoryItemClick(this, 4, event)" oncontextmenu="equipInventoryItem(event, 4)"></div>
 
-            <div id="inventoryItem5" class="button ui-draggable" style="position: absolute; left: 148px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 210px 70px;" onmouseover="inventoryItemHover(this, 5)" onmouseout="inventoryItemReset(this, 5)" onmousedown="inventoryItemClick(this, 5, event)" oncontextmenu="equipInventoryItem(event, 5)"></div>
+            <div id="inventoryItem5" class="button ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 210px 70px;" onmouseover="inventoryItemHover(this, 5)" onmouseout="inventoryItemReset(this, 5)" onmousedown="inventoryItemClick(this, 5, event)" oncontextmenu="equipInventoryItem(event, 5)"></div>
             <!-- -->
 
             <!-- inventory SLOTS ROW 2 -->
-            <div id="inventoryItem6" class="button ui-draggable" style="position: absolute; left: 4px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 140px 70px;" onmouseover="inventoryItemHover(this, 6)" onmouseout="inventoryItemReset(this, 6)" onmousedown="inventoryItemClick(this, 6, event)" oncontextmenu="equipInventoryItem(event, 6)"></div>
+            <div id="inventoryItem6" class="button ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 140px 70px;" onmouseover="inventoryItemHover(this, 6)" onmouseout="inventoryItemReset(this, 6)" onmousedown="inventoryItemClick(this, 6, event)" oncontextmenu="equipInventoryItem(event, 6)"></div>
 
-            <div id="inventoryItem7" class="button ui-draggable" style="position: absolute; left: 40px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 245px 70px;" onmouseover="inventoryItemHover(this, 7)" onmouseout="inventoryItemReset(this, 7)" onmousedown="inventoryItemClick(this, 7, event)" oncontextmenu="equipInventoryItem(event, 7)"></div>
+            <div id="inventoryItem7" class="button ui-draggable globalNoDrag" style="position: absolute; left: 40px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 245px 70px;" onmouseover="inventoryItemHover(this, 7)" onmouseout="inventoryItemReset(this, 7)" onmousedown="inventoryItemClick(this, 7, event)" oncontextmenu="equipInventoryItem(event, 7)"></div>
 
-            <div id="inventoryItem8" class="button ui-draggable" style="position: absolute; left: 76px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 105px 70px;" onmouseover="inventoryItemHover(this, 8)" onmouseout="inventoryItemReset(this, 8)" onmousedown="inventoryItemClick(this, 8, event)" oncontextmenu="equipInventoryItem(event, 8)"></div>
+            <div id="inventoryItem8" class="button ui-draggable globalNoDrag" style="position: absolute; left: 76px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 105px 70px;" onmouseover="inventoryItemHover(this, 8)" onmouseout="inventoryItemReset(this, 8)" onmousedown="inventoryItemClick(this, 8, event)" oncontextmenu="equipInventoryItem(event, 8)"></div>
 
-            <div id="inventoryItem9" class="button ui-draggable" style="position: absolute; left: 112px; top: 59px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 9)" onmouseout="inventoryItemReset(this, 9)" onmousedown="inventoryItemClick(this, 9, event)" oncontextmenu="equipInventoryItem(event, 9)"></div>
+            <div id="inventoryItem9" class="button ui-draggable globalNoDrag" style="position: absolute; left: 112px; top: 59px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 9)" onmouseout="inventoryItemReset(this, 9)" onmousedown="inventoryItemClick(this, 9, event)" oncontextmenu="equipInventoryItem(event, 9)"></div>
 
-            <div id="inventoryItem10" class="button ui-draggable" style="position: absolute; left: 148px; top: 59px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 10)" onmouseout="inventoryItemReset(this, 10)" onmousedown="inventoryItemClick(this, 10, event)" oncontextmenu="equipInventoryItem(event, 10)"></div>
+            <div id="inventoryItem10" class="button ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 59px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 10)" onmouseout="inventoryItemReset(this, 10)" onmousedown="inventoryItemClick(this, 10, event)" oncontextmenu="equipInventoryItem(event, 10)"></div>
             <!-- -->
 
             <!-- inventory SLOTS ROW 3 -->
-            <div id="inventoryItem11" class="button ui-draggable" style="position: absolute; left: 4px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 11)" onmouseout="inventoryItemReset(this, 11)" onmousedown="inventoryItemClick(this, 11, event)" oncontextmenu="equipInventoryItem(event, 11)"></div>
+            <div id="inventoryItem11" class="button ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 11)" onmouseout="inventoryItemReset(this, 11)" onmousedown="inventoryItemClick(this, 11, event)" oncontextmenu="equipInventoryItem(event, 11)"></div>
 
-            <div id="inventoryItem12" class="button ui-draggable" style="position: absolute; left: 40px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 12)" onmouseout="inventoryItemReset(this, 12)" onmousedown="inventoryItemClick(this, 12, event)" oncontextmenu="equipInventoryItem(event, 12)"></div>
+            <div id="inventoryItem12" class="button ui-draggable globalNoDrag" style="position: absolute; left: 40px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 12)" onmouseout="inventoryItemReset(this, 12)" onmousedown="inventoryItemClick(this, 12, event)" oncontextmenu="equipInventoryItem(event, 12)"></div>
 
-            <div id="inventoryItem13" class="button ui-draggable" style="position: absolute; left: 76px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 13)" onmouseout="inventoryItemReset(this, 13)" onmousedown="inventoryItemClick(this, 13, event)" oncontextmenu="equipInventoryItem(event, 13)"></div>
+            <div id="inventoryItem13" class="button ui-draggable globalNoDrag" style="position: absolute; left: 76px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 13)" onmouseout="inventoryItemReset(this, 13)" onmousedown="inventoryItemClick(this, 13, event)" oncontextmenu="equipInventoryItem(event, 13)"></div>
 
-            <div id="inventoryItem14" class="button ui-draggable" style="position: absolute; left: 112px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 14)" onmouseout="inventoryItemReset(this, 14)" onmousedown="inventoryItemClick(this, 14, event)" oncontextmenu="equipInventoryItem(event, 14)"></div>
+            <div id="inventoryItem14" class="button ui-draggable globalNoDrag" style="position: absolute; left: 112px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 14)" onmouseout="inventoryItemReset(this, 14)" onmousedown="inventoryItemClick(this, 14, event)" oncontextmenu="equipInventoryItem(event, 14)"></div>
 
-            <div id="inventoryItem15" class="button ui-draggable" style="position: absolute; left: 148px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 15)" onmouseout="inventoryItemReset(this, 15)" onmousedown="inventoryItemClick(this, 15, event)" oncontextmenu="equipInventoryItem(event, 15)"></div>
+            <div id="inventoryItem15" class="button ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 95px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 15)" onmouseout="inventoryItemReset(this, 15)" onmousedown="inventoryItemClick(this, 15, event)" oncontextmenu="equipInventoryItem(event, 15)"></div>
             <!-- -->
 
             <!-- inventory SLOTS ROW 4 -->
-            <div id="inventoryItem16" class="button ui-draggable" style="position: absolute; left: 4px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 16)" onmouseout="inventoryItemReset(this, 16)" onmousedown="inventoryItemClick(this, 16, event)" oncontextmenu="equipInventoryItem(event, 16)"></div>
+            <div id="inventoryItem16" class="button ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 16)" onmouseout="inventoryItemReset(this, 16)" onmousedown="inventoryItemClick(this, 16, event)" oncontextmenu="equipInventoryItem(event, 16)"></div>
 
-            <div id="inventoryItem17" class="button ui-draggable" style="position: absolute; left: 40px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 17)" onmouseout="inventoryItemReset(this, 17)" onmousedown="inventoryItemClick(this, 17, event)" oncontextmenu="equipInventoryItem(event, 17)"></div>
+            <div id="inventoryItem17" class="button ui-draggable globalNoDrag" style="position: absolute; left: 40px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 17)" onmouseout="inventoryItemReset(this, 17)" onmousedown="inventoryItemClick(this, 17, event)" oncontextmenu="equipInventoryItem(event, 17)"></div>
 
-            <div id="inventoryItem18" class="button ui-draggable" style="position: absolute; left: 76px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 18)" onmouseout="inventoryItemReset(this, 18)" onmousedown="inventoryItemClick(this, 18, event)" oncontextmenu="equipInventoryItem(event, 18)"></div>
+            <div id="inventoryItem18" class="button ui-draggable globalNoDrag" style="position: absolute; left: 76px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 18)" onmouseout="inventoryItemReset(this, 18)" onmousedown="inventoryItemClick(this, 18, event)" oncontextmenu="equipInventoryItem(event, 18)"></div>
 
-            <div id="inventoryItem19" class="button ui-draggable" style="position: absolute; left: 112px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 19)" onmouseout="inventoryItemReset(this, 19)" onmousedown="inventoryItemClick(this, 19, event)" oncontextmenu="equipInventoryItem(event, 19)"></div>
+            <div id="inventoryItem19" class="button ui-draggable globalNoDrag" style="position: absolute; left: 112px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 19)" onmouseout="inventoryItemReset(this, 19)" onmousedown="inventoryItemClick(this, 19, event)" oncontextmenu="equipInventoryItem(event, 19)"></div>
 
-            <div id="inventoryItem20" class="button ui-draggable" style="position: absolute; left: 148px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 20)" onmouseout="inventoryItemReset(this, 20)" onmousedown="inventoryItemClick(this, 20, event)" oncontextmenu="equipInventoryItem(event, 20)"></div>
+            <div id="inventoryItem20" class="button ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 131px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 20)" onmouseout="inventoryItemReset(this, 20)" onmousedown="inventoryItemClick(this, 20, event)" oncontextmenu="equipInventoryItem(event, 20)"></div>
             <!-- -->
 
             <!-- inventory SLOTS ROW 5 -->
-            <div id="inventoryItem21" class="button ui-draggable" style="position: absolute; left: 4px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 21)" onmouseout="inventoryItemReset(this, 21)" onmousedown="inventoryItemClick(this, 21, event)" oncontextmenu="equipInventoryItem(event, 21)"></div>
+            <div id="inventoryItem21" class="button ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 21)" onmouseout="inventoryItemReset(this, 21)" onmousedown="inventoryItemClick(this, 21, event)" oncontextmenu="equipInventoryItem(event, 21)"></div>
 
-            <div id="inventoryItem22" class="button ui-draggable" style="position: absolute; left: 40px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 22)" onmouseout="inventoryItemReset(this, 22)" onmousedown="inventoryItemClick(this, 22, event)" oncontextmenu="equipInventoryItem(event, 22)"></div>
+            <div id="inventoryItem22" class="button ui-draggable globalNoDrag" style="position: absolute; left: 40px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 22)" onmouseout="inventoryItemReset(this, 22)" onmousedown="inventoryItemClick(this, 22, event)" oncontextmenu="equipInventoryItem(event, 22)"></div>
 
-            <div id="inventoryItem23" class="button ui-draggable" style="position: absolute; left: 76px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 23)" onmouseout="inventoryItemReset(this, 23)" onmousedown="inventoryItemClick(this, 23, event)" oncontextmenu="equipInventoryItem(event, 23)"></div>
+            <div id="inventoryItem23" class="button ui-draggable globalNoDrag" style="position: absolute; left: 76px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 23)" onmouseout="inventoryItemReset(this, 23)" onmousedown="inventoryItemClick(this, 23, event)" oncontextmenu="equipInventoryItem(event, 23)"></div>
 
-            <div id="inventoryItem24" class="button ui-draggable" style="position: absolute; left: 112px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 24)" onmouseout="inventoryItemReset(this, 24)" onmousedown="inventoryItemClick(this, 24, event)" oncontextmenu="equipInventoryItem(event, 24)"></div>
+            <div id="inventoryItem24" class="button ui-draggable globalNoDrag" style="position: absolute; left: 112px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 24)" onmouseout="inventoryItemReset(this, 24)" onmousedown="inventoryItemClick(this, 24, event)" oncontextmenu="equipInventoryItem(event, 24)"></div>
 
-            <div id="inventoryItem25" class="button ui-draggable" style="position: absolute; left: 148px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 25)" onmouseout="inventoryItemReset(this, 25)" onmousedown="inventoryItemClick(this, 25, event)" oncontextmenu="equipInventoryItem(event, 25)"></div>
+            <div id="inventoryItem25" class="button ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 167px; z-index: 1; width: 35px; height: 35px" onmouseover="inventoryItemHover(this, 25)" onmouseout="inventoryItemReset(this, 25)" onmousedown="inventoryItemClick(this, 25, event)" oncontextmenu="equipInventoryItem(event, 25)"></div>
             <!-- -->
 
-            <div id="inventoryWindowSellAllButton" class="textButton" onmousedown="sellAllButtonClick()">Sell All</div>
-
-            <!-- Auto sell checkboxes -->
-            <div id="checkboxWhite" class="checkbox" style="display: none;">
-                <input type="checkbox" value="1" id="checkboxInput" class="checkboxInput" name="" onclick="sellAllCheckboxClicked(this, 1)">
-                <label for="checkboxInput" class="backgroundWhite"></label>
-            </div>
-            <div id="checkboxGreen" class="checkbox" style="display: none;">
-                <input type="checkbox" value="1" id="checkboxInput2" class="checkboxInput" name="" onclick="sellAllCheckboxClicked(this, 2)">
-                <label for="checkboxInput2" class="backgroundGreen"></label>
-            </div>
-            <div id="checkboxBlue" class="checkbox" style="display: none;">
-                <input type="checkbox" value="1" id="checkboxInput3" class="checkboxInput" name="" onclick="sellAllCheckboxClicked(this, 3)">
-                <label for="checkboxInput3" class="backgroundBlue"></label>
-            </div>
-            <div id="checkboxPurple" class="checkbox" style="display: none;">
-                <input type="checkbox" value="1" id="checkboxInput4" class="checkboxInput" name="" onclick="sellAllCheckboxClicked(this, 4)">
-                <label for="checkboxInput4" class="backgroundPurple"></label>
-            </div>
-            <div id="checkboxOrange" class="checkbox" style="display: none;">
-                <input type="checkbox" value="1" id="checkboxInput5" class="checkboxInput" name="" onclick="sellAllCheckboxClicked(this, 5)">
-                <label for="checkboxInput5" class="backgroundOrange"></label>
-            </div>
+            <div id="inventoryWindowSellAllButton" class="textButton globalNoDrag" onmousedown="sellAllButtonClick()">Sell All</div>
 
             <div id="inventoryWindowCloseButton" class="closeButton button" onmouseover="closeButtonHover(this)" onmouseout="closeButtonReset(this)" onmousedown="closeButtonClick(this)" onmouseup="closeButtonReset(this)"></div>
         </div>
@@ -374,35 +344,35 @@
             <div id="characterIconArea"></div>
 
             <!-- LEFT EQUIP COLUMN -->
-            <div id="equipItem" class="equipItem1 ui-draggable" style="position: absolute; left: 4px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 0px 70px;" onmouseover="equipItemHover(this, 1)" onmouseout="equipItemReset(this, 1)" onmousedown="equipItemClick(this, 1)" oncontextmenu="equipItemRightClick(event, 1)"></div>
+            <div id="equipItem" class="equipItem1 ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 0px 70px;" onmouseover="equipItemHover(this, 1)" onmouseout="equipItemReset(this, 1)" onmousedown="equipItemClick(this, 1)" oncontextmenu="equipItemRightClick(event, 1)"></div>
 
-            <div id="equipItem" class="equipItem2 ui-draggable" style="position: absolute; left: 4px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 280px 70px;" onmouseover="equipItemHover(this, 2)" onmouseout="equipItemReset(this, 2)" onmousedown="equipItemClick(this, 2)" oncontextmenu="equipItemRightClick(event, 2)"></div>
+            <div id="equipItem" class="equipItem2 ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 280px 70px;" onmouseover="equipItemHover(this, 2)" onmouseout="equipItemReset(this, 2)" onmousedown="equipItemClick(this, 2)" oncontextmenu="equipItemRightClick(event, 2)"></div>
 
-            <div id="equipItem" class="equipItem3 ui-draggable" style="position: absolute; left: 4px; top: 95px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 245px 105px;" onmouseover="equipItemHover(this, 3)" onmouseout="equipItemReset(this, 3)" onmousedown="equipItemClick(this, 3)" oncontextmenu="equipItemRightClick(event, 3)"></div>
+            <div id="equipItem" class="equipItem3 ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 95px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 245px 105px;" onmouseover="equipItemHover(this, 3)" onmouseout="equipItemReset(this, 3)" onmousedown="equipItemClick(this, 3)" oncontextmenu="equipItemRightClick(event, 3)"></div>
 
-            <div id="equipItem" class="equipItem4 ui-draggable" style="position: absolute; left: 4px; top: 131px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 210px 35px;" onmouseover="equipItemHover(this, 4)" onmouseout="equipItemReset(this, 4)" onmousedown="equipItemClick(this, 4)" oncontextmenu="equipItemRightClick(event, 4)"></div>
+            <div id="equipItem" class="equipItem4 ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 131px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 210px 35px;" onmouseover="equipItemHover(this, 4)" onmouseout="equipItemReset(this, 4)" onmousedown="equipItemClick(this, 4)" oncontextmenu="equipItemRightClick(event, 4)"></div>
 
-            <div id="equipItem" class="equipItem5 ui-draggable" style="position: absolute; left: 4px; top: 167px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 175px 105px;" onmouseover="equipItemHover(this, 5)" onmouseout="equipItemReset(this, 5)" onmousedown="equipItemClick(this, 5)" oncontextmenu="equipItemRightClick(event, 5)"></div>
+            <div id="equipItem" class="equipItem5 ui-draggable globalNoDrag" style="position: absolute; left: 4px; top: 167px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 175px 105px;" onmouseover="equipItemHover(this, 5)" onmouseout="equipItemReset(this, 5)" onmousedown="equipItemClick(this, 5)" oncontextmenu="equipItemRightClick(event, 5)"></div>
             <!-- -->
 
             <!-- RIGHT EQUIP COLUMN -->
-            <div id="equipItem" class="equipItem6 ui-draggable" style="position: absolute; left: 148px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 140px 70px;" onmouseover="equipItemHover(this, 6)" onmouseout="equipItemReset(this, 6)" onmousedown="equipItemClick(this, 6)" oncontextmenu="equipItemRightClick(event, 6)"></div>
+            <div id="equipItem" class="equipItem6 ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 23px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 140px 70px;" onmouseover="equipItemHover(this, 6)" onmouseout="equipItemReset(this, 6)" onmousedown="equipItemClick(this, 6)" oncontextmenu="equipItemRightClick(event, 6)"></div>
 
-            <div id="equipItem" class="equipItem7 ui-draggable" style="position: absolute; left: 148px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 105px 70px;" onmouseover="equipItemHover(this, 7)" onmouseout="equipItemReset(this, 7)" onmousedown="equipItemClick(this, 7)" oncontextmenu="equipItemRightClick(event, 7)"></div>
+            <div id="equipItem" class="equipItem7 ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 59px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 105px 70px;" onmouseover="equipItemHover(this, 7)" onmouseout="equipItemReset(this, 7)" onmousedown="equipItemClick(this, 7)" oncontextmenu="equipItemRightClick(event, 7)"></div>
 
-            <div id="equipItem" class="equipItem8 ui-draggable" style="position: absolute; left: 148px; top: 95px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 70px 105px;" onmouseover="equipItemHover(this, 8)" onmouseout="equipItemReset(this, 8)" onmousedown="equipItemClick(this, 8)" oncontextmenu="equipItemRightClick(event, 8)"></div>
+            <div id="equipItem" class="equipItem8 ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 95px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 70px 105px;" onmouseover="equipItemHover(this, 8)" onmouseout="equipItemReset(this, 8)" onmousedown="equipItemClick(this, 8)" oncontextmenu="equipItemRightClick(event, 8)"></div>
 
-            <div id="equipItem" class="equipItem9 ui-draggable" style="position: absolute; left: 148px; top: 131px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 70px 70px;" onmouseover="equipItemHover(this, 9)" onmouseout="equipItemReset(this, 9)" onmousedown="equipItemClick(this, 9)" oncontextmenu="equipItemRightClick(event, 9)"></div>
+            <div id="equipItem" class="equipItem9 ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 131px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 70px 70px;" onmouseover="equipItemHover(this, 9)" onmouseout="equipItemReset(this, 9)" onmousedown="equipItemClick(this, 9)" oncontextmenu="equipItemRightClick(event, 9)"></div>
 
-            <div id="equipItem" class="equipItem10 ui-draggable" style="position: absolute; left: 148px; top: 167px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 35px 70px;" onmouseover="equipItemHover(this, 10)" onmouseout="equipItemReset(this, 10)" onmousedown="equipItemClick(this, 10)" oncontextmenu="equipItemRightClick(event, 10)"></div>
+            <div id="equipItem" class="equipItem10 ui-draggable globalNoDrag" style="position: absolute; left: 148px; top: 167px; z-index: 1; width: 35px; height: 35px; background: url(includes/images/itemSheet3.png) 35px 70px;" onmouseover="equipItemHover(this, 10)" onmouseout="equipItemReset(this, 10)" onmousedown="equipItemClick(this, 10)" oncontextmenu="equipItemRightClick(event, 10)"></div>
 
-            <div id="statsArea">
+            <div id="statsArea" class="globalNoDrag">
                 <div class="statContainer">
                     <div class="statNameContainer">
                         <div id="level">Level:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="levelValue">49</div>
+                        <div id="levelValue">0</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -410,7 +380,7 @@
                         <div id="health">Health:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="healthValue">3757/3757</div>
+                        <div id="healthValue">0/0</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -418,7 +388,7 @@
                         <div id="hp5" onmouseover="hp5StatHover(this)" onmouseout="statTooltipReset()">Hp5:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="hp5Value">1089.00</div>
+                        <div id="hp5Value">0.00</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -426,7 +396,7 @@
                         <div id="damage">Damage:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="damageValue">605 - 997</div>
+                        <div id="damageValue">0 - 0</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -434,7 +404,7 @@
                         <div id="damageBonus" onmouseover="damageBonusStatHover(this)" onmouseout="statTooltipReset()">Damage Bonus:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="damageBonusValue">565%</div>
+                        <div id="damageBonusValue">0%</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -442,7 +412,7 @@
                         <div id="armour" onmouseover="armourStatHover(this)" onmouseout="statTooltipReset()">Armour:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="armourValue">660.00 (56.33%)</div>
+                        <div id="armourValue">0.00 (0.00%)</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -458,7 +428,7 @@
                         <div id="strength" onmouseover="strengthStatHover(this)" onmouseout="statTooltipReset()">Strength:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="strengthValue">215</div>
+                        <div id="strengthValue">0</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -466,7 +436,7 @@
                         <div id="stamina" onmouseover="staminaStatHover(this)" onmouseout="statTooltipReset()">Stamina:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="staminaValue">130</div>
+                        <div id="staminaValue">0</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -474,7 +444,7 @@
                         <div id="agility" onmouseover="agilityStatHover(this)" onmouseout="statTooltipReset()">Agility:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="agilityValue">126</div>
+                        <div id="agilityValue">0</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -482,7 +452,7 @@
                         <div id="critChance" onmouseover="critChanceStatHover(this)" onmouseout="statTooltipReset()">Crit Chance:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="critChanceValue">77.00%</div>
+                        <div id="critChanceValue">0.00%</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -490,7 +460,7 @@
                         <div id="critDamage" onmouseover="critDamageStatHover(this)" onmouseout="statTooltipReset()">Crit Damage:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="critDamageValue">336.00%</div>
+                        <div id="critDamageValue">0.00%</div>
                     </div>
                 </div>
 
@@ -499,7 +469,7 @@
                         <div id="itemRarity" onmouseover="itemRarityStatHover(this)" onmouseout="statTooltipReset()">Item Rarity:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="itemRarityValue">206.00%</div>
+                        <div id="itemRarityValue">0.00%</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -507,7 +477,7 @@
                         <div id="goldGain" onmouseover="goldGainStatHover(this)" onmouseout="statTooltipReset()">Gold Gain:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="goldGainValue">271.00%</div>
+                        <div id="goldGainValue">0.00%</div>
                     </div>
                 </div>
                 <div class="statContainer">
@@ -515,7 +485,7 @@
                         <div id="experienceGain" onmouseover="expGainStatHover(this)" onmouseout="statTooltipReset()">Exp Gain:</div>
                     </div>
                     <div class="statValueContainer">
-                        <div id="experienceGainValue">205.20%</div>
+                        <div id="experienceGainValue">0.20%</div>
                     </div>
                 </div>
             </div>
@@ -524,14 +494,14 @@
 
         <div id="mercenariesWindow" style="display: none;" class="ui-draggable">
             <div id="mercenariesWindowTitle">Mercenaries</div>
-            <div id="mercenariesBuyArea">
+            <div id="mercenariesBuyArea" class="globalNoDrag">
                 <div id="footmanBuyButton" class="buyButton" onmouseover="footmanBuyButtonMouseOver(this)" onmouseout="footmanBuyButtonMouseOut(this)" onmousedown="footmanBuyButtonMouseDown(this)" onmouseup="footmanBuyButtonMouseOver(this)">
                     <div id="mercenaryTextArea" class="buyButtonArea">
                         <div id="footmanIcon" class="buyButtonIcon"></div>
                         <div id="footmanName" class="mercenaryName">Footman</div>
                         <div id="footmanGoldCoin" class="goldCoin" style="position: absolute; top: 16px; left: 41px; width: 12px; height: 12px"></div>
-                        <div id="footmanCost" class="mercenaryCost">203,960</div>
-                        <div id="footmenOwned" class="mercenaryAmount">71</div>
+                        <div id="footmanCost" class="mercenaryCost">0</div>
+                        <div id="footmenOwned" class="mercenaryAmount">0</div>
                     </div>
                 </div>
                 <div id="clericBuyButton" class="buyButton" onmouseover="clericBuyButtonMouseOver(this)" onmouseout="clericBuyButtonMouseOut(this)" onmousedown="clericBuyButtonMouseDown(this)" onmouseup="clericBuyButtonMouseOver(this)">
@@ -539,8 +509,8 @@
                         <div id="clericIcon" class="buyButtonIcon"></div>
                         <div id="clericName" class="mercenaryName">Cleric</div>
                         <div id="clericGoldCoin" class="goldCoin" style="position: absolute; top: 16px; left: 41px; width: 12px; height: 12px"></div>
-                        <div id="clericCost" class="mercenaryCost">216,731</div>
-                        <div id="clericsOwned" class="mercenaryAmount">50</div>
+                        <div id="clericCost" class="mercenaryCost">0</div>
+                        <div id="clericsOwned" class="mercenaryAmount">0</div>
                     </div>
                 </div>
                 <div id="commanderBuyButton" class="buyButton" onmouseover="commanderBuyButtonMouseOver(this)" onmouseout="commanderBuyButtonMouseOut(this)" onmousedown="commanderBuyButtonMouseDown(this)" onmouseup="commanderBuyButtonMouseOver(this)">
@@ -548,8 +518,8 @@
                         <div id="commanderIcon" class="buyButtonIcon"></div>
                         <div id="commanderName" class="mercenaryName">Commander</div>
                         <div id="commanderGoldCoin" class="goldCoin" style="position: absolute; top: 16px; left: 41px; width: 12px; height: 12px"></div>
-                        <div id="commanderCost" class="mercenaryCost">304,574</div>
-                        <div id="commandersOwned" class="mercenaryAmount">31</div>
+                        <div id="commanderCost" class="mercenaryCost">0</div>
+                        <div id="commandersOwned" class="mercenaryAmount">0</div>
                     </div>
                 </div>
                 <div id="mageBuyButton" class="buyButton" onmouseover="mageBuyButtonMouseOver(this)" onmouseout="mageBuyButtonMouseOut(this)" onmousedown="mageBuyButtonMouseDown(this)" onmouseup="mageBuyButtonMouseOver(this)">
@@ -557,8 +527,8 @@
                         <div id="mageIcon" class="buyButtonIcon"></div>
                         <div id="mageName" class="mercenaryName">Mage</div>
                         <div id="mageGoldCoin" class="goldCoin" style="position: absolute; top: 16px; left: 41px; width: 12px; height: 12px"></div>
-                        <div id="mageCost" class="mercenaryCost">1,138,541</div>
-                        <div id="magesOwned" class="mercenaryAmount">19</div>
+                        <div id="mageCost" class="mercenaryCost">0</div>
+                        <div id="magesOwned" class="mercenaryAmount">0</div>
                     </div>
                 </div>
                 <div id="assassinBuyButton" class="buyButton" onmouseover="assassinBuyButtonMouseOver(this)" onmouseout="assassinBuyButtonMouseOut(this)" onmousedown="assassinBuyButtonMouseDown(this)" onmouseup="assassinBuyButtonMouseOver(this)">
@@ -566,8 +536,8 @@
                         <div id="assassinIcon" class="buyButtonIcon"></div>
                         <div id="assassinName" class="mercenaryName">Assassin</div>
                         <div id="assassinGoldCoin" class="goldCoin" style="position: absolute; top: 16px; left: 41px; width: 12px; height: 12px"></div>
-                        <div id="assassinCost" class="mercenaryCost">8,560,400</div>
-                        <div id="assassinsOwned" class="mercenaryAmount">12</div>
+                        <div id="assassinCost" class="mercenaryCost">0</div>
+                        <div id="assassinsOwned" class="mercenaryAmount">0</div>
                     </div>
                 </div>
                 <div id="warlockBuyButton" class="buyButton" onmouseover="warlockBuyButtonMouseOver(this)" onmouseout="warlockBuyButtonMouseOut(this)" onmousedown="warlockBuyButtonMouseDown(this)" onmouseup="warlockBuyButtonMouseOver(this)">
@@ -575,8 +545,8 @@
                         <div id="warlockIcon" class="buyButtonIcon"></div>
                         <div id="warlockName" class="mercenaryName">Warlock</div>
                         <div id="warlockGoldCoin" class="goldCoin" style="position: absolute; top: 16px; left: 41px; width: 12px; height: 12px"></div>
-                        <div id="warlockCost" class="mercenaryCost">85,120,636</div>
-                        <div id="warlocksOwned" class="mercenaryAmount">7</div>
+                        <div id="warlockCost" class="mercenaryCost">0</div>
+                        <div id="warlocksOwned" class="mercenaryAmount">0</div>
                     </div>
                 </div>
             </div>
@@ -585,14 +555,13 @@
 
         <div id="upgradesWindow" style="display: none;" class="ui-draggable">
             <div id="upgradesWindowTitle">Upgrades</div>
-            <div id="upgradesBuyArea">
-                <div id="upgradePurchaseButton1" class="buyButton"><div class="buyButtonArea"><div class="buyButtonIcon button" style="background: url(includes/images/bigIcons.png) 200px 40px;"></div><div id="upgradeName1" class="mercenaryName">Vendor</div><div id="upgradeCost1" class="mercenaryAmount" style="left: 53px;">21,200</div><div id="upgradeCoin1" class="goldCoin" style="position: absolute; top: 28px; width: 12px; height: 12px; left: 41px;"></div></div></div><div id="upgradePurchaseButton2" class="buyButton"><div class="buyButtonArea"><div class="buyButtonIcon button" style="background: url(includes/images/bigIcons.png) 200px 40px;"></div><div id="upgradeName2" class="mercenaryName">Trader</div><div id="upgradeCost2" class="mercenaryAmount" style="left: 53px;">105,200</div><div id="upgradeCoin2" class="goldCoin" style="position: absolute; top: 28px; width: 12px; height: 12px; left: 41px;"></div></div></div><div id="upgradePurchaseButton3" class="buyButton"><div class="buyButtonArea"><div class="buyButtonIcon button" style="background: url(includes/images/bigIcons.png) 200px 40px;"></div><div id="upgradeName3" class="mercenaryName">Merchant</div><div id="upgradeCost3" class="mercenaryAmount" style="left: 53px;">683,200</div><div id="upgradeCoin3" class="goldCoin" style="position: absolute; top: 28px; width: 12px; height: 12px; left: 41px;"></div></div></div><div id="upgradePurchaseButton4" class="buyButton"><div class="buyButtonArea"><div class="buyButtonIcon button" style="background: url(includes/images/bigIcons.png) 200px 40px;"></div><div id="upgradeName4" class="mercenaryName">Storekeeper</div><div id="upgradeCost4" class="mercenaryAmount" style="left: 53px;">2,519,200</div><div id="upgradeCoin4" class="goldCoin" style="position: absolute; top: 28px; width: 12px; height: 12px; left: 41px;"></div></div></div><div id="upgradePurchaseButton5" class="buyButton"><div class="buyButtonArea"><div class="buyButtonIcon button" style="background: url(includes/images/bigIcons.png) 200px 40px;"></div><div id="upgradeName5" class="mercenaryName">Operator</div><div id="upgradeCost5" class="mercenaryAmount" style="left: 53px;">18,875,800</div><div id="upgradeCoin5" class="goldCoin" style="position: absolute; top: 28px; width: 12px; height: 12px; left: 41px;"></div></div></div></div>
+            <div id="upgradesBuyArea" class="globalNoDrag"></div>
             <div id="upgradesWindowCloseButton" class="closeButton button" onmouseover="closeButtonHover(this)" onmouseout="closeButtonReset(this)" onmousedown="closeButtonClick(this)" onmouseup="closeButtonReset(this)"></div>
         </div>
 
         <div id="questsWindow" style="display: none;" class="ui-draggable">
             <div id="questsWindowTitle">Quests</div>
-            <div id="questNamesArea" style="display: none;">
+            <div id="questNamesArea" style="display: none;" class="globalNoDrag">
             </div>
             <div id="questDisplayArea">
                 <div id="questTextArea" style="display: none;">
@@ -738,8 +707,6 @@
     </div>
     <!-- -->
 </div>
-
-<script src="PageEnd.js"></script>
 
 <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

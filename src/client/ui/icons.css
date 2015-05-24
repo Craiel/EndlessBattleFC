@@ -14,6 +14,7 @@
 .powerShard {
     background: url("images/powerShard.png");
     background-size: 100%;
+    background-repeat: no-repeat;
     position: absolute;
 }
 

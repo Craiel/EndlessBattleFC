@@ -32,7 +32,6 @@
 	this.numberFormatter = 1;
 	this.levelsReset = 0;
 	this.applyLevelResetBonus = true;
-	this.skipTutorial = true;
 	this.statsBought = 0;
 	
 	// Stats and other potentially big data
@@ -76,7 +75,6 @@
 		localStorage.fb_formatHealthBarNumbers = this.formatHealthBarNumbers;
 		localStorage.fb_levelsReset = this.levelsReset;
 		localStorage.fb_applyLevelResetBonus = this.applyLevelResetBonus;
-		localStorage.fb_skipTutorial = this.skipTutorial;
 		localStorage.fb_statsBought = this.statsBought;
 		
 		var statKeys = Object.keys(this.stats);
@@ -120,7 +118,6 @@
 		this.formatHealthBarNumbers = frozenUtils.loadBool("fb_formatHealthBarNumbers", true);
 		this.levelsReset = frozenUtils.loadInt("fb_levelsReset", 0);
 		this.applyLevelResetBonus = frozenUtils.loadBool("fb_applyLevelResetBonus", true);
-		this.skipTutorial = frozenUtils.loadBool("fb_skipTutorial", true);
 		this.statsBought = frozenUtils.loadInt("fb_statsBought", 0);
 		
 		var statCount = frozenUtils.loadInt("fb_statCount", 0);

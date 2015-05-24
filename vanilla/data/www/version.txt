@@ -1,0 +1,7 @@
+{
+    "version": 0.4,
+    "changeTitle": "Combat Log Update",
+    "changeDetails": "- Added the combat log back in
+    - Windows can now only be dragged from the title bar to avoid accidentially dragging them when using the contents
+    - "
+}

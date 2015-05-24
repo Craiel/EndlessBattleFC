@@ -212,9 +212,9 @@ declare('CoreSave', function(require) {
         // Transfer the save into the storage slot
         if(this.doSave(compressedData) === true)
         {
-            log.debug(StrLoc("Saved {0}  bytes, now at {1} bytes used").format(compressedData.length, this.doGetSize()));
+            //log.debug(StrLoc("Saved {0}  bytes, now at {1} bytes used").format(compressedData.length, this.doGetSize()));
         } else {
-            log.debug(StrLoc("Saving failed!"));
+            log.error(StrLoc("Saving failed!"));
         }
     };
 
