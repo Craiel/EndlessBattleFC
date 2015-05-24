@@ -1556,7 +1556,7 @@ function Inventory() {
             legacyGame.player.gold += value;
             // Remove the item and hide the tooltip
             this.removeItem(slot);
-            $('#itemTooltip').hide();
+
             legacyGame.stats.itemsSold++;
             legacyGame.stats.goldFromItems += value;
         }
@@ -5052,6 +5052,7 @@ function inventoryItemClick(obj, index, event) {
     // If the shift key is down then sell this item
     if (event.shiftKey == 1) {
         legacyGame.inventory.sellItem(index - 1);
+        $('#itemTooltip').hide();
     }
     // If the left mouse button was clicked
     else if (event.which == 1) {

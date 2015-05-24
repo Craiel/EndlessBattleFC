@@ -17,14 +17,15 @@ declare('Game', function() {
 
         this.id = "Game";
 
-        save.register(this, saveKeys.idnGameVersion).asFloat().withDefault(0.3);
+        this.version = 0.5;
 
         this.autoSaveDelay = 30000; // 30s default
         this.autoSaveTime = undefined;
 
-        this.versionCheckDelay = 12000;
+        this.versionCheckDelay = 30000;
         this.versionCheckTime = undefined;
         this.versionCheckData = undefined;
+        this.versionCheckInfo = undefined;
     }
 
     // ---------------------------------------------------------------------------
@@ -39,8 +40,19 @@ declare('Game', function() {
 
         legacyGame.initialize();
         legacyGame.finishLoading();
+
+        // Frozen Battle
         legacyGame.FrozenBattle = new FrozenBattle();
         legacyGame.FrozenBattle.init();
+
+        // Endless Improvement
+        legacyGame.endlessImprovement = new ImprovementManager();
+        questFix();
+        statWindowImprovement();
+        mercenaryHighlighting();
+        monsterKillStats();
+        monsterKillQuests();
+        persistentGame();
     };
 
     Game.prototype.componentUpdate = Game.prototype.update;
@@ -62,7 +74,7 @@ declare('Game', function() {
     // game functions
     // ---------------------------------------------------------------------------
     Game.prototype.getCurrentVersion = function() {
-        return this[saveKeys.idnGameVersion];
+        return this.version;
     };
 
     Game.prototype.getVersionCheckData = function() {
@@ -91,8 +103,9 @@ declare('Game', function() {
 
         if (gameTime.current > this.versionCheckTime + this.versionCheckDelay) {
             $.ajax({
-                url : staticData.versionFile,
-                success : this.handleVersionCheckResult(this)
+                url : staticData.versionInfoFile,
+                success : this.handleVersionInfoResult(this),
+                cache: false
             });
 
             this.versionCheckTime = gameTime.current;
@@ -104,6 +117,24 @@ declare('Game', function() {
             self.versionCheckData = JSON.parse(data);
         };
     };
+
+    Game.prototype.handleVersionInfoResult = function(self) {
+        return function(data, textStatus, jqXHR) {
+            var version = parseFloat(data.trim());
+            if(self.versionCheckInfo !== version) {
+                self.versionCheckInfo = version;
+
+                // Fetch the full version info
+                $.ajax({
+                    url : staticData.versionFile,
+                    success : self.handleVersionCheckResult(self),
+                    cache: false
+                });
+            }
+        };
+    };
+
+    //version.info
 
     // ---------------------------------------------------------------------------
     // player functions

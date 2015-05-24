@@ -11,6 +11,7 @@ declare('StaticData', function () {
         this.id = "StaticData";
 
         this.versionFile = "version.txt";
+        this.versionInfoFile = "versionInfo.txt";
 
         this.EventCombatHit = "eventCombatHit";
         this.EventCombatDeath = "eventCombatDeath";

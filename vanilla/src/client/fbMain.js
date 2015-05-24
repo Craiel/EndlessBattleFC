@@ -301,9 +301,9 @@ function FrozenBattle() {
         deduction += legacyGame.mercenaryManager.magesOwned * 75;
         deduction += legacyGame.mercenaryManager.assassinsOwned * 150;
         deduction += legacyGame.mercenaryManager.warlocksOwned * 250;
-        var multiplier = 1.0 + legacyGame.mercenaryManager.commandersOwned * 0.01;
+        var multiplier = 1.0;
         if(this.settings.applyLevelResetBonus) {
-            multiplier += this.settings.levelsReset * 0.01;
+            multiplier += this.settings.levelsReset * 0.001;
         }
         
         deduction *= multiplier;
@@ -874,10 +874,6 @@ function FrozenBattle() {
         var combatLog = $('<div id="fbCombatLogWindow" class="navBarWindow" style="width:500px; height:250px; position: absolute; left:5px;bottom: 5px; top:initial;margin: 0"/>');
         $('#gameArea').append(combatLog);
         combatLog.append('<div class="navBarText" style="padding: 5px 300px 5px 10px; float: left">Combat Log</div>');
-
-        var clearButton = $('<div class="navBarText" style="padding: 5px 10px 5px 20px">Clear</div>');
-        clearButton.click(this.onClearCombatLog);
-        combatLog.append(clearButton);
 
         combatLog.append('<div id="fbCombatLogContent" style="padding: 5px 10px 5px 10px; height: 85%; width: 95%; overflow: auto"/>');
 
