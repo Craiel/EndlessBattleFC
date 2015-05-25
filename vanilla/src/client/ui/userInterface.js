@@ -253,13 +253,6 @@ declare('UserInterface', function () {
             buttonArea.append(coinIcon);
 
             upgradeArea.append(button);
-
-            // Have to use the vanilla functions here to make it work
-            /*var element = document.getElementById('buyButton' + upgrade.id);
-            element.onmouseover = function () { upgradeButtonMouseOver(element, upgrade.id); };
-            element.onmousedown = function () { upgradeButtonMouseDown(upgrade.id); };
-            element.onmouseup = function () { upgradeButtonMouseOver(element, upgrade.id); };
-            element.onmouseout = function () { upgradeButtonMouseOut(upgrade.id); };*/
         }
     }
 
@@ -434,10 +427,6 @@ declare('UserInterface', function () {
         }
 
         control.hide();
-    };
-
-    UserInterface.prototype.updateCombatLog = function(gameTime) {
-
     };
 
     // ---------------------------------------------------------------------------
