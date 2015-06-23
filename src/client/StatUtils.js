@@ -138,10 +138,10 @@ declare('StatUtils', function () {
             switch (stat) {
                 case gameData.StatDefinition.str.id:
                 {
-                    this.doModifyStat(gameData.StatDefinition.hpMax.id, value * 2, target);
-                    this.doModifyStat(gameData.StatDefinition.dmgMin.id, value, target);
-                    this.doModifyStat(gameData.StatDefinition.dmgMax.id, value, target);
-                    this.doModifyStat(gameData.StatDefinition.critDmg.id, (value * 2) / 100, target);
+                    // this.doModifyStat(gameData.StatDefinition.hpMax.id, value * 2, target);
+                    // this.doModifyStat(gameData.StatDefinition.dmgMin.id, value, target);
+                    // this.doModifyStat(gameData.StatDefinition.dmgMax.id, value, target);
+                    // this.doModifyStat(gameData.StatDefinition.critDmg.id, (value * 2) / 100, target);
                     break;
                 }
 
@@ -156,12 +156,6 @@ declare('StatUtils', function () {
                 case gameData.StatDefinition.sta.id:
                 {
                     this.doModifyStat(gameData.StatDefinition.hpMax.id, value * 5, target);
-                    this.doModifyStat(gameData.StatDefinition.hp5.id, value, target);
-
-                    this.doModifyStat(gameData.StatDefinition.fireResist.id, value / 10, target);
-                    this.doModifyStat(gameData.StatDefinition.iceResist.id, value / 10, target);
-                    this.doModifyStat(gameData.StatDefinition.lightResist.id, value / 10, target);
-                    this.doModifyStat(gameData.StatDefinition.darkResist.id, value / 10, target);
                     break;
                 }
 
@@ -169,11 +163,6 @@ declare('StatUtils', function () {
                 {
                     this.doModifyStat(gameData.StatDefinition.mpMax.id, value * 5, target);
                     this.doModifyStat(gameData.StatDefinition.mp5.id, value, target);
-
-                    this.doModifyStat(gameData.StatDefinition.fireDmgMult.id, value / 100, target);
-                    this.doModifyStat(gameData.StatDefinition.iceDmgMult.id, value / 100, target);
-                    this.doModifyStat(gameData.StatDefinition.lightDmgMult.id, value / 100, target);
-                    this.doModifyStat(gameData.StatDefinition.darkDmgMult.id, value / 100, target);
                     break;
                 }
             }

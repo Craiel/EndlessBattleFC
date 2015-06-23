@@ -138,7 +138,7 @@ declare('CharacterDialog', function() {
         }
 
         this.statUpdateTime = gameTime.current + this.statUpdateDelay;
-    }
+    };
 
     CharacterDialog.prototype.initStats = function(gameTime) {
         var categories = {};
@@ -155,7 +155,12 @@ declare('CharacterDialog', function() {
             categories[stat.displayCategory].push(stat);
         }
 
-        for(var category in categories) {
+        var sortedCategories = Object.keys(categories).sort();
+        console.log(sortedCategories);
+        console.log(sortedCategories.length);
+        for(var i = 0; i < sortedCategories.length; i++) {
+            var category = sortedCategories[i];
+            console.log(category);
             var categoryHeader = element.create("playerStatCategory_" + category);
             categoryHeader.templateName = "characterStatDisplayCategory";
             categoryHeader.init(this.statsBackground.getContentArea());
